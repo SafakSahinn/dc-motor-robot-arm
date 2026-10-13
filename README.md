@@ -66,9 +66,9 @@ $$L\frac{di}{dt} = V - R i - K\dot\theta$$
 
 | Denklem parçası | Kaynak |
 |---|---|
-| Motorun mekanik denklemi ($J\ddot\theta + b\dot\theta = K i$) | CTMS, "DC Motor Speed: System Modeling" [1] |
+| Motorun mekanik denklemi ($J_m\ddot\theta + b\dot\theta = K i$) | CTMS, "DC Motor Speed: System Modeling" [1] |
 | Motorun elektrik denklemi ($L\,di/dt + R i = V - K\dot\theta$) | CTMS, aynı sayfa [1] |
-| Yerçekimi terimi ($-mg\ell\sin\theta$) | Hespanha, Example 2.1 (ters sarkaç) [2] |
+| Yerçekimi terimi ($-mg\ell\sin\theta$) | Hespanha, Example 2.1 (ters sarkaç) [2]; kitapta açı yukarıdan ölçüldüğü için $+$, bizde aşağıdan ölçüldüğü için $-$ |
 | Toplam eylemsizlik $J = J_m + m\ell^2$ | kolu ekleyerek bizim kurduğumuz |
 
 **Kitaptaki mekanik sistem kalıbı (2.7)** ile karşılaştırma, $M(q)\ddot q + B(q,\dot q)\dot q + G(q) = F$:
@@ -114,7 +114,7 @@ Doğrusal olmayan tek terim $\sin x_1$.
 
 | Parametre | Anlamı | Değer | Kaynak |
 |---|---|---|---|
-| $J_m$ | motor rotorunun eylemsizliği | 0.01 kg·m² | CTMS [1] |
+| $J_m$ | motor rotorunun eylemsizliği | 0.01 kg·m² | CTMS [1], [3] ile kontrol edildi |
 | $b$ | sürtünme katsayısı | 0.1 N·m·s | CTMS [1] |
 | $K$ | motor sabiti ($K_t = K_e$) | 0.01 N·m/A | CTMS [1] |
 | $R$ | sargı direnci | 1 Ω | CTMS [1] |
@@ -158,6 +158,23 @@ $$x^{eq} = (\theta_0,\ 0,\ 4.9\sin\theta_0), \qquad u^{eq} = 4.9\sin\theta_0 \te
 | **90° (yatay)** | **4.9 A** | **4.9 V** | en zor durum, motor kolun bütün ağırlığını taşıyor |
 
 Projede kullanacağımız çalışma noktası: **$\theta_0 = 90^\circ$ (kol yatay)**. Hem en zor durum hem de kontrol açısından en ilginç olanı.
+
+### 90° etrafında doğrusallaştırma
+
+Genel Jacobian tablosu (her satır bir $f$'nin türevleri):
+
+| | $\partial/\partial x_1$ | $\partial/\partial x_2$ | $\partial/\partial x_3$ | $\partial/\partial u$ |
+|---|---|---|---|---|
+| $f_1 = x_2$ | 0 | 1 | 0 | 0 |
+| $f_2 = 0.952x_3 - 9.52x_2 - 4.67\sin x_1$ | $-4.67\cos x_1$ | −9.52 | 0.952 | 0 |
+| $f_3 = 2u - 2x_3 - 0.02x_2$ | 0 | −0.02 | −2 | 2 |
+| $y = x_1$ | 1 | 0 | 0 | 0 |
+
+Tek değişken kutu $-4.67\cos x_1$; $x_1 = 90^\circ$'de $\cos 90^\circ = 0$ olduğu için o da sıfır oluyor:
+
+$$A = \begin{bmatrix} 0 & 1 & 0\\ 0 & -9.52 & 0.952\\ 0 & -0.02 & -2\end{bmatrix}, \qquad B = \begin{bmatrix} 0\\ 0\\ 2\end{bmatrix}, \qquad C = \begin{bmatrix} 1 & 0 & 0\end{bmatrix}, \qquad D = 0$$
+
+$A$'nın ilk sütunu tamamen sıfır: bu noktada açı hiçbir durumun değişim hızını etkilemiyor, yani yerçekiminin kolu geri iten etkisi kayboluyor. Bu yüzden özdeğerlerden biri $0$; diğer ikisi hız–akım kısmının köşegenine çok yakın (`eig(A)`): $0$, $-9.5213$, $-2.0025$.
 
 ## 9. Açık çevrim simülasyonu
 
@@ -223,7 +240,7 @@ pdflatex kt1.tex
 
 ## 11. Sonraki adımlar
 
-- 90° etrafında doğrusallaştırılmış modelin ($A$, $B$, $C$, $D$) kararlılık, kontrol edilebilirlik ve gözlemlenebilirlik analizi
+- 90° etrafındaki doğrusal modelin kararlılık, kontrol edilebilirlik ve gözlemlenebilirlik analizi
 - Geri besleme kontrolcüsü tasarımı (kolu 90°'de kararlı tutmak)
 - Kapalı çevrim simülasyonu ve animasyonu
 - Geliştirme kartı (Arduino vb.) + DC motor + enkoder ile fiziksel uygulama
@@ -231,7 +248,10 @@ pdflatex kt1.tex
 ## 12. Kaynaklar
 
 1. B. Messner, D. Tilbury, R. Hill, *Control Tutorials for MATLAB and Simulink*, "DC Motor Speed: System Modeling", University of Michigan. <https://ctms.engin.umich.edu/CTMS/index.php?example=MotorSpeed&section=SystemModeling> (erişim: 13 Ekim 2026)
-2. J. P. Hespanha, *Linear Systems Theory*, Princeton University Press, 2009, Example 2.1.
+2. J. P. Hespanha, *Linear Systems Theory*, Princeton University Press, 2009: §2.4.1 denklem (2.7), Example 2.1, Definition 2.1 ve 2.2.
+3. Aynı CTMS sayfasının University of Maryland ENME462 dersindeki kopyası (motor parametrelerini buradan da kontrol ettik). <https://terpconnect.umd.edu/~sandborn/courses/ENME462/Studio5/5-motor.htm> (erişim: 13 Ekim 2026)
+
+Denklemlerin hangisinin hangi kaynaktan, hangisinin ödevin önceki sorularından geldiğini gösteren tam tablo `latex/kt1.pdf`'in sonunda.
 
 ---
 
