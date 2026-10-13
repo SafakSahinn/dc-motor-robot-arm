@@ -1,0 +1,14 @@
+# LaTeX ara dosyaları
+*.aux
+*.log
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+
+# MATLAB
+*.asv
+*.mat
+latex/sema.pdf
+latex/blok_diyagram.pdf
