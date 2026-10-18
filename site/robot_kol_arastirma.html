@@ -99,6 +99,26 @@ ol.log > li::before{content:counter(adim); font:700 22px/1 var(--display); color
 .step dd.link{color:var(--todo)}
 .step figure{margin-top:12px}
 @media (max-width:560px){ .step dl{grid-template-columns:minmax(0,1fr)} .step dt{padding-top:6px} ol.log > li{grid-template-columns:minmax(0,1fr)} ol.log > li::before{width:40px} }
+.diag{display:block; width:100%; min-width:560px; height:auto; background:var(--paper); border:1px solid var(--line); border-radius:8px}
+.diag text{font-family:var(--mono)}
+.diag .d-lbl{fill:var(--ink); font-size:13px; font-weight:500}
+.diag .d-sm{fill:var(--muted); font-size:11.5px}
+.diag .d-body{fill:var(--accent-soft); stroke:var(--accent); stroke-width:1.5}
+.diag .d-bg{fill:var(--paper); stroke:var(--accent); stroke-width:1.2}
+.diag .d-acc{fill:var(--warn-soft); stroke:var(--warn); stroke-width:1.5}
+.diag .d-shaft{fill:var(--muted)}
+.diag .d-bear{fill:var(--todo-soft); stroke:var(--todo); stroke-width:1.5}
+.diag .d-frame{fill:none; stroke:var(--line); stroke-width:2}
+.diag .d-floor{stroke:var(--line); stroke-width:2}
+.diag .d-arm{fill:var(--accent)}
+.diag .d-tip{fill:var(--ink)}
+.diag .d-pcb{fill:var(--todo); opacity:.85}
+.diag .d-mag{fill:var(--warn)}
+.diag .d-lead{stroke:var(--muted); stroke-width:1}
+.diag .d-arrow{fill:none; stroke:var(--warn); stroke-width:1.8}
+.diag .w1{stroke:#c0392b; stroke-width:2.2} .diag .w2{stroke:var(--muted); stroke-width:2.2}
+.diag .w3{stroke:#c9a400; stroke-width:2.2} .diag .w4{stroke:#2e8b57; stroke-width:2.2}
+.diag .w5{stroke:#2f6db5; stroke-width:2.2} .diag .w6{stroke:var(--ink); stroke-width:2.2}
 mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 @media (max-width:760px){
   .wrap{grid-template-columns:minmax(0,1fr); gap:20px; padding-inline:16px}
@@ -121,7 +141,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#rakipler">En yakın çalışmalar</a>
   <a href="#deney">Deney planı</a>
   <a href="#donanim">Gerçek donanım</a>
-  <a href="#malzeme">Malzeme</a>
+  <a href="#malzeme">Malzeme ve alışveriş</a>
   <a href="#yayin">Yayın</a>
   <a href="#siradaki">Sıradaki adım</a>
 </nav>
@@ -558,6 +578,119 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <tr><td>Diğer</td><td>Breadboard, jumper kablolar</td><td>ESP32, TB6612FNG mantık girişi, INA219 ve AS5600 hepsi 3,3 V; seviye dönüştürücü gerekmiyor.</td></tr>
   </table></div>
   <p>Hobi servo (SG90) uygun değil: içindeki hazır kontrolcü bizim kontrolcümüzü devre dışı bırakır.</p>
+
+  <h3>Düzenek nasıl birleşiyor</h3>
+  <figure>
+    <div class="tbl"><svg class="diag" viewBox="0 0 760 250" role="img" aria-label="Düzeneğin yan görünüşü: motor, kaplin, iki rulman, kol mili, kol ve kol milinin ucunda AS5600 sensörü">
+      <line class="d-floor" x1="20" y1="215" x2="740" y2="215"/>
+      <rect class="d-body" x="40" y="80" width="150" height="80" rx="6"/>
+      <text class="d-lbl" x="115" y="125" text-anchor="middle">motor + dişli kutusu</text>
+      <rect class="d-pcb" x="22" y="90" width="18" height="60" rx="2"/>
+      <text class="d-sm" x="31" y="72" text-anchor="middle">enkoder</text>
+      <rect class="d-shaft" x="190" y="114" width="40" height="12"/>
+      <rect class="d-acc" x="230" y="96" width="60" height="48" rx="4"/>
+      <text class="d-lbl" x="260" y="80" text-anchor="middle">kaplin</text>
+      <text class="d-sm" x="260" y="168" text-anchor="middle">(boşluk burada)</text>
+      <rect class="d-shaft" x="290" y="114" width="380" height="12"/>
+      <rect class="d-bear" x="340" y="100" width="22" height="40" rx="3"/>
+      <rect class="d-bear" x="540" y="100" width="22" height="40" rx="3"/>
+      <text class="d-sm" x="450" y="80" text-anchor="middle">2 rulman (kol mili ayrı döner)</text>
+      <line class="d-lead" x1="362" y1="86" x2="351" y2="100"/><line class="d-lead" x1="538" y1="86" x2="551" y2="100"/>
+      <rect class="d-frame" x="330" y="140" width="42" height="75"/>
+      <rect class="d-frame" x="530" y="140" width="42" height="75"/>
+      <text class="d-sm" x="450" y="205" text-anchor="middle">gövde</text>
+      <rect class="d-arm" x="440" y="20" width="12" height="104" rx="2"/>
+      <circle class="d-tip" cx="446" cy="26" r="11"/>
+      <text class="d-lbl" x="466" y="34">kol (15 cm) + uç ağırlığı</text>
+      <rect class="d-mag" x="670" y="110" width="8" height="20"/>
+      <rect class="d-pcb" x="684" y="96" width="14" height="48" rx="2"/>
+      <text class="d-lbl" x="691" y="80" text-anchor="middle">AS5600</text>
+      <text class="d-sm" x="676" y="168" text-anchor="middle">mıknatıs + sensör</text>
+      <text class="d-sm" x="676" y="183" text-anchor="middle">(kol açısı)</text>
+    </svg></div>
+    <figcaption>Yan görünüş, ölçeksiz. Motor açısı motorun kendi enkoderinden, kol açısı kol milinin ucundaki AS5600'den okunur; ikisinin farkı \(\theta_d\) dişlinin boşlukta olup olmadığını gösterir.</figcaption>
+  </figure>
+
+  <h3>Boşluklu kaplin</h3>
+  <figure>
+    <div class="tbl"><svg class="diag" viewBox="0 0 760 210" role="img" aria-label="Kaplinin önden görünüşü: motor tarafındaki dil, kol tarafındaki daha geniş yuvanın içinde boşta hareket eder">
+      <g transform="translate(130,105)">
+        <circle class="d-body" r="80"/>
+        <path class="d-bg" d="M -26 -80 L 26 -80 L 26 -20 L -26 -20 Z"/>
+        <rect class="d-acc" x="-11" y="-78" width="22" height="58" rx="2"/>
+        <circle class="d-shaft" r="10"/>
+        <text class="d-sm" x="0" y="104" text-anchor="middle">dil yuvanın ortasında: boşta</text>
+      </g>
+      <g transform="translate(380,105)">
+        <circle class="d-body" r="80"/>
+        <path class="d-bg" d="M -26 -80 L 26 -80 L 26 -20 L -26 -20 Z"/>
+        <rect class="d-acc" x="4" y="-78" width="22" height="58" rx="2"/>
+        <circle class="d-shaft" r="10"/>
+        <path class="d-arrow" d="M -40 -95 A 100 100 0 0 1 40 -95"/>
+        <text class="d-sm" x="0" y="104" text-anchor="middle">dil kenara dayandı: kol döner</text>
+      </g>
+      <g transform="translate(560,40)">
+        <text class="d-lbl" x="0" y="0">Parçalar</text>
+        <rect class="d-acc" x="0" y="14" width="18" height="14" rx="2"/><text class="d-sm" x="26" y="26">dil (motor miline)</text>
+        <rect class="d-body" x="0" y="40" width="18" height="14" rx="2"/><text class="d-sm" x="26" y="52">yuvalı parça (kol miline)</text>
+        <text class="d-sm" x="0" y="84">Yuva genişliği = boşluk:</text>
+        <text class="d-sm" x="0" y="102">1,5° · 3° · 5° için</text>
+        <text class="d-sm" x="0" y="120">üç ayrı parça basılır,</text>
+        <text class="d-sm" x="0" y="138">deneyde değiştirilir.</text>
+      </g>
+    </svg></div>
+    <figcaption>Önden görünüş. Motor dönmeye başladığında dil önce yuvanın içinde boşta gider, kenara çarpınca kolu çevirir. Hazır satılmaz; 3B baskıyla yapılacak.</figcaption>
+  </figure>
+
+  <h3>Enkoderli motoru tanıma</h3>
+  <figure>
+    <div class="tbl"><svg class="diag" viewBox="0 0 760 200" role="img" aria-label="Enkoderli motorun arkasında küçük bir devre kartı ve 6 kablo vardır; enkodersiz motorda yalnız 2 kablo">
+      <g transform="translate(40,40)">
+        <text class="d-lbl" x="0" y="-12">Enkoderli: 6 kablo</text>
+        <rect class="d-body" x="120" y="20" width="140" height="70" rx="6"/>
+        <text class="d-sm" x="190" y="60" text-anchor="middle">motor</text>
+        <rect class="d-pcb" x="100" y="15" width="20" height="80" rx="2"/>
+        <text class="d-sm" x="110" y="112" text-anchor="middle">enkoder kartı</text>
+        <line class="w1" x1="100" y1="25" x2="20" y2="10"/><text class="d-sm" x="0" y="8" text-anchor="end">motor +</text>
+        <line class="w2" x1="100" y1="37" x2="20" y2="32"/><text class="d-sm" x="0" y="35" text-anchor="end">motor −</text>
+        <line class="w3" x1="100" y1="50" x2="20" y2="54"/><text class="d-sm" x="0" y="57" text-anchor="end">A</text>
+        <line class="w4" x1="100" y1="62" x2="20" y2="76"/><text class="d-sm" x="0" y="79" text-anchor="end">B</text>
+        <line class="w5" x1="100" y1="74" x2="20" y2="98"/><text class="d-sm" x="0" y="101" text-anchor="end">VCC 3,3–5 V</text>
+        <line class="w6" x1="100" y1="86" x2="20" y2="120"/><text class="d-sm" x="0" y="123" text-anchor="end">GND</text>
+        <rect class="d-shaft" x="260" y="49" width="30" height="12"/>
+      </g>
+      <g transform="translate(470,40)">
+        <text class="d-lbl" x="0" y="-12">Enkodersiz: 2 kablo (almayın)</text>
+        <rect class="d-body" x="70" y="20" width="140" height="70" rx="6"/>
+        <text class="d-sm" x="140" y="60" text-anchor="middle">motor</text>
+        <line class="w1" x1="70" y1="40" x2="10" y2="30"/>
+        <line class="w2" x1="70" y1="70" x2="10" y2="80"/>
+        <rect class="d-shaft" x="210" y="49" width="30" height="12"/>
+      </g>
+    </svg></div>
+    <figcaption>Kablo renkleri üreticiye göre değişir (JGB37-520 veri sayfasında kırmızı/beyaz motor, sarı/yeşil A/B, mavi/siyah enkoder beslemesi). Belirleyici olan kablo sayısı ve arkadaki küçük kart.</figcaption>
+  </figure>
+
+  <h3>Alışveriş listesi</h3>
+  <div class="tbl"><table>
+    <tr><th>Parça</th><th>Adet</th><th>Seçenekler / nereden</th></tr>
+    <tr><td>Enkoderli dişli DC motor, 12 V</td><td class="num">2</td><td>
+      <b>A</b>, ilk tercih: JGA25-370, enkoderli, 1:34 ya da 1:45. Online Türk mağazalarında enkoderli sürümü yok; Karaköy'de aranacak.<br>
+      <b>B</b>, online yedek: <a href="https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor">JGB37-520 12 V 1:30, direnc.net, 639 TL</a> (<a href="https://pdf.direnc.net/upload/jgb37-520-datasheet.pdf">veri sayfası</a>: nominal 3,5 kg·cm @ 1 A, durma 5 kg·cm / 2,3 A). Rotoru büyük; \(\omega_c \approx 35\) rad/s ile çalışılacak.<br>
+      <b>C</b>: <a href="https://market.samm.com/en/l-tipi-enkoderli-metal-disli-dc-motor">SAMM L tipi, 1:42</a>, ≈ 826 TL, 18 Ekim'de stokta yok.</td></tr>
+    <tr><td>Motor sürücü TB6612FNG</td><td class="num">1</td><td><a href="https://www.direnc.net/tb6612fng-dc-ve-step-motor-surucu-modulu">direnc.net</a> · <a href="https://www.robotistan.com/tb6612fng-stepper-motor-dc-motor-driver">robotistan</a> · <a href="https://www.robolinkmarket.com/motor-surucu-1a-cift-dc-tb6612fng">robolinkmarket</a>. STBY pini HIGH olmalı. L298N almayın.</td></tr>
+    <tr><td>ESP32 geliştirme kartı</td><td class="num">1</td><td>ESP32-WROOM-32 DevKit, pinleri lehimli. CP2102 ya da CH340 USB çipi olabilir.</td></tr>
+    <tr><td>AS5600 + diametral mıknatıs</td><td class="num">2</td><td><a href="https://www.ciceksepeti.com/as5600-manyetik-aci-sensoru-olcum-modulu-12-bit-temassiz-pozisyon-kcm45524464">Çiçeksepeti (ALKATRONİK), ≈ 258 TL</a>. Mıknatısla gelmeli (6×2,5 mm diametral); normal mıknatıs çalışmaz.</td></tr>
+    <tr><td>INA219</td><td class="num">1</td><td><a href="https://www.direnc.net/ina129-cift-yonlu-akim-sensor-modulu-en">direnc.net</a>. AS5600 ile aynı I²C hattı (adresler 0x36 ve 0x40, çakışma yok).</td></tr>
+    <tr><td>12 V adaptör, ≥ 2 A</td><td class="num">1</td><td>DC jak + jak→klemens adaptörü.</td></tr>
+    <tr><td>Breadboard + jumper</td><td class="num">1</td><td>830 delik; E-E, E-D, D-D kablolar. Motor soketi için gerekirse PH2.0 6 pin kablo.</td></tr>
+    <tr><td>Rulman</td><td class="num">2</td><td>İç çapı kol miliyle aynı (ör. 4 mm 684ZZ ya da 8 mm 608ZZ).</td></tr>
+    <tr><td>Kol mili</td><td class="num">1</td><td>8–10 cm çelik/alüminyum çubuk, rulman iç çapında.</td></tr>
+    <tr><td>Kol ve ağırlıklar</td><td class="num">1</td><td>15 cm alüminyum lama (≈ 15×2 mm); uç ağırlığı için M5–M6 somun/pul (≈ 20 g'dan başla).</td></tr>
+    <tr><td>Vida takımı</td><td class="num">1</td><td>M3 vida, somun, pul (motor flanşı M3).</td></tr>
+    <tr><td>Gövde + kaplin</td><td class="num">—</td><td>3B baskı (kendi/okul yazıcısı ya da baskı servisi). Olmazsa alüminyum köşebent + sabit metal kaplin.</td></tr>
+  </table></div>
+  <div class="note"><b>Mağazada</b>Motorda 6 kablo, 12 V'ta 120–330 rpm, metal dişli, D biçimli mil arayın. Model numarasının ve etiketin fotoğrafını çekin, mil çapını öğrenin (kaplin tasarımı buna göre). AS5600'ün mıknatısla gelip gelmediğini sorun. Ayrıntılı liste: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</div>
 </section>
 
 <section id="yayin">
