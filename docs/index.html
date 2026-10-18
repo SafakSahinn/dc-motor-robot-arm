@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Robot Kol Araştırma Defteri</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Düzen: solda yapışkan bölüm listesi, sağda araştırma kartları; her kartta durum etiketi (yapıldı / açık / karar bekliyor); telefonda tek sütun */
+:root{
+  --bg:#f4f6f5; --paper:#ffffff; --ink:#18231f; --muted:#5b6a64; --line:#d8e1dd;
+  --accent:#2d6a5a; --accent-soft:#e2efea; --warn:#9a5b12; --warn-soft:#f8eddc; --todo:#2f5a8a; --todo-soft:#e3ecf7;
+  --gap-band:#f1e3cf;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", Consolas, "Courier New", monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#101715; --paper:#17211e; --ink:#e2ebe7; --muted:#9aaba4; --line:#29372f;
+  --accent:#7fcbb4; --accent-soft:#1b322b; --warn:#e9b56f; --warn-soft:#352816; --todo:#8db7e6; --todo-soft:#1b2a3c;
+  --gap-band:#3a2c18; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#101715; --paper:#17211e; --ink:#e2ebe7; --muted:#9aaba4; --line:#29372f;
+  --accent:#7fcbb4; --accent-soft:#1b322b; --warn:#e9b56f; --warn-soft:#352816; --todo:#8db7e6; --todo-soft:#1b2a3c;
+  --gap-band:#3a2c18; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--ink); font:17px/1.6 var(--body); margin:0}
+.wrap{max-width:1120px; margin:0 auto; padding-inline:20px; padding-block:32px 64px;
+  display:grid; grid-template-columns:210px minmax(0,1fr); gap:40px}
+nav{position:sticky; top:calc(env(safe-area-inset-top,0px) + 24px); align-self:start;
+  display:flex; flex-direction:column; gap:4px; font-size:15px}
+nav a{color:var(--muted); text-decoration:none; padding:6px 10px; border-radius:6px}
+nav a:hover,nav a:focus-visible{background:var(--accent-soft); color:var(--accent); outline:none}
+nav .lbl{font:500 11px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--muted); padding:0 10px 6px}
+main{min-width:0; display:flex; flex-direction:column; gap:28px}
+header h1{font:700 clamp(30px,5vw,44px)/1.1 var(--display); margin:0 0 10px; text-wrap:balance}
+header p{color:var(--muted); margin:0; max-width:64ch}
+.meta{display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; font:500 12px var(--mono)}
+.meta span{border:1px solid var(--line); border-radius:999px; padding:4px 12px; color:var(--muted)}
+h2{font:700 26px/1.2 var(--display); margin:0; text-wrap:balance}
+h3{font:600 13px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--muted); margin:18px 0 8px}
+.top{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px}
+.kicker{font:500 12px var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+.pill{font:500 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; border-radius:999px; padding:3px 10px}
+.pill.done{background:var(--accent-soft); color:var(--accent)}
+.pill.open{background:var(--warn-soft); color:var(--warn)}
+.pill.next{background:var(--todo-soft); color:var(--todo)}
+section{background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:24px 26px; scroll-margin-top:20px}
+section p{max-width:70ch; margin:8px 0 0}
+ul.plain{margin:6px 0 0; padding-left:1.2em; display:flex; flex-direction:column; gap:4px; max-width:72ch}
+.tbl{overflow-x:auto; margin-top:8px}
+table{border-collapse:collapse; width:100%; font-size:15.5px}
+th,td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px solid var(--line)}
+th{font:500 12px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+td:first-child{font-weight:600}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+a{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.gaps{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:12px}
+.gap{border:1px solid var(--line); border-radius:8px; padding:16px; display:flex; flex-direction:column; gap:8px; min-width:0}
+.gap .id{font:700 28px/1 var(--display); color:var(--accent)}
+.gap h4{margin:0; font:600 17px/1.3 var(--body)}
+.gap p{margin:0; font-size:15.5px}
+.gap .need{font-size:14px; color:var(--muted); border-top:1px dashed var(--line); padding-top:8px; margin-top:auto}
+.gap.chosen{border-color:var(--accent); background:var(--accent-soft)}
+.note{margin-top:16px; background:var(--warn-soft); border-radius:8px; padding:12px 16px; max-width:74ch}
+.note b{color:var(--warn); font:500 12px var(--mono); letter-spacing:.07em; text-transform:uppercase; display:block; margin-bottom:2px}
+.note.ok{background:var(--accent-soft)}
+.note.ok b{color:var(--accent)}
+.figs{display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin-top:12px}
+figure{margin:0; min-width:0}
+figure img{display:block; max-width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#fff}
+figcaption{font-size:14px; color:var(--muted); margin-top:6px}
+.q{margin-top:14px; border-left:3px solid var(--todo); padding:4px 0 4px 14px; max-width:70ch}
+.thesis{font:600 19px/1.45 var(--body); margin:10px 0 0; max-width:62ch}
+.plot{border:1px solid var(--line); border-radius:8px; background:var(--paper); display:block; width:100%; height:auto; max-width:100%}
+.plot .axis{stroke:var(--muted); stroke-width:1}
+.plot .zero{stroke:var(--ink); stroke-width:1.2; stroke-dasharray:4 3}
+.plot .band{fill:var(--gap-band)}
+.plot .curve{fill:none; stroke:var(--accent); stroke-width:2.2}
+.plot .mean{stroke:var(--todo); stroke-width:1.2; stroke-dasharray:2 3}
+.plot text{fill:var(--muted); font:12px var(--mono)}
+.plot .hit{fill:var(--warn)}
+details{margin-top:12px; border-top:1px solid var(--line); padding-top:10px}
+summary{cursor:pointer; font:500 13px var(--mono); letter-spacing:.05em; color:var(--accent)}
+summary:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.stats{display:flex; flex-wrap:wrap; gap:10px; margin-top:12px}
+.stat{border:1px solid var(--line); border-radius:8px; padding:10px 14px; min-width:120px}
+.stat b{display:block; font:700 24px/1.1 var(--display); color:var(--accent); font-variant-numeric:tabular-nums}
+.stat span{font-size:13.5px; color:var(--muted)}
+.phase{font:600 13px var(--mono); letter-spacing:.07em; text-transform:uppercase; color:var(--accent);
+  margin:26px 0 10px; padding-bottom:6px; border-bottom:1px solid var(--line)}
+ol.log{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; counter-reset:adim}
+ol.log > li{counter-increment:adim; display:grid; grid-template-columns:44px minmax(0,1fr); gap:12px}
+ol.log > li::before{content:counter(adim); font:700 22px/1 var(--display); color:var(--accent);
+  border:1px solid var(--line); border-radius:8px; height:40px; display:flex; align-items:center; justify-content:center}
+.step{min-width:0; border:1px solid var(--line); border-radius:8px; padding:14px 16px}
+.step h4{margin:0; font:600 17px/1.3 var(--body); text-wrap:balance}
+.step .when{font:500 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.step dl{margin:10px 0 0; display:grid; grid-template-columns:110px minmax(0,1fr); gap:6px 12px; font-size:15.5px}
+.step dt{font:500 12px var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted); padding-top:3px}
+.step dd{margin:0; min-width:0}
+.step dd.link{color:var(--todo)}
+.step figure{margin-top:12px}
+@media (max-width:560px){ .step dl{grid-template-columns:minmax(0,1fr)} .step dt{padding-top:6px} ol.log > li{grid-template-columns:minmax(0,1fr)} ol.log > li::before{width:40px} }
+mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
+@media (max-width:760px){
+  .wrap{grid-template-columns:minmax(0,1fr); gap:20px; padding-inline:16px}
+  nav{position:static; flex-direction:row; flex-wrap:wrap}
+  nav .lbl{width:100%}
+  section{padding:18px 16px}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<nav aria-label="Bölümler">
+  <div class="lbl">Bölümler</div>
+  <a href="#hedef">Hedef</a>
+  <a href="#baslangic">Başlangıç noktası</a>
+  <a href="#gunluk">Araştırma günlüğü</a>
+  <a href="#yon">Seçilen yön</a>
+  <a href="#hipotez">Hipotez</a>
+  <a href="#tarama">Literatür taraması</a>
+  <a href="#rakipler">En yakın çalışmalar</a>
+  <a href="#deney">Deney planı</a>
+  <a href="#donanim">Gerçek donanım</a>
+  <a href="#malzeme">Malzeme</a>
+  <a href="#yayin">Yayın</a>
+  <a href="#siradaki">Sıradaki adım</a>
+</nav>
+
+<main>
+<header>
+  <div class="kicker">Modelden fiziksel düzeneğe</div>
+  <h1>Robot kol araştırma defteri</h1>
+  <p>DC motorlu tek eklemli robot kolunu literatüre bakarak yayına dönüşebilecek bir çalışmaya ve fiziksel bir düzeneğe çevirme çalışması.</p>
+  <div class="meta"><span>Başlangıç: 17 Ekim 2026</span><span>Güncelleme: 18 Ekim 2026</span><span>Durum: simülasyon tamam, malzeme kararı verildi</span><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
+</header>
+
+<section id="hedef">
+  <div class="top"><div class="kicker">Amaç</div><span class="pill done">Netleşti</span></div>
+  <h2>Ne yapmak istiyoruz?</h2>
+  <ul class="plain">
+    <li>Yayına dönüşebilecek bir çalışma: literatürde açık bulup onu doldurmak.</li>
+    <li>Kolu fiziksel olarak yapıp sonuçları deneyle doğrulamak.</li>
+    <li>Malzemeyi seçilen yöne göre almak.</li>
+  </ul>
+</section>
+
+<section id="baslangic">
+  <div class="top"><div class="kicker">Temel model</div><span class="pill done">Yapıldı</span></div>
+  <h2>Başlangıç noktamız</h2>
+  <p>Önce kolun doğrusal olmayan durum uzayı modelini kurduk ve simülasyonla inceledik. Tek eklemli: tek dönme ekseni (omuz), dirsek yok.</p>
+  <div class="tbl"><table>
+    <tr><th>Konu</th><th>Temel modeldeki hali</th></tr>
+    <tr><td>Durumlar</td><td>\(x_1 = \theta\) (dik aşağıdan), \(x_2 = \omega\), \(x_3 = i\). Giriş \(u = V\), çıkış \(y = \theta\).</td></tr>
+    <tr><td>Model</td><td>\(\dot x_1 = x_2\), \(\dot x_2 = 0.952x_3 - 9.52x_2 - 4.67\sin x_1\), \(\dot x_3 = 2u - 2x_3 - 0.02x_2\)</td></tr>
+    <tr><td>Motor değerleri</td><td>CTMS "DC Motor Speed" örneği. Dişli kutusu yok.</td></tr>
+    <tr><td>Kol</td><td>\(m = 0.05\) kg, \(\ell = 0.1\) m</td></tr>
+    <tr><td>Çalışma noktası</td><td>90° (yatay), \(u = 4.905\) V. Özdeğerler \(0,\ -9.52,\ -2.00\).</td></tr>
+    <tr><td>Açık çevrim</td><td>80° → 87.2°, 90° kalıyor, 100° → tam tur. Kolu tutmak için geri besleme gerekiyor.</td></tr>
+  </table></div>
+  <div class="figs">
+    <figure><img src="img/model_sema.png" alt="Motor devresi ve kol şeması"><figcaption>Temel modelin fiziksel şeması.</figcaption></figure>
+    <figure><img src="img/model_animasyon.gif" alt="Kolun açık çevrim animasyonu"><figcaption>Açık çevrim: 80°, 90°, 100° başlangıcı.</figcaption></figure>
+  </div>
+</section>
+
+<section id="gunluk">
+  <div class="top"><div class="kicker">17–18 Ekim · adım adım</div><span class="pill done">Güncel</span></div>
+  <h2>Araştırma günlüğü</h2>
+  <p>Yaptığımız her adım sırasıyla: neden yaptık, ne yaptık, ne bulduk, bulduğumuzu nereye bağladık. Ayrıntılı notlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>literatur/okuma_notlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/ieee_disi/tarama_ozeti_2026-10-18.md"><code>literatur/ieee_disi/tarama_ozeti_2026-10-18.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/sonuclar_2026-10-18.md"><code>simulasyon/sonuclar_2026-10-18.md</code></a>.</p>
+
+  <div class="phase">I. Yön arayışı</div>
+  <ol class="log">
+    <li><div class="step">
+      <div class="when">17 Ekim</div>
+      <h4>Başlangıç: temel model</h4>
+      <dl>
+        <dt>Neden</dt><dd>Modelini kurduğumuz tek eklemli, DC motorlu kolu fiziksel bir düzeneğe ve yayına dönüşebilecek bir araştırmaya taşımak.</dd>
+        <dt>Ne yaptık</dt><dd>Kolun doğrusal olmayan durum uzayı modelini ve 90° çalışma noktası analizini başlangıç kabul ettik. Modelde dişli kutusu yoktu.</dd>
+        <dt>Sonuç</dt><dd>"Kolu PID ile 90°'de tut" tek başına yeni bir çalışma değil; literatürde bir açık bulmamız gerekiyordu.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 2: literatürde açık arama.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">17 Ekim</div>
+      <h4>İlk web taraması ve üç aday yön</h4>
+      <dl>
+        <dt>Neden</dt><dd>Hangi konuların doymuş, hangilerinin açık olduğunu kabaca görmek.</dd>
+        <dt>Ne yaptık</dt><dd>Kontrolcü karşılaştırmaları, yerçekimi telafisi, ucuz motor kusurları ve eğitim düzenekleri üzerine web araması.</dd>
+        <dt>Sonuç</dt><dd>Üç aday: (A) ucuz donanımda modelin sınırı, (B) yük değişince yerçekimi telafisi, (C) boşluk + sürtünme için gözlemci. Deneysel çalışmalar çoğunlukla esnek kol, çok eklemli kol ya da pahalı düzeneklerde.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 3: web araması yetersiz, IEEE'de sistematik tarama.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>IEEE Xplore taraması ve aday boşluk</h4>
+      <dl>
+        <dt>Neden</dt><dd>"Bulamadık" demenin "boşluk var" demek olmadığını sınamak.</dd>
+        <dt>Ne yaptık</dt><dd>26 sorgu, 130 sonuç listelendi, 23 PDF indirildi. Önce boşluk tanılama ve gözlemciyle boşluk telafisi kontrol edildi.</dd>
+        <dt>Sonuç</dt><dd>Tanılama ve gözlemciyle telafi zaten yapılmış. Ama hiçbir çalışma yerçekiminin açıya bağlı ön yükünü incelemiyor: 90°'de dişli bastırılı, 0° ve 180°'de boşta.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ C yönü yerçekimine odaklanarak daraltıldı; Adım 4: IEEE dışında da doğrulama.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>IEEE dışı tarama ve ileriye atıf taraması</h4>
+      <dl>
+        <dt>Neden</dt><dd>Springer, Elsevier gibi yayınevlerinde aynı fikir yayımlanmış olabilir.</dd>
+        <dt>Ne yaptık</dt><dd>Scopus ve Web of Science kampüs dışında açılmadığı için OpenAlex ile başlık+özet araması. En yakın makalelere atıf yapan bütün çalışmalar tarandı (Wang 2024'e 11, Nordin–Gutman anketine 497 atıf).</dd>
+        <dt>Sonuç</dt><dd>"Boşluk + yerçekimi + tanımlama fonksiyonu": 0 sonuç. "Boşluk + yerçekimi + robot/kol/eklem/sarkaç": 32 sonuç, hiçbiri konumuzda değil. Boşluk ayakta.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 5: tam metinleri alıp okumak.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Kurumsal erişim</h4>
+      <dl>
+        <dt>Neden</dt><dd>Özetler yetmez; rakiplerin modelinde yerçekimi olup olmadığı ancak tam metinde görülür.</dd>
+        <dt>Ne yaptık</dt><dd>Okul girişiyle bütün kaynakları sırayla denedik.</dd>
+        <dt>Sonuç</dt><dd>Springer, IEEE ve Taylor &amp; Francis açıldı. ScienceDirect (hata ID-702), Scopus (yalnız önizleme) ve Web of Science (Shibboleth hatası 90011) açılmadı; okul tarafında bir ayar sorunu.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 6. Nordin–Gutman anketi kampüste alınacak.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Derin okuma (32 makale) ve hipotez düzeltmesi</h4>
+      <dl>
+        <dt>Neden</dt><dd>En yakın çalışmaları tam olarak anlamak, katkımızı kesinleştirmek.</dd>
+        <dt>Ne yaptık</dt><dd>İndirilen 31 IEEE ve 1 Springer makalesinin hepsi okundu; her biri için not yazıldı.</dd>
+        <dt>Sonuç</dt><dd>
+          <ul class="plain">
+            <li>Sun ve ark. 2023: düşey düzlemde salınan kol, modelde \(M_L\sin\theta_L\) var; 90°'de (yerçekimi en büyükken) yüksek kazançta 5° salınım görmüşler. → "90°'de salınım olmaz" koşulsuz doğru değil.</li>
+            <li>Padron ve ark. 2022: boşluk iletilen torkun sıfırdan geçtiği anda devreye girer. → Hipotezin tek cümlesi.</li>
+            <li>Esbrook ve ark. 2014: yerçekimsiz sistemde çalışma noktası limit cycle'ı etkilemez. → Bizim iddiamız bunun yerçekimli karşı-örneği.</li>
+            <li>Ahmad 1985, Karim 2018: "yerçekimi ön yük gibi davranır" fikri statik olarak biliniyor. → Katkımız kapalı çevrim kararlılığı, nicel harita ve gözlemci.</li>
+          </ul>
+        </dd>
+        <dt>Bağlantı</dt><dd class="link">→ Harita tek eksenli değil, (açı, kazanç) düzleminde olmalı. Adım 7: para harcamadan önce simülasyonla sınamak.</dd>
+      </dl>
+    </div></li>
+  </ol>
+
+  <div class="phase">II. Simülasyon (MATLAB)</div>
+  <ol class="log" style="counter-reset:adim 6">
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Model kurulumu</h4>
+      <dl>
+        <dt>Neden</dt><dd>Malzeme almadan önce etkinin gerçekten var olup olmadığını ve ölçülebilir olup olmadığını görmek; malzeme kararını buna dayandırmak.</dd>
+        <dt>Ne yaptık</dt><dd>İki kütleli model: motor ve kol, arada dişli sertliği \(K_s\) ve boşluk (ölü bölge). Kolda \(mg\ell\sin\theta\). Kol açısı üzerinden PID; integral şart, çünkü yerçekimini o taşıyor. Parametreler JGA25-370 sınıfı motor ve 15 cm kol için tahmin (\(K_s = 10\) N·m/rad, boşluk 1,5°, 50 g uç). Yüzlerce benzetimi aynı anda çözen vektörel RK4 yazıldı.</dd>
+        <dt>Sonuç</dt><dd>Taranabilir bir model: açı ve kapalı çevrim hızı \(\omega_c\) değiştirilip salınım genliği ve dişlinin kenar değiştirme sayısı ölçülüyor.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 8: ilk deneme.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>İlk deneme: kararsızlık teşhisi</h4>
+      <dl>
+        <dt>Neden</dt><dd>Her açıda aynı 5° genlik ve 17,7 Hz frekans çıktı; bu boşluk etkisi olamazdı.</dd>
+        <dt>Ne yaptık</dt><dd>Boşluğu sıfırlayıp döngünün kendisini denedik; türev terimini kol hızından ve motor hızından alarak karşılaştırdık.</dd>
+        <dt>Sonuç</dt><dd>Türev kol hızından alınınca boşluk olmasa bile \(\omega_c \ge 20\) rad/s'de döngü kararsız (dişli rezonansı ≈ 18,7 Hz). Motor hızından alınınca 60 rad/s'ye kadar kararlı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Tasarım kararı: sönüm motor enkoderinden, konum kol sensöründen (Fischer–Tomizuka 1996 ve Wang 2017 ile uyumlu). İki sensör gerekliliğinin ilk gerekçesi.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Hipotez testi: beş açı</h4>
+      <dl>
+        <dt>Neden</dt><dd>Hipotezin en basit hâli benzetimde görülüyor mu?</dd>
+        <dt>Ne yaptık</dt><dd>\(\omega_c = 20\) rad/s'de 0°, 45°, 90°, 135°, 180°.</dd>
+        <dt>Sonuç</dt><dd>0° ve 180°'de yaklaşık 1,1–1,2° sürekli salınım; dişli zamanın %76–81'ini boşlukta geçiriyor. 45°, 90°, 135°'de salınım yok; 90°'de iletilen tork sabit 0,088 N·m (= \(mg\ell\)), dişli hep bastırılı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 10: tam harita.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>İlk harita (ideal model)</h4>
+      <dl>
+        <dt>Neden</dt><dd>Açı ve kazanç birlikte değişince sınırın biçimini görmek.</dd>
+        <dt>Ne yaptık</dt><dd>Açı 0–180° (5°), \(\omega_c\) 5–50 rad/s; sonradan iki başlangıç koşuluyla (hedefin 1° ve 20° altı) tekrar.</dd>
+        <dt>Sonuç</dt><dd>
+          <ul class="plain">
+            <li>Salınımsız bölge 90° etrafında bir "dil"; kazanç arttıkça daralıyor (\(\omega_c = 50\)'de bile 85–95° salınımsız).</li>
+            <li>Sınırda başlangıca bağlı bir şerit var: aynı parametrelerde hem durgun denge hem salınım mümkün.</li>
+            <li>180° tarafı daha erken salınıyor: dikte yerçekimi kararsızlaştırıcı, aşağıda dengeleyici yay gibi.</li>
+            <li>"Yerçekimi torku 0°'daki salınım torkunu aşınca salınım biter" diye kurduğum basit eşik öngörüsü yanlış çıktı.</li>
+          </ul>
+        </dd>
+        <dt>Bağlantı</dt><dd class="link">→ Basit eşik yetmiyor; kaymalı tanımlama fonksiyonu analizine gerekçe. Adım 11: model gerçekçi değil.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Gerçekçi model</h4>
+      <dl>
+        <dt>Neden</dt><dd>Gerçek düzenekte sürtünme, sensör basamakları, ayrık kontrol ve sürücü ölü bandı olacak; bunlar sonucu silebilir.</dd>
+        <dt>Ne yaptık</dt><dd>Üç seviye: ideal, + Coulomb/yapışma sürtünmesi, + AS5600 (12 bit) ve enkoder nicemlemesi, 1 kHz kontrol, 50 Hz hız filtresi, sürücü ölü bandı. Sınıflar: dişli bastırılı salınım / tek kenarlı boşluk salınımı / iki kenarlı boşluk salınımı.</dd>
+        <dt>Sonuç</dt><dd>
+          <ul class="plain">
+            <li>Sürtünme her açıda yaklaşık ±0,5°'lik yavaş yapış-kay salınımı yaratıyor, ama dişli bastırılı kalıyor.</li>
+            <li>Boşluk salınımı yine 0° ve 180° civarında; sürtünme/nicemleme salınımı açıdan bağımsız. Ayrım gerçekçi modelde de korunuyor.</li>
+          </ul>
+        </dd>
+        <dt>Bağlantı</dt><dd class="link">→ Kol açısının genliği tek başına yetmez; ayırt edici ölçüm \(\theta_d\) (motor açısı/N − kol açısı). AS5600'ün zorunlu olmasının ikinci gerekçesi.</dd>
+      </dl>
+      <figure><img src="img/sim_tek_deneme.png" alt="Üç model seviyesinde beş açıda kol açısı ve boşluk içindeki konum"><figcaption>\(\omega_c = 20\): üstte ideal, ortada sürtünmeli, altta gerçekçi. Sağ sütun dişlinin boşluk içindeki konumu (kesikli çizgiler temas sınırları).</figcaption></figure>
+      <figure><img src="img/sim_harita.png" alt="Üç panelli salınım haritası"><figcaption>Açı × kapalı çevrim hızı haritası, üç seviye. Kırmızı: iki kenarlı boşluk salınımı; mavi: dişli bastırılı (sürtünme/nicemleme) salınım.</figcaption></figure>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>İnce tarama (1° adım)</h4>
+      <dl>
+        <dt>Neden</dt><dd>5°'lik ızgara, gerçekçi modelde daralan bandı çözemiyordu.</dd>
+        <dt>Ne yaptık</dt><dd>0–30° ve 150–180°, 1° adım.</dd>
+        <dt>Sonuç</dt><dd>Gerçekçi modelde \(\omega_c \le 40\)'ta boşluk salınımı yalnızca 0–3° ve 174–180°'de; \(\omega_c = 45\)'te 0–13°, 50'de 0–29°.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Bu parametrelerle bant dar. Adım 13: bandı genişletecek düğmeyi bulmak.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Parametre duyarlılığı</h4>
+      <dl>
+        <dt>Neden</dt><dd>Deneyde etkinin net görülmesi için neyi değiştirmeliyiz?</dd>
+        <dt>Ne yaptık</dt><dd>Boşluk (0,5–5°), dişli sertliği (3–30 N·m/rad), uç kütlesi (0–100 g) birer birer değiştirildi; her durumda doğrusal kararlılık ayrıca kontrol edildi.</dd>
+        <dt>Sonuç</dt><dd>
+          <ul class="plain">
+            <li>En güçlü düğme boşluk genişliği: \(\omega_c = 35\)'te bant 1,5° → 6°, 3° → 9°, 5° → 22°; \(\omega_c = 45\)'te 3° ve üstü bütün aralık.</li>
+            <li>Uç kütlesinin etkisi tek yönlü değil: hafif kol yerçekimini azaltıyor ama dişli rezonansını yükseltiyor.</li>
+          </ul>
+        </dd>
+        <dt>Bağlantı</dt><dd class="link">→ Deney düğmesi: ayarlanabilir boşluklu kaplin. İkinci boyutsuz sayı ortaya çıktı: \(r_s = \omega_c/\omega_{rez}\).</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Motor yeterliliği</h4>
+      <dl>
+        <dt>Neden</dt><dd>Modelde en büyük torku 0,6 N·m kabul etmiştim; JGA25-370 1:34'ün tedarikçi değeri yaklaşık 0,41 N·m durma torku. Sürekli güvenli tork bunun yaklaşık 1/4–1/3'ü.</dd>
+        <dt>Ne yaptık</dt><dd>Tork sınırı 0,41 N·m ile hedef bölgede tepe tork, RMS tork (ısınma) ve doyum süresi ölçüldü.</dd>
+        <dt>Sonuç</dt><dd>50 g uç, 3° boşluk, \(\omega_c = 45\): RMS 0,22 N·m, doyumda; ısınır. 20 g uçta RMS 0,12, tepe 0,25; rahat.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Motor: JGA25-370 1:34 ya da 1:45. Kol: yaklaşık 20 g uç. Daha yüksek oran motor eylemsizliğini şişirip kol tarafını maskeler.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Boyutsuz harita</h4>
+      <dl>
+        <dt>Neden</dt><dd>Sonuç bizim düzeneğe mi özel, yoksa genel bir kural mı?</dd>
+        <dt>Ne yaptık</dt><dd>24 düzenek (uç kütlesi × boşluk × dişli sertliği); her nokta \(\gamma = mg\ell\sin\theta_0/(K_s r)\) ve \(r_s = \omega_c/\omega_{rez}\) düzlemine işlendi. Her düzenek için salınım bandının bittiği \(\gamma\) bulundu. Önce ideal, sonra gerçekçi model.</dd>
+        <dt>Sonuç</dt><dd>
+          <ul class="plain">
+            <li>İdeal modelde sınır noktaları dar bir şeritte toplanıyor (düzenekler arası 2–3 kat; \(\gamma\) ekseninde 100 katlık aralığa karşı). Yaklaşık ölçekleme yasası: \(\gamma_{sınır} \approx 3\,r_s^3\).</li>
+            <li>Gerçekçi modelde \(r_s \approx 0{,}23\)–\(0{,}38\)'de yasa sürüyor (idealin 0,7–0,85 katı, dağılım ~5 kat). \(r_s \le 0{,}18\)'de sürtünme baskın.</li>
+          </ul>
+        </dd>
+        <dt>Bağlantı</dt><dd class="link">→ Deney hedef bölgesi \(r_s \approx 0{,}25\)–\(0{,}40\) (\(\omega_c \approx 30\)–60 rad/s). Kaymalı tanımlama fonksiyonu \(r_s^3\) ilişkisini öngörebilirse makalenin analitik çekirdeği olur.</dd>
+      </dl>
+      <div class="figs">
+        <figure><img src="img/sim_boyutsuz_sinir_ideal.png" alt="İdeal modelde boyutsuz sınır eğrileri"><figcaption>İdeal model: 24 düzeneğin sınır eğrileri. Dikey çizgiler sınıra ulaşmayan (90°'ye kadar salınan) düzenekler.</figcaption></figure>
+        <figure><img src="img/sim_boyutsuz_sinir_gercekci.png" alt="Gerçekçi modelde boyutsuz sınır eğrileri"><figcaption>Gerçekçi model: orta–yüksek \(r_s\)'de aynı şerit; düşük \(r_s\)'de sürtünme kaynaklı dağılım.</figcaption></figure>
+      </div>
+    </div></li>
+  </ol>
+
+  <div class="phase">III. Karar</div>
+  <ol class="log" style="counter-reset:adim 15">
+    <li><div class="step">
+      <div class="when">18 Ekim</div>
+      <h4>Malzeme kararı</h4>
+      <dl>
+        <dt>Neden</dt><dd>Simülasyon hem yönü doğruladı hem de malzeme seçimini belirledi.</dd>
+        <dt>Ne yaptık</dt><dd>Bulguları parça parça listeye çevirdik (aşağıda Malzeme bölümü).</dd>
+        <dt>Sonuç</dt><dd>Sipariş verilebilir. Tek belirsizlik motorun kesin değerleri; satıcının veri sayfası kontrol edilecek.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Kaymalı tanımlama fonksiyonu türetimi yalnız makale için; malzemeyi etkilemiyor, sipariş beklenirken yapılacak.</dd>
+      </dl>
+    </div></li>
+  </ol>
+</section>
+
+<section id="yon">
+  <div class="top"><div class="kicker">17 Ekim adayları → 18 Ekim seçimi</div><span class="pill done">Seçildi</span></div>
+  <h2>Seçilen yön</h2>
+  <p>17 Ekim'de üç aday yön çıkarmıştık. Derin tarama sonunda C yönünü, yerçekimine odaklanarak daralttık.</p>
+  <div class="gaps">
+    <div class="gap">
+      <div class="id">A</div>
+      <h4>Ucuz donanımda model ne kadar tutuyor?</h4>
+      <p>Dişli, boşluk, sürtünme, PWM ve enkoder çözünürlüğünün etkisini adım adım ölçmek.</p>
+      <div class="need">Tek başına yayın için zayıf; deney planının bir parçası olarak kaldı. 17 Ekim'de yazdığımız "90° özel, kusurlar en çok orada etkili" iddiası boşluk için yanlıştı: 90°'de yerçekimi dişliyi bastırdığı için boşluk en az orada etkili olmalı.</div>
+    </div>
+    <div class="gap">
+      <div class="id">B</div>
+      <h4>Yük değişince yerçekimi telafisi</h4>
+      <p>Uçtaki kütleyi enkoder ve akımdan kestirip telafi etmek.</p>
+      <div class="need">Seçilmedi. Takılıp çıkarılan ağırlıklar deneyde yine kullanılacak: yerçekimi torkunu açıdan bağımsız değiştirmenin yolu.</div>
+    </div>
+    <div class="gap chosen">
+      <div class="id">C</div>
+      <h4>Boşluk, gözlemci ve yerçekimi</h4>
+      <p>Dişli boşluğunun ürettiği sürekli salınımın (limit cycle) kol açısına nasıl bağlı olduğunu incelemek; buna göre ayarlanan bir gözlemci önermek.</p>
+      <div class="need">Seçilen yön. Gerekli: iki açı sensörü (motor ve kol mili), akım sensörü, hızlı döngü.</div>
+    </div>
+  </div>
+</section>
+
+<section id="hipotez">
+  <div class="top"><div class="kicker">18 Ekim · düzeltilmiş</div><span class="pill open">Simülasyonla sınanacak</span></div>
+  <h2>Hipotez</h2>
+  <p class="thesis">Dişli boşluğu, iletilen tork sıfırdan geçtiği anda devreye girer. Kolda bu tork, sabit yerçekimi torku \(mg\ell\sin\theta_0\) ile salınımlı dinamik torkun toplamıdır. Yerçekimi bu sıfır geçişlerini açıya göre engeller ya da serbest bırakır.</p>
+  <div class="figs">
+    <figure>
+      <svg class="plot" id="p0" viewBox="0 0 320 160" role="img" aria-label="Kol 0 derece civarında: iletilen tork sıfır çizgisini her periyotta iki kez kesiyor"></svg>
+      <figcaption>\(\theta_0 \approx 0°\) ya da \(180°\): yerçekimi torku sıfır, tork her periyotta sıfırdan geçer, dişli boşluğa düşer (turuncu noktalar).</figcaption>
+    </figure>
+    <figure>
+      <svg class="plot" id="p90" viewBox="0 0 320 160" role="img" aria-label="Kol 90 derecede: iletilen tork yerçekimi ile yukarı kaymış, sıfır çizgisine hiç inmiyor"></svg>
+      <figcaption>\(\theta_0 = 90°\): yerçekimi torku en büyük. Dinamik genlik ondan küçükse tork hiç sıfıra inmez, dişli hep aynı kenarda kalır.</figcaption>
+    </figure>
+  </div>
+  <div class="note"><b>17 Ekim'e göre düzeltme</b>"90°'de limit cycle olmaz" koşulsuz doğru değil. Sun ve ark. (2023), yerçekimi en büyükken (90°) bile yüksek kazançta 5° genlikli salınım gördü: dinamik tork yerçekimi torkunu aşınca dişli yine boşluğa düşüyor. Bu yüzden harita tek eksenli olamaz.</div>
+  <div class="note ok"><b>Simülasyonda görüldü (18 Ekim)</b>Gerçekçi modelde (sürtünme, nicemleme, 1 kHz kontrol) boşluk salınımı 0° ve 180° civarında toplanıyor, sürtünme salınımı açıdan bağımsız. 24 farklı düzenek boyutsuz düzlemde aynı şeride düşüyor; ideal modelde yaklaşık \(\gamma_{sınır} \approx 3\,r_s^3\). Ayrıntı: Araştırma günlüğü, adım 7–15.</div>
+  <h3>Çıkarılacak harita</h3>
+  <p>(çalışma açısı \(\theta_0\), konum kazancı \(K_p\)) ya da (\(\theta_0\), gözlemci bant genişliği) düzleminde "limit cycle var / yok" bölgeleri. Yerçekiminin etkisi, bu sınır eğrisinin açıyla nasıl kaydığıdır. Doğal boyutsuz eksen:</p>
+  <p>\(\gamma = \dfrac{mg\ell\sin\theta_0}{K_s\,r}\) &nbsp;(yerçekimi torku / boşluğu kapatan yay torku; \(K_s\) dişli sertliği, \(r\) boşluk yarı genişliği)</p>
+  <h3>Katkı</h3>
+  <ul class="plain">
+    <li>Yerçekimsiz sistemde sabit referans limit cycle'ı yalnızca kaydırır (Esbrook ve ark. 2014, Önerme 2). Yerçekimli kolda bu geçersiz; bunu analitik ve deneysel olarak göstermek.</li>
+    <li>Kaymalı (bias) tanımlama fonksiyonuyla (DF) açı–kazanç haritası; anahtarlamalı sistem çözümüyle doğrulama.</li>
+    <li>Açıya göre ayarlanan gözlemci: 90° civarında gözlemcinin işinin çoğu yerçekimini telafi etmek, 0° civarında neredeyse tamamı boşluğu telafi etmek.</li>
+    <li>Ucuz donanımda (dişli DC motor, ESP32, manyetik açı sensörü) deneysel doğrulama.</li>
+  </ul>
+  <div class="note"><b>Açıkça kabul edilecek</b>"Yerçekimi dişliyi bastırır, ön yük gibi davranır" fikri yeni değil: endüstriyel robot telafisinde 1985'ten beri kural olarak kullanılıyor (Ahmad 1985), KUKA robotunda nitel olarak gösterildi (Karim ve ark. 2018). Ama hep sabit konum hatası için. Kapalı çevrim kararlılığına, nicel bir haritaya ve gözlemci tasarımına bağlayan çalışma bulunamadı.</div>
+</section>
+
+<section id="tarama">
+  <div class="top"><div class="kicker">17–18 Ekim</div><span class="pill done">Tamam</span></div>
+  <h2>Literatür taraması</h2>
+  <div class="stats">
+    <div class="stat"><b>26</b><span>IEEE sorgusu</span></div>
+    <div class="stat"><b>130</b><span>IEEE sonucu listelendi</span></div>
+    <div class="stat"><b>32</b><span>tam metin okundu</span></div>
+    <div class="stat"><b>0</b><span>açıya bağlı yerçekimi + limit cycle</span></div>
+  </div>
+  <h3>Yöntem</h3>
+  <ul class="plain">
+    <li>IEEE Xplore: kurumsal erişimle 26 sorgu, 31 PDF.</li>
+    <li>IEEE dışı: Scopus ve Web of Science kampüs dışından açılmadığı için OpenAlex (tüm yayınevlerini indeksleyen açık veri tabanı) ile başlık+özet araması; Springer'dan en yakın rakip makale.</li>
+    <li>İleriye atıf taraması: en yakın makalelere atıf yapan bütün çalışmalar (Wang 2024'ün 11, Nordin–Gutman anketinin 497 atıfı) tarandı.</li>
+  </ul>
+  <h3>Belirleyici sorgular (başlık + özet, OpenAlex)</h3>
+  <div class="tbl"><table>
+    <tr><th>Sorgu</th><th>Sonuç</th></tr>
+    <tr><td>boşluk + yerçekimi + tanımlama fonksiyonu</td><td class="num">0</td></tr>
+    <tr><td>boşluk + yerçekimi telafisi + salınım / limit cycle</td><td class="num">0</td></tr>
+    <tr><td>boşluk + yerçekimi + tork tersinmesi / sıfır geçişi</td><td class="num">0</td></tr>
+    <tr><td>boşluk + yerçekimi + robot / kol / eklem / sarkaç</td><td class="num">32</td></tr>
+    <tr><td>boşluk + limit cycle + robot / kol / servo / motor</td><td class="num">60</td></tr>
+  </table></div>
+  <p>32 sonucun hiçbiri yerçekiminin açıya bağlı etkisini ya da limit cycle'ı incelemiyor.</p>
+  <h3>Literatürdeki örüntü</h3>
+  <ul class="plain">
+    <li>Boşluk + limit cycle çalışmaları hep yatay düzenekler: iki kütleli tahrik, takım tezgâhı, gimbal, döner tabla.</li>
+    <li>Tek eklemli kol çalışmaları bile kolu yatay düzleme koyuyor (Wang ve ark. 1999; Malik ve ark. 2009).</li>
+    <li>Gerçekte yerçekimi yüklü eklemlerde bile model yerçekimsiz kuruluyor (Kim ve ark. 2009, insansı robot dizi).</li>
+    <li>Sarkaç + boşluk çalışmaları yalnızca dik dengeye bakıyor; orada yerçekimi ön yükü sıfır (Kollár ve ark. 2002; Shahruz 2000).</li>
+  </ul>
+  <details>
+    <summary>17 Ekim ilk taraması (web aramaları)</summary>
+    <div class="tbl"><table>
+      <tr><th>Grup</th><th>Örnekler</th><th>Not</th></tr>
+      <tr><td>Kontrolcü karşılaştırmaları</td><td><a href="https://www.jatit.org/volumes/Vol95No13/7Vol95No13.pdf">PID ve LQR</a>, <a href="https://www.researchgate.net/publication/224118858_State-Feedback_and_Linear_Quadratic_Regulator_Applied_to_a_Single-Link_Flexible_Manipulator">durum geri beslemesi</a>, <a href="https://www.researchgate.net/publication/286072021_Feedback_Linearizing_Controller_for_a_Flexible_Single-Link_Arm_under_Gravity_and_Joint_Friction">yerçekimi altında esnek kol</a></td><td>Çoğu esnek kol, simülasyon.</td></tr>
+      <tr><td>Yerçekimi telafisi</td><td><a href="https://doi.org/10.3390/app10113823">düşük maliyetli PD + telafi</a>, <a href="https://arxiv.org/pdf/2504.16224">kütleye uyumlu kontrol</a></td><td>Çok eklemli kollar.</td></tr>
+      <tr><td>Ucuz motor kusurları</td><td><a href="https://www.researchgate.net/publication/275964855_Friction_Compensation_of_DC_Motors_for_Precise_Motion_Control_Using_Disturbance_Observer">gözlemciyle sürtünme</a>, <a href="https://arxiv.org/pdf/2503.10070">AhaRobot</a>, <a href="https://www.researchgate.net/publication/261057811_Compensation_of_backlash_for_teleoperated_geared_motor_drive_systems">çift motorla boşluk</a></td><td>Boşluk zor bir sorun.</td></tr>
+      <tr><td>Eğitim düzenekleri</td><td><a href="https://www.sciencedirect.com/science/article/pii/S2468067226000544">OpenMCT</a>, <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC9041222/">MoDiCA-X</a></td><td>Kol yok.</td></tr>
+    </table></div>
+  </details>
+</section>
+
+<section id="rakipler">
+  <div class="top"><div class="kicker">Tam metni okunanlar</div><span class="pill done">Okundu</span></div>
+  <h2>En yakın çalışmalar</h2>
+  <div class="tbl"><table>
+    <tr><th>Çalışma</th><th>Ne yapmış</th><th>Bizde olup onlarda olmayan</th></tr>
+    <tr><td><a href="https://doi.org/10.1109/TIE.2022.3156154">Sun ve ark. 2023, IEEE TIE</a></td><td>Düşey düzlemde salınan kol, modelde \(M_L\sin\theta_L\). Hedef 90°'de yüksek kazançta 5°, 9 Hz salınım. Çift motorla yapay ön yük.</td><td>Yerçekiminin etkisi tartışılmıyor; tek açı; DF analizi yok; çift motor pahalı.</td></tr>
+    <tr><td><a href="https://doi.org/10.1007/s11071-024-09836-w">Wang ve ark. 2024, Nonlinear Dynamics</a></td><td>Mühimmat yükleme kolu; DF ile limit cycle analizi; doğrusal olmayan ESO ile telafi; deney.</td><td>Kol düşey eksen etrafında yatay dönüyor; yerçekimi terimi yok.</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TMECH.2012.2195670">Ghaffari ve Mohammadiasl 2013, IEEE TMECH</a></td><td>Boşluk ve ön yüklü eksenlerde salınım frekansı; sertlik oranı ölçütü; tezgâhta deney.</td><td>Ön yük simetrik iç yay; "tork ön yükü aşmadıkça boşluk görünmez" gözlemi yerçekimine taşınmamış.</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TAC.2013.2281859">Esbrook, Tan, Khalil 2014, IEEE TAC</a></td><td>İntegral kontrol + boşluk limit cycle'ının kesin hesabı; sabit referans yalnızca kaydırır.</td><td>Bizim ana iddiamız bu önermenin yerçekimli karşı-örneği.</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TIE.2017.2711564">Wang ve ark. 2017, IEEE TIE</a></td><td>İki kütlede DF ile limit cycle; yük sensörüyle (tam kapalı çevrim) salınım çıkıyor.</td><td>Yük torku sıfır alınmış; kendileri "yüksüzken temas sürekli değil" diyor.</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TIE.2023.3290240">Yu ve Tang 2024, IEEE TIE</a></td><td>Doymalı gözlemci; gözlemci bant genişliği artınca kendisi limit cycle üretiyor.</td><td>Girişte "ağırlık merkezi boşluk dinamiğini değiştirir" diyor, incelemiyor.</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/TAES.2025.3584008">Sun ve ark. 2025, IEEE TAES</a></td><td>Gözlemci kazancı + boşluk → limit cycle; DF ile tahmin; takip hatasına göre ayar.</td><td>Yerçekimi yok; ayar takip hatasına göre, bizimki açıya göre.</td></tr>
+    <tr><td><a href="https://doi.org/10.1109/AMC51637.2022.9729289">Padron ve ark. 2022, IEEE AMC</a></td><td>Sürtünme sıfır hızda, boşluk sıfır torkta tetiklenir.</td><td>Hipotezimizin tek cümlelik çıkış noktası.</td></tr>
+  </table></div>
+  <p>32 makalenin ayrıntılı notları: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>literatur/okuma_notlari.md</code></a>.</p>
+</section>
+
+<section id="deney">
+  <div class="top"><div class="kicker">Okumalardan çıkanlar</div><span class="pill next">Taslak</span></div>
+  <h2>Deney planı</h2>
+  <h3>Ölçülecek izler</h3>
+  <div class="tbl"><table>
+    <tr><th>İz</th><th>Beklenti</th><th>Kaynak</th></tr>
+    <tr><td>Salınım genliği</td><td>0° ve 180° civarında büyük, 90° civarında küçük ya da yok; sınır kazanca göre kayar.</td><td>Ana hipotez</td></tr>
+    <tr><td>Salınım frekansı</td><td>Açıyla kayar: dişli temasta kaldıkça etkin eylemsizlik değişir.</td><td>Márton ve Lantos 2009</td></tr>
+    <tr><td>Salınımın simetrisi</td><td>\(\theta_d\) = motor açısı/N − kol açısı; iki kenara vuruştan tek kenara vuruşa geçiş.</td><td>Olsson ve Åström 2001</td></tr>
+    <tr><td>Etkin boşluk</td><td>Ölçülen boşluk açıya bağlı çıkabilir; birkaç açıda ölçülecek.</td><td>Jung ve ark. 2004</td></tr>
+  </table></div>
+  <h3>Karıştırıcıları ayırma</h3>
+  <ul class="plain">
+    <li><b>Nicemleme</b> (AS5600, enkoder, PWM): gözlemciyle tek başına salınım yaratabilir; ama açıdan bağımsız olur.</li>
+    <li><b>Sürtünme</b>: olaylar hızın sıfırdan geçtiği anlarda toplanır; boşluk olayları torkun sıfırdan geçtiği anlarda.</li>
+    <li><b>Sürücünün PWM ölü bandı</b>: ayrıca ölçülecek, yoksa boşlukla karışır (Malik ve ark. 2009).</li>
+    <li><b>Yerçekimini açıdan bağımsız değiştirme</b>: takılıp çıkarılan uç ağırlıklarıyla.</li>
+  </ul>
+  <h3>Hedef çalışma bölgesi (simülasyondan)</h3>
+  <ul class="plain">
+    <li>Toplam boşluk ≈ 3° (ayarlanabilir kaplinle 1,5° / 3° / 5°).</li>
+    <li>Kapalı çevrim hızı \(\omega_c \approx 30\)–60 rad/s, yani \(r_s \approx 0{,}25\)–\(0{,}40\): ölçekleme yasası orada sağlam, sürtünme gürültüsü az.</li>
+    <li>Uç kütlesi ≈ 20 g; açı taraması 0–90°, 0° ve 180° civarında 1°'den ince adımlarla.</li>
+    <li>Türev (sönüm) motor enkoderinden; kol hızından alınırsa döngü kararsızlaşıyor.</li>
+    <li>Salınım deneyleri birkaç saniye; aralarda motor soğusun, akım INA219 ile izlensin.</li>
+  </ul>
+  <h3>Hazır tarifler</h3>
+  <ul class="plain">
+    <li>Boşluk ölçümü: dişlinin ayrıldığı ve yeniden temas ettiği anlar arasında iki sensörün açı farkı (Yamada ve ark. 2016).</li>
+    <li>Gözlemcide nicemlemeye karşı iki ayrı Q filtresi, model indirgeme, ayrık zamana çevirme (Kim ve ark. 2009).</li>
+  </ul>
+</section>
+
+<section id="donanim">
+  <div class="top"><div class="kicker">Modelde değişecekler</div><span class="pill next">Sırada</span></div>
+  <h2>Gerçek donanıma geçince</h2>
+  <p>Temel modeldeki motor değerleri CTMS kılavuzundaki örnek motordan; dişli kutusu yok. Gerçek motor dişli kutulu olacak ve model değişecek.</p>
+  <div class="tbl"><table>
+    <tr><th>Değişen</th><th>Etkisi</th></tr>
+    <tr><td>Dişli oranı \(N\)</td><td>Kola giden tork \(N\) katına çıkar. Kolun eylemsizliği motora \(1/N^2\) ile yansır.</td></tr>
+    <tr><td>Motor değerleri</td><td>\(R, L, K, J_m, b\) veri sayfasından ya da sistem tanılamayla bulunacak.</td></tr>
+    <tr><td>Dişli boşluğu</td><td>Modele ölü bölge olarak girecek; iki kütleli model gerekecek (motor + kol, arada sertlik \(K_s\) ve boşluk \(2r\)).</td></tr>
+    <tr><td>Sürtünme</td><td>Coulomb + yapışma; boşluktan ayrı tanılanacak.</td></tr>
+    <tr><td>PWM ve sürücü</td><td>Darbeli gerilim, ölü bant, akım sınırı.</td></tr>
+    <tr><td>Açı ölçümü</td><td>Motor enkoderi + kol milinde ikinci sensör. Kol milindeki sensörle döngü kapatmak limit cycle riskini artırır; deney için istenen durum.</td></tr>
+  </table></div>
+</section>
+
+<section id="malzeme">
+  <div class="top"><div class="kicker">Simülasyonla kesinleşti</div><span class="pill done">Sipariş verilebilir</span></div>
+  <h2>Malzeme</h2>
+  <div class="tbl"><table>
+    <tr><th>Parça</th><th>Seçim</th><th>Neden / dikkat</th></tr>
+    <tr><td>Enkoderli dişli DC motor</td><td>JGA25-370, 12 V, 1:34 (ya da 1:45)</td><td>20 g uçla tork rahat (günlük adım 14). Satıcı veri sayfasında durma torku ≥ 0,4 N·m ve enkoder darbe sayısı (11 ya da 12) kontrol edilecek. Daha yüksek oran motor eylemsizliğini şişirir.</td></tr>
+    <tr><td>Motor sürücü</td><td>TB6612FNG</td><td>1,2 A sürekli; motorun durma akımı bunu aşabilir, yazılımda tork sınırı konacak. Ölü bandı ölçülecek.</td></tr>
+    <tr><td>Mikrodenetleyici</td><td>ESP32 geliştirme kartı</td><td>1 kHz kontrol döngüsü ve gözlemci.</td></tr>
+    <tr><td>Kol milinde açı sensörü</td><td>AS5600 modülü + diametral mıknatıs</td><td>\(\theta_d\) ölçümü; boşluğu sürtünmeden ayırmanın tek yolu (adım 11).</td></tr>
+    <tr><td>Akım sensörü</td><td>INA219</td><td>Tork kestirimi, tork sıfır geçişleri, motor ısınmasını izleme.</td></tr>
+    <tr><td>Güç kaynağı</td><td>12 V, ≥ 2 A adaptör</td><td></td></tr>
+    <tr><td>Kol</td><td>15 cm alüminyum lama + ~20 g değiştirilebilir ağırlık (vida/somun)</td><td>50 g'da motor yüksek kazançta doyuma giriyor.</td></tr>
+    <tr><td>Kol mili ve yatak</td><td>Kısa mil + 1–2 rulman</td><td>Kol motor milinden ayrı dönmeli; boşluk ayarı ve kol açısı ölçümü ancak böyle.</td></tr>
+    <tr><td>Boşluk kaplini</td><td>3B baskı, değiştirilebilir parçalı (1,5° / 3° / 5°)</td><td>En güçlü deney düğmesi (adım 13). Satın alınmayacak, tasarlanıp basılacak.</td></tr>
+    <tr><td>Gövde</td><td>3B baskı ya da alüminyum köşebent</td><td>Motoru ve rulmanı aynı eksende tutacak.</td></tr>
+    <tr><td>Diğer</td><td>Breadboard, jumper kablolar</td><td>ESP32, TB6612FNG mantık girişi, INA219 ve AS5600 hepsi 3,3 V; seviye dönüştürücü gerekmiyor.</td></tr>
+  </table></div>
+  <p>Hobi servo (SG90) uygun değil: içindeki hazır kontrolcü bizim kontrolcümüzü devre dışı bırakır.</p>
+</section>
+
+<section id="yayin">
+  <div class="top"><div class="kicker">Karar</div><span class="pill done">Dergi yolu</span></div>
+  <h2>Yayın</h2>
+  <ul class="plain">
+    <li>Konferans değil dergi: dergi sunum istemiyor, süreç yazılı.</li>
+    <li>Dil (Türkçe dergi ya da İngilizce IEEE dergisi) makale olgunlaşınca danışman hocayla seçilecek.</li>
+    <li>Abonelik modelli dergiler (ör. IEEE/ASME TMECH, IEEE TIE) normalde ücretsiz; açık erişim dergileri ücretli.</li>
+  </ul>
+</section>
+
+<section id="siradaki">
+  <div class="top"><div class="kicker">Yol haritası</div><span class="pill next">Sırada</span></div>
+  <h2>Sıradaki adım</h2>
+  <ul class="plain">
+    <li>Sipariş: motorun satıcı veri sayfasını kontrol edip malzemeyi almak.</li>
+    <li>Beklerken: boşluk kaplini ve gövdenin 3B tasarımı.</li>
+    <li>Beklerken: kaymalı tanımlama fonksiyonu türetimi (adım adım), \(\gamma_{sınır} \approx 3\,r_s^3\) ilişkisiyle karşılaştırma.</li>
+    <li>Malzeme gelince: sistem tanılama (motor eylemsizliği, sürtünme, ölü bant, boşluğun birkaç açıda ölçümü), ardından açı taraması deneyleri.</li>
+    <li>Ahmad 1985 (ICRA) ve Kodama ve Shirakawa 1968 (IEEE TAC) makalelerini indirmek; kampüsten Nordin ve Gutman 2002 anketi.</li>
+  </ul>
+</section>
+</main>
+</div>
+
+<script>
+// Hipotez grafikleri: iletilen tork = yerçekimi torku (sabit) + dinamik tork (sinüs); boşluk bandı sıfır çevresinde
+(function(){
+  var NS = "http://www.w3.org/2000/svg";
+  function el(svg, tag, attrs, text){
+    var e = document.createElementNS(NS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    if (text) e.textContent = text;
+    svg.appendChild(e); return e;
+  }
+  function draw(id, bias, amp){
+    var svg = document.getElementById(id); if (!svg) return;
+    var x0 = 40, x1 = 308, yZero = 92, scale = 50, band = 5;
+    el(svg, "rect", {class:"band", x:x0, y:yZero-band, width:x1-x0, height:2*band});
+    el(svg, "line", {class:"axis", x1:x0, y1:12, x2:x0, y2:148});
+    el(svg, "line", {class:"zero", x1:x0, y1:yZero, x2:x1, y2:yZero});
+    el(svg, "text", {x:4, y:yZero+4}, "τ=0");
+    el(svg, "text", {x:x0+4, y:22}, "iletilen tork");
+    el(svg, "text", {x:x1-28, y:146}, "t");
+    var yMean = yZero - bias*scale;
+    el(svg, "line", {class:"mean", x1:x0, y1:yMean, x2:x1, y2:yMean});
+    var pts = [], prev = null;
+    for (var i = 0; i <= 200; i++){
+      var x = x0 + (x1-x0)*i/200;
+      var v = bias + amp*Math.sin(2*Math.PI*3*i/200);
+      pts.push(x.toFixed(1) + "," + (yZero - v*scale).toFixed(1));
+      if (prev !== null && (prev > 0) !== (v > 0)) el(svg, "circle", {class:"hit", cx:x, cy:yZero, r:4});
+      prev = v;
+    }
+    el(svg, "polyline", {class:"curve", points:pts.join(" ")});
+  }
+  draw("p0", 0, 0.9);
+  draw("p90", 1.1, 0.6);
+})();
+window.MathJax = { tex:{ inlineMath:[["\\(","\\)"]] }, svg:{ fontCache:"global" } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js"></script>
+</body>
+</html>

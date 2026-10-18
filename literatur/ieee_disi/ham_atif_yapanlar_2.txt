@@ -1,0 +1,61 @@
+﻿## Digital balancing of systems with backlash (2003) -> atif yapan 1
+2026|0|Rozmyty regulator prędkości dla napędu bezpośredniego z PMSM do minimalizacji nierównomierności prędkości|10.15199/48.2026.04.24
+## Limit Cycle Analysis and Suppression for Disturbance Observer-Based Missile Autopilot With Flight Test Results (2025) -> atif yapan 4
+2026|0|Data-driven RBFNN-based HOFAs acceleration autopilot for spinning flight vehicle with less measurement informa|10.1016/j.ast.2026.113962
+2026|0|A Parallel State Observer Integrated LSTM Framework for Target Acceleration Estimation and Prediction|10.1109/ddcls71227.2026.11610263
+2026|0|MFESO-based robust integrated initial guidance design and verification for endoatmospheric ascent|10.1016/j.cja.2026.104162
+2025|0|Modeling, Control, and Validation of an Unmanned Gyroplane Based on Aerodynamic Identification|10.3390/drones9120853
+## Limited Amplitude-Disturbance Observer Control for Backlash-Containing Electromechanical System (2023) -> atif yapan 17
+2026|0|A two-layered control for backlash compensation and oscillation suppression in ball screw drives|10.1016/j.ymssp.2026.114675
+2026|0|Sliding-Mode Observer-Based Control with Internal-Model Compensation for Non-Strictly Periodic Disturbance Rej|10.1109/aim65483.2026.11658125
+2026|0|Direct-Error-Based Sliding Mode Control of High - Frequency Nonlinear Uncertain Disturbances for Timing Belt G|10.1109/aim65483.2026.11658149
+2026|3|Conditional Invertible Neural Network-Based Fault Detection and Diagnosis in Permanent Magnet Synchronous Moto|10.1109/tie.2026.3672735
+2026|0|Nonlinear Direct Error Compensator for Visual Servo Trajectory Tracking Under Image Sensor Delay on a Moving P|10.1109/tie.2025.3649866
+2025|3|Nonlinear high-frequency dynamics rejection of disturbance observed sliding mode control for inertially stabil|10.1016/j.conengprac.2025.106697
+2025|2|High-Bandwidth Acceleration Disturbance Observer Control With Nonlinear Function for Inertially Stabilized Gim|10.1109/tase.2025.3630189
+2025|0|Nonlinear Dual Disturbance Observer With Acceleration Control for Dual-Stage Inertial Stabilization Platform|10.1109/tie.2025.3613646
+2025|2|Backlash Compensation Control for a Single-Inverter Parallel Dual-Motor System Based on an Extended State Obse|10.1109/jestpe.2025.3627898
+2025|1|Periodic disturbance suppression of UAV-mounted ISP via adaptive generalized high-order ESO|10.1063/5.0273056
+2025|3|Enhanced Optimal Backlash Compensation for Transmission Servo Systems via a Reduced-Order GPI Observer: A Swit|10.1109/tie.2025.3549080
+2025|7|Nonlinear acceleration disturbance observer to reject transient peak disturbances for an inertial stabilizatio|10.1016/j.isatra.2025.02.024
+2025|3|Direct Error Observation Compensator for Visual Servo Tracking System With Image Sensor-Based Sparse Measureme|10.1109/jsen.2025.3539424
+2024|0|Sliding-Mode-Based Observer Control for High-Dynamic Backlash Rejection in a Dual-Stage Inertial Stabilization|10.1109/iccr64365.2024.10927475
+2024|6|Observer-Based Finite-Time Prescribed Performance Sliding Mode Control of Dual-Motor Joints-Driven Robotic Man|10.3390/act13090325
+2024|5|Bounded-saturation-based disturbance observer for precision position control of an indirect transmission syste|10.1007/s11071-023-09271-3
+2023|7|Backstepping Control Collaborative Shaft Torque Observer for Limit Cycle Oscillation Suppression of Fully Clos|10.1109/tpel.2023.3344485
+## Controlling mechanical systems with backlash—a survey (2002) -> atif yapan 497
+2026|0|Gear-Ratio Spectrum for Robotic Joint Motor Drive Systems: Multiphysics Coupling and Design Trade-Offs|10.3390/electronics15173834
+2026|0|Reconnaissance, Signal Stabilization using Deterministic/Gaussian Signals, & Suppression of Limit Cycles in 3×|10.37394/232027.2026.8.4
+2025|0|Research on Stabilizing and Eliminating Limit Cycles in 3D Nonlinear Systems Characterized by Hysteresis|10.37394/232026.2025.7.19
+2025|3|Investigation of Limit Cycles and Signal Stabilization by Deterministic and Gaussian Random Signals Based on D|10.37394/232027.2025.7.17
+2025|4|Limit Cycle Analysis and Suppression for Disturbance Observer-Based Missile Autopilot With Flight Test Results|10.1109/taes.2025.3584008
+2025|0|Research on torsional vibration characteristics and resonance mechanism of industrial robot joint transmission|10.1177/09544070251343343
+2024|1|Quenching and Suppression of Limit Cycles in 3x3 Nonlinear Systems|10.37394/232022.2024.4.16
+2024|1|Suppression Limit Cycles in 2x2 Nonlinear Systems with Memory Type Nonlinearities|10.37394/232022.2024.4.18
+2024|1|Fractional-order Control to Prevent Limit Cycles due to Saturation Nonlinearity|10.1016/j.ifacol.2024.08.175
+2023|5|Possibility of Quenching of Limit Cycles in Multi Variable Nonlinear Systems with Special Attention to 3X3 Sys|10.37394/23203.2023.18.69
+2023|10|Impact of Backlash Nonlinearity on the Dynamics of Type-3 Turbine-Based Windfarms|10.1109/tpwrs.2023.3330604
+2023|8|Investigation of the Existence of Limit Cycles in Multi Variable Nonlinear Systems with Special Attention to 3|10.37394/232026.2023.5.9
+2023|0|H∞Control of the Furuta Pendulum with Backlash and Analysis of the Effect of Bounded-Disturbance|10.1109/icm54990.2023.10101944
+2022|1|Orthodromic navigation through conic rotation driven by active universal joints with three degrees of freedom|10.1007/s40430-022-03799-y
+2022|15|A virtual sensor for backlash in robotic manipulators|10.1007/s10845-022-01934-z
+2021|11|Suppression limit cycles in 2 × 2 nonlinear systems with memory type nonlinearities|10.1007/s40435-021-00860-x
+2020|2|Model Predictive Control of 2-Degree of Freedom Robotic Manipulator with Backlash|10.1109/inmic50486.2020.9318088
+2020|6|Robust Controller Design for Flexible Joint Based on Back-Stepping Approach|10.33103/uot.ijccce.20.2.7
+2020|0|Vibration Suppression of Reduction-Geared In-Wheel-Motor by Joint Torque Control Using Load-Side Encoder|10.1541/ieejias.140.295
+2020|2|Virtual Measurement of the Backlash Gap in Industrial Manipulators|10.1007/978-3-030-37838-7_17
+2020|2|Discrete-Time Repetitive Control for Multi-Harmonic Reference Trajectories with Arbitrary Frequency|10.1016/j.ifacol.2020.12.2221
+2019|3|Limit Cycle Analysis for Drive Systems with Backlash Nonlinearity using an Eigenvalue Method|10.1109/aim.2019.8868674
+2019|4|Gear Collision Reduction of In-Wheel-Motor by Joint Torque Control Using Load-Side High-Resolution Encoder|10.1109/icmech.2019.8722924
+2019|0|Robust control of actuated robot joint with clearance in the gearbox|10.1063/1.5133353
+2018|58|Precise Joint Torque Control Method for Two-inertia System with Backlash Using Load-side Encoder|10.1541/ieejjia.8.75
+2018|4|Tuning Optimization of Extended State Observer for Two Mass System with Elastic Joint and Backlash|
+2018|8|ADRC Load Position Controller for Two Mass System with Elastic Joint and Backlash|10.1109/mmar.2018.8486007
+2018|0|Integrated Design of Structure and Control of Motor Servo System Based on Improved Gravitational Search Algori|10.1109/icisce.2018.00169
+2018|8|Backlash Compensation for Accurate Control of Biopsy Needle Manipulators having Long Cable Transmission|10.1007/s12541-018-0081-4
+2018|7|Proportional Integral Loop Shaping Control Design With Particle Swarm Optimization Tuning|10.4018/978-1-5225-4077-9.ch002
+2017|3|Adaptive backlash inverse augmented virtual decomposition control of a hydraulic manipulator|10.1109/iccis.2017.8274795
+2017|7|Parametric identification of electrical drive with complex mechanical structure utilizing Particle Swarm Optim|10.23919/epe17ecceeurope.2017.8099375
+## Friction and backlash induced limit cycles in mechanical control systems (2009) -> atif yapan 2
+2011|1|Preliminary investigations on a higher order model-free approach in antilock braking|10.1109/sami.2011.5738886
+2010|0|Mechanical Control Systems with Nonsmooth Nonlinearities|10.1007/978-1-84996-122-6_10

@@ -1,0 +1,59 @@
+u‡ ktlesi [g] = 0 bitti
+u‡ ktlesi [g] = 20 bitti
+u‡ ktlesi [g] = 50 bitti
+u‡ ktlesi [g] = 100 bitti
+u‡ ktlesi [g]
+    deger    wc    bant0    bant180      mgl       dogrusal_salinim
+    _____    __    _____    _______    ________    ________________
+
+       0     20      5         6       0.014715         false      
+       0     35      8         8       0.014715         false      
+       0     45      8         6       0.014715         false      
+      20     20      3         3       0.044145         false      
+      20     35      0         1       0.044145         false      
+      20     45     12        13       0.044145         false      
+      50     20      0         0        0.08829         false      
+      50     35      6         1        0.08829         false      
+      50     45     13        14        0.08829         false      
+     100     20      0         3        0.16187         false      
+     100     35      3         4        0.16187         false      
+     100     45     40        40        0.16187         false      
+
+toplam boluk [der] = 0.5 bitti
+toplam boluk [der] = 1.5 bitti
+toplam boluk [der] = 3 bitti
+toplam boluk [der] = 5 bitti
+toplam boluk [der]
+    deger    wc    bant0    bant180      mgl      dogrusal_salinim
+    _____    __    _____    _______    _______    ________________
+
+     0.5     20      0         6       0.08829         false      
+     0.5     35      0         6       0.08829         false      
+     0.5     45      7         6       0.08829         false      
+     1.5     20      0         0       0.08829         false      
+     1.5     35      6         1       0.08829         false      
+     1.5     45     13        14       0.08829         false      
+       3     20      2         5       0.08829         false      
+       3     35      9         9       0.08829         false      
+       3     45     40        40       0.08829         false      
+       5     20      2         6       0.08829         false      
+       5     35     22        22       0.08829         false      
+       5     45     40        40       0.08829         false      
+
+dili sertlii [N m/rad] = 3 bitti
+dili sertlii [N m/rad] = 10 bitti
+dili sertlii [N m/rad] = 30 bitti
+dili sertlii [N m/rad]
+    deger    wc    bant0    bant180      mgl      dogrusal_salinim
+    _____    __    _____    _______    _______    ________________
+
+      3      20      4         3       0.08829         false      
+      3      35     40        40       0.08829         false      
+      3      45     40        40       0.08829         true       
+     10      20      0         0       0.08829         false      
+     10      35      6         1       0.08829         false      
+     10      45     13        14       0.08829         false      
+     30      20      2         3       0.08829         false      
+     30      35      1         6       0.08829         false      
+     30      45      7        12       0.08829         false      
+

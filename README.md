@@ -1,47 +1,112 @@
-# DC Motorlu Tek Eklemli Robot Kolu
+# Dişli DC Motorlu Tek Eklemli Robot Kol
 
-Bir DC motor, ucunda küçük bir ağırlık olan bir kolu döndürüyor. Amacımız motora uygulanan gerilimle kolu istenen açıda tutmak. Bu repo sistemin **durum uzayı modelini**, **denge noktalarını** ve MATLAB ile **açık çevrim simülasyonunu** içeriyor.
+Tek eklemli, dişli DC motorla sürülen bir robot kolunun modellenmesi, simülasyonu ve fiziksel gerçeklenmesi. Proje, kolun doğrusal olmayan durum uzayı modeliyle başladı ve **dişli boşluğunun (backlash) ürettiği sürekli salınımların kolun çalışma açısına nasıl bağlı olduğunu** inceleyen bir araştırmaya dönüştü.
 
-İstinye Üniversitesi **EEM5507 Doğrusal Sistemler Teorisi** dersinin proje başlangıcı (KT1) olarak hazırlandı. Ders kitabı: J. P. Hespanha, *Linear Systems Theory*.
+**Araştırma defteri (adım adım günlük, literatür, simülasyon, malzeme):** <https://safaksahinn.github.io/dc-motor-robot-arm/>
 
-![Robot kolu animasyonu](sekiller/kt1_animasyon.gif)
+![Robot kolu animasyonu](sekiller/model_animasyon.gif)
 
-*Motora sabit 4.905 V verildiğinde kolun üç farklı başlangıç açısından (80°, 90°, 100°) davranışı.*
+*Temel model: motora sabit 4.905 V verildiğinde kolun üç farklı başlangıç açısından (80°, 90°, 100°) davranışı.*
 
 ---
 
 ## İçindekiler
 
-1. [Neden bu proje?](#1-neden-bu-proje)
-2. [Fiziksel sistem](#2-fiziksel-sistem)
-3. [Durumlar, giriş ve çıkış](#3-durumlar-giriş-ve-çıkış)
-4. [Hareket denklemleri](#4-hareket-denklemleri)
-5. [Durum uzayı modeli](#5-durum-uzayı-modeli)
-6. [Parametreler](#6-parametreler)
-7. [Blok diyagram](#7-blok-diyagram)
-8. [Denge noktaları](#8-denge-noktaları)
-9. [Açık çevrim simülasyonu](#9-açık-çevrim-simülasyonu)
-10. [Dosya yapısı ve çalıştırma](#10-dosya-yapısı-ve-çalıştırma)
-11. [Sonraki adımlar](#11-sonraki-adımlar)
-12. [Kaynaklar](#12-kaynaklar)
+**Bölüm I: Araştırma**
+1. [Araştırma sorusu](#1-araştırma-sorusu)
+2. [Literatür](#2-literatür)
+3. [Simülasyon bulguları](#3-simülasyon-bulguları)
+4. [Donanım](#4-donanım)
+
+**Bölüm II: Temel model**
+
+5. [Fiziksel sistem](#5-fiziksel-sistem)
+6. [Durumlar, giriş ve çıkış](#6-durumlar-giriş-ve-çıkış)
+7. [Hareket denklemleri](#7-hareket-denklemleri)
+8. [Durum uzayı modeli ve parametreler](#8-durum-uzayı-modeli-ve-parametreler)
+9. [Blok diyagram](#9-blok-diyagram)
+10. [Denge noktaları ve 90° doğrusallaştırma](#10-denge-noktaları-ve-90-doğrusallaştırma)
+11. [Açık çevrim simülasyonu](#11-açık-çevrim-simülasyonu)
+
+**Bölüm III**
+
+12. [Dosya yapısı ve çalıştırma](#12-dosya-yapısı-ve-çalıştırma)
+13. [Kaynaklar](#13-kaynaklar)
 
 ---
 
-## 1. Neden bu proje?
+# Bölüm I: Araştırma
 
-1. Proje elektrik-elektronik mühendisliğine daha yakın olduğu için kendime daha yakın buldum.
-2. Simülasyon uygulamalarında projeyi 2D/3D olarak modelleyebilirim. Kişisel olarak bu şekilde modellenebilen projeler her zaman daha çok ilgimi çekmiştir.
-3. Projeyi basit geliştirme kartları ile kendim fiziksel olarak gerçekleştirebilirim.
+## 1. Araştırma sorusu
 
-## 2. Fiziksel sistem
+Ucuz dişli motorlarda dişliler arasında bir boşluk vardır. Konum kontrolünde bu boşluk, kolun hedef etrafında durmadan salınmasına (limit cycle) yol açabilir. Literatürde bu konu geniş biçimde çalışılmış, ama neredeyse her zaman **yatay** düzeneklerde: iki kütleli tahrikler, takım tezgâhları, döner tablalar.
+
+Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\ell\sin\theta_0$ dişliyi sürekli bir kenara bastırır:
+
+- **90° (yatay):** yerçekimi torku en büyük, dişli bastırılı.
+- **0° (aşağı) ve 180° (yukarı):** yerçekimi torku sıfır, boşluk tamamen etkin.
+
+**Hipotez.** Boşluk, dişlinin ilettiği tork sıfırdan geçtiğinde devreye girer. Kolda bu tork, sabit yerçekimi torku ile salınımlı dinamik torkun toplamıdır. Yerçekimi bu sıfır geçişlerini açıya göre engeller ya da serbest bırakır. Dolayısıyla boşluk kaynaklı salınımın var olup olmadığı **çalışma açısı ile kontrolcü kazancının birlikte** belirlediği bir haritaya göre değişir.
+
+**Hedeflenen katkılar:**
+- Yerçekimsiz sistemlerde "sabit referans limit cycle'ı yalnızca kaydırır" sonucunun (Esbrook, Tan, Khalil 2014) yerçekimli kolda geçerli olmadığını göstermek.
+- Açı–kazanç düzleminde nicel bir harita ve kaymalı (bias) tanımlama fonksiyonuyla analitik açıklama.
+- Açıya göre ayarlanan bir bozucu gözlemci.
+- Ucuz donanımda (dişli DC motor, ESP32, manyetik açı sensörü) deneysel doğrulama.
+
+## 2. Literatür
+
+- IEEE Xplore'da 26 sorgu (130 sonuç), IEEE dışında OpenAlex ile başlık+özet araması ve en yakın makalelere atıf yapan çalışmaların taranması.
+- 32 makalenin tam metni okundu. Notlar: [`literatur/okuma_notlari.md`](literatur/okuma_notlari.md); tarama özeti: [`literatur/ieee_disi/tarama_ozeti_2026-10-18.md`](literatur/ieee_disi/tarama_ozeti_2026-10-18.md).
+- Belirleyici sorgu "boşluk + yerçekimi + tanımlama fonksiyonu": **0 sonuç**.
+- En yakın çalışma Sun ve ark. (2023, IEEE TIE). Düşey düzlemde salınan bir kolu modelliyorlar ($M_L\sin\theta_L$ terimiyle) ve 90°'de yüksek kazançta salınım gözlüyorlar. Ama yerçekiminin etkisini incelemiyorlar ve tek bir açıda çalışıyorlar.
+- "Yerçekimi dişliye ön yük gibi davranır" fikri, endüstriyel robotlarda statik boşluk telafisi için biliniyor (Ahmad 1985; Karim ve ark. 2018). Kapalı çevrim kararlılığına bağlanmamış.
+
+## 3. Simülasyon bulguları
+
+İki kütleli model kuruldu: motor ve kol, arada dişli sertliği ve boşluk; kolda yerçekimi; PID kontrol. Üç model seviyesinde çalışıldı: ideal; Coulomb ve yapışma sürtünmeli; gerçekçi (12 bit açı sensörü, enkoder nicemlemesi, 1 kHz kontrol, sürücü ölü bandı). Kod: [`simulasyon/`](simulasyon/), ayrıntılı sonuçlar: [`simulasyon/sonuclar_2026-10-18.md`](simulasyon/sonuclar_2026-10-18.md).
+
+![Salınım haritası](simulasyon/harita.png)
+
+*Açı × kapalı çevrim hızı haritası. Kırmızı: dişlinin iki kenarı arasında gidip geldiği boşluk salınımı. Mavi: dişli bastırılıyken oluşan sürtünme/nicemleme salınımı.*
+
+1. **Sönüm motor tarafından alınmalı.** Türev terimi kol hızından alınınca, boşluk olmasa bile döngü dişli rezonansında kararsızlaşıyor. Motor enkoderinden alınınca kararlı kalıyor.
+2. **Hipotez benzetimde görülüyor.** Boşluk salınımı 0° ve 180° civarında toplanıyor; 90° etrafında salınımsız bir bölge var ve bu bölge kazanç arttıkça daralıyor.
+3. **Sürtünme açıdan bağımsız ikinci bir salınım yaratıyor**, ama bu sırada dişli bastırılı kalıyor. Boşluğu sürtünmeden ayıran ölçüm, motor açısı ile kol açısı arasındaki farktır ($\theta_d$). Bu yüzden iki açı sensörü gerekiyor.
+4. **En güçlü deney değişkeni boşluk genişliği.** Boşluk 1,5°'den 3°'ye ve 5°'ye çıkınca salınım bandı belirgin biçimde genişliyor.
+5. **Sonuçlar boyutsuz bir haritada toplanıyor.** İki boyutsuz sayı kullanılıyor: $\gamma = mg\ell\sin\theta_0/(K_s r)$ (yerçekimi torkunun, boşluğu kapatan dişli torkuna oranı) ve $r_s = \omega_c/\omega_{rez}$ (kontrolcü hızının dişli rezonans frekansına oranı). 24 farklı düzenek aynı şeride düşüyor; ideal modelde yaklaşık $\gamma_{sınır} \approx 3\,r_s^3$. Gerçekçi modelde bu ilişki $r_s \approx 0{,}23$–$0{,}38$ aralığında korunuyor.
+
+<p align="center"><img src="simulasyon/boyutsuz_sinir_gercekci.png" width="640" alt="Boyutsuz sınır eğrileri"></p>
+
+## 4. Donanım
+
+| Parça | Seçim | Neden |
+|---|---|---|
+| Motor | JGA25-370, 12 V, enkoderli, 1:34 ya da 1:45 | 20 g uç kütlesiyle tork payı yeterli; daha yüksek oran motor eylemsizliğini büyütüp kol tarafını maskeler |
+| Sürücü | TB6612FNG | Yazılımda tork sınırı ile |
+| Denetleyici | ESP32 | 1 kHz kontrol döngüsü ve gözlemci |
+| Kol açısı | AS5600 (12 bit manyetik) | $\theta_d$ ölçümü |
+| Akım | INA219 | Tork kestirimi, ısınma takibi |
+| Kol | 15 cm alüminyum + ~20 g değiştirilebilir uç kütlesi | |
+| Boşluk kaplini | 3B baskı, 1,5° / 3° / 5° değiştirilebilir | Ana deney değişkeni |
+
+Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$).
+
+---
+
+# Bölüm II: Temel model
+
+Projenin başlangıç noktası: dişli kutusu olmayan, tek eklemli bir kolun doğrusal olmayan durum uzayı modeli. Motor değerleri CTMS kılavuzundaki örnek motordan alındı.
+
+## 5. Fiziksel sistem
 
 Sistem iki kısımdan oluşuyor: motorun **elektrik devresi** ve motor miline bağlı **kol**. İki kısım motor üzerinden birbirine bağlı: akım $i$ milde $K i$ torkunu üretiyor, mil döndükçe de devrede $K\dot\theta$ zıt EMK'sı oluşuyor.
 
-![Fiziksel şema](sekiller/kt1_sema.png)
+![Fiziksel şema](sekiller/model_sema.png)
 
 Açı $\theta$ **dik aşağıdan** ölçülüyor: $\theta = 0$ kol aşağı sarkık, $\theta = 90^\circ$ kol yatay, $\theta = 180^\circ$ kol dik yukarı.
 
-## 3. Durumlar, giriş ve çıkış
+## 6. Durumlar, giriş ve çıkış
 
 | Sembol | Anlamı | Birim | Tür |
 |---|---|---|---|
@@ -54,7 +119,7 @@ Açı $\theta$ **dik aşağıdan** ölçülüyor: $\theta = 0$ kol aşağı sark
 - **Neden 3 durum?** Kolun nereye gideceğini tahmin etmek için açıyı ve hızı bilmek gerekiyor (mekanik kısım). Akım ise motor sargısının "hafızası": bobinden geçen akım bir anda değişemiyor, bu yüzden o da ayrı bir durum.
 - **Sistem tipi:** 3 durum, 1 giriş, 1 çıkış → **SISO**, **doğrusal olmayan** ($\sin\theta$ terimi yüzünden), **zamanla değişmeyen**.
 
-## 4. Hareket denklemleri
+## 7. Hareket denklemleri
 
 **Mekanik kısım:** motor torku kolu döndürüyor, sürtünme ve yerçekimi karşı koyuyor:
 
@@ -69,9 +134,9 @@ $$L\frac{di}{dt} = V - R i - K\dot\theta$$
 | Motorun mekanik denklemi ($J_m\ddot\theta + b\dot\theta = K i$) | CTMS, "DC Motor Speed: System Modeling" [1] |
 | Motorun elektrik denklemi ($L\,di/dt + R i = V - K\dot\theta$) | CTMS, aynı sayfa [1] |
 | Yerçekimi terimi ($-mg\ell\sin\theta$) | Hespanha, Example 2.1 (ters sarkaç) [2]; kitapta açı yukarıdan ölçüldüğü için $+$, bizde aşağıdan ölçüldüğü için $-$ |
-| Toplam eylemsizlik $J = J_m + m\ell^2$ | kolu ekleyerek bizim kurduğumuz |
+| Toplam eylemsizlik $J = J_m + m\ell^2$ | kolu ekleyerek kurduğumuz |
 
-**Kitaptaki mekanik sistem kalıbı (2.7)** ile karşılaştırma, $M(q)\ddot q + B(q,\dot q)\dot q + G(q) = F$:
+Hespanha'daki mekanik sistem kalıbıyla (2.7) karşılaştırma, $M(q)\ddot q + B(q,\dot q)\dot q + G(q) = F$:
 
 | Kalıp | Bizde | Anlamı |
 |---|---|---|
@@ -81,36 +146,11 @@ $$L\frac{di}{dt} = V - R i - K\dot\theta$$
 | $G(q)$ | $mg\ell\sin\theta$ | yerçekimi torku |
 | $F$ | $K i$ | motor torku |
 
-## 5. Durum uzayı modeli
+## 8. Durum uzayı modeli ve parametreler
 
 Mekanik denklemi $J$'ye, elektrik denklemini $L$'ye bölünce:
 
 $$\dot x_1 = x_2, \qquad \dot x_2 = \frac{K x_3 - b x_2 - mg\ell\sin x_1}{J}, \qquad \dot x_3 = \frac{u - R x_3 - K x_2}{L}, \qquad y = x_1$$
-
-Sayılar yerine konunca katsayılar:
-
-| Katsayı | Hesap | Değer |
-|---|---|---|
-| $K/J$ | 0.01 / 0.0105 | 0.952 |
-| $b/J$ | 0.1 / 0.0105 | 9.52 |
-| $mg\ell/J$ | 0.0491 / 0.0105 | 4.67 |
-| $1/L$ | 1 / 0.5 | 2 |
-| $R/L$ | 1 / 0.5 | 2 |
-| $K/L$ | 0.01 / 0.5 | 0.02 |
-
-**Sayısal model:**
-
-$$\dot x_1 = x_2$$
-
-$$\dot x_2 = 0.952\,x_3 - 9.52\,x_2 - 4.67\sin x_1$$
-
-$$\dot x_3 = 2\,u - 2\,x_3 - 0.02\,x_2$$
-
-$$y = x_1$$
-
-Doğrusal olmayan tek terim $\sin x_1$.
-
-## 6. Parametreler
 
 | Parametre | Anlamı | Değer | Kaynak |
 |---|---|---|---|
@@ -124,30 +164,29 @@ Doğrusal olmayan tek terim $\sin x_1$.
 | $g$ | yerçekimi ivmesi | 9.81 m/s² | |
 | $J$ | toplam eylemsizlik $J_m + m\ell^2$ | 0.0105 kg·m² | hesap |
 
-**Kol ölçülerinin tasarım hesabı.** Motor sabiti küçük ($K = 0.01$ N·m/A): 1 A akımla yalnızca 0.01 N·m tork üretiyor. Bu yüzden hafif bir kol seçtik ve motorun en zor durumda, yani kol yataydayken ($\sin 90^\circ = 1$) tutabildiğini kontrol ettik:
+**Sayısal model:**
+
+$$\dot x_1 = x_2, \qquad \dot x_2 = 0.952\,x_3 - 9.52\,x_2 - 4.67\sin x_1, \qquad \dot x_3 = 2\,u - 2\,x_3 - 0.02\,x_2, \qquad y = x_1$$
+
+**Kol ölçülerinin tasarım hesabı.** Motor sabiti küçük ($K = 0.01$ N·m/A): 1 A akımla yalnızca 0.01 N·m tork üretiyor. Bu yüzden hafif bir kol seçildi ve motorun en zor durumda, yani kol yataydayken ($\sin 90^\circ = 1$) tutabildiği kontrol edildi:
 
 - Yerçekiminin torku: $mg\ell = 0.05 \times 9.81 \times 0.1 \approx 0.049$ N·m
 - Gereken akım: $0.049 / 0.01 \approx 4.9$ A
 - Gereken gerilim (kol dururken): $R i = 1 \times 4.9 \approx 4.9$ V
 
-12 V'luk bir besleme bunu rahatça karşılıyor, yani motor kolu her açıda tutabiliyor.
+12 V'luk bir besleme bunu rahatça karşılıyor; motor kolu her açıda tutabiliyor.
 
-## 7. Blok diyagram
+## 9. Blok diyagram
 
-![Blok diyagram](sekiller/kt1_blok_diyagram.png)
+![Blok diyagram](sekiller/model_blok_diyagram.png)
 
 - **İleri yol** (soldan sağa): gerilim → akım → hız → açı. Her durum bir integratörün (∫) çıkışı.
 - **Üstteki geri dönüşler:** sargı direnci ($R/L = 2$) ve yerçekimi ($\sin$ → 4.67).
-- **Alttaki geri dönüşler:** sürtünme (9.52) ve zıt EMK (0.02). Zıt EMK hızdan akıma geri dönüyor: motor hızlandıkça akım azalıyor. Elektrik ve mekanik kısım bu okla birbirine bağlanıyor.
-- **Kontrol:** 3 integratör (3 durum), 6 kazanç (6 katsayı), 2 toplama bloğu, 1 doğrusal olmayan $\sin$ bloğu.
+- **Alttaki geri dönüşler:** sürtünme (9.52) ve zıt EMK (0.02). Zıt EMK hızdan akıma geri dönüyor: motor hızlandıkça akım azalıyor.
 
-## 8. Denge noktaları
+## 10. Denge noktaları ve 90° doğrusallaştırma
 
-Kolu $\theta_0$ açısında tutmak istiyoruz. Dengede bütün değişim hızları sıfır olmalı:
-
-1. $\dot x_1 = 0 \Rightarrow x_2 = 0$: kol dönmüyor.
-2. $\dot x_2 = 0$, $x_2 = 0$ yazınca $0.952\,x_3 = 4.67\sin\theta_0$, yani $x_3 \approx 4.9\sin\theta_0$: motorun yerçekimini dengelemesi için gereken akım.
-3. $\dot x_3 = 0$, $x_2 = 0$ yazınca $2u = 2x_3$, iki taraf 2'ye bölünce $u = x_3$.
+Dengede bütün değişim hızları sıfır:
 
 $$x^{eq} = (\theta_0,\ 0,\ 4.9\sin\theta_0), \qquad u^{eq} = 4.9\sin\theta_0 \text{ V}$$
 
@@ -157,34 +196,17 @@ $$x^{eq} = (\theta_0,\ 0,\ 4.9\sin\theta_0), \qquad u^{eq} = 4.9\sin\theta_0 \te
 | 45° | 3.5 A | 3.5 V | |
 | **90° (yatay)** | **4.9 A** | **4.9 V** | en zor durum, motor kolun bütün ağırlığını taşıyor |
 
-Projede kullanacağımız çalışma noktası: **$\theta_0 = 90^\circ$ (kol yatay)**. Hem en zor durum hem de kontrol açısından en ilginç olanı.
-
-### 90° etrafında doğrusallaştırma
-
-Genel Jacobian tablosu (her satır bir $f$'nin türevleri):
-
-| | $\partial/\partial x_1$ | $\partial/\partial x_2$ | $\partial/\partial x_3$ | $\partial/\partial u$ |
-|---|---|---|---|---|
-| $f_1 = x_2$ | 0 | 1 | 0 | 0 |
-| $f_2 = 0.952x_3 - 9.52x_2 - 4.67\sin x_1$ | $-4.67\cos x_1$ | −9.52 | 0.952 | 0 |
-| $f_3 = 2u - 2x_3 - 0.02x_2$ | 0 | −0.02 | −2 | 2 |
-| $y = x_1$ | 1 | 0 | 0 | 0 |
-
-Tek değişken kutu $-4.67\cos x_1$; $x_1 = 90^\circ$'de $\cos 90^\circ = 0$ olduğu için o da sıfır oluyor:
+90° etrafında Jacobian'daki tek değişken terim $-4.67\cos x_1$, ve $\cos 90^\circ = 0$ olduğu için sıfır:
 
 $$A = \begin{bmatrix} 0 & 1 & 0\\ 0 & -9.52 & 0.952\\ 0 & -0.02 & -2\end{bmatrix}, \qquad B = \begin{bmatrix} 0\\ 0\\ 2\end{bmatrix}, \qquad C = \begin{bmatrix} 1 & 0 & 0\end{bmatrix}, \qquad D = 0$$
 
-$A$'nın ilk sütunu tamamen sıfır: bu noktada açı hiçbir durumun değişim hızını etkilemiyor, yani yerçekiminin kolu geri iten etkisi kayboluyor. Bu yüzden özdeğerlerden biri $0$; diğer ikisi hız–akım kısmının köşegenine çok yakın (`eig(A)`): $0$, $-9.5213$, $-2.0025$.
+$A$'nın ilk sütunu sıfır: bu noktada yerçekiminin kolu geri iten etkisi kayboluyor. Özdeğerler (`eig(A)`): $0$, $-9.5213$, $-2.0025$.
 
-## 9. Açık çevrim simülasyonu
+## 11. Açık çevrim simülasyonu
 
-Motora sabit denge gerilimini veriyoruz ($u = R\,mg\ell/K = 4.905$ V, yuvarlamadan) ve kolu 90°'nin biraz altından, tam üstünden ve biraz üstünden bırakıyoruz. Denklemler MATLAB'da `ode45` ile 60 s boyunca çözülüyor.
+Motora sabit denge gerilimi ($u = R\,mg\ell/K = 4.905$ V) verilip kol 80°, 90° ve 100°'den bırakıldı; `ode45` ile 60 s.
 
-| Giriş | Başlangıç | Süre | Çıkış |
-|---|---|---|---|
-| $u = 4.905$ V (sabit) | $\theta(0) = 80^\circ, 90^\circ, 100^\circ$; $\omega(0) = 0$; $i(0) = 4.905$ A | 60 s | $y = \theta(t)$ |
-
-![Açık çevrim cevabı](sekiller/kt1_acik_cevrim.png)
+![Açık çevrim cevabı](sekiller/model_acik_cevrim.png)
 
 | $\theta(0)$ | $\theta(60\text{ s})$ | Ne oldu? |
 |---|---|---|
@@ -192,67 +214,66 @@ Motora sabit denge gerilimini veriyoruz ($u = R\,mg\ell/K = 4.905$ V, yuvarlamad
 | 90° | 90.0° | hiç kıpırdamıyor |
 | 100° | 443.6° | uzaklaşıyor, tam bir tur dönüp tekrar 90°'ye (450°) geliyor |
 
-**Neden?** Motorun torku sabit: $K i = 0.01 \times 4.905 = 0.049$ N·m. Yerçekiminin torku $mg\ell\sin\theta$ ve en büyük değeri olan 0.049'a tam 90°'de ulaşıyor. Yani 90°'de iki tork eşit, kol duruyor. 80°'de ve 100°'de $\sin\theta < 1$ olduğu için yerçekimi daha zayıf ve motor kazanıyor; motor kolu her iki durumda da yukarı itiyor. 80°'de yukarısı 90°'ye doğru, kol dengeye yaklaşıyor. 100°'de ise yukarısı 90°'den uzağa doğru: kol tepeden geçiyor, düşerken yerçekimi de yardım ediyor ve tam bir tur atıyor.
+Motorun torku sabit ($0.049$ N·m); yerçekimi bu değere tam 90°'de ulaşıyor. 80° ve 100°'de motor kazanıyor ve kolu yukarı itiyor: 80°'de yukarısı dengeye doğru, 100°'de dengeden uzağa doğru. Sıfır özdeğer de bunu söylüyor: 90° masanın kenarında duran bir bilye gibi.
 
-**Özdeğerler.** 90°'de doğrusallaştırılmış sistemin özdeğerleri:
-
-$$\lambda_1 = 0, \qquad \lambda_2 = -9.52, \qquad \lambda_3 = -2.00$$
-
-$-9.52$ ve $-2.00$ sürtünmeden ve motorun elektrik kısmından gelen hızlı sönümler. $0$ ise $\cos 90^\circ = 0$ olmasından geliyor: bu noktada yerçekiminin eğimi sıfır, kolu geri itecek bir etki yok. Masanın kenarında duran bir bilye gibi; bir yana itersek geri geliyor, öbür yana itersek düşüyor.
-
-![Film şeridi](sekiller/kt1_filmseridi.png)
+![Film şeridi](sekiller/model_filmseridi.png)
 
 *$\theta(0) = 100^\circ$: kol tepeden geçip ($t = 22$ s) tam tur atıyor ve 90°'ye geri geliyor.*
 
-**Sonuç:** Sabit gerilim verip bırakmak kolu 90°'de güvenle tutmaya yetmiyor; küçük bir sapma kolu tam tura gönderebiliyor. Bu yüzden geri besleme (kontrolcü) gerekiyor.
+**Sonuç:** Sabit gerilim kolu 90°'de güvenle tutmaya yetmiyor; geri besleme gerekiyor. Gerçek düzenekte motor dişli kutulu olacağı için model, araştırma bölümündeki iki kütleli modele genişletildi.
 
-## 10. Dosya yapısı ve çalıştırma
+---
+
+# Bölüm III
+
+## 12. Dosya yapısı ve çalıştırma
 
 ```
 dc-motor-robot-arm/
 ├── README.md
-├── matlab/
-│   ├── kt1.m               # ode45 açık çevrim simülasyonu + özdeğerler → kt1_acik_cevrim.png
-│   ├── kt1_animasyon.m     # 2D kol animasyonu (ekranda oynar) → kt1_animasyon.gif
-│   └── kt1_filmseridi.m    # θ(0)=100° durumundan seçilen kareler → kt1_filmseridi.png
-├── sekiller/               # MATLAB ve LaTeX çıktıları (README'deki tüm görseller)
-└── latex/
-    ├── kt1.tex / kt1.pdf   # projenin tam raporu (denklem çözümleri, tüm tablolar)
-    ├── sema.tex            # fiziksel şema (standalone)
-    └── blok_diyagram.tex   # blok diyagram (standalone)
+├── docs/                     # araştırma defteri (GitHub Pages)
+├── literatur/                # okuma notları, sorgu listeleri, tarama özetleri (makale PDF'leri yok)
+├── simulasyon/               # araştırma simülasyonları (MATLAB)
+│   ├── parametreler.m        # düzenek parametreleri; seviye: 'ideal' | 'surtunme' | 'gercekci'
+│   ├── kol_benzetim.m        # iki kütle + boşluk + yerçekimi + PID; vektörel RK4
+│   ├── tek_deneme.m          # beş açıda zaman yanıtları
+│   ├── harita.m              # açı × kapalı çevrim hızı haritası
+│   ├── ince_tarama.m         # 0° ve 180° civarında 1° adımlı tarama
+│   ├── duyarlilik.m          # boşluk, dişli sertliği, uç kütlesi duyarlılığı
+│   ├── motor_kontrol.m       # motor tork yeterliliği
+│   ├── boyutsuz_harita.m     # 24 düzenek, (γ, r_s) düzlemi
+│   ├── boyutsuz_sinir.m      # sınır eğrileri ve düzenekler arası dağılım
+│   └── sonuclar_2026-10-18.md
+├── matlab/                   # temel model
+│   ├── acik_cevrim.m         # ode45 açık çevrim simülasyonu + özdeğerler
+│   ├── animasyon.m           # 2D kol animasyonu → model_animasyon.gif
+│   └── filmseridi.m          # θ(0)=100° karelerinden film şeridi
+├── sekiller/                 # temel model şekilleri
+└── latex/                    # fiziksel şema ve blok diyagram kaynakları
 ```
 
 **MATLAB** (ek araç kutusu gerekmiyor; R2026b ile test edildi):
 
 ```matlab
-cd matlab
-kt1              % grafik + özdeğerler
-kt1_animasyon    % animasyon (GIF'i de yeniden kaydeder)
-kt1_filmseridi   % film şeridi
+cd simulasyon
+tek_deneme                    % beş açı, üç model seviyesi
+harita                        % açı × kazanç haritası (birkaç dakika)
+duyarlilik('bosluk')          % 'kutle' | 'bosluk' | 'sertlik'
+boyutsuz_harita('gercekci'); boyutsuz_sinir('gercekci')
 ```
 
-**LaTeX** (`pdflatex`, paketler: babel-turkish, tikz, circuitikz, booktabs, float):
+## 13. Kaynaklar
 
-```
-cd latex
-pdflatex kt1.tex
-```
+1. B. Messner, D. Tilbury, R. Hill, *Control Tutorials for MATLAB and Simulink*, "DC Motor Speed: System Modeling", University of Michigan. <https://ctms.engin.umich.edu/CTMS/index.php?example=MotorSpeed&section=SystemModeling>
+2. J. P. Hespanha, *Linear Systems Theory*, Princeton University Press, 2009.
+3. Aynı CTMS sayfasının University of Maryland ENME462 kopyası. <https://terpconnect.umd.edu/~sandborn/courses/ENME462/Studio5/5-motor.htm>
+4. L. Sun, X. Li, L. Chen, H. Shi, Z. Jiang, "Dual-motor coordination for high-quality servo with transmission backlash," *IEEE Trans. Ind. Electron.*, 70(2), 2023.
+5. A. Esbrook, X. Tan, H. K. Khalil, "Self-excited limit cycles in an integral-controlled system with backlash," *IEEE Trans. Autom. Control*, 59(4), 2014.
+6. A. Ghaffari, E. Mohammadiasl, "Calculating the frequency of oscillation for servo axes distressed by clearance or preloading," *IEEE/ASME Trans. Mechatronics*, 18(3), 2013.
+7. J. Padron ve ark., "Evaluating the equivalence between nonlinear friction and backlash in two-inertia systems," *IEEE AMC*, 2022.
 
-## 11. Sonraki adımlar
-
-- 90° etrafındaki doğrusal modelin kararlılık, kontrol edilebilirlik ve gözlemlenebilirlik analizi
-- Geri besleme kontrolcüsü tasarımı (kolu 90°'de kararlı tutmak)
-- Kapalı çevrim simülasyonu ve animasyonu
-- Geliştirme kartı (Arduino vb.) + DC motor + enkoder ile fiziksel uygulama
-
-## 12. Kaynaklar
-
-1. B. Messner, D. Tilbury, R. Hill, *Control Tutorials for MATLAB and Simulink*, "DC Motor Speed: System Modeling", University of Michigan. <https://ctms.engin.umich.edu/CTMS/index.php?example=MotorSpeed&section=SystemModeling> (erişim: 13 Ekim 2026)
-2. J. P. Hespanha, *Linear Systems Theory*, Princeton University Press, 2009: §2.4.1 denklem (2.7), Example 2.1, Definition 2.1 ve 2.2.
-3. Aynı CTMS sayfasının University of Maryland ENME462 dersindeki kopyası (motor parametrelerini buradan da kontrol ettik). <https://terpconnect.umd.edu/~sandborn/courses/ENME462/Studio5/5-motor.htm> (erişim: 13 Ekim 2026)
-
-Denklemlerin hangisinin hangi kaynaktan, hangisinin ödevin önceki sorularından geldiğini gösteren tam tablo `latex/kt1.pdf`'in sonunda.
+Tam kaynak listesi ve okuma notları: [`literatur/okuma_notlari.md`](literatur/okuma_notlari.md).
 
 ---
 
-**Şafak Şahin** · EEM5507 Doğrusal Sistemler Teorisi · 2026–27 Güz
+**Şafak Şahin** · 2026

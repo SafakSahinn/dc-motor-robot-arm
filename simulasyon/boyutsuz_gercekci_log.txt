@@ -1,0 +1,46 @@
+ 1: m=  0 g, 2r=1.5 der, Ks=10 -> w_rez=269 rad/s, gamma_max=0.11
+ 2: m=  0 g, 2r=1.5 der, Ks=30 -> w_rez=466 rad/s, gamma_max=0.04
+ 3: m=  0 g, 2r=3 der, Ks=10 -> w_rez=269 rad/s, gamma_max=0.06
+ 4: m=  0 g, 2r=3 der, Ks=30 -> w_rez=466 rad/s, gamma_max=0.02
+ 5: m=  0 g, 2r=5 der, Ks=10 -> w_rez=269 rad/s, gamma_max=0.03
+ 6: m=  0 g, 2r=5 der, Ks=30 -> w_rez=466 rad/s, gamma_max=0.01
+ 7: m= 20 g, 2r=1.5 der, Ks=10 -> w_rez=150 rad/s, gamma_max=0.34
+ 8: m= 20 g, 2r=1.5 der, Ks=30 -> w_rez=259 rad/s, gamma_max=0.11
+ 9: m= 20 g, 2r=3 der, Ks=10 -> w_rez=150 rad/s, gamma_max=0.17
+10: m= 20 g, 2r=3 der, Ks=30 -> w_rez=259 rad/s, gamma_max=0.06
+11: m= 20 g, 2r=5 der, Ks=10 -> w_rez=150 rad/s, gamma_max=0.10
+12: m= 20 g, 2r=5 der, Ks=30 -> w_rez=259 rad/s, gamma_max=0.03
+13: m= 50 g, 2r=1.5 der, Ks=10 -> w_rez=117 rad/s, gamma_max=0.67
+14: m= 50 g, 2r=1.5 der, Ks=30 -> w_rez=202 rad/s, gamma_max=0.22
+15: m= 50 g, 2r=3 der, Ks=10 -> w_rez=117 rad/s, gamma_max=0.34
+16: m= 50 g, 2r=3 der, Ks=30 -> w_rez=202 rad/s, gamma_max=0.11
+17: m= 50 g, 2r=5 der, Ks=10 -> w_rez=117 rad/s, gamma_max=0.20
+18: m= 50 g, 2r=5 der, Ks=30 -> w_rez=202 rad/s, gamma_max=0.07
+19: m=100 g, 2r=1.5 der, Ks=10 -> w_rez=100 rad/s, gamma_max=1.24
+20: m=100 g, 2r=1.5 der, Ks=30 -> w_rez=173 rad/s, gamma_max=0.41
+21: m=100 g, 2r=3 der, Ks=10 -> w_rez=100 rad/s, gamma_max=0.62
+22: m=100 g, 2r=3 der, Ks=30 -> w_rez=173 rad/s, gamma_max=0.21
+23: m=100 g, 2r=5 der, Ks=10 -> w_rez=100 rad/s, gamma_max=0.37
+24: m=100 g, 2r=5 der, Ks=30 -> w_rez=173 rad/s, gamma_max=0.12
+[Warning: Error in state of SceneNode.
+String scalar or character vector must have valid interpreter syntax:
+\\gamma = mg\\ell sin\\theta_0 / (K_s r)   (0 deerleri 10^{-3}e áekildi)
+] 
+
+Birden fazla dÅzenein dÅtÅÅ hÅcreler: 51 tutarl, 30 kark (63% tutarl)
+
+[gercekci] gamma_sinir: dÅzenekler aras dalm (Inf = 90 dereceye kadar salnm)
+    rs       min    medyan       max   max/min   sonlu duzenek sayisi
+  0.08     0.001     0.007     0.018      15.0   8/24 (Inf: 0, 0: 16)
+  0.13     0.004     0.006     0.019       5.5   9/24 (Inf: 0, 0: 15)
+  0.18     0.005     0.012     0.018       3.3   11/24 (Inf: 2, 0: 11)
+  0.23     0.006     0.022     0.035       6.0   13/24 (Inf: 5, 0: 6)
+  0.28     0.018     0.054     0.084       4.7   14/24 (Inf: 7, 0: 3)
+  0.33     0.035     0.120     0.168       4.8   10/24 (Inf: 12, 0: 2)
+  0.38     0.078     0.197     0.389       5.0   10/24 (Inf: 14, 0: 0)
+  0.43     0.083     0.346     0.618       7.5   7/24 (Inf: 17, 0: 0)
+  0.48     0.123     0.160     0.412       3.3   3/24 (Inf: 21, 0: 0)
+[Warning: Error in state of SceneNode.
+String scalar or character vector must have valid interpreter syntax:
+\\gamma_{snr}  (bandn bittii \\gamma = mg\\ell sin\\theta_0 / (K_s r))
+] 

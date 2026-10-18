@@ -1,4 +1,4 @@
-% KT1 - DC motorlu tek eklemli robot kolu: acik cevrim simulasyonu
+% DC motorlu tek eklemli robot kolu: acik cevrim simulasyonu
 % Durumlar: x1 = theta (rad, dik asagidan), x2 = omega (rad/s), x3 = i (A)
 % Giris: u = V (motor gerilimi), cikis: y = theta
 
@@ -47,4 +47,4 @@ legend('\theta(0) = 80^\circ','\theta(0) = 90^\circ','\theta(0) = 100^\circ', ..
 ylim([60 460]); yticks(0:45:450);
 
 sekil = fullfile(fileparts(fileparts(mfilename('fullpath'))),'sekiller');
-exportgraphics(gcf, fullfile(sekil,'kt1_acik_cevrim.png'), 'Resolution', 150);
+exportgraphics(gcf, fullfile(sekil,'model_acik_cevrim.png'), 'Resolution', 150);

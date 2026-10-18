@@ -1,0 +1,116 @@
+﻿##  () -> atif yapan 0
+## Backlash compensation based oscillation suppression control for automatic loading manipulator arm with nonlinear extended state observer (2024) -> atif yapan 11
+2026|0|Reinforcement learning-enhanced sliding mode resonance suppression control for chain shell magazines with|Nonlinear Dynamics|10.1007/s11071-026-13083-6
+2026|0|Evolution of control strategies for servo systems under nonlinearities and uncertainties: towards model-d|The International Journal of|10.1007/s00170-026-18821-z
+2026|0|A two-layered control for backlash compensation and oscillation suppression in ball screw drives|Mechanical Systems and Signa|10.1016/j.ymssp.2026.114675
+2026|0|Adaptive robust control for gear transmission systems with backlash: An underactuated dynamics perspectiv|Journal of Vibration and Con|10.1177/10775463261450900
+2026|0|Research on extended high dimensional Melnikov and singularity based on double inertial coupling vibratio|Chaos Solitons & Fractals|10.1016/j.chaos.2026.118414
+2026|0|Research on Cascading Modeling of Maintenance Manipulator System Based on Constraint-Following Theory|International Conference on |10.1145/3817124.3817236
+2026|1|Parameter estimation of magazine system considering the coupling characteristics of rigid and flexible co|Asian Journal of Control|10.1002/asjc.70096
+2025|0|Research on the Precise Modeling Characteristics of GRU-Attention Neural Network for PMSM Systems with No|International Conference on |10.23919/icems66262.2025.11317074
+2025|2|Suppressing wing rock motion through differential equation solutions as an extended state observer|Nonlinear Dynamics|10.1007/s11071-025-11076-5
+2025|1|Prescribed Performance Control of Ammunition Loading Manipulator Arm Considering Actuator Saturation and |IEEE Access|10.1109/access.2025.3640936
+2024|0|Feed Drive Control System with Compensation for Friction, Backlash, and Resonance Effects||10.1109/piere62470.2024.10804956
+##  () -> atif yapan 11
+2026|0|Reinforcement learning-enhanced sliding mode resonance suppression control for chain shell magazines with|Nonlinear Dynamics|10.1007/s11071-026-13083-6
+2026|0|Evolution of control strategies for servo systems under nonlinearities and uncertainties: towards model-d|The International Journal of|10.1007/s00170-026-18821-z
+2026|0|A two-layered control for backlash compensation and oscillation suppression in ball screw drives|Mechanical Systems and Signa|10.1016/j.ymssp.2026.114675
+2026|0|Adaptive robust control for gear transmission systems with backlash: An underactuated dynamics perspectiv|Journal of Vibration and Con|10.1177/10775463261450900
+2026|0|Research on extended high dimensional Melnikov and singularity based on double inertial coupling vibratio|Chaos Solitons & Fractals|10.1016/j.chaos.2026.118414
+2026|0|Research on Cascading Modeling of Maintenance Manipulator System Based on Constraint-Following Theory|International Conference on |10.1145/3817124.3817236
+2026|1|Parameter estimation of magazine system considering the coupling characteristics of rigid and flexible co|Asian Journal of Control|10.1002/asjc.70096
+2025|0|Research on the Precise Modeling Characteristics of GRU-Attention Neural Network for PMSM Systems with No|International Conference on |10.23919/icems66262.2025.11317074
+2025|2|Suppressing wing rock motion through differential equation solutions as an extended state observer|Nonlinear Dynamics|10.1007/s11071-025-11076-5
+2025|1|Prescribed Performance Control of Ammunition Loading Manipulator Arm Considering Actuator Saturation and |IEEE Access|10.1109/access.2025.3640936
+2024|0|Feed Drive Control System with Compensation for Friction, Backlash, and Resonance Effects||10.1109/piere62470.2024.10804956
+##  () -> atif yapan 11
+2026|0|Reinforcement learning-enhanced sliding mode resonance suppression control for chain shell magazines with|Nonlinear Dynamics|10.1007/s11071-026-13083-6
+2026|0|Evolution of control strategies for servo systems under nonlinearities and uncertainties: towards model-d|The International Journal of|10.1007/s00170-026-18821-z
+2026|0|A two-layered control for backlash compensation and oscillation suppression in ball screw drives|Mechanical Systems and Signa|10.1016/j.ymssp.2026.114675
+2026|0|Adaptive robust control for gear transmission systems with backlash: An underactuated dynamics perspectiv|Journal of Vibration and Con|10.1177/10775463261450900
+2026|0|Research on extended high dimensional Melnikov and singularity based on double inertial coupling vibratio|Chaos Solitons & Fractals|10.1016/j.chaos.2026.118414
+2026|0|Research on Cascading Modeling of Maintenance Manipulator System Based on Constraint-Following Theory|International Conference on |10.1145/3817124.3817236
+2026|1|Parameter estimation of magazine system considering the coupling characteristics of rigid and flexible co|Asian Journal of Control|10.1002/asjc.70096
+2025|0|Research on the Precise Modeling Characteristics of GRU-Attention Neural Network for PMSM Systems with No|International Conference on |10.23919/icems66262.2025.11317074
+2025|2|Suppressing wing rock motion through differential equation solutions as an extended state observer|Nonlinear Dynamics|10.1007/s11071-025-11076-5
+2025|1|Prescribed Performance Control of Ammunition Loading Manipulator Arm Considering Actuator Saturation and |IEEE Access|10.1109/access.2025.3640936
+2024|0|Feed Drive Control System with Compensation for Friction, Backlash, and Resonance Effects||10.1109/piere62470.2024.10804956
+## Nonlinear dynamics and stability of wind turbine planetary gear sets under gravity effects (2014) -> atif yapan 78
+2026|0|Multi-state dynamics of planetary gear transmission under eccentricity-induced orbiting motion|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2026.106490
+2026|3|Dynamic mechanism revelation and position optimization of planet bearing in Ravigneaux planetary gear set|International Journal of Non|10.1016/j.ijnonlinmec.2026.105351
+2025|5|Synergistic vibration control in heavy-duty helical gear systems through gravity compensation and coupled|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2025.106186
+2025|2|Resonance and stability of piezoelectric herringbone gears under time-delay feedback|Applied Mathematical Modelli|10.1016/j.apm.2025.116216
+2025|15|Wear performance evaluation of journal bearings in wind turbine gearbox|International Journal of Mec|10.1016/j.ijmecsci.2025.110346
+2025|2|Influence of planet pin position errors on the fatigue reliability of planetary mechanisms for large wind|Meccanica|10.1007/s11012-025-01942-2
+2024|4|A misaligned formulation for planetary gears with analytical 3D contact characterization|Nonlinear Dynamics|10.1007/s11071-024-09917-w
+2024|0|Dynamic properties of double fed induction generator wind turbine gearbox under low voltage ride through |International Conference on |10.1117/12.3030402
+2024|4|Analysis of the Dynamic Characteristics of Coaxial Counter-Rotating Planetary Transmission System|Applied Sciences|10.3390/app14114491
+2024|5|Effect of Turbulent Wind Conditions on the Dynamic Characteristics of a Herringbone Planetary Gear System|Machines|10.3390/machines12040227
+2024|38|Nonlinear vibration and superharmonic resonance analysis of wind power planetary gear system|Nonlinear Dynamics|10.1007/s11071-023-09268-y
+2024|0|Effect of Input Torque on the Modulation Sidebands of Planetary Gears in a Wind Turbine Gearbox Under Gra|Mechanisms and machine scien|10.1007/978-981-99-8986-7_2
+2023|20|A vibration model of a planetary bearing system considering the time-varying wear|Nonlinear Dynamics|10.1007/s11071-023-08845-5
+2023|15|Nonlinear dynamics of non-orthogonal offset face gear-bearing transmission system|International Journal of Non|10.1016/j.ijnonlinmec.2023.104461
+2023|21|Dynamic Responses of the Planetary Gear Mechanism Considering Dynamic Wear Effects|Lubricants|10.3390/lubricants11060255
+2023|46|Dynamic modeling of GTF star gear-rotor coupling system considering structural flexibility|Journal of Sound and Vibrati|10.1016/j.jsv.2023.117813
+2023|19|Dynamic characteristics of the planetary gear system with rolling bearing|Multibody System Dynamics|10.1007/s11044-023-09905-9
+2023|51|Dynamic modeling and analysis of planetary gear train system considering structural flexibility and dynam|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2023.105348
+2023|1|Nonlinear dynamic analysis of power reflux hydraulic transmission system|Journal of Vibroengineering|10.21595/jve.2022.22376
+2023|9|Extraction and use of frequency-domain relationships between time-varying gear meshing properties and dia|Mechanical Systems and Signa|10.1016/j.ymssp.2023.110129
+2022|48|Dynamic modelling and dynamic characteristics of wind turbine transmission gearbox-generator system elect|Alexandria Engineering Journ|10.1016/j.aej.2022.10.036
+2022|16|Planet Load-Sharing and Phasing|Machines|10.3390/machines10080634
+2022|9|Dynamic modeling and analysis of the internal gear transmission with tooth crack subjected to the heavy t|Engineering Failure Analysis|10.1016/j.engfailanal.2022.106639
+2022|15|Investigation on dynamic characteristics of herringbone planetarygear system considering tooth surface fr|Meccanica|10.1007/s11012-022-01526-4
+2022|10|Dynamic Modeling and Analysis of Nonlinear Compound Planetary System|Machines|10.3390/machines10010031
+2022|0|Research on Nonlinear Dynamic Influence of Transmission Error on Wind Turbine Planetary Gear System|Mechanisms and machine scien|10.1007/978-981-16-7381-8_30
+2021|9|Wind Turbine Drivetrain Reliability and Wind Plant Operations and Maintenance Research and Development Op||10.2172/1822823
+2021|32|Dynamic characteristics of a wind turbine gearbox with amplitude modulation and gravity effect: Theoretic|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2021.104468
+2021|7|Time-Domain Dynamic Modeling and Analysis of Complex Heavy-Duty Gearbox Considering Floating Effect|Applied Sciences|10.3390/app11156876
+2021|9|A review of wind turbine drivetrain loads and load effects for fixed and floating wind turbines|Wiley Interdisciplinary Revi|10.1002/wene.417
+2021|24|Planetary Gearbox Dynamic Modeling Considering Bearing Clearance and Sun Gear Tooth Crack|Sensors|10.3390/s21082638
+2021|0|Study on stability of cable-anchored underwater platform by parametric excitation|Noise & Vibration Worldwide|10.1177/09574565211000444
+2021|0|Simulation and Test of Spindle Mode of Planetary Variable Speed Device|IOP Conference Series Earth |10.1088/1755-1315/632/4/042003
+2020|75|Nonlinear dynamic analysis of GTF gearbox under friction excitation with vibration characteristics recogn|Mechanical Systems and Signa|10.1016/j.ymssp.2020.107373
+2020|8|Effects of Vibration Isolator on Compound Planetary Gear Train with Marine Twin-Layer Gearbox Case: a Dyn|Journal of Vibration Enginee|10.1007/s42417-020-00261-y
+2020|34|Theoretical investigation of the improved nonlinear dynamic model for star gearing system in GTF gearbox |Mechanism and Machine Theory|10.1016/j.mechmachtheory.2020.104108
+2020|23|Development and verification of a computationally efficient stochastically linearized planetary gear trai|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2020.104061
+2020|5|Dynamic Modeling of a Planetary Gearbox with Sun Gear Crack and Bearing Clearance|Asia-Pacific International S|10.1109/aparm49247.2020.9209480
+2020|16|Dynamic behavior of the nonlinear planetary gear model in nonstationary conditions|Proceedings of the Instituti|10.1177/0954406220941048
+2020|4|Nonlinear dynamic analysis of GTF gearbox|Vibroengineering PROCEDIA|10.21595/vp.2020.21475
+2020|45|Mesh stiffness modelling and dynamic simulation of helical gears with tooth crack propagation|Meccanica|10.1007/s11012-020-01159-5
+2020|25|Dynamical Analysis of Planetary Gear Transmission System Under Support Stiffness Effects|International Journal of Bif|10.1142/s0218127420500807
+2020|32|Influence of Sliding Friction on the Dynamic Characteristics of a Planetary Gear Set With the Improved Ti|Journal of Mechanical Design|10.1115/1.4046073
+2020|17|A dynamic tooth wear prediction model for reflecting “two-sides” coupling relation between tooth wear acc|Proceedings of the Instituti|10.1177/0954406219900085
+2020|10|Dynamic modeling of a planetary gear system with sun gear crack under gravity and carrier-ring clearance|Procedia Manufacturing|10.1016/j.promfg.2020.06.011
+2019|243|Effects of lubrication on gear performance: A review|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2019.103701
+2019|25|Analytical Modeling of Discrete Mechanical Systems Involving Contact, Impact, and Friction|Applied Mechanics Reviews|10.1115/1.4044549
+2019|12|Research on dynamic modeling and simulation verification of a new type of FT pin-cycloid transmission|Proceedings of the Instituti|10.1177/0954406219861999
+2019|43|Flexible dynamic modeling and analysis of drive train for Offshore Floating Wind Turbine|Renewable Energy|10.1016/j.renene.2019.06.116
+2019|10|The transmission characteristic for the improved wind turbine gearbox|Energy Science & Engineering|10.1002/ese3.356
+2019|34|Dynamic Analysis of Planetary Gear Transmission System Considering the Flexibility of Internal Ring Gear|Iranian Journal of Science a|10.1007/s40997-019-00290-3
+2019|24|The optimization and the application for the wind turbine power-wind speed curve|Renewable Energy|10.1016/j.renene.2019.03.051
+2019|9|Dynamic Response Analysis for NW Planetary Gear Transmission Used in Electric Wheel Hub|IEEE Access|10.1109/access.2019.2931292
+2019|4|Modeling and Dynamic Characteristics of Planetary Gear Transmission in Non-inertial System of Aerospace E|Journal of Mechanical Engine|10.3901/jme.2019.23.162
+2018|24|Comparison of planetary bearing load-sharing characteristics in wind turbine gearboxes|Wind energy science|10.5194/wes-3-947-2018
+2018|41|Effect of number of blades on the dynamic behavior of a Darrieus turbine geared transmission system|Mechanical Systems and Signa|10.1016/j.ymssp.2018.11.048
+2018|3|Efficiency Analysis of Planetary Gear Train under Ring Gear Deformation||
+2018|25|Coupled Dynamic Characteristics of Wind Turbine Gearbox Driven by Ring Gear Considering Gravity|Journal of Dynamic Systems M|10.1115/1.4039482
+2018|47|Nonlinear Dynamics of a Multistage Gear Transmission System with Multi-Clearance|International Journal of Bif|10.1142/s0218127418500347
+2018|1|Study on vibration characteristic of the marine beveloid gear RV reducer|AIP conference proceedings|10.1063/1.5039065
+2017|5|Effect of Gravity of Carrier on the Dynamic Behavior of Planetary Gears|Lecture notes in mechanical |10.1007/978-3-319-66697-6_96
+2017|13|Influence of controllable parameters on load sharing behavior of torque coupling gear set|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2017.10.024
+2017|108|Dynamic analysis of a planetary gear system with multiple nonlinear parameters|Journal of Computational and|10.1016/j.cam.2017.06.021
+2017|14|Effects of Tooth Breakage Size and Rotational Speed on the Vibration Response of a Planetary Gearbox|Applied Sciences|10.3390/app7070678
+2017|17|Dynamic modeling and response of a spur planetary gear system with journal bearings under gravity effects|Journal of Vibration and Con|10.1177/1077546317707878
+2017|26|Dynamic response analysis of Vertical Axis Wind Turbine geared transmission system with uncertainty|Engineering Structures|10.1016/j.engstruct.2017.02.028
+2016|47|Study on interactions between tooth backlash and journal bearing clearance nonlinearity in spur gear pair|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2016.09.024
+2016|49|Nonlinear dynamic response analysis on gear-rotor-bearing transmission system|Journal of Vibration and Con|10.1177/1077546316667178
+2016|13|The meshing angular velocity and tangential contact force simulation for logarithmic spiral bevel gear ba|Journal of Mechanical Scienc|10.1007/s12206-016-0702-8
+2016|0|Precise model-based simulation for a deep hybrid transmission with compound planetary gear set|Proceedings of the Instituti|10.1177/1464419316654853
+2016|4|Vibration and acoustic investigation for a deep hybrid transmission with power-split compound planetary g|Proceedings of the Instituti|10.1177/0954406216639345
+2016|14|Random Vibration and Dynamic Analysis of a Planetary Gear Train in a Wind Turbine|Shock and Vibration|10.1155/2016/6292953
+2015|36|Wind turbine drive train dynamic characterization using vibration and torque signals|Mechanism and Machine Theory|10.1016/j.mechmachtheory.2015.11.013
+2015|6|Dynamic Vibration Characteristic Analysis for the Power-Split Transmission System Based on Loaded Tooth C|Shock and Vibration|10.1155/2015/871894
+2015|12|Recommendations on Model Fidelity for Wind Turbine Gearbox Simulations|VUBIR (Vrije Universiteit Br|
+2015|2|Recommendations on Model Fidelity for Wind Turbine Gearbox Simulations: Preprint|OSTI OAI (U.S. Department of|
+2014|17|Vibration behavior optimization of planetary gear sets|Propulsion and Power Researc|10.1016/j.jppr.2014.11.002
+2014|164|A Review of Planetary and Epicyclic Gear Dynamics and Vibrations Research|Applied Mechanics Reviews|10.1115/1.4027812

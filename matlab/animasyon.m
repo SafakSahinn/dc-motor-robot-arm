@@ -1,10 +1,10 @@
-% KT1 - robot kolunun 2D animasyonu (acik cevrim, u = ueq sabit)
+% Robot kolunun 2D animasyonu (acik cevrim, u = ueq sabit)
 % Uc durum yan yana: theta(0) = 80, 90, 100 derece
-% Ekranda oynatir ve sekiller/kt1_animasyon.gif olarak kaydeder
+% Ekranda oynatir ve sekiller/model_animasyon.gif olarak kaydeder
 
 clear; clc; close all;
 
-% Parametreler (kt1.m ile ayni)
+% Parametreler (acik_cevrim.m ile ayni)
 Jm = 0.01; b = 0.1; K = 0.01; R = 1; L = 0.5;
 m = 0.05; l = 0.1; g = 9.81;
 J = Jm + m*l^2;
@@ -41,7 +41,7 @@ end
 zaman = annotation('textbox',[0.42 0.01 0.2 0.06],'String','', ...
     'EdgeColor','none','HorizontalAlignment','center','FontSize',11);
 
-gif = fullfile(fileparts(fileparts(mfilename('fullpath'))),'sekiller','kt1_animasyon.gif');
+gif = fullfile(fileparts(fileparts(mfilename('fullpath'))),'sekiller','model_animasyon.gif');
 for n = 1:numel(t)
     for k = 1:3
         xu = l*sin(th(n,k));  yu = -l*cos(th(n,k));

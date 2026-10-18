@@ -1,4 +1,4 @@
-% KT1 - animasyondan film seridi: theta(0) = 100 derece durumunun
+% Animasyondan film seridi: theta(0) = 100 derece durumunun
 % secilen anlari yan yana (PDF'e konacak sabit resim)
 
 clear; clc; close all;
@@ -32,4 +32,4 @@ for k = 1:numel(anlar)
     fprintf('t = %2d s -> theta = %.1f derece\n', anlar(k), rad2deg(th(k)));
 end
 sekil = fullfile(fileparts(fileparts(mfilename('fullpath'))),'sekiller');
-exportgraphics(fig, fullfile(sekil,'kt1_filmseridi.png'), 'Resolution', 150);
+exportgraphics(fig, fullfile(sekil,'model_filmseridi.png'), 'Resolution', 150);
