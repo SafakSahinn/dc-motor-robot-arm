@@ -90,6 +90,8 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 | Kol | 15 cm alüminyum + ~20 g değiştirilebilir uç kütlesi | |
 | Boşluk kaplini | 3B baskı, 1,5° / 3° / 5° değiştirilebilir | Ana deney değişkeni |
 
+Mağaza seçenekleri, mağazada neye bakılacağı ve bağlantılar: [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md).
+
 Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$).
 
 ---
@@ -232,6 +234,7 @@ Motorun torku sabit ($0.049$ N·m); yerçekimi bu değere tam 90°'de ulaşıyor
 dc-motor-robot-arm/
 ├── README.md
 ├── docs/                     # araştırma defteri (GitHub Pages)
+├── donanim/                  # alışveriş listesi (seçenekler, mağazalar, kontrol listesi)
 ├── literatur/                # okuma notları, sorgu listeleri, tarama özetleri (makale PDF'leri yok)
 ├── simulasyon/               # araştırma simülasyonları (MATLAB)
 │   ├── parametreler.m        # düzenek parametreleri; seviye: 'ideal' | 'surtunme' | 'gercekci'
