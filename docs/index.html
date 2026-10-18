@@ -854,6 +854,15 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
       <div class="need">Mevcut düzenek; yazılım ağırlıklı.</div>
     </div>
   </div>
+
+  <div class="note ok"><b>Not: IoT katmanı (IoT dersi için)</b>Kontrol döngüsü ESP32'de kablolu kalır; üstüne izleme katmanı eklenir:
+    <ul class="plain">
+      <li>MQTT ile ölçüm yayını: açı, akım, sıcaklık, salınım genliği.</li>
+      <li>Bilgisayarda ya da Raspberry Pi'de Mosquitto (MQTT sunucusu) ve Node-RED / Grafana ile canlı pano.</li>
+      <li>Uzaktan deney: panodan hedef açıyı ve kazancı değiştirip sonucu izlemek ("remote lab").</li>
+      <li>Aşınma ya da aşırı ısınma için otomatik uyarı (geliştirme yönü 4 ile bağlantılı).</li>
+    </ul>
+    İki derste kullanmadan önce iki hocaya da söylenecek; IoT dersine teslim edilen kısım IoT katmanı olacak.</div>
 </section>
 </main>
 </div>
