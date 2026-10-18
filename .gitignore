@@ -10,6 +10,8 @@
 # MATLAB
 *.asv
 *.mat
+# simülasyon sonuçları depoda kalsın
+!simulasyon/*.mat
 latex/sema.pdf
 latex/blok_diyagram.pdf
 
