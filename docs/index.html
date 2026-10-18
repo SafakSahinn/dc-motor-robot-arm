@@ -152,6 +152,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#kararlar">Tasarım kararları</a>
   <a href="#yayin">Yayın</a>
   <a href="#siradaki">Sıradaki adım</a>
+  <a href="#gelistirme">Geliştirme yönleri</a>
 </nav>
 
 <main>
@@ -781,6 +782,78 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <li>Malzeme gelince: sistem tanılama (motor eylemsizliği, sürtünme, ölü bant, boşluğun birkaç açıda ölçümü), ardından açı taraması deneyleri.</li>
     <li>Ahmad 1985 (ICRA) ve Kodama ve Shirakawa 1968 (IEEE TAC) makalelerini indirmek; kampüsten Nordin ve Gutman 2002 anketi.</li>
   </ul>
+</section>
+
+<section id="gelistirme">
+  <div class="top"><div class="kicker">Ana çalışmadan sonra</div><span class="pill open">Fikir</span></div>
+  <h2>Geliştirme yönleri</h2>
+  <p>Bulgularımızdan doğal olarak çıkan yönler, yakından uzağa. Önce ana çalışma bitirilecek: hipotezin deneyle doğrulanması ve açıya bağlı gözlemci.</p>
+
+  <h3>Bu düzenekle doğrudan</h3>
+  <div class="gaps">
+    <div class="gap chosen">
+      <div class="id">1</div>
+      <h4>Açıya göre ayarlanan gözlemci</h4>
+      <p>Gözlemci kazancı kol açısına göre değiştirilir; sabit kazançlı gözlemci ve literatürdeki yöntemlerle (LADOB, değişken kazançlı gözlemci) karşılaştırılır.</p>
+      <div class="need">Ana çalışmanın parçası. Ek malzeme yok.</div>
+    </div>
+    <div class="gap chosen">
+      <div class="id">2</div>
+      <h4>Hareket sırasında boşluk</h4>
+      <p>Kol hareket ederken salınımlı ve salınımsız bölgelerden geçer. Yörüngeyi salınımlı bölgeleri hızlı geçecek ya da orada kazancı düşürecek şekilde planlamak.</p>
+      <div class="need">Ana çalışmanın doğal uzantısı. Ek malzeme yok.</div>
+    </div>
+    <div class="gap">
+      <div class="id">3</div>
+      <h4>Uç kütlesini kestirme</h4>
+      <p>Salınım sınırı yerçekimi torkuna bağlı. Sınırın nerede olduğunu ölçerek kolun taşıdığı yük kestirilebilir.</p>
+      <div class="need">Aynı düzenek, uç ağırlıkları. İkinci bir çalışma olabilir.</div>
+    </div>
+    <div class="gap">
+      <div class="id">4</div>
+      <h4>Boşluk aşınmasını izleme</h4>
+      <p>Dişliler aşındıkça boşluk büyür ve salınım bandı genişler. Bandı ölçerek aşınma çalışırken anlaşılır (kestirimci bakım).</p>
+      <div class="need">Aynı düzenek, farklı boşluklu kaplinler aşınmayı taklit eder.</div>
+    </div>
+  </div>
+
+  <h3>Daha ileri</h3>
+  <div class="gaps">
+    <div class="gap">
+      <div class="id">5</div>
+      <h4>Yerçekimi dengeleme yayları</h4>
+      <p>İşbirlikçi robotlar ve dış iskeletler yerçekimini yayla dengeler. Ama yerçekimi dişliyi bastırıp salınımı engelliyor: dengelenen kolda bu "bedava ön yük" kaybolur ve salınım artabilir. Pratikte gerçek bir ödünleşim; literatürde görülmedi.</p>
+      <div class="need">En özgün yan yön. Gerekli: yay ve bağlantı parçası.</div>
+    </div>
+    <div class="gap">
+      <div class="id">6</div>
+      <h4>İki eklemli kol</h4>
+      <p>İkinci eklemde yerçekimi torku iki açıya birden bağlı; harita üç boyuta çıkar.</p>
+      <div class="need">İkinci motor, sensör ve kol.</div>
+    </div>
+    <div class="gap">
+      <div class="id">7</div>
+      <h4>Farklı dişli türleri</h4>
+      <p>Harmonik dişli, sikloidal dişli ya da 3B baskı dişliler aynı boyutsuz kurala uyuyor mu?</p>
+      <div class="need">Farklı redüktörler.</div>
+    </div>
+  </div>
+
+  <h3>Farklı türde katkılar</h3>
+  <div class="gaps">
+    <div class="gap">
+      <div class="id">8</div>
+      <h4>Açık kaynaklı eğitim düzeneği</h4>
+      <p>Ucuz parçalarla, boşluk ve yerçekimi etkilerini gösteren bir kontrol deney seti. Ticari setlerin gizlediği gerçek kusurları görünür kılar (Purdue 2023 ile aynı motivasyon).</p>
+      <div class="need">Mevcut düzenek + belgelendirme.</div>
+    </div>
+    <div class="gap">
+      <div class="id">9</div>
+      <h4>Öğrenmeye dayalı kontrol</h4>
+      <p>Açıya göre ayarı elle değil, uyarlamalı ya da öğrenen bir kontrolcüyle bulmak.</p>
+      <div class="need">Mevcut düzenek; yazılım ağırlıklı.</div>
+    </div>
+  </div>
 </section>
 </main>
 </div>

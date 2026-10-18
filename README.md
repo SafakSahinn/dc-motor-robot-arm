@@ -94,6 +94,22 @@ Mağaza seçenekleri, mağazada neye bakılacağı ve bağlantılar: [`donanim/a
 
 Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$).
 
+### Geliştirme yönleri
+
+Ana çalışma (hipotezin deneyle doğrulanması ve açıya bağlı gözlemci) bittikten sonra:
+
+| # | Yön | Not |
+|---|---|---|
+| 1 | Açıya göre ayarlanan gözlemci; sabit kazançlı ve literatürdeki gözlemcilerle karşılaştırma | Ana çalışmanın parçası |
+| 2 | Hareket sırasında boşluk: salınımlı bölgeleri hızlı geçen ya da orada kazancı düşüren yörünge planlama | Ana çalışmanın uzantısı |
+| 3 | Salınım sınırından uç kütlesini kestirme | Aynı düzenek |
+| 4 | Salınım bandının genişliğinden dişli aşınmasını izleme (kestirimci bakım) | Aynı düzenek, farklı kaplinler |
+| 5 | Yerçekimi dengeleme yayları: dengelenen kolda yerçekiminin "bedava ön yükü" kaybolur, salınım artabilir | En özgün yan yön |
+| 6 | İki eklemli kol: harita üç boyuta çıkar | İkinci motor ve sensör |
+| 7 | Harmonik, sikloidal ya da 3B baskı dişliler aynı kurala uyuyor mu | Farklı redüktörler |
+| 8 | Açık kaynaklı, ucuz kontrol eğitim düzeneği | Belgelendirme |
+| 9 | Açıya göre ayarı öğrenen ya da uyarlamalı kontrolcü | Yazılım ağırlıklı |
+
 ---
 
 # Bölüm II: Temel model
