@@ -52,7 +52,7 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 - Yerçekimsiz sistemlerde "sabit referans limit cycle'ı yalnızca kaydırır" sonucunun (Esbrook, Tan, Khalil 2014) yerçekimli kolda geçerli olmadığını göstermek.
 - Açı–kazanç düzleminde nicel bir harita ve kaymalı (bias) tanımlama fonksiyonuyla analitik açıklama.
 - Açıya göre ayarlanan bir bozucu gözlemci.
-- Laboratuvar ölçeğinde, parametreleri belgeli bir düzenekte (maxon dişli motor, ESP32, mutlak açı enkoderi) deneysel doğrulama; ortam ve motor sıcaklığı her deneyle birlikte kaydedilir.
+- Erişilebilir bir düzenekte (dişli DC motor, ESP32, manyetik açı sensörü, 20 bit akım ölçümü) deneysel doğrulama; ortam ve motor sıcaklığı her deneyle birlikte kaydedilir.
 
 ## 2. Literatür
 
@@ -80,27 +80,26 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 
 ## 4. Donanım
 
-Seçim ilkesi: her parça bilinen bir üreticiden, veri sayfası eksiksiz; çözünürlük ve doğruluk ölçülen boşluğun (1,5–5°) çok altında.
+Malzeme üç düzeyde değerlendirildi: en ucuz ilk liste, maxon motorlu üst sınıf liste ve ikisinin arasındaki **dengeli liste (seçilen)**. Motor ilk listedeki gibi kaldı; ucuz ama kritik parçalar bilinen üreticilerden alındı.
 
-| Görev | Seçim | Neden |
-|---|---|---|
-| Motor + dişli + enkoder | **maxon** DCX 22 L (12 V) + GPX 22 LZ 26:1 + ENX 16 EASY 1024 CPT | Parametreler katalogda; dişli boşluğu 0,85°; çıkışta ≈ 106.500 sayım/tur (≈ 0,0034°) |
-| Sürücü | **TI DRV8874** (Pololu #4035) | 2,1 A sürekli, akım ölçüm çıkışı, ayarlanabilir akım sınırı. TB6612FNG önerilen en fazla 1,0 A olduğu için çıkarıldı |
-| Denetleyici | **Espressif ESP32-DevKitC** | 1 kHz kontrol, donanım enkoder sayacı, Wi-Fi (IoT); orijinal üretici kartı |
-| Kol açısı | **Same Sky (CUI) AMT22**, 14 bit mutlak | ±0,2° doğruluk, 100 µs güncelleme, SPI; $\theta_d$ ölçümü |
-| Akım | **TI INA228** (Adafruit #5832), 20 bit | Tork kestirimi, torkun sıfır geçişleri |
-| Sıcaklık | **TI TMP117** × 2, ±0,1 °C | Ortam ve motor gövdesi; her deneyle birlikte kaydedilir |
-| Enkoder alıcısı | **TI AM26LV32E** | maxon'un RS-422 çıkışını 3,3 V'a çevirir |
-| Kol | 15 cm alüminyum + ~20 g değiştirilebilir uç kütlesi; SKF/NSK rulmanlı ayrı kol mili | |
-| Boşluk kaplini | 3B baskı, 1,5° / 3° / 5° değiştirilebilir | Ana deney değişkeni; toplam boşluk ≈ 0,85° + kaplin |
+| Görev | 1. İlk liste | **2. Dengeli liste (seçilen)** | 3. Üst sınıf |
+|---|---|---|---|
+| Motor + enkoder | JGB37-520 1:30, 639 TL | **JGB37-520 1:30, 639 TL** (ya da enkoderli JGA25-370) | maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16, ≈ 472 € |
+| Sürücü | TB6612FNG, 81 TL | **TI DRV8874 (Pololu #4035), 11,94 $** | DRV8874 × 2 |
+| Denetleyici | genel ESP32, ≈ 270 TL | **Espressif ESP32-DevKitC, ≈ 13 €** | aynı |
+| Kol açısı | AS5600 modülü, ≈ 258 TL | **Adafruit AS5600, 5,95 $** + mıknatıs | AMT22 14 bit, 73,72 $ |
+| Akım | INA219, 87 TL | **Adafruit INA228 (20 bit), 14,95 $** | aynı |
+| Sıcaklık | — | **Adafruit TMP117 × 2, 23 $** | aynı |
+| Güç | genel 12 V 2 A | **Mean Well 12 V 3 A, ≈ 15 $** | aynı |
+| **Toplam** | **≈ 1.336 TL** | **≈ 639 TL + 13 € + 70 $** | **≈ 485 € + 150 $** |
 
-Simülasyon ilk seçilen motor sınıfının (JGA25-370) tahmini değerleriyle yapıldı; maxon değerleriyle tekrarlanacak.
+Mekanik parçalar (ayrı kol mili ve iki rulman, 15 cm alüminyum kol, ≈ 20 g değiştirilebilir uç kütlesi, 3B baskı gövde ve 1,5° / 3° / 5° boşluklu kaplin) üç listede aynı.
 
-Tahmini toplam maliyet ≈ 485 € + 136 $ (maxon kombinasyonu ≈ 472 €). Her görev için değerlendirilen bütün seçenekler (motorlar, geliştirme kartları, sürücüler, sensörler), fiyatları ve seçilme/elenme nedenleri, ayrıca daha ucuz iki düzen (maxon standart dişli ≈ 449 € + 136 $; Pololu 37D ile ≈ 13 € + 197 $): [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md).
+**Neden dengeli liste:** simülasyon bu motor sınıfıyla yapıldı ve motor hemen alınabilir; TB6612FNG önerilen en fazla 1,0 A iken motorun durma akımı 2,3 A, DRV8874 ≈ 7 $ fazlasına 2,1 A sürekli ve akım sınırı veriyor; $\theta_d$'yi ucuz motorun enkoderi (≈ 0,27°) sınırladığından AMT22'nin inceliği ölçüme yansımaz, orijinal AS5600 yeterli; INA228 ve TMP117 fiyatı az değiştirip veriyi belirgin iyileştiriyor. **Sınır:** 1,5–5°'lik boşluk motor enkoderiyle 6–18 adımda ölçülür; ince ayrıntı için üst sınıf motor gerekir. **Yükseltme yolu:** motor ve kol enkoderi üst sınıfa çevrilir, diğer parçalar aynı kalır.
 
-Mağaza seçenekleri, mağazada neye bakılacağı ve bağlantılar: [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md). Parçaların neden seçildiği, alternatifler ve artı/eksi yanları: [`donanim/tasarim_kararlari.md`](donanim/tasarim_kararlari.md).
+Bütün adaylar (motorlar, geliştirme kartları, sürücüler, sensörler), fiyatları, kaynakları ve seçilme/elenme nedenleri: [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md). Gerekçeler ve haberleşme: [`donanim/tasarim_kararlari.md`](donanim/tasarim_kararlari.md).
 
-Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$).
+Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$); JGB37-520 ile $\omega_c \approx 35$ rad/s.
 
 ### Geliştirme yönleri
 
