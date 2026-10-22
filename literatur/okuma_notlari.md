@@ -339,6 +339,101 @@ Bu makalelerin hiçbirinde yerçekiminin açıya bağlı etkisi yok (pdftotext i
 **Teleoperasyon:**
 - **2013_6699787, "Compensation of backlash for teleoperated geared motor drives"** (IEEE): her eklemde iki özdeş dişli motor, ters yönlü torkla "bükülü" (twist) tutuluyor → aktif ön yük. Sun 2023'ün çift motor yaklaşımının dokunsal (haptik) versiyonu. Yatay.
 
+## WoS taramasından indirilen 5 makale (22 Ekim)
+
+Kaynak: `wos/wos_tarama_2026-10-22.md`. PDF'ler `wos/pdf/` klasöründe. Beşi de tam okundu; hiçbiri yerçekimini analiz etmiyor. Ama ikisinde konumuza doğrudan değen birer ayrıntı çıktı (D-Arm ve Hu 2017).
+
+## ⚠ Xu, Wang, Zhao, Gao, Wan, Fang — A robotic manipulator using dual-motor joints: prototype design and anti-backlash control (IEEE RA-L, cilt 8, sayı 12, 2023)
+
+Dosya: `wos/pdf/2024_10298640_D-Arm_dual_motor_joints_anti_backlash_RAL.pdf` · DOI 10.1109/LRA.2023.3327867
+
+- Sistem: 7 eksenli seri kol (D-Arm, Rethink Sawyer düzeninde, 900 mm erişim, 12 kg yük). Tabana yakın ilk 3 eklem çift motorlu: her biri iki Panasonic servo + 50:1 planet dişli + 33:25 pinyon kademesi, toplam oran 66. Uçtaki 4 eklem harmonik (strain wave) dişlili tek motorlu. Planet dişlide boşluk 4–9 yay dakikası.
+- Model (Denk. 1): J_L q̈_L + b_L q̇_L + **T_d** = Σ T_s,i. Burada T_d "yerçekiminden ya da çevreden gelen dış tork". Yerçekimi ayrı bir terim olarak yazılmamış, bilinmeyen bozucunun içine katılmış.
+- Yöntem:
+  - İkinci motoru, pinyon ile yük dişlisi arasındaki temas kuvvetini kontrol eden bir admitans konum düzelticisiyle sürüyorlar.
+  - Motor torku belli eşiklerin altına inince (T_tl = 0,08 T_rat) boşluk evresine girildiği varsayılıyor; üstüne çıkınca (T_tu = 0,2 T_rat) temas evresine dönülüyor ve kontrol modu buna göre değişiyor.
+  - Konum takibi çift motorlu LADRC (doğrusal aktif bozucu bastırma) ile yapılıyor.
+  - Yeni kavram: "servo çatışması" (servo-conflict). İki motorun konum farkı, üretim hataları yüzünden açıya göre değişiyor; ön yük ya artıyor ya da kayboluyor.
+- Deney:
+  - J3 ekleminde yapıldı, ama kol bilerek **volan tipi bir yüke** çevrilmiş: 2. bağ dik, 4. bağ yatay kilitlenmiş, böylece eklem yerçekimi torku görmüyor.
+  - Boşluk yaklaşık 0,7°, sinüs takibi yapılmış, 20 N·m'lik darbe bozucusu uygulanmış.
+  - Tekrarlanabilirlik ±0,05 mm. Karşılaştırma: KUKA iiwa ±0,1 mm, ABB IRB 1200 ±0,025 mm.
+- **Bize değen cümle (tekrarlanabilirlik ölçümü, s. 7):** 2. bağ dik konumdan geçerken J2'nin toplam torkunun yönü değişiyor (yazarlara göre "esas olarak yerçekimi"). Yük dişlisi boşluğu geçip karşı diş yüzeyine çarpıyor. J1 ve J3'te de toplam torkun yönü hareket yönünden farklı olduğunda aynısı oluyor. Sonuç: hareket süreksizliği, darbe ve aşınma.
+  → Hipotezimizin mekanizması (yerçekimi torkunun işaret değiştirdiği açıda dişlinin boşluğa düşmesi) gerçek bir 7 eksenli kolda **nitel olarak gözlenmiş ve yazılmış**, ama analiz edilmemiş. Bu cümle Ahmad 1985 ve Karim 2018 ile aynı aileden: makalede "yerçekiminin dişliyi bastırdığı/bıraktığı biliniyor" paragrafında kanıt olarak anılmalı.
+- **Yapmadıkları:**
+  - Yerçekimi modelde ayrı terim değil.
+  - Deney eklemi bilerek yerçekimsiz hale getirilmiş.
+  - Limit cycle ve tanımlama fonksiyonu analizi yok.
+  - Açıya bağlı bir ön yük önerisi yok. Ön yük eşikleri motor torkuna göre, yani anlık sinyale göre değişiyor.
+- **Bizim için:**
+  1. Motor torku eşiğiyle boşluk evresini tahmin etmek, bizim "tork sıfır geçişi" çerçevemizin pratikteki karşılığı. Yerçekimli kolda bu eşik açıya göre önceden hesaplanabilir: 90° civarında motor torku yerçekimi yüzünden hiç düşük eşiğin altına inmez.
+  2. Endüstriyel kollarda yerçekimi sorununa iki yaklaşım görülüyor: ya uçtaki eklemleri harmonik dişliye kaydırmak ya da deneyi yerçekimsiz yapmak. Bizim "ucuz dişli + yerçekimini kullan" yönümüz bunun tam tersi; motivasyon paragrafında kullanılabilir.
+
+## Hu, Yang, Xiao, Xu — Suppression of limit cycle oscillation for two-mass system with backlash nonlinearity based on dual Luenberger observer (IEEE ITEC Asia-Pacific 2017)
+
+Dosya: `wos/pdf/2017_8080972_Hu_Yang_Xu_two_mass_backlash_limit_cycle_dual_Luenberger_ITEC.pdf` · IEEE Xplore 8080972
+
+Harbin (HIT) grubu; Wang ve ark. 2017 TIE ile aynı ekip, ondan önceki konferans çalışması.
+
+- Sistem: iki kütleli tahrik (sürücü motor + yük motoru, J_M = J_L = 0,0235 kg·m², K_s = 300 N·m/rad, karşı-rezonans frekansı ARF = √(K_s/J_L) ≈ 17,9 Hz). Tam kapalı çevrim kontrol (yük tarafında konum sensörü): konumda P, hızda PI. Yalnızca simülasyon.
+- Limit cycle frekansı (Wang 2016 IECON'dan): "sertlik oranı" r_s = √(k_p k_v / J_L) / ARF.
+  - r_s < 1 ise kararlı salınım, frekansı r_s · ARF.
+  - r_s ≥ 1 ise büyüyen salınım, frekansı ARF.
+  - Boşluk genişliği frekansı değiştirmiyor, yalnızca genliği değiştiriyor.
+- Çözüm: iki Luenberger gözlemcisi kullanılıyor. Birincisi mil torkunu (T̂_w), ikincisi yük torkunu (T̂_L) kestiriyor. Aradaki fark bir PI'dan geçirilip tork komutuna ileri besleme olarak ekleniyor. Gözlemci kutupları tek bir üçlü kutup olarak seçilmiş.
+- **Bize değen ayrıntı:** simülasyonda **sabit 1 N·m yük torku** var, yani bir ön yük var. Buna rağmen k_p = 20 ve 2b = 0,01 rad'da 14,4 Hz'lik limit cycle oluşuyor.
+  - Boyutsuz sayımızla: γ = T_L / (K_s · b) = 1 / (300 × 0,005) ≈ **0,67**. 2b = 0,05 rad için γ ≈ 0,13.
+  - Onların r_s'si bizim r_s = ω_c/ω_rez ile aynı fikir: kontrol döngüsü frekansının rezonans frekansına oranı. k_p = 20 için 0,82.
+  - Bizim yasamız (γ_sınır ≈ 3 r_s³ ≈ 1,65) bu noktada salınım öngörüyor (γ < γ_sınır). Sonuç **tutarlı**.
+  - **Uyarı:** yasamız r_s ≤ 0,33 için çıkarıldı, 0,82 aralığın çok dışında. Kontrolcü yapısı da farklı (bizde PID, onlarda P–PI ve tam kapalı çevrim). Yani bu bir kanıt değil, yalnızca çelişki olmadığını gösteren bir işaret.
+  - Asıl önemi şu: literatürde sabit ön yüklü bir sistemde limit cycle görülmüş ama ön yükün etkisi hiç sorulmamış. Yük torku yalnızca simülasyonun bir ayarı olarak duruyor.
+- **İkinci önemli nokta:** yük torku gözlemcisi (T̂_L) yerçekimli kolda tam olarak mgℓ sinθ'yı kestirir.
+  - Bu durum Shahruz 2000 notuyla aynı: gözlemcinin işi 90° civarında yerçekimini kestirmek, 0° civarında boşluğu kestirmek.
+  - Onların T̂_w − T̂_L farkı yerçekimli kolda açıya göre farklı davranacaktır. 90°'de fark küçük ve sabit, çünkü dişli bastırılı. 0°'de fark büyük ve işaret değiştiriyor.
+
+## Bai, Yin, Li, Zhang, Yuan, Zhang — Backstepping control collaborative shaft torque observer for limit cycle oscillation suppression of fully closed-loop gear transmission servo system (IEEE TPEL, cilt 39, sayı 4, 2024)
+
+Dosya: `wos/pdf/2024_10365568_Backstepping_shaft_torque_observer_limit_cycle_TPEL.pdf` · DOI 10.1109/TPEL.2023.3344485
+
+- Sistem: 2 kW PMSM, dişli oranı 1 (boşluk benzetilmiş), sürücü motor + yük motoru tezgâhı (yatay sürükleme düzeneği), volanla eylemsizlik oranı R = 1 ya da 3. Boşluk 0–12,5° arasında ayarlanabiliyor. DSP + FPGA ile kontrol. Model (Denk. 4): J_l ω̇_l = T_s − T_l. **Yerçekimi yok.**
+- Limit cycle analizi (Bölüm III):
+  - Konumda P, hızda PI, tam kapalı çevrim. Doğrusal kısım G(s)H(s), boşluğun simetrik tanımlama fonksiyonu N(A); −1/N(A) eğrisiyle Nyquist eğrisi kesiştiriliyor.
+  - Hız integrali küçük alınırsa frekans **ω_lc ≈ √(k_p k_v / J_l)**: yalnızca kazançlara ve yük eylemsizliğine bağlı, boşluk genişliğinden bağımsız.
+  - Deneyde 14,8 Hz, genlik boşluk açısı kadar: 2r = 0,0087 / 0,026 / 0,044 rad için genlik 0,0086 / 0,0252 / 0,0435 rad. Frekans üçünde de aynı.
+- Çözüm: hız ve akım döngülerinde geri adımlamalı kontrol (backstepping) + üçüncü dereceden mil torku gözlemcisi (STO). Gözlemcinin kutupları üçlü (s + ω_c)³, bant genişliği 200 rad/s. Gürültü ile bant genişliği arasındaki ödünleşim Bode çizimleriyle tartışılmış.
+- **Yapmadıkları:**
+  - Yerçekimi ve sabit yük torku analizi yok. Kullandıkları tanımlama fonksiyonu simetrik N(A), kaymalı değil.
+  - Çalışma noktasının limit cycle'ı etkilemediği örtük olarak varsayılıyor (yatay tezgâh, Esbrook Önerme 2).
+- **Bizim için:**
+  1. "Frekans boşluktan bağımsız, genlik boşluk kadar" sonucu yerçekimsiz durumun referansı. Bizim beklentimiz (Márton 2009 notu) yerçekimli kolda frekansın **açıyla kayması**: dişli bir kenarda daha uzun kaldıkça etkin eylemsizlik değişir. Bu makale, kaymanın yerçekimsiz düzenekte olmadığını gösteren deneysel bir karşılaştırma noktası.
+  2. Genliğin boşluk genişliğine eşit çıkması bizim iki kenarlı salınım sınıfımıza (sınıf 2) karşılık geliyor. Yerçekimi tek kenarlı salınıma (sınıf 1) geçişi sağlıyorsa genlik boşluk genişliğinden küçük çıkmalı. Ölçülebilir ve ayırt edici bir işaret.
+  3. Gözlemci tasarımı (üçlü kutup, bant genişliği seçimi) ESP32'deki gözlemcimiz için doğrudan uyarlanabilir bir tarif.
+
+## Sun, Gu — Backlash elimination control for robotic joints with dual-motor drive (Actuators, MDPI, cilt 13, sayı 8, 291, 2024)
+
+Dosya: `wos/pdf/2024_Actuators_backlash_elimination_dual_motor_robotic_joints_MDPI.pdf` · DOI 10.3390/act13080291 · açık erişim
+
+- Sistem: iki DC servo motorlu, planet dişli + pinyonlu robot eklemi prototipi. Simülasyonda 2r = 0,02 rad, dişli oranı 10.
+- Yöntem: **değişken ön yük torku.**
+  - İki motorun akımından büyük olanı bir dönüşüm fonksiyonuna giriyor.
+  - Akım küçükken, yani tork yön değiştirmek üzereyken, motorlar arasına ön yük torku uygulanıyor (en fazla anma torkunun %10–30'u).
+  - Akım büyükken bu ön yük sürüş torkuna çevriliyor ve iki motor yükü birlikte sürüyor.
+  - Amaç: sabit ön yükün boşuna harcadığı enerjiyi azaltmak.
+- Deney: eklem 360° ileri, 360° geri döndürülmüş, konum hatası ve akımlar gösterilmiş. Durağan hâlde ön yük akımı 250 mA'den 110 mA'e iniyor.
+- **Yerçekimi yok**: modelde ve analizde geçmiyor. Eklemin hangi düzlemde döndüğü ve yükün ne olduğu belirtilmemiş. Limit cycle analizi yok.
+- **Bizim için:** "ön yükü yalnızca akım küçükken uygula" kuralı, yerçekimli bir kolda **kendiliğinden açıya bağlı** hale gelirdi. 90° civarında motor akımı yerçekimi yüzünden hiç küçülmez, ön yük devreye girmez. 0° ve 180° civarında sık sık girer. Yazarlar bunu fark etmemiş. Bizim katkımız bu ilişkiyi açık ve önceden hesaplanabilir yapmak. Sun 2023'ün "ön yükü açıya göre azaltma" yorumuyla aynı yönde.
+
+## Li, Xie, Chen, Ma, Yang, Liu — Dynamic simulation and adaptive backlash compensation control for the naval gun follow-up system with unknown backlash (Ships and Offshore Structures, 2026, çevrimiçi)
+
+Dosya: `wos/pdf/2026_naval_gun_follow-up_adaptive_backlash_compensation_ShipsOffshore.pdf` · DOI 10.1080/17445302.2026.2716857
+
+- Sistem: gemi topunun yükseliş (pitch) ve yön (azimuth) takip sistemleri. Servo motor → dişli (N) → büyük eylemsizlikli yük. Gemi yalpası düzensiz dalga spektrumundan üretiliyor (deniz durumu 3–5, 18 ve 30 knot).
+- Model (Denk. 3–6): J q̈ + B q̇ = τ + d(t). Bütün dış etkiler d(t) içinde. **Yükseliş ekseninde topun dengesizlik torku (yerçekimi) modelde ayrı bir terim değil.** g yalnızca dalga denkleminde geçiyor. Gerçek toplarda bu tork genellikle denge düzeneğiyle (equilibrator) karşılanır, ama makalede bundan söz edilmiyor.
+- Yöntem: ölü bölge tersinin yumuşak bir yaklaşığı + RBF sinir ağıyla yaklaşık hatanın çevrimiçi kestirimi + geri adımlama. Lyapunov ispatı var. Doğrulama MATLAB/Simulink ve RecurDyn çok-cisim birlikte benzetimiyle yapılmış (dişli temas kuvvetleri C alt programıyla). Fiziksel deney yok.
+- Sonuç: tek nişan açısı (200 mrad ≈ 11,5°). Deniz durumu 4'te kararlılık doğruluğu PID'e göre %70–86 daha iyi.
+- **Bizim için:** yerçekiminin fiziksel olarak en büyük olduğu eksenlerden birinde (top yükselişi) bile boşluk çalışması yerçekimini "bilinmeyen bozucu" olarak alıyor. Tek açıda çalışılmış, açı taraması yok. Literatürdeki örüntünün bir örneği daha. İlgi düzeyi düşük; yalnızca "yerçekimli eksen ama analiz yok" listesinde anılır.
+- Kaynakçada takip edilebilir: Awan ve ark. 2024 Appl. Sci. 14(22):10265 (açık erişim), "Tracking control and backlash compensation in an inverted pendulum with switched-mode PID controllers": çift DC motorlu geri sürüşle sarkaç. Muhtemelen yine dik dengeye bakıyor, kontrol edilmeli.
+
 ## Henüz okunmadı (öncelik sırasıyla)
 
 1. Márton, Lantos — Friction and backlash induced limit cycles (ECC 2009)
@@ -348,4 +443,5 @@ Bu makalelerin hiçbirinde yerçekiminin açıya bağlı etkisi yok (pdftotext i
 5. ~~2022 Load-side acceleration control~~ OKUNDU. **İndirilmiş 31 IEEE PDF'nin tamamı okundu (18 Ekim).**
 6. ~~Wang 2024, Ghaffari 2013, Wang 2017, Yu–Tang 2024 (LADOB)~~ OKUNDU (yukarıda).
 6b. ~~Esbrook–Tan–Khalil 2014, Horng 2006~~ OKUNDU. ~~Olsson–Åström 2001, Fischer–Tomizuka 1996~~ OKUNDU. Kalan yeni hedefler: Armstrong-Hélouvry ve ark. 1994 Automatica (sürtünme anketi, ScienceDirect → kampüste); Wallenborg, Åström 1988 (robot tahrikinde limit cycle); Atherton 1975 kitabı (kaymalı DF); Mees, Bergen 1975 TAC ve Bergen ve ark. 1982 (tanımlama fonksiyonunun geçerliliği/hata sınırları); Ghaffari, Tomizuka, Soltan 2008 Nonlinear Dyn. (limit cycle kararlılığı); kaymalı (bias) tanımlama fonksiyonu için bir ders kitabı kaynağı (Gelb & Vander Velde 1968 "Multiple-Input Describing Functions", ya da Khalil'in kitabı)
+8. WoS okumalarından çıkan yeni hedefler (22 Ekim): Wang ve ark. 2016 IECON "Analysis of limit cycle mechanism for two-mass system with backlash nonlinearity" (sertlik oranı r_s, IEEE); Yang ve ark. 2016 TMECH, mil torku sınırlama (Sun 2023 listesinde de var); Awan ve ark. 2024 Appl. Sci. (açık erişim, sarkaç + çift DC motor); Robertz ve ark. 2010 ICRA "Precise robot motions using dual motor control" (endüstriyel robotta çift motor).
 7. Springer referans listesinden eklenecek IEEE makaleleri: Wang ve ark. 2017 IEEE TIE (limit cycle, transmission backlash, 10.1109/TIE.2017.2711564); Villwock ve Pacas 2009 IEEE TIE (boşluk tanılama); Merzouki ve ark. 2007 CEP (boşluk gözlemi)
