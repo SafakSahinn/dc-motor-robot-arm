@@ -160,7 +160,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="kicker">Modelden fiziksel düzeneğe</div>
   <h1>Robot kol araştırma defteri</h1>
   <p>DC motorlu tek eklemli robot kolunu literatüre bakarak yayına dönüşebilecek bir çalışmaya ve fiziksel bir düzeneğe çevirme çalışması.</p>
-  <div class="meta"><span>Başlangıç: 17 Ekim 2026</span><span>Güncelleme: 18 Ekim 2026</span><span>Durum: simülasyon tamam, malzeme kararı verildi</span><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
+  <div class="meta"><span>Başlangıç: 17 Ekim 2026</span><span>Güncelleme: 22 Ekim 2026</span><span>Durum: simülasyon tamam, malzeme kararı verildi</span><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
 </header>
 
 <section id="hedef">
@@ -193,7 +193,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 </section>
 
 <section id="gunluk">
-  <div class="top"><div class="kicker">17–18 Ekim · adım adım</div><span class="pill done">Güncel</span></div>
+  <div class="top"><div class="kicker">17–22 Ekim · adım adım</div><span class="pill done">Güncel</span></div>
   <h2>Araştırma günlüğü</h2>
   <p>Yaptığımız her adım sırasıyla: neden yaptık, ne yaptık, ne bulduk, bulduğumuzu nereye bağladık. Ayrıntılı notlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>literatur/okuma_notlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/ieee_disi/tarama_ozeti_2026-10-18.md"><code>literatur/ieee_disi/tarama_ozeti_2026-10-18.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/sonuclar_2026-10-18.md"><code>simulasyon/sonuclar_2026-10-18.md</code></a>.</p>
 
@@ -403,6 +403,20 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
       </dl>
     </div></li>
   </ol>
+
+  <div class="phase">IV. Doğrulama</div>
+  <ol class="log" style="counter-reset:adim 16">
+    <li><div class="step">
+      <div class="when">22 Ekim</div>
+      <h4>Web of Science taraması</h4>
+      <dl>
+        <dt>Neden</dt><dd>18 Ekim'de WoS açılmamıştı; boşluğun açık olduğunu yalnızca OpenAlex ile göstermiştik. Hakemlerin ilk bakacağı dizinlerden biri WoS.</dd>
+        <dt>Ne yaptık</dt><dd>Okul girişi yine "Shibboleth hatası 90011" verdi, ama WoS yeni sekmede açılınca okulun yetkisiyle geldi. Core Collection'da, tüm yıllarda 12 sorgu çalıştırdık. Birleşik 44 kaydı ve en yakın çalışmaya (Sun ve ark. 2023) yapılan 56 atfın tamamını taradık. İlgili 5 makalenin tam metnini indirdik.</dd>
+        <dt>Sonuç</dt><dd>"Boşluk + yerçekimi + tanımlama fonksiyonu": 0. "Boşluk + kaymalı / çift girişli tanımlama fonksiyonu": 0. İndirilen 5 makalenin hiçbiri yerçekimini analiz etmiyor; en fazla bilinmeyen bozucunun içine katıyor. Boşluk açık.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Literatür taraması bölümü güncellendi. Ayrıntı: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/wos/wos_tarama_2026-10-22.md"><code>literatur/wos/wos_tarama_2026-10-22.md</code></a>.</dd>
+      </dl>
+    </div></li>
+  </ol>
 </section>
 
 <section id="yon">
@@ -461,20 +475,34 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 </section>
 
 <section id="tarama">
-  <div class="top"><div class="kicker">17–18 Ekim</div><span class="pill done">Tamam</span></div>
+  <div class="top"><div class="kicker">17–22 Ekim</div><span class="pill done">Tamam</span></div>
   <h2>Literatür taraması</h2>
   <div class="stats">
-    <div class="stat"><b>26</b><span>IEEE sorgusu</span></div>
-    <div class="stat"><b>130</b><span>IEEE sonucu listelendi</span></div>
-    <div class="stat"><b>32</b><span>tam metin okundu</span></div>
+    <div class="stat"><b>26 + 12</b><span>IEEE + WoS sorgusu</span></div>
+    <div class="stat"><b>130 + 44</b><span>IEEE + WoS sonucu listelendi</span></div>
+    <div class="stat"><b>32 + 5</b><span>tam metin indirildi</span></div>
     <div class="stat"><b>0</b><span>açıya bağlı yerçekimi + limit cycle</span></div>
   </div>
   <h3>Yöntem</h3>
   <ul class="plain">
     <li>IEEE Xplore: kurumsal erişimle 26 sorgu, 31 PDF.</li>
-    <li>IEEE dışı: Scopus ve Web of Science kampüs dışından açılmadığı için OpenAlex (tüm yayınevlerini indeksleyen açık veri tabanı) ile başlık+özet araması; Springer'dan en yakın rakip makale.</li>
-    <li>İleriye atıf taraması: en yakın makalelere atıf yapan bütün çalışmalar (Wang 2024'ün 11, Nordin–Gutman anketinin 497 atıfı) tarandı.</li>
+    <li>IEEE dışı (18 Ekim): Scopus ve Web of Science o gün açılmadığı için OpenAlex (tüm yayınevlerini indeksleyen açık veri tabanı) ile başlık+özet araması; Springer'dan en yakın rakip makale.</li>
+    <li>Web of Science (22 Ekim): Core Collection, tüm yıllar, 12 sorgu (konu alanı: başlık + özet + anahtar kelime). Birleşik 44 kayıt tek tek incelendi; ilgili 5 makalenin tam metni IEEE, MDPI ve Taylor &amp; Francis'ten indirildi.</li>
+    <li>İleriye atıf taraması: en yakın makalelere atıf yapan bütün çalışmalar tarandı (Wang 2024'ün 11, Nordin–Gutman anketinin 497, WoS'ta Sun ve ark. 2023'ün 56 atıfı).</li>
   </ul>
+  <h3>Web of Science sorguları (22 Ekim)</h3>
+  <div class="tbl"><table>
+    <tr><th>Sorgu</th><th>Sonuç</th></tr>
+    <tr><td>boşluk + yerçekimi + tanımlama fonksiyonu</td><td class="num">0</td></tr>
+    <tr><td>boşluk + kaymalı / çift girişli tanımlama fonksiyonu</td><td class="num">0</td></tr>
+    <tr><td>boşluk + yerçekimi + limit cycle / salınım</td><td class="num">2</td></tr>
+    <tr><td>boşluk + gözlemci (DOB / ESO) + yerçekimi</td><td class="num">1</td></tr>
+    <tr><td>boşluk + limit cycle + açı / çalışma noktası / duruş</td><td class="num">4</td></tr>
+    <tr><td>boşluk + ön yük + limit cycle / salınım</td><td class="num">8</td></tr>
+    <tr><td>boşluk + sarkaç + limit cycle / salınım</td><td class="num">10</td></tr>
+    <tr><td>boşluk + yerçekimi + robot / kol / eklem</td><td class="num">21</td></tr>
+  </table></div>
+  <p>Yerçekimi geçen kayıtlarda bu kelime hep başka bir anlamda kullanılıyor: uzay istasyonunda mikro yerçekimi, uzun hidrolik kolun statik sehimi, sarkacın dik dengesi. İndirilen 5 tam metnin hiçbiri yerçekimini analiz etmiyor. Çift motorlu 7 eksenli kolda (D-Arm, IEEE RA-L) yerçekimi bilinmeyen bozucunun içine katılmış. Gemi topu takip sisteminde (Ships and Offshore Structures, 2026) eksen yerçekimine karşı çalıştığı hâlde dengesizlik torku modellenmemiş.</p>
   <h3>Belirleyici sorgular (başlık + özet, OpenAlex)</h3>
   <div class="tbl"><table>
     <tr><th>Sorgu</th><th>Sonuç</th></tr>

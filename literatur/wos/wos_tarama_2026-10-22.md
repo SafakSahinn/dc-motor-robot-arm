@@ -43,6 +43,23 @@ Yakından bakılan, özeti okunanlar:
   - Backlash size identification for servomechanisms (2024): yalnızca aktüatör tarafından boşluk genişliği tanılama; yerçekimi yok.
 - **Wang ve ark. 2024 Nonlinear Dynamics**: WoS'ta 10 atıf. 18 Ekim'de OpenAlex'te 11 atıf taranmıştı ve ilgili sonuç çıkmamıştı.
 
+## İndirilen tam metinler (`wos/pdf/`, gitignore)
+
+| Dosya | Kaynak | Tam metinde yerçekimi |
+|---|---|---|
+| `2024_10365568_Backstepping_shaft_torque_observer_limit_cycle_TPEL.pdf` | IEEE TPEL, 10.1109/TPEL.2023.3344485 | Yok (DF ile LC analizi, tam kapalı çevrim) |
+| `2024_10298640_D-Arm_dual_motor_joints_anti_backlash_RAL.pdf` | IEEE RA-L, 10.1109/LRA.2023.3327867 | Yalnız bilinmeyen bozucu \(T_d\) içinde toplanmış; "seri robot yerçekimine duyarlı" cümlesi var, analiz yok |
+| `2017_8080972_Hu_Yang_Xu_two_mass_backlash_limit_cycle_dual_Luenberger_ITEC.pdf` | IEEE ITEC Asia-Pacific 2017 | Yok |
+| `2024_Actuators_backlash_elimination_dual_motor_robotic_joints_MDPI.pdf` | Actuators (MDPI, açık erişim), 10.3390/act13080291 | Yok |
+| `2026_naval_gun_follow-up_adaptive_backlash_compensation_ShipsOffshore.pdf` | Ships and Offshore Structures (T&F), 10.1080/17445302.2026.2716857 | \(g\) yalnızca dalga denkleminde geçiyor; topun dengesizlik torku modellenmemiş |
+
+İndirilemeyenler:
+- Semenov ve ark. 2015: Springer kitap bölümü, okulun Springer aboneliği yalnızca dergileri kapsıyor.
+- Backlash size identification 2024: Elsevier Precision Engineering, ScienceDirect'te kampüs dışından yalnızca "Purchase PDF" seçeneği var.
+- Azar ve Serrano 2016: IGI Global, okulun aboneliğinde yok.
+
+Erişim notu: IEEE ve T&F oturumları düşmüştü. İkisinde de "Institutional Sign In → İstinye" adımı şifre sormadan geçti, çünkü OİS oturumu açıktı. T&F'de PDF'yi `fetch` ile almak 403 verdi; "Download PDF" bağlantısı yeni sekmede açılınca indirme oradan yapıldı.
+
 ## Sonuç
 
 WoS taraması 18 Ekim OpenAlex taramasının sonucunu doğruluyor: **boşluk + yerçekimi + describing function = 0 kayıt**, kaymalı/çift girişli DF + boşluk = 0 kayıt. Açıya bağlı yerçekimi ön yükünün boşluk limit cycle'ını nasıl şekillendirdiğini inceleyen bir çalışma bulunmadı; aradığımız boşluk hâlâ açık.
