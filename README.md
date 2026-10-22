@@ -96,6 +96,8 @@ Seçim ilkesi: her parça bilinen bir üreticiden, veri sayfası eksiksiz; çöz
 
 Simülasyon ilk seçilen motor sınıfının (JGA25-370) tahmini değerleriyle yapıldı; maxon değerleriyle tekrarlanacak.
 
+Tahmini toplam maliyet ≈ 485 € + 136 $ (maxon kombinasyonu ≈ 472 €). Her görev için değerlendirilen bütün seçenekler (motorlar, geliştirme kartları, sürücüler, sensörler), fiyatları ve seçilme/elenme nedenleri, ayrıca daha ucuz iki düzen (maxon standart dişli ≈ 449 € + 136 $; Pololu 37D ile ≈ 13 € + 197 $): [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md).
+
 Mağaza seçenekleri, mağazada neye bakılacağı ve bağlantılar: [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md). Parçaların neden seçildiği, alternatifler ve artı/eksi yanları: [`donanim/tasarim_kararlari.md`](donanim/tasarim_kararlari.md).
 
 Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$).

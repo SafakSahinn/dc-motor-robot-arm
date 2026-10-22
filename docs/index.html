@@ -55,6 +55,7 @@ th,td{text-align:left; vertical-align:top; padding:8px 10px; border-bottom:1px s
 th{font:500 12px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
 td:first-child{font-weight:600}
 td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+tr.sec td{background:var(--accent-soft)}
 a{color:var(--accent)}
 a:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .gaps{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:14px; margin-top:12px}
@@ -511,21 +512,87 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 </section>
 
 <section id="malzeme">
-  <div class="top"><div class="kicker">Bilinen üretici · belgeli parça</div><span class="pill done">Karar verildi</span></div>
+  <div class="top"><div class="kicker">Bütün adaylar · fiyat · neden</div><span class="pill done">Karar verildi</span></div>
   <h2>Malzeme ve alışveriş</h2>
-  <p>Seçim ilkesi: her parça bilinen bir üreticiden, veri sayfası eksiksiz ve yetkili satıcıdan. Çözünürlük ve doğruluk ölçmek istediğimiz boşluğun (1,5–5°) çok altında olmalı. Gerekçeler bir önceki bölümde.</p>
+  <p>Her görev için değerlendirdiğimiz bütün parçalar, fiyatları ve seçilme ya da elenme nedenleriyle. Seçilen satırlar renkli. Fiyatlar üretici ya da yetkili satıcı sitelerindeki liste fiyatları (aksi yazmadıkça KDV, kargo ve gümrük hariç, 1 adet); değişebilir. Fiyatı bulunamayanlarda "teklif" yazıyor.</p>
+
+  <h3>Toplam maliyet</h3>
   <div class="tbl"><table>
-    <tr><th>Görev</th><th>Parça</th><th>Ne sağlıyor</th></tr>
-    <tr><td>Motor + dişli + enkoder</td><td>maxon DCX 22 L (12 V) + GPX 22 LZ 26:1 + ENX 16 EASY 1024 CPT</td><td>Belgeli parametreler; dişli boşluğu 0,85°; çıkışta ≈ 106.500 sayım/tur (≈ 0,0034°)</td></tr>
-    <tr><td>Motor sürücü</td><td>Pololu #4035 (TI DRV8874)</td><td>2,1 A sürekli, akım ölçüm çıkışı, ayarlanabilir akım sınırı (≈ 2 A)</td></tr>
-    <tr><td>Denetleyici</td><td>Espressif ESP32-DevKitC (WROOM-32E)</td><td>1 kHz kontrol, donanım enkoder sayacı, Wi-Fi (IoT)</td></tr>
-    <tr><td>Kol açısı</td><td>Same Sky (CUI) AMT22, 14 bit mutlak</td><td>±0,2° doğruluk, 100 µs güncelleme, SPI; mıknatıs yok</td></tr>
-    <tr><td>Akım</td><td>Adafruit #5832 (TI INA228, 20 bit)</td><td>Tork kestirimi, torkun sıfır geçişleri, enerji</td></tr>
-    <tr><td>Sıcaklık</td><td>Adafruit TMP117 × 2 (±0,1 °C)</td><td>Ortam ve motor gövdesi sıcaklığı her deneye veri olarak</td></tr>
-    <tr><td>Enkoder alıcısı</td><td>TI AM26LV32E</td><td>maxon'un RS-422 çıkışını 3,3 V'a çevirir</td></tr>
-    <tr><td>Güç</td><td>Mean Well 12 V, ≥ 3 A</td><td></td></tr>
-    <tr><td>Mekanik</td><td>SKF/NSK rulman × 2, çelik kol mili, 15 cm alüminyum kol, ≈ 20 g uç ağırlığı</td><td>Kol mili motordan ayrı döner</td></tr>
-    <tr><td>Boşluk kaplini, gövde</td><td>3B baskı; kaplin 1,5° / 3° / 5°</td><td>Ana deney değişkeni; toplam boşluk ≈ 0,85° + kaplin</td></tr>
+    <tr><th>Düzen</th><th>Motor</th><th>Diğer parçalar</th><th>Toplam (yaklaşık)</th><th>Not</th></tr>
+    <tr class="sec"><td>Seçilen</td><td>maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16 1024: ≈ 472 €</td><td>≈ 13 € + ≈ 136 $ + küçük parçalar</td><td class="num">≈ 485 € + 136 $</td><td>Her parametre belgeli; en ince enkoder; dişli boşluğu 0,85°</td></tr>
+    <tr><td>maxon, standart dişli</td><td>DCX 22 L + GPX 22 A 21:1 + ENX 16: ≈ 436 €</td><td>aynı</td><td class="num">≈ 449 € + 136 $</td><td>36 € daha ucuz; dişli boşluğu 1,05°</td></tr>
+    <tr><td>Ekonomik, bilinen marka</td><td>Pololu 37D 30:1, 64 CPR: 60,95 $</td><td>aynı</td><td class="num">≈ 13 € + 197 $</td><td>Enkoder kaba (0,19°), dişli boşluğu ve rotor eylemsizliği belgesiz, durma akımı 5,5 A</td></tr>
+  </table></div>
+  <p>"Diğer parçalar": ESP32-DevKitC ≈ 13 €, DRV8874 × 2 = 23,88 $, AMT22 73,72 $, INA228 14,95 $, TMP117 × 2 = 23,00 $; ayrıca AM26LV32E, Mean Well adaptör, rulman, mil, vida ve 3B baskı.</p>
+
+  <h3>1. Motor, dişli kutusu ve enkoder</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
+    <tr class="sec"><td>maxon DCX 22 L 12 V + GPX 22 LZ 26:1 + ENX 16 EASY 1024</td><td>Durma 150 mN·m / 6,54 A; dişli 0,7 N·m sürekli, boşluk 0,85°; çıkışta ≈ 106.500 sayım/tur (0,0034°)</td><td class="num">220,41 + 150,63 + 101,05 ≈ 472 €</td><td><b>Seçildi.</b> Bütün parametreler katalogda (R, L, \(k_t\), rotor eylemsizliği); dişli boşluğu küçük ve belgeli, deneydeki boşluğu kaplin belirler. Eksi: pahalı, Türkiye satış ortağı yok, enkoder RS-422.</td></tr>
+    <tr><td>maxon, aynı motor + GPX 22 A (standart) 21:1</td><td>Boşluk 1,05°, 0,7 N·m sürekli</td><td class="num">dişli 114,21 € (toplam ≈ 436 €)</td><td>İyi bir tasarruf seçeneği; dişlinin kendi boşluğu biraz daha büyük.</td></tr>
+    <tr><td>Faulhaber 2232 SR + 20/1R + IEH2-4096</td><td>Faulhaber'in eşleşen takımı; enkoder 4096 çizgi/tur</td><td class="num">motor ≈ 112 € (bayi), dişli + enkoder: teklif</td><td>maxon ile aynı sınıf; tam takım fiyatı bulunamadı. maxon'a alternatif olarak teklif istenebilir.</td></tr>
+    <tr><td>Pololu 37D, 12 V, 30:1, 64 CPR (#4752)</td><td>Durma ≈ 14 kg·cm / 5,5 A (tahmini); çıkışta 1920 sayım/tur (0,19°); düz + helis dişli</td><td class="num">60,95 $</td><td>Ekonomik orta yol. Bilinen satıcı, ama dişli boşluğu ve rotor eylemsizliği belirtilmemiş, enkoder maxon'dan ≈ 55 kat kaba, durma akımı sürücünün sürekli sınırının üstünde.</td></tr>
+    <tr><td>JGB37-520, 12 V, 1:30 (direnc.net)</td><td>Durma 5 kg·cm / 2,3 A; enkoder 11 darbe/tur (çıkışta ≈ 1320, 0,27°)</td><td class="num">639 TL</td><td>Elendi: markasız, veri sayfası kısmi, büyük rotor (\(\omega_c\) ≈ 35 ile sınırlı).</td></tr>
+    <tr><td>JGA25-370, 12 V, 1:34</td><td>Durma ≈ 0,41 N·m (tedarikçiye göre değişiyor); 11 darbe/tur</td><td class="num">Türkiye'de enkoderli sürümü bulunamadı</td><td>Elendi: markasız, veriler tutarsız, tork sınırda.</td></tr>
+    <tr><td>SAMM L tipi, 12 V, 1:42</td><td>Durma ≥ 8,5 kg·cm; 13 darbe/tur</td><td class="num">≈ 826 TL</td><td>Elendi: stokta yoktu, enkoder kaba.</td></tr>
+    <tr><td>Hobi servo (SG90, MG996R)</td><td>İçinde hazır konum kontrolcüsü</td><td class="num">—</td><td>Elendi: kendi kontrolcümüzü devre dışı bırakır.</td></tr>
+  </table></div>
+
+  <h3>2. Geliştirme kartı (denetleyici)</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
+    <tr class="sec"><td>Espressif ESP32-DevKitC (WROOM-32E)</td><td>240 MHz çift çekirdek, tek duyarlıklı FPU, donanım enkoder sayacı (PCNT), Wi-Fi</td><td class="num">≈ 13 € (KDV dahil, Conrad)</td><td><b>Seçildi.</b> 1 kHz döngü, bir motor enkoderi ve SPI/I²C sensörler için rahat; Wi-Fi IoT katmanı için hazır. Eksi: double yavaş, Wi-Fi döngü zamanlamasını bozabilir (ayrı çekirdeğe sabitlenecek).</td></tr>
+    <tr><td>Espressif ESP32-S3-DevKitC-1 (N8)</td><td>240 MHz çift çekirdek, vektör komutları, dahili USB, daha çok bellek</td><td class="num">15,95 $ (Adafruit)</td><td>Güçlü alternatif; bizim iş yükümüzde ESP32'ye belirgin üstünlüğü yok.</td></tr>
+    <tr><td>Teensy 4.1 (PJRC / SparkFun)</td><td>600 MHz Cortex-M7, çift duyarlıklı FPU, 4 donanım enkoder çözücüsü, Ethernet</td><td class="num">31,50 $ (SparkFun)</td><td>Önerilen yükseltme yolu: iki eklem ve 5–10 kHz döngüde kontrol buraya taşınır, ESP32 yalnızca IoT için kalır.</td></tr>
+    <tr><td>STM32 Nucleo-G474RE (ST)</td><td>170 MHz Cortex-M4F, motor kontrolüne özel zamanlayıcılar, donanım enkoder arayüzü</td><td class="num">20,13 $ (DigiKey)</td><td>Endüstride motor kontrolü standardı; kurulumu ve öğrenmesi daha zahmetli.</td></tr>
+    <tr><td>Arduino Uno R3 / R4 Minima</td><td>R3: 8 bit 16 MHz, 2 KB RAM; R4 Minima: 48 MHz Cortex-M4</td><td class="num">R4 Minima ≈ 23 € (KDV dahil)</td><td>Elendi: 1 kHz döngü + gözlemci + veri kaydı için sınırda, donanım enkoder sayacı ve bellek yetersiz.</td></tr>
+  </table></div>
+
+  <h3>3. Motor sürücü</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
+    <tr class="sec"><td>Pololu #4035 (TI DRV8874)</td><td>2,1 A sürekli, 4,5–37 V, akım ölçüm çıkışı (≈ 1,1 V/A), ayarlanabilir akım sınırı</td><td class="num">11,94 $ (× 2 = 23,88 $)</td><td><b>Seçildi.</b> Motorun nominal akımına (1,3 A) pay bırakıyor; akım sınırı ≈ 2 A'e ayarlanacak. İkinci kart yedek ya da ikinci eklem.</td></tr>
+    <tr><td>Adafruit DRV8871 (#3190)</td><td>Tek kanal, ≈ 3,6 A tepe, direnç ile akım sınırı</td><td class="num">≈ 10,4–11,6 $ (Mouser)</td><td>Yedek seçenek; akım ölçüm çıkışı yok.</td></tr>
+    <tr><td>Pololu TB6612FNG (#713)</td><td>2 kanal, 1 A sürekli (Pololu), Toshiba: 1,2 A mutlak sınır, önerilen ≤ 1,0 A</td><td class="num">4,95 $</td><td>Elendi: yeni motorun nominal akımı 1,3 A; akım ölçümü yok.</td></tr>
+    <tr><td>L298N modülü</td><td>Bipolar transistör, ≈ 2–3 V kayıp</td><td class="num">—</td><td>Elendi: kayıp gerilim akıma göre değişir, hassas kontrolde kötü, ısınır.</td></tr>
+    <tr><td>BTS7960 modülü</td><td>40 A sınıfı</td><td class="num">—</td><td>Elendi: gereğinden çok büyük, markasız modüller.</td></tr>
+  </table></div>
+
+  <h3>4. Kol açısı sensörü</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
+    <tr class="sec"><td>Same Sky (CUI) AMT22, 14 bit tek tur (AMT222B-V)</td><td>14 bit (0,022°), doğruluk ±0,2°, SPI, 100 µs güncelleme, mile manşonla (2–8 mm)</td><td class="num">73,72 $ (DigiKey)</td><td><b>Seçildi.</b> Doğruluk üretici garantisinde ve mıknatıs hizasına bağlı değil; kapasitif, tozdan etkilenmiyor.</td></tr>
+    <tr><td>ams OSRAM AS5047P + adaptör kartı (AS5047P-TS_EK_AB)</td><td>14 bit, SPI + ABI, çok düşük gecikme (DAEC)</td><td class="num">≈ 16,7 $ – 21,7 € (stok sorunlu)</td><td>İyi ve ucuz; ama doğruluk mıknatıs hizasına bağlı, adaptör kartı bazı satıcılarda üretimden kalkmış görünüyor.</td></tr>
+    <tr><td>AS5600 modülü</td><td>12 bit (0,088°), I²C</td><td class="num">≈ 258 TL</td><td>Elendi: markasız modüller, doğruluğu belgesiz, çözünürlük 4 kat düşük.</td></tr>
+    <tr><td>Yüksek sınıf optik / manyetik mutlak enkoder (ör. RLS AksIM-2)</td><td>18–20 bit</td><td class="num">teklif</td><td>Gereğinden hassas ve pahalı; doğruluk sınırımız AMT22 ile karşılanıyor.</td></tr>
+  </table></div>
+
+  <h3>5. Akım sensörü</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
+    <tr class="sec"><td>Adafruit INA228 (#5832)</td><td>TI INA228: 20 bit delta-sigma, I²C, 85 V ortak mod, ofset ≤ ±1 µV, kazanç hatası ≤ ±%0,05; %0,1 şant</td><td class="num">14,95 $</td><td><b>Seçildi.</b> INA229 ile aynı çekirdek; hazır, bilinen markalı kart.</td></tr>
+    <tr><td>TI INA229</td><td>Aynı çekirdek, SPI (10 MHz)</td><td class="num">hazır kart bulunamadı</td><td>TI değerlendirme kartı ya da kendi PCB'miz gerekirdi.</td></tr>
+    <tr><td>Adafruit INA219 (#904)</td><td>12 bit, I²C, 26 V</td><td class="num">—</td><td>Elendi: çözünürlük INA228'in ≈ 256'da biri.</td></tr>
+    <tr><td>Hall etkili modüller (ACS712 vb.)</td><td>Analog çıkış</td><td class="num">—</td><td>Elendi: gürültülü, ESP32'nin gürültülü ADC'si gerekir.</td></tr>
+  </table></div>
+
+  <h3>6. Sıcaklık sensörü</h3>
+  <div class="tbl"><table>
+    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
+    <tr class="sec"><td>Adafruit TMP117 (#4821) × 2</td><td>TI TMP117: ±0,1 °C (−20…50 °C), 16 bit (0,0078 °C), I²C</td><td class="num">11,50 $ (× 2 = 23,00 $)</td><td><b>Seçildi.</b> Biri ortam, biri motor gövdesi; aynı I²C hattında (0x48, 0x49).</td></tr>
+    <tr><td>Sensirion SHT45</td><td>Sıcaklık + nem</td><td class="num">—</td><td>Nem de ölçer; doğruluk değerini veri sayfasından doğrulamadık. Nem ölçmek istenirse eklenebilir.</td></tr>
+    <tr><td>DS18B20</td><td>±0,5 °C, 1-Wire</td><td class="num">—</td><td>Elendi: 5 kat daha az doğru; piyasada çok taklidi var.</td></tr>
+    <tr><td>NTC termistör</td><td>Analog</td><td class="num">—</td><td>Elendi: kalibrasyon ve ESP32 ADC gerekir.</td></tr>
+  </table></div>
+
+  <h3>7. Diğer parçalar</h3>
+  <div class="tbl"><table>
+    <tr><th>Parça</th><th>Seçim</th><th>Fiyat</th><th>Neden</th></tr>
+    <tr class="sec"><td>Enkoder alıcısı</td><td>TI AM26LV32E + SOIC-16 adaptör (× 2, biri yedek)</td><td class="num">teklif (birkaç $)</td><td>maxon enkoderinin RS-422 çıkışını ESP32'nin 3,3 V girişine çevirir.</td></tr>
+    <tr class="sec"><td>Güç kaynağı</td><td>Mean Well 12 V, ≥ 3 A</td><td class="num">teklif</td><td>Bilinen marka, düzgün regülasyon; motor nominali 1,3 A, akım sınırı 2 A.</td></tr>
+    <tr class="sec"><td>Rulman</td><td>SKF / NSK / FAG × 2, kol mili çapında</td><td class="num">rulmancı</td><td>Kol mili motordan ayrı döner; boşluk kaplini ve kol açısı ölçümü ancak böyle.</td></tr>
+    <tr class="sec"><td>Kol ve ağırlıklar</td><td>15 cm alüminyum lama, ≈ 20 g değiştirilebilir uç ağırlığı</td><td class="num">hırdavat</td><td>Yerçekimi torkunu açıdan bağımsız değiştirmek için.</td></tr>
+    <tr class="sec"><td>Gövde, boşluklu kaplin</td><td>3B baskı; kaplin 1,5° / 3° / 5°</td><td class="num">baskı</td><td>Ana deney değişkeni; toplam boşluk ≈ 0,85° (dişli) + kaplin.</td></tr>
   </table></div>
 
   <h3>Düzenek nasıl birleşiyor</h3>
@@ -590,22 +657,8 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <figcaption>Önden görünüş. Motor dönmeye başladığında dil önce yuvanın içinde boşta gider, kenara çarpınca kolu çevirir. Hazır satılmaz; 3B baskıyla yapılacak. Toplam boşluk, dişli kutusunun kendi boşluğu (0,85°) ile kaplinin toplamı.</figcaption>
   </figure>
 
-  <h3>Alışveriş listesi</h3>
-  <div class="tbl"><table>
-    <tr><th>Parça</th><th>Adet</th><th>Nereden</th><th>Liste fiyatı</th></tr>
-    <tr><td>maxon kombinasyonu: DCX 22 L 12 V + GPX 22 LZ 26:1 + ENX 16 EASY 1024</td><td class="num">1</td><td>maxon çevrimiçi mağaza; dişli ve enkoder yalnızca motorla birlikte satılıyor</td><td class="num">≈ 472 €</td></tr>
-    <tr><td>Pololu #4035 (DRV8874)</td><td class="num">2</td><td>Pololu ya da yetkili satıcı (biri yedek / ikinci eklem)</td><td class="num">≈ 12 $</td></tr>
-    <tr><td>Espressif ESP32-DevKitC</td><td class="num">1</td><td>DigiKey / Mouser</td><td></td></tr>
-    <tr><td>AMT22, 14 bit, tek tur</td><td class="num">1</td><td>DigiKey / Mouser; manşon kol mili çapında</td><td></td></tr>
-    <tr><td>Adafruit INA228 (#5832)</td><td class="num">1</td><td>Adafruit ya da yetkili bayi</td><td class="num">≈ 15 $</td></tr>
-    <tr><td>Adafruit TMP117</td><td class="num">2</td><td>Adafruit ya da yetkili bayi</td><td></td></tr>
-    <tr><td>TI AM26LV32E + SOIC-16 adaptör</td><td class="num">2</td><td>DigiKey / Mouser</td><td></td></tr>
-    <tr><td>Mean Well 12 V ≥ 3 A adaptör</td><td class="num">1</td><td>yetkili bayi</td><td></td></tr>
-    <tr><td>SKF / NSK rulman</td><td class="num">2</td><td>rulmancı; iç çap = kol mili</td><td></td></tr>
-    <tr><td>Kol mili, kol, ağırlıklar, vidalar</td><td class="num">—</td><td>hırdavat</td><td></td></tr>
-    <tr><td>Gövde + kaplin</td><td class="num">—</td><td>3B baskı</td><td></td></tr>
-  </table></div>
-  <div class="note"><b>Sipariş öncesi</b>maxon yapılandırıcısında kombinasyon oluşturulup kesin fiyat, çıkış mili çapı ve Türkiye'ye gönderim teyit edilecek; simülasyon maxon değerleriyle tekrarlanacak. Fiyatlar KDV, kargo ve gümrük hariç. Ayrıntılı liste: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</div>
+
+  <div class="note"><b>Sipariş öncesi</b>maxon yapılandırıcısında kombinasyon oluşturulup kesin fiyat, çıkış mili çapı ve Türkiye'ye gönderim teyit edilecek; simülasyon maxon değerleriyle tekrarlanacak. Diğer parçalar yetkili distribütörden (DigiKey, Mouser) ya da orijinal ürün satan bayilerden. Ayrıntılı liste ve kaynak bağlantıları: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</div>
 </section>
 
 <section id="yayin">
