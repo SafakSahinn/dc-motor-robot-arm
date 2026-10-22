@@ -52,15 +52,15 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 - Yerçekimsiz sistemlerde "sabit referans limit cycle'ı yalnızca kaydırır" sonucunun (Esbrook, Tan, Khalil 2014) yerçekimli kolda geçerli olmadığını göstermek.
 - Açı–kazanç düzleminde nicel bir harita ve kaymalı (bias) tanımlama fonksiyonuyla analitik açıklama.
 - Açıya göre ayarlanan bir bozucu gözlemci.
-- Ucuz donanımda (dişli DC motor, ESP32, manyetik açı sensörü) deneysel doğrulama.
+- Laboratuvar ölçeğinde, parametreleri belgeli bir düzenekte (maxon dişli motor, ESP32, mutlak açı enkoderi) deneysel doğrulama; ortam ve motor sıcaklığı her deneyle birlikte kaydedilir.
 
 ## 2. Literatür
 
-- IEEE Xplore'da 26 sorgu (130 sonuç), IEEE dışında OpenAlex ile başlık+özet araması ve en yakın makalelere atıf yapan çalışmaların taranması.
-- 32 makalenin tam metni okundu. Notlar: [`literatur/okuma_notlari.md`](literatur/okuma_notlari.md); tarama özeti: [`literatur/ieee_disi/tarama_ozeti_2026-10-18.md`](literatur/ieee_disi/tarama_ozeti_2026-10-18.md).
-- Belirleyici sorgu "boşluk + yerçekimi + tanımlama fonksiyonu": **0 sonuç**.
+- IEEE Xplore'da 26 sorgu (130 sonuç), IEEE dışında OpenAlex ile başlık+özet araması, Web of Science Core Collection'da 12 sorgu (44 kayıt) ve en yakın makalelere atıf yapan çalışmaların taranması.
+- 37 makalenin tam metni okundu. Notlar: [`literatur/okuma_notlari.md`](literatur/okuma_notlari.md); tarama özetleri: [`literatur/ieee_disi/tarama_ozeti_2026-10-18.md`](literatur/ieee_disi/tarama_ozeti_2026-10-18.md), [`literatur/wos/wos_tarama_2026-10-22.md`](literatur/wos/wos_tarama_2026-10-22.md).
+- Belirleyici sorgu "boşluk + yerçekimi + tanımlama fonksiyonu": OpenAlex'te ve Web of Science'ta **0 sonuç**.
 - En yakın çalışma Sun ve ark. (2023, IEEE TIE). Düşey düzlemde salınan bir kolu modelliyorlar ($M_L\sin\theta_L$ terimiyle) ve 90°'de yüksek kazançta salınım gözlüyorlar. Ama yerçekiminin etkisini incelemiyorlar ve tek bir açıda çalışıyorlar.
-- "Yerçekimi dişliye ön yük gibi davranır" fikri, endüstriyel robotlarda statik boşluk telafisi için biliniyor (Ahmad 1985; Karim ve ark. 2018). Kapalı çevrim kararlılığına bağlanmamış.
+- "Yerçekimi dişliye ön yük gibi davranır" fikri, endüstriyel robotlarda statik boşluk telafisi için biliniyor (Ahmad 1985; Karim ve ark. 2018). 7 eksenli D-Arm kolunda, bağ dik konumdan geçerken yerçekimi torkunun yön değiştirip dişliyi karşı yüze çarptırdığı gözlenmiş (Xu ve ark. 2023, IEEE RA-L), ama analiz edilmemiş. Kapalı çevrim kararlılığına bağlanmamış.
 
 ## 3. Simülasyon bulguları
 
@@ -80,15 +80,21 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 
 ## 4. Donanım
 
-| Parça | Seçim | Neden |
+Seçim ilkesi: her parça bilinen bir üreticiden, veri sayfası eksiksiz; çözünürlük ve doğruluk ölçülen boşluğun (1,5–5°) çok altında.
+
+| Görev | Seçim | Neden |
 |---|---|---|
-| Motor | JGA25-370, 12 V, enkoderli, 1:34 ya da 1:45 | 20 g uç kütlesiyle tork payı yeterli; daha yüksek oran motor eylemsizliğini büyütüp kol tarafını maskeler |
-| Sürücü | TB6612FNG | Yazılımda tork sınırı ile |
-| Denetleyici | ESP32 | 1 kHz kontrol döngüsü ve gözlemci |
-| Kol açısı | AS5600 (12 bit manyetik) | $\theta_d$ ölçümü |
-| Akım | INA219 | Tork kestirimi, ısınma takibi |
-| Kol | 15 cm alüminyum + ~20 g değiştirilebilir uç kütlesi | |
-| Boşluk kaplini | 3B baskı, 1,5° / 3° / 5° değiştirilebilir | Ana deney değişkeni |
+| Motor + dişli + enkoder | **maxon** DCX 22 L (12 V) + GPX 22 LZ 26:1 + ENX 16 EASY 1024 CPT | Parametreler katalogda; dişli boşluğu 0,85°; çıkışta ≈ 106.500 sayım/tur (≈ 0,0034°) |
+| Sürücü | **TI DRV8874** (Pololu #4035) | 2,1 A sürekli, akım ölçüm çıkışı, ayarlanabilir akım sınırı. TB6612FNG önerilen en fazla 1,0 A olduğu için çıkarıldı |
+| Denetleyici | **Espressif ESP32-DevKitC** | 1 kHz kontrol, donanım enkoder sayacı, Wi-Fi (IoT); orijinal üretici kartı |
+| Kol açısı | **Same Sky (CUI) AMT22**, 14 bit mutlak | ±0,2° doğruluk, 100 µs güncelleme, SPI; $\theta_d$ ölçümü |
+| Akım | **TI INA228** (Adafruit #5832), 20 bit | Tork kestirimi, torkun sıfır geçişleri |
+| Sıcaklık | **TI TMP117** × 2, ±0,1 °C | Ortam ve motor gövdesi; her deneyle birlikte kaydedilir |
+| Enkoder alıcısı | **TI AM26LV32E** | maxon'un RS-422 çıkışını 3,3 V'a çevirir |
+| Kol | 15 cm alüminyum + ~20 g değiştirilebilir uç kütlesi; SKF/NSK rulmanlı ayrı kol mili | |
+| Boşluk kaplini | 3B baskı, 1,5° / 3° / 5° değiştirilebilir | Ana deney değişkeni; toplam boşluk ≈ 0,85° + kaplin |
+
+Simülasyon ilk seçilen motor sınıfının (JGA25-370) tahmini değerleriyle yapıldı; maxon değerleriyle tekrarlanacak.
 
 Mağaza seçenekleri, mağazada neye bakılacağı ve bağlantılar: [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md). Parçaların neden seçildiği, alternatifler ve artı/eksi yanları: [`donanim/tasarim_kararlari.md`](donanim/tasarim_kararlari.md).
 

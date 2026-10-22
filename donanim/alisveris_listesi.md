@@ -1,137 +1,106 @@
 # Alışveriş listesi
 
-Düzeneği kurmak için gereken her şey, seçenekleri ve mağazada neye bakılacağıyla birlikte. Telefondan açıp alışveriş sırasında kullanılmak üzere hazırlandı.
+Düzeneği kurmak için gereken her şey. Seçim ilkesi: **bilinen üretici, eksiksiz veri sayfası, yetkili satıcı.** Neden bu parçalar: [`tasarim_kararlari.md`](tasarim_kararlari.md).
 
-Son güncelleme: 18 Ekim 2026. Fiyatlar o günkü site fiyatları; değişmiş olabilir.
+Fiyatlar üretici ya da yetkili satıcı sitelerindeki liste fiyatları (KDV, kargo ve gümrük hariç); değişebilir.
 
 ---
 
 ## Özet
 
-| # | Parça | Adet | Öncelik | Tahmini fiyat |
-|---|---|---|---|---|
-| 1 | Enkoderli dişli DC motor (12 V) | 2 | **Şart** | 600–700 TL / adet |
-| 2 | Motor sürücü TB6612FNG | 1 | **Şart** | |
-| 3 | ESP32 geliştirme kartı | 1 | **Şart** | |
-| 4 | Manyetik açı sensörü AS5600 (+ mıknatıs) | 1 | **Şart** | ≈ 260 TL |
-| 5 | Akım sensörü INA219 | 1 | **Şart** | |
-| 6 | 12 V adaptör (≥ 2 A) | 1 | **Şart** | |
-| 7 | Breadboard + jumper kablolar | 1 takım | **Şart** | |
-| 8 | Rulman (iç çap mil çapına uygun) | 2 | **Şart** | |
-| 9 | Kol mili (çelik/alüminyum çubuk) | 1 | **Şart** | |
-| 10 | Alüminyum lama (kol) | 1 | **Şart** | |
-| 11 | Vida, somun, pul (M3) | 1 takım | **Şart** | |
-| 12 | Gövde ve kaplin | — | **Şart** | 3B baskı (aşağıya bak) |
-| 13 | Yedek AS5600, yedek kablolar | | İyi olur | |
+| # | Parça | Üretici / model | Adet | Nereden | Liste fiyatı |
+|---|---|---|---|---|---|
+| 1 | Motor + dişli + enkoder | **maxon** DCX 22 L (12 V) + GPX 22 LZ 26:1 + ENX 16 EASY 1024 CPT | 1 | maxon çevrimiçi mağaza (kombinasyon) | ≈ 472 € |
+| 2 | Motor sürücü | **Pololu #4035** (TI DRV8874) | 2 | Pololu / yetkili satıcı | ≈ 12 $ / adet |
+| 3 | Denetleyici | **Espressif ESP32-DevKitC** (WROOM-32E) | 1 | DigiKey / Mouser | |
+| 4 | Kol açısı enkoderi | **Same Sky (CUI) AMT22**, 14 bit, tek tur, kol mili çapında manşon | 1 | DigiKey / Mouser | |
+| 5 | Akım sensörü | **Adafruit #5832** (TI INA228, 20 bit) | 1 | Adafruit / yetkili bayi | ≈ 15 $ |
+| 6 | Sıcaklık sensörü | **Adafruit TMP117** (TI TMP117, ±0,1 °C) | 2 | Adafruit / yetkili bayi | |
+| 7 | RS-422 alıcı | **TI AM26LV32E** (3,3 V) + SOIC-16 adaptör kartı | 1 (+1 yedek) | DigiKey / Mouser | |
+| 8 | Güç kaynağı | **Mean Well** 12 V, ≥ 3 A | 1 | yetkili bayi | |
+| 9 | Rulman | **SKF / NSK / FAG**, kol mili çapında | 2 | rulmancı | |
+| 10 | Kol mili, kol, uç ağırlıkları, vidalar | çelik mil, 15 cm alüminyum lama, M5–M6 somun/pul, M3/M2 vida | | hırdavat | |
+| 11 | Gövde ve boşluklu kaplin | 3B baskı (1,5° / 3° / 5° kaplin parçaları) | | kendi/okul yazıcısı ya da baskı servisi | |
+| 12 | Breadboard, jumper, lehim malzemesi | | | | |
 
-Tek mağazadan almak kargoyu azaltır. Direnc.net'te 1, 2, 3 (muhtemelen), 5, 6, 7 bulunuyor.
+Sürücüden iki adet: biri yedek, ya da ileride ikinci eklem için.
 
 ---
 
-## 1. Motor (en önemli parça)
+## 1. maxon motor kombinasyonu
 
-### Ne arıyoruz
-| Kontrol | Ne olmalı | Mağazada nasıl anlarsın |
+maxon dişli kutusunu ve enkoderi yalnızca motorla birlikte, bir **kombinasyon** olarak satıyor. Çevrimiçi mağazada "Start combination" ile:
+
+| Bileşen | Seçim | Liste fiyatı (1–4 adet) |
 |---|---|---|
-| Gerilim | **12 V** | Etiket ya da satıcı |
-| Enkoder | **Olmalı** | Arkasında küçük devre kartı ve **6 kablo**: 2 motor (kırmızı, beyaz) + 4 enkoder (VCC, GND, A, B). 2 kablolu olanda enkoder yok |
-| Dişli oranı | **1:30 – 1:50** | 12 V'ta boşta hız yaklaşık **120–330 rpm** |
-| Durma torku | **≥ 4 kg·cm** | Veri sayfası iste; yoksa model numarasının / etiketin fotoğrafını çek |
-| Dişliler | **Metal** | Plastik çabuk aşınır |
-| Çıkış mili | **D biçimli** (bir yüzü düz) | Kaplin bağlantısı kolay |
-| Adet | **2** | Biri yedek |
+| Motor | **DCX 22 L**, sargı **12 V** (değerli metal fırça) | 220,41 € |
+| Dişli kutusu | **GPX 22 LZ**, 2 kademe, **26:1** (azaltılmış boşluk, 0,85°) | 150,63 € |
+| Enkoder | **ENX 16 EASY**, **1024 CPT**, 3 kanal, RS-422 | 101,05 € |
+| **Toplam** | | **≈ 472 €** + KDV, kargo, gümrük |
 
-### Seçenekler
+Yapılandırıcıda kontrol edilecekler:
+- 12 V sargının bu fırça/yatak seçeneğinde bulunması ve kataloğdaki değerler (nominal 1,30 A, durma 6,54 A, k_t 22,9 mN·m/A, R 1,84 Ω).
+- GPX 22 çıkış mili çapı ve biçimi (kaplin tasarımı buna göre).
+- Enkoder kablosu/konnektörü (RS-422 için diferansiyel çiftler).
+- Türkiye'ye gönderim ve teslim süresi. maxon'un Türkiye'de bir satış ortağı bulunamadı.
 
-**A) JGA25-370, 12 V, enkoderli, 1:34 ya da 1:45 (ilk tercih)**
-- 25 mm gövde, küçük rotor → dişli rezonansı yüksek → kontrolcü hızında daha geniş pay (ω_c 45 rad/s'ye kadar).
-- Türk online mağazalarında **enkoderli sürümü bulunamadı** (Hepsiburada, n11, Trendyol'dakiler enkodersiz). Karaköy'de aranacak.
-- Etikette "JGA25-370" ve 6 kablo; 1:34 ≈ 176 rpm, 1:45 ≈ 130 rpm (12 V boşta).
+**Almayın:** markasız "enkoderli dişli motor"lar (JGA25-370, JGB37-520 vb.). Veri sayfaları tutarsız, enkoderleri 11 darbe/tur.
 
-**B) JGB37-520, 12 V, enkoderli, 1:30, 333 rpm (online yedek)**
-- [direnc.net, 639 TL](https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor) · [veri sayfası](https://pdf.direnc.net/upload/jgb37-520-datasheet.pdf)
-- Nominal 3,5 kg·cm (0,34 N·m) @ 1 A; durma 5 kg·cm (0,49 N·m), 2,3 A; enkoder 11 darbe / motor turu.
-- Daha güçlü ama rotor büyük → ω_c ≈ 35 rad/s civarında çalışılmalı (simülasyon: `simulasyon/motor_jgb37.m`).
-- Durma akımı 2,3 A, TB6612FNG'nin 1,2 A sürekli sınırının üstünde → yazılımda akım sınırı konacak.
-- Aynı serinin diğer oranları (12 V): 1:19 = 530 rpm, 3,1 kg·cm durma (biraz zayıf); 1:56 = 178 rpm, 9 kg·cm (güçlü ama motor eylemsizliği daha da büyür). **1:30 en dengelisi.**
+## 2. Motor sürücü: Pololu #4035 (TI DRV8874)
 
-**C) SAMM Market "L tipi enkoderli metal dişli DC motor", 12 V, 1:42**
-- [market.samm.com](https://market.samm.com/en/l-tipi-enkoderli-metal-disli-dc-motor), ≈ 826 TL. Nominal 4 kg·cm, durma ≥ 8,5 kg·cm, enkoder 13 darbe/tur, 6 mm mil.
-- 18 Ekim'de **stokta yoktu**.
+- 2,1 A sürekli (oda sıcaklığı, ek soğutma yok), 4,5–37 V, mantık 1,8–5 V.
+- Akım ölçüm çıkışı (CS, ≈ 1,1 V/A) ve ayarlanabilir akım sınırı: **≈ 2 A'e ayarlanacak** (motorun durma akımı 6,54 A).
+- Kontrol modu: PH/EN. EN'ye 20 kHz PWM, PH yön; nSLEEP HIGH.
+- **Almayın:** TB6612FNG (önerilen en fazla 1,0 A sürekli), L298N (2–3 V kayıp).
 
-**Almayın:**
-- Enkodersiz motorlar (2 kablolu).
-- N20 boyutu mini motorlar (JGA12-N20B): tork çok düşük.
-- Hobi servolar (SG90, MG996R): içindeki hazır kontrolcü bizim kontrolcümüzü devre dışı bırakır.
+## 3. ESP32-DevKitC (Espressif)
 
----
+- Espressif'in kendi kartı, WROOM-32E modüllü; taklit "ESP32 DevKit" kartları değil.
+- Yetkili distribütörden (DigiKey, Mouser) alınmalı.
+- 5 V pini (USB'den) maxon enkoderini ve AMT22'yi besler.
 
-## 2. Motor sürücü: TB6612FNG
+## 4. Kol açısı: AMT22
 
-- 1,2 A sürekli, 3,2 A tepe; motor beslemesi 4,5–13,5 V; mantık 3,3 V ile çalışır (ESP32'ye doğrudan bağlanır).
-- **STBY** pini HIGH yapılmazsa motor dönmez (en sık yapılan hata).
-- Nereden: [direnc.net](https://www.direnc.net/tb6612fng-dc-ve-step-motor-surucu-modulu) · [robotistan](https://www.robotistan.com/tb6612fng-stepper-motor-dc-motor-driver) · [robolinkmarket](https://www.robolinkmarket.com/motor-surucu-1a-cift-dc-tb6612fng)
-- Alternatif: motorun durma akımı yüksekse (JGB37: 2,3 A) daha güçlü bir sürücü düşünülebilir, ama normal çalışmada akım ≈ 1 A; şimdilik TB6612FNG yeterli.
-- **Almayın:** L298N. Üzerinde ~2 V gerilim düşer ve ısınır; hassas kontrol için kötü.
+- 14 bit mutlak, tek tur, SPI; doğruluk ±0,2°; 100 µs güncelleme.
+- Manşon seti 2–8 mm; kol mili çapına uyanı (ör. 6 ya da 8 mm) seçilecek. Mıknatıs gerekmez.
+- Besleme 5 V, çıkış 3,3 V seviyesinde.
 
-## 3. ESP32 geliştirme kartı
+## 5. Akım: Adafruit INA228 (#5832)
 
-- Herhangi bir **ESP32-WROOM-32 DevKit** (30 ya da 38 pinli). USB üzerinden programlanır.
-- Kontrol döngüsü 1 kHz; Arduino Uno bunun için yavaş kalıyor.
-- USB çipi **CP2102** ya da **CH340** olabilir; ikisi de olur (CH340 için Windows sürücüsü gerekebilir).
-- Pinleri lehimli (header'lı) olanı al, breadboard'a takılsın.
+- 20 bit, I²C, 85 V'a kadar ortak mod, 0,1 % hassasiyetli şant.
+- Motor hattına seri bağlanır (çift yönlü). PWM geçişleri ölçümü bozarsa sürücünün besleme hattına alınır.
 
-## 4. Manyetik açı sensörü: AS5600
+## 6. Sıcaklık: Adafruit TMP117 × 2
 
-- 12 bit (0,088°), I²C, 3,3 V. Kol milinin ucuna konacak; kolun açısını motor enkoderinden bağımsız ölçer.
-- **Modülle birlikte diametral mıknatıs gelmeli** (6 mm çapında, 2–3 mm kalınlığında küçük disk; kuzey-güney kutbu yan yana). Gelmezse ayrıca "AS5600 mıknatıs" ya da "diametral mıknatıs 6x2,5" diye ara. Normal (eksenel) mıknatıs çalışmaz.
-- Nereden: [Çiçeksepeti, ALKATRONİK, ≈ 258 TL](https://www.ciceksepeti.com/as5600-manyetik-aci-sensoru-olcum-modulu-12-bit-temassiz-pozisyon-kcm45524464). Direnc.net ve Robotistan'da da bakılmalı.
-- Ucuz olduğu için **2 adet** almak mantıklı.
+- ±0,1 °C (−20…50 °C), 16 bit, I²C.
+- Biri ortam (düzenekten uzakta), biri motor gövdesinde (ısı iletken yapıştırıcıyla).
+- Adresler 0x48 ve 0x49 (ikincisinin ADDR ayarı değiştirilir).
 
-## 5. Akım sensörü: INA219
+## 7. RS-422 alıcı: TI AM26LV32E
 
-- I²C, ±3,2 A (0,1 Ω şant ile), 3–5 V. Motorun çektiği akımı ölçer: tork kestirimi ve ısınma takibi için.
-- Nereden: [direnc.net](https://www.direnc.net/ina129-cift-yonlu-akim-sensor-modulu-en)
-- AS5600 ile aynı I²C hattına bağlanır; adresleri farklı (AS5600: 0x36, INA219: 0x40), çakışma yok.
+- 3,3 V ile çalışan dört kanallı diferansiyel alıcı; maxon enkoderinin A, B, I kanallarını ESP32'nin 3,3 V girişlerine çevirir.
+- SOIC-16 kılıf → SOIC-16'dan DIP'e adaptör kartına lehimlenir.
 
-## 6. Güç kaynağı
+## 8. Güç: Mean Well 12 V, ≥ 3 A
 
-- **12 V, en az 2 A** adaptör (DC jak). 3 A olursa daha rahat.
-- Jak için bir **DC dişi jak → klemens** adaptörü al (breadboard'a bağlamak için).
-- ESP32 USB'den beslenecek (bilgisayardan).
+- DC jak + jak→klemens adaptörü.
 
-## 7. Breadboard ve kablolar
-
-- Tam boy breadboard (830 delik).
-- Jumper kablo takımı: erkek-erkek, erkek-dişi, dişi-dişi.
-- Motorun enkoder kablosu genellikle **PH2.0 6 pinli** soketle gelir; soket kablosu motorla gelmezse "PH2.0 6 pin kablo" al.
-
-## 8–11. Mekanik parçalar
+## 9–11. Mekanik
 
 | Parça | Ne | Not |
 |---|---|---|
-| Rulman | 2 adet; iç çapı kol miliyle aynı (ör. **4 mm iç çaplı 684ZZ** ya da **8 mm iç çaplı 608ZZ**) | Kol milini taşır; mil çapına göre seç |
-| Kol mili | 8–10 cm, rulmanın iç çapında çelik ya da alüminyum çubuk | Hırdavat / maket mağazası |
-| Kol | **15 cm** alüminyum lama (ör. 15×2 mm) | Hafif olmalı; kütle ≈ 20 g |
-| Uç ağırlıkları | M5–M6 somun / pul | Deneyde değiştirilecek ağırlık (≈ 20 g'dan başla) |
-| Vida takımı | M3 vida, somun, pul | Motor flanşı ve gövde için (JGA25 ve JGB37 flanşları M3) |
-
-## 12. Gövde ve kaplin
-
-**Kaplin** motor milini kol miline bağlayan parça. Bizim kaplin bilerek "boşluklu" olacak: motor tarafında bir dil, kol tarafında dilden biraz geniş bir yuva. Yuva genişliği boşluğu belirler; **1,5°, 3° ve 5°** için üç farklı parça basılacak ve deneyde değiştirilecek. Hazır satılmaz.
-
-**Gövde** motoru ve rulmanları aynı eksende tutan taşıyıcı.
-
-İkisi için de seçenekler:
-- **3B yazıcı** (kendinin ya da okulun). Tasarım dosyaları bu klasöre eklenecek.
-- **3B baskı servisi** (online ya da Karaköy'deki atölyeler).
-- 3B baskı mümkün değilse: gövde için alüminyum köşebent; kaplin için sabit bir metal kaplin (motor tarafı 4 ya da 6 mm, kol tarafı mil çapına göre). Bu durumda ayarlanabilir boşluk yerine yalnızca motorun kendi dişli boşluğu kullanılır.
+| Rulman | 2 adet SKF / NSK / FAG; iç çapı kol miliyle aynı (ör. 6 mm 626-2Z ya da 8 mm 608-2Z) | Kol milini taşır |
+| Kol mili | 8–10 cm, rulman iç çapında çelik mil | AMT22 manşonu da bu çapta |
+| Kol | 15 cm alüminyum lama (≈ 15×2 mm) | Hafif; kütle ≈ 20 g |
+| Uç ağırlıkları | M5–M6 somun / pul | ≈ 20 g'dan başla |
+| Gövde | 3B baskı ya da alüminyum köşebent | Motor flanşı ve iki rulman aynı eksende |
+| Kaplin | 3B baskı, dil + yuva; yuva genişliği 1,5° / 3° / 5° | Toplam boşluk ≈ dişli (0,85°) + kaplin |
 
 ---
 
-## Mağazada hatırlatmalar
+## Sipariş öncesi kontrol listesi
 
-- Motorun **model numarasını ve etiketini fotoğrafla**; veri sayfası yoksa sonradan bakılır.
-- Motor milinin çapını öğren (JGA25: 4 mm, JGB37: 6 mm); kaplin tasarımı buna göre yapılacak.
-- AS5600'ün mıknatısla gelip gelmediğini sor.
-- Kartların pinlerinin lehimli olup olmadığına bak.
+- [ ] maxon kombinasyonu yapılandırıldı, mil çapı ve kesin fiyat alındı.
+- [ ] Simülasyon maxon değerleriyle tekrarlandı (tork ve kontrolcü hızı payı).
+- [ ] AMT22 manşon çapı ile rulman ve kol mili çapı aynı.
+- [ ] Kartların orijinal olduğu (yetkili satıcı) doğrulandı.
