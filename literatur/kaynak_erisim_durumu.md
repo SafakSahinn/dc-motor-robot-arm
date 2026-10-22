@@ -9,7 +9,7 @@ Okul girişi (OİS) bir kez yapılınca oturum diğer sitelere taşınıyor; hi�
 | Taylor & Francis | ✅ Giriş çalışıyor | Login → Shibboleth → İstinye Üniversitesi. 1973 International Journal of Control sayısı abonelik dışı ("Get Access"); yeni sayılar muhtemelen açık |
 | ScienceDirect | ❌ Hata | Sign in → kurum → İstinye: "We are unable to give you access", hata ID-702 (missing attributes) |
 | Scopus | ❌ Kısmi | "Sign in via your organization" → İstinye: kurum tanınıyor ama yalnızca "Scopus Preview" açılıyor |
-| Web of Science | ❌ Hata | Institutional Sign In → YETKİM – Turkish Federation → İstinye → kişisel bilgi onayı → "Shibboleth error 90011" |
+| Web of Science | ⚠️ Dolaylı çalışıyor (22 Ekim) | Institutional Sign In → YETKİM → İstinye yine "Shibboleth error 90011" veriyor; ama bu girişten sonra WoS yeni sekmede açılınca oturum "Istinye Universitesi" yetkisiyle geliyor ve Core Collection tam aranabiliyor. Tarama: `wos/wos_tarama_2026-10-22.md` |
 
 ## Neden?
 Elsevier (ScienceDirect, Scopus) ve Clarivate (WoS) okul girişini kabul ediyor ama aboneliği hesaba bağlamıyor. Okulun kimlik sistemi bu sitelere gereken bilgiyi göndermiyor. Bu okul tarafındaki bir ayar sorunu.
