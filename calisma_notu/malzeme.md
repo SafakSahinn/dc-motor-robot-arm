@@ -55,14 +55,25 @@ Türk elektronik mağazalarında (direnc.net, Robotistan) INA228, TMP117, Adafru
 
 | # | Kalem | Adet | Özellik | Gerekçe | Kaynak | Fiyat | Stok |
 |---|---|---|---|---|---|---|---|
-| P1 | **Mean Well LRS-35-12** (kapalı tip) | 1 | 12 V 3 A 36 W; 85–264 VAC; kısa devre, aşırı yük ve aşırı gerilim koruması | Bilinen marka, düşük dalgalanma. Önceki seçim GST36E12-P1J masaüstü adaptör DigiKey'de stokta değil (tahmini 18 Ocak 2027) | [direnc.net](https://www.direnc.net/12v-3a-kapali-tip-switch-mode-adaptor) | 739,26 TL | Stokta |
-| P2 | Schurter DD11.0111.1111 (IEC C14 giriş, sigorta yuvası, 2 kutuplu anahtar) | 1 | Panel tipi şebeke girişi | LRS-35-12 açık klemensli; şebeke girişi sigortalı ve anahtarlı olmalı | [DigiKey](https://www.digikey.com/en/products/detail/schurter-inc/DD11-0111-1111) → EKOM | 16,04 $ | 1.173 |
-| P3 | 5 × 20 mm sigorta, 1 A gecikmeli + IEC C13 güç kablosu | 1 + 1 | — | P2 için | yerel / direnc.net | ≈ 50 TL (doğrulanmadı) | — |
-| P4 | Elektrolitik kondansatör 470 µF 25 V | 2 | 8 × 12 mm | DRV8874 VM girişinde ek dolgu (bulk) kondansatörü | [direnc.net](https://www.direnc.net/arama?q=470uf+25v) | 2,32 TL × 2 | Stokta |
+| P1 | **Masaüstü 12 V adaptör, ≥ 2 A (tercihen 3 A)**: evde varsa o kullanılır | 1 | 12 V DC, regüleli (anahtarlamalı), 5,5 × 2,1 mm jak | Fişe takılır, şebeke kablolaması gerekmez | Evdeki adaptör; yoksa yerel satıcı | 0 TL (evdeki) / ≈ 250–400 TL. **Pazar araştırması:** direnc.net'te 12 V 3 A seçenekleri bulunuyor; markasız masaüstü adaptörler pazar yerlerinde yaygın. | — |
+| P2 | DC jak, dişi, klemensli (5,5 × 2,1 mm) | 1 | — | Adaptörü DRV8874'ün VM girişine bağlamak | yerel / direnc.net | ≈ 20 TL (doğrulanmadı) | — |
+| P4 | Elektrolitik kondansatör 470 µF 25 V | 2 | 8 × 12 mm | DRV8874 VM girişinde ek dolgu (bulk) kondansatörü; ucuz adaptörün dalgalanmasını da bastırır | [direnc.net](https://www.direnc.net/arama?q=470uf+25v) | 2,32 TL × 2 | Stokta |
 | P5 | CHINT NP2-BE102 acil stop butonu (NC) | 1 | Metal, mantar başlı | 12 V motor hattında yazılımdan bağımsız kesme | [Motorobit](https://www.motorobit.com/arama?q=acil+stop) | 303,00 TL | Stokta |
 | P6 | Breadboard ya da delikli pertinaks, jumper kablo seti, micro-USB veri kablosu, klemens | 1 set | — | Bağlantılar | yerel / direnc.net | ≈ 250 TL (doğrulanmadı) | — |
 
-**Güvenlik notu:** LRS-35-12 kapalı tip ama klemensleri açık (230 V). Şebeke tarafı yalıtkan bir kutuya ya da baskı kapağa alınır; topraklama klemensi bağlanır. Şebeke kablolaması istenmezse alternatif: aynı güçte hazır masaüstü 12 V 3 A adaptör (P1'in yerine; P2 ve P3 gerekmez).
+**Güç kaynağı seçimi neyi değiştirir?**
+
+| Ölçüt | Gereken | Neden |
+|---|---|---|
+| Gerilim | **12 V** | Motor 12 V'luk. 9 V gibi düşük gerilim tork payını ve en yüksek hızı azaltır; daha yüksek gerilim motoru zorlar. DRV8874 4,5–37 V kabul eder, sınırlayan motor. |
+| Akım | **≥ 2 A, tercihen 3 A** | Sürücünün akım sınırı ≈ 2 A. Salınım deneyleri tipik olarak < 1 A çeker, ama adım anlarında ve durmada akım sınıra kadar çıkar. Modem/router adaptörleri genelde 12 V 1–1,5 A'dir; yetmez. |
+| Kalite (dalgalanma, regülasyon) | Regüleli anahtarlamalı adaptör yeterli | Motor gerilimi DRV8874'ün PWM'iyle ve kapalı çevrimle ayarlandığı için besleme dalgalanmasının sonuca etkisi küçük. 470 µF kondansatör yüksek frekanslı dalgalanmayı bastırır. INA228 besleme gerilimini her deneyde kaydettiği için olası bir sapma veride görünür. |
+| Tekrarlanabilirlik | Bütün deneylerde aynı adaptör | Adaptör modeli deney meta verisine yazılır. |
+| Güvenlik | Masaüstü adaptör en güvenlisi | Panel tipi kaynak (aşağıda) 230 V kablolama ister. |
+
+**Sonuç:** evdeki adaptör, etiketinde 12 V ve en az 2 A yazıyorsa kullanılabilir. Bu araştırma sonucunu değiştirmez; yalnız tork payını ve gürültüyü küçük ölçüde etkiler, o da kayıt altına alınır.
+
+**Alternatif (panel tipi, istenirse):** Mean Well LRS-35-12, 12 V 3 A 36 W ([direnc.net](https://www.direnc.net/12v-3a-kapali-tip-switch-mode-adaptor), 739,26 TL, stokta). Klemensleri açık olduğu için Schurter DD11.0111.1111 sigortalı ve anahtarlı IEC giriş ([DigiKey](https://www.digikey.com/en/products/detail/schurter-inc/DD11-0111-1111) → EKOM, 16,04 $, stok 1.173), 1 A gecikmeli sigorta, güç kablosu ve yalıtkan kutu gerekir. İlk seçim olan Mean Well GST36E12-P1J masaüstü adaptör DigiKey'de stokta değil (tahmini 18 Ocak 2027).
 
 ## 3. Mekanik: iki seçenek
 
@@ -78,9 +89,9 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 | M2 | Kol–mil bağlantısı: 8 mm hex göbek (setuskurlu) | 1 | 8 mm deliğe setuskurla sıkılır, kol göbeğe cıvatalanır | Kol–mil arasında ek boşluk olmamalı; düz yüzey açılmış mile iki setuskur | [Motorobit](https://www.motorobit.com/arama?q=kaplin) ("8mm Motor Şaftı ile Uyumlu Hex Tekerlek Kaplini") | 121,20 TL | Stokta |
 | M3 | Ayarlanabilir boşluk kaplini: motor tarafı (6 mm D) + kol tarafı (8 mm) + 4 dil parçası (0 / 1,5 / 3 / 5°) | 1 takım | PETG ya da PA12 baskı; setuskurlar için M3 gömme somun | Boşluk düğmesi (framing'in en güçlü düğmesi); 0° parçası motorun kendi boşluğunu ölçmek için | Baskı hizmeti | B seçeneğinin baskı ücretine dahil; A'da ≈ 150–300 TL (doğrulanmadı) | — |
 | M4 | Mıknatıs tutucu (mil ucuna setuskurla) + AS5600 tutucu | 1 + 1 | Baskı | Mıknatısı mil ekseninde ortalamak; hava aralığı 0,5–3 mm | Baskı hizmeti | M3 ile birlikte | — |
-| M5 | Kol: alüminyum lama 20 × 3 mm, ≈ 200 mm | 1 | — | 15 cm etkin boy + göbek ve karşı ağırlık uzantısı | Yerel hırdavat | ≈ 50–100 TL (doğrulanmadı) | — |
+| M5 | Kol: alüminyum lama 20 × 3 mm, ≈ 200 mm | 1 | — | 15 cm etkin boy + göbek ve karşı ağırlık uzantısı | Yerel hırdavat / alüminyumcu | ≈ 50–100 TL. **Pazar araştırması:** Hepsiburada ve Trendyol'da uygun ilan bulunamadı; hırdavat ya da alüminyumcuda boy kesimi. | — |
 | M6 | Uç ve karşı ağırlıklar: M8 somun ve rondelalar | 1 set | 20 ve 50 g'a tamamlanır | Kütle hassas terazide tartılır; kalibrasyon ağırlığına gerek kalmaz | Yerel hırdavat | ≈ 50 TL (doğrulanmadı) | — |
-| M7 | Hassas terazi, 0,01 g (ör. bydiz MH-999, 1 kg) | 1 | — | Uç kütlesini, kolu ve ağırlıkları tartmak (mgℓ, J_L hesabı) | [Trendyol](https://www.trendyol.com/sr?q=hassas%20terazi%200.01) | ≈ 300–600 TL (doğrulanmadı) | Satışta |
+| M7 | Hassas terazi, 0,01 g, ≥ 200 g kapasite | 1 | — | Uç kütlesini, kolu ve ağırlıkları tartmak (mgℓ, J_L hesabı) | [Hepsiburada](https://www.hepsiburada.com/ara?q=hassas+terazi+0.01) | ≈ 260–560 TL. **Pazar araştırması:** 200 g / 0,01 g cep terazisi 260 TL; Janva 399 TL; Bydiz BY-500 (500 g / 0,01 g) 559,90 TL. 50 g uç kütlesi ve kol için 500 g kapasite rahat. | Satışta |
 | M8 | Sürtünme pabucu: keçe parçası, M3 vida, baskı yayı, sürtünme diski | 1 set | Vidayla ayarlı bastırma kuvveti | L senaryosunda açıdan bağımsız sürtünme eklemek | Yerel + baskı | ≈ 50 TL + baskı (doğrulanmadı) | — |
 | M9 | Vida seti: M3 (6–20 mm), M4, M5 ve somunlar | 1 set | Paslanmaz | Montaj | Yerel hırdavat (Motorobit'te M3 boyların çoğu tükendi) | ≈ 150 TL (doğrulanmadı) | — |
 
@@ -89,17 +100,17 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 | # | Kalem | Adet | Özellik | Gerekçe | Kaynak | Fiyat | Stok |
 |---|---|---|---|---|---|---|---|
 | A1 | KFL08 yataklı rulman (flanşlı, 8 mm) | 2 | İçinde bilyalı rulman ve setuskur | Kol milini gövdeye yataklar; motor yatağı eğilme yükü taşımaz | [Motorobit](https://www.motorobit.com/kfl08-yatakli-rulman-8mm) | 106,06 TL × 2 | Stokta |
-| A2 | 2020 alüminyum sigma profil (6 kanal), ≈ 1 m (3–4 parçaya kesim) | 1 | Rijit gövde (ilk rezonans ≥ 100 Hz hedefi) | Gövde rijitliği; parçalar T-somunla ayarlanabilir | Türk profil satıcıları / pazar yerleri | ≈ 300–600 TL (doğrulanmadı) | — |
-| A3 | 2020 köşebent × 8, M5 T-somun × 20, M5 vida × 20 | 1 set | — | Gövde montajı, motor braketi ve KFL08 bağlantısı | Pazar yerleri (direnc.net'teki M4 T-somun tükendi) | ≈ 300 TL (doğrulanmadı) | — |
-| A4 | 37 mm redüktörlü motor için L tipi metal braket | 1 | 6 × M3 motor deliği (31 mm aralık) | Motoru gövdeye hizalı bağlamak | Yurt dışı (AliExpress). Türkiye'de bulunamadı: direnc.net'teki Pololu braketi kaldırılmış | ≈ 2–5 $ (doğrulanmadı) | — |
+| A2 | 2020 alüminyum sigma profil (6 kanal), ≈ 1 m (3–4 parçaya kesim) | 1 | Rijit gövde (ilk rezonans ≥ 100 Hz hedefi) | Gövde rijitliği; parçalar T-somunla ayarlanabilir | Yerel sigma profil satıcısı (kesimli) | ≈ 300–600 TL. **Pazar araştırması:** Hepsiburada'da 20 × 20 ilanı yok, yalnız 20 × 80 (350 mm, 489,99 TL) ve 30 × 30 (2 × 20 cm, 349,99 TL); Cimri'de 20 × 20 ilanı 319 TL (birim belirtilmemiş). Profil üreticileri 6 m boy satıyor; kesimli parça için yerel bayiden teklif alınmalı. | — |
+| A3 | 2020 köşebent × 8, M5 T-somun × 20, M5 vida × 20 | 1 set | — | Gövde montajı, motor braketi ve KFL08 bağlantısı | Pazar yerleri / profil bayisi | ≈ 640–1.040 TL. **Pazar araştırması:** Cimri'de bağlantı parçaları 49–99 TL/adet, M5 T-somun paketi ≈ 249 TL; Hepsiburada'da M5 T-somun ilanları 189–199 TL; direnc.net'teki M4 T-somun tükendi. Profil bayisinden takım halinde almak daha ucuz olabilir. | — |
+| A4 | 37 mm redüktörlü motor için L tipi metal braket | 1 | 6 × M3 motor deliği (31 mm aralık) | Motoru gövdeye hizalı bağlamak | Yurt dışı (AliExpress) | ≈ 2–5 $. **Pazar araştırması:** Türk pazar yerlerinde 37 mm braket bulunamadı (direnc.net'teki Pololu braketi kaldırılmış; Hepsiburada'daki motor braketleri RS775 gibi farklı ölçüler); Hindistan'da ₹99 + KDV, yani ≈ 1,2 $. | — |
 
 ### 3.3 B seçeneği: 3B baskı hizmeti
 
 | # | Kalem | Adet | Özellik | Gerekçe | Kaynak | Fiyat | Stok |
 |---|---|---|---|---|---|---|---|
-| B1 | Baskı parçaları: gövde (taban + iki rulman yuvası), motor braketi, kaplin takımı (M3), tutucular (M4), sürtünme diski (M8) | 1 takım | PETG, %40–60 doluluk; tahmini 250–400 g | Hazır braket ve profil gerekmez; geometri tam istenen gibi | Türkiye'de baskı hizmeti (ör. İstanbul'da gram başına teklif veren firmalar) | ≈ 750–2.400 TL (doğrulanmadı; referans 3–6 TL/g) | Teklif alınacak |
-| B2 | 608-2Z rulman (8 × 22 × 7 mm), SKF ya da NSK | 2 | Kapaklı, yağlı | Baskı gövdeye preslenir | Yerel rulmancı (direnc.net'teki 608ZZ tükendi) | ≈ 100–250 TL (doğrulanmadı) | — |
-| B3 | Isıyla gömülen M3 dişli insert | 20 | — | Baskı parçalarında sökülüp takılabilir vida bağlantısı | Pazar yerleri | ≈ 100 TL (doğrulanmadı) | — |
+| B1 | Baskı parçaları: gövde (taban + iki rulman yuvası), motor braketi, kaplin takımı (M3), tutucular (M4), sürtünme diski (M8) | 1 takım | PETG, %40–60 doluluk; tahmini 250–400 g | Hazır braket ve profil gerekmez; geometri tam istenen gibi | Türkiye'de baskı hizmeti | ≈ 750–2.400 TL. **Pazar araştırması:** 2026 tarihli ticari bir fiyat listesi bulunamadı; firmalar gram başına teklif veriyor (ör. İstanbul'da 3Dörtgen, Armut'taki hizmet verenler). Bir üniversitenin döner sermaye tarifesinde PETG 0,20 mm 6 TL/g (KDV dahil, tarih belirsiz). Ham PETG filament ≈ 0,74 TL/g (1 kg 741 TL). Okulda yazıcı bulunursa maliyet ≈ 200–300 TL'ye iner. | Teklif alınacak |
+| B2 | 608-2Z rulman (8 × 22 × 7 mm), SKF ya da NSK | 2 | Metal kapaklı, yağlı | Baskı gövdeye preslenir | [Hepsiburada](https://www.hepsiburada.com/ara?q=skf+608+2z) (direnc.net'teki 608ZZ tükendi) | ≈ 160 TL. **Pazar araştırması:** SKF 608-2Z C3 ikili paket ≈ 159 TL; markasız 608-2RS 10'lu 74,50–399,90 TL. Marka rulman tercih edilir (açıya göre değişen sürtünme olmasın). | Satışta |
+| B3 | Isıyla gömülen M3 pirinç insert (M3 × 4 mm) | 20 | — | Baskı parçalarında sökülüp takılabilir vida bağlantısı | [Hepsiburada](https://www.hepsiburada.com/ara?q=m3+insert+3d+yaz%C4%B1c%C4%B1) | ≈ 560 TL. **Pazar araştırması:** 10'lu paket 280 TL (Teknik Filament). Tahminden pahalı çıktı; yurt dışından 100'lü paket ≈ 3–5 $ ya da gömme somun (M3 altıgen somun) tasarımıyla insert ihtiyacı azaltılabilir. | Satışta |
 
 **Rijitlik uyarısı (B seçeneği):** baskı gövde profilden daha esnektir. Gövde kalın duvarlı tasarlanmalı. Montajdan sonra darbe testiyle ilk rezonans ölçülmeli (hedef ≥ 100 Hz, `mimari.md`). Hedef tutmazsa gövde A seçeneğine çevrilir; kaplin ve tutucular aynen kullanılır.
 
@@ -107,9 +118,9 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 
 | Konu | Değerler | Durum |
 |---|---|---|
-| Motor gerilimi | Motor 12 V; DRV8874 VM 4,5–37 V; kaynak 12 V | ✓ |
-| Akım | Motor durma 2,3 A; DRV8874 2,1 A sürekli / 6 A tepe; akım sınırı ≈ 2 A'e ayarlanır | ✓ (donanım sınırıyla) |
-| Güç | Kaynak 36 W; motor durmada ≈ 28 W; ESP32 ve sensörler USB'den | ✓ |
+| Motor gerilimi | Motor 12 V; DRV8874 VM 4,5–37 V; adaptör 12 V | ✓ |
+| Akım | Motor durma 2,3 A; DRV8874 2,1 A sürekli / 6 A tepe; akım sınırı ≈ 2 A'e ayarlanır; adaptör ≥ 2 A | ✓ (donanım sınırıyla) |
+| Güç | Adaptör ≥ 24 W (12 V × 2 A); sürücünün akım sınırıyla motor en fazla ≈ 24 W çeker; ESP32 ve sensörler USB'den | ✓ |
 | Mantık seviyesi | ESP32 3,3 V; DRV8874 mantık 1,8–5 V; Adafruit kartları 3,3 V; enkoder 3,3 V ile beslenecek | ✓ (enkoderin 3,3 V'ta çalıştığı montajda doğrulanacak; değilse seviye çevirici) |
 | I²C adresleri | AS5600 0x36, INA228 0x40 (I²C-0, 1 MHz); TMP117 0x48 ve 0x49 (I²C-1, 400 kHz) | ✓ (ikinci TMP117'de ADDR köprüsü) |
 | Mil çapları | Motor 6 mm D → kaplin motor tarafı; kol mili 8 mm → KFL08 / 608 / hex göbek / kaplin kol tarafı | ✓ |
@@ -136,18 +147,22 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 | Kalem grubu | Türk firmaları (TL) | EKOM teklifine girecek ($, DigiKey liste) |
 |---|---|---|
 | Elektronik ve motor (E1–E8) | 639,29 (E1) | 70,44 (E2–E8, yedek mıknatıs dahil) |
-| Güç ve elektrik (P1–P6) | ≈ 1.347 (P3 ve P6 tahmini) | 16,04 (P2) |
-| **Elektronik + güç toplamı** | **≈ 1.986 TL** | **86,48 $** + EKOM'un kargo, gümrük ve vergi payı |
+| Güç ve elektrik (P1–P6) | ≈ 580 (evdeki adaptörle) – 980 (yeni adaptörle) | — |
+| **Elektronik + güç toplamı** | **≈ 1.220–1.620 TL** | **70,44 $** + EKOM'un kargo, gümrük ve vergi payı |
+
+Panel tipi Mean Well seçilirse: + ≈ 790 TL ve + 16,04 $.
 
 | Mekanik | A: hazır parçalar | B: baskı hizmeti |
 |---|---|---|
-| Ortak kalemler (M1–M9) | ≈ 1.110–1.610 TL | ≈ 960–1.310 TL (kaplin baskısı B1'e dahil) |
-| Seçeneğe özgü | ≈ 810–1.110 TL + braket ≈ 2–5 $ | ≈ 950–2.750 TL |
-| **Mekanik toplam** | **≈ 1.920–2.720 TL + ≈ 2–5 $** | **≈ 1.910–4.060 TL** |
+| Ortak kalemler (M1–M9) | ≈ 1.070–1.570 TL | ≈ 920–1.270 TL (kaplin baskısı B1'e dahil) |
+| Seçeneğe özgü | ≈ 1.150–1.850 TL + braket ≈ 2–5 $ | ≈ 1.470–3.120 TL |
+| **Mekanik toplam** | **≈ 2.220–3.420 TL + ≈ 2–5 $** | **≈ 2.390–4.390 TL** |
 
-**Genel toplam (dengeli elektronik + mekanik):** A ile ≈ 3.900–4.710 TL + ≈ 88–91 $; B ile ≈ 3.900–6.050 TL + ≈ 86 $. EKOM'un TL teklifi kargo, gümrük ve vergileri içerdiğinden $ kısmı TL'ye çevrildiğinde liste fiyatından yüksek çıkar.
+**Genel toplam (dengeli elektronik + mekanik):** A ile ≈ 3.440–5.040 TL + ≈ 72–75 $; B ile ≈ 3.610–6.010 TL + ≈ 70 $. EKOM'un TL teklifi kargo, gümrük ve vergileri içerdiğinden $ kısmı TL'ye çevrildiğinde liste fiyatından yüksek çıkar.
 
-Fiyatı doğrulanmamış kalemler aralıklarla verildi; sipariş öncesi bu kalemler için teklif alınmalı.
+Pazar araştırmasından sonra iki seçeneğin maliyeti birbirine yaklaştı: profil aksesuarları beklenenden pahalı, baskı hizmetinin fiyatı ise teklife bağlı. Seçimi rijitlik ve iş yükü belirlemeli: A daha rijit ve sökülüp takılabilir, B daha az parça tedariki gerektirir.
+
+Aralıkla verilen fiyatlar pazar araştırmasına dayalı tahmindir; sipariş öncesi teklif alınmalı.
 
 ## 7. Kritik alternatifler
 
@@ -158,11 +173,13 @@ Fiyatı doğrulanmamış kalemler aralıklarla verildi; sipariş öncesi bu kale
 | Motor + kol sensörü | maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16 EASY (≈ 472 €) ve Same Sky AMT222B-V (73,72 $, DigiKey stok 672) | Sonuçlar umut verir ve θ_d'nin ince ölçümü gerekirse (üst sınıf). Diğer parçalar aynı kalır. |
 | Sürücü | Adafruit DRV8871 (#3190) | DRV8874 bulunamazsa; akım ölçüm çıkışı yok |
 | Denetleyici | Teensy 4.1 | İki eklem ya da 5 kHz üstü döngü |
-| Güç | Hazır masaüstü 12 V 3 A adaptör | Şebeke kablolaması istenmezse |
+| Güç | Mean Well LRS-35-12 + sigortalı IEC giriş + kutu | Daha düzgün regülasyon istenirse; 230 V kablolama gerekir |
 | Gövde | A ↔ B | B'nin rijitliği yetmezse A'ya geçilir |
 
 ## 8. Doğrulanamayanlar ve yapılacaklar
 
-- **Fiyatı doğrulanmadı:** 2020 profil ve aksesuarlar, motor braketi (yurt dışı), baskı hizmeti, 608-2Z, hassas terazi, hırdavat kalemleri. Sipariş öncesi bir Türk profil satıcısından kesim fiyatı ve bir baskı hizmetinden gram fiyatı alınacak.
-- **EKOM teklifi:** E2–E8 ve P2 DigiKey sepetine eklenip EKOM'a gönderilecek; TL teklif bu listeye işlenecek. Üniversite kurumsal hesabı kullanılabilir mi, danışmana sorulacak.
+- **Pazar araştırmasıyla tahmin edilenler (24.10.2026):** 2020 profil ve aksesuarlar, motor braketi (yurt dışı), baskı hizmeti, alüminyum lama, hırdavat. Kesinleştirmek için bir Türk profil bayisinden kesim fiyatı ve bir baskı hizmetinden gram fiyatı alınacak.
+- **Pazar araştırmasıyla netleşenler:** 608-2Z (≈ 160 TL), hassas terazi (260–560 TL), M3 insert (10'lu 280 TL).
+- **EKOM teklifi:** E2–E8 DigiKey sepetine eklenip EKOM'a gönderilecek; TL teklif bu listeye işlenecek. Üniversite kurumsal hesabı kullanılabilir mi, danışmana sorulacak.
+- **Adaptör:** evdeki adaptörün etiketi kontrol edilecek (12 V, ≥ 2 A).
 - **Motor veri sayfası:** direnc.net sayfası dişli oranını ve enkoder ayrıntısını vermiyor; veri sayfasından (ve gelen ürünün etiketinden) 1:30 oranı ve enkoder besleme gerilimi doğrulanacak.
