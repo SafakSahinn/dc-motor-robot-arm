@@ -97,13 +97,23 @@ Yenilik bu üçünün yerçekimli bir eklemde açı eksenine taşınması, Ghaff
 | Ölçüm çözünürlüğü | Kol açısı AS5600 12 bit = 0,088°; motor enkoderi kol tarafında 0,27° (JGB37-520 1:30: 11 darbe × 4 kenar × 30 = 1320 sayım/tur) | θ_d çözünürlüğünü motor enkoderi sınırlar: 3° boşluk ≈ 11 adım. Bu sınır makalede açıkça yazılacak. |
 | Örnekleme | 1 kHz (ESP32) | Simülasyonun gerçekçi modeliyle aynı. |
 | Tork ve akım | JGB37-520 nominal ≈ 0,34 N·m @ 1 A, durma ≈ 0,49 N·m / 2,3 A; DRV8874 akım sınırı ≈ 2 A | Salınım deneyleri kısa; akım INA228 ile, sıcaklık TMP117 ile izlenir. |
-| Bütçe | Dengeli liste ≈ 639 TL + 13 € + 70 $ (motor + elektronik); mekanik parçalar 3. aşamada fiyatlanacak | **Üst sınır kullanıcıyla/danışmanla netleşecek** |
-| Süre | **Kullanıcıyla netleşecek** | Önerilen takvim aşağıda |
+| Bütçe | Sabit bir tavan yok; 3. aşamada birden fazla malzeme listesi (ekonomik / dengeli / üst sınıf) hazırlanacak, seçim danışmanla yapılacak. Bugünkü dengeli liste ≈ 639 TL + 13 € + 70 $ (motor + elektronik, mekanik hariç). | Ölçüm kalitesi ile maliyet arasındaki seçim, mimari belli olunca yapılmalı. |
+| Süre | Sınav takvimine bağlı değil; aşağıdaki aşama süreleri projenin gerçekçi yapılabilir süresi ≈ 6–8 ay | Tek kişi, ders yüküyle paralel yürütülen bir yüksek lisans projesi varsayımı |
 
 **Kapsam dışı:** hareket halinde boşluk geçişi, esnek kol, çok eklemli kol, çift motorlu aktif ön yük. Gözlemci tasarımı ve açıya göre geri besleme harmanlama (O) ana katkı tuttuktan sonra uzantı olarak ele alınır.
 
-**Önerilen takvim (taslak):**
-- 28 Ekim: framing, plan ve malzeme listesi derste.
-- Kasım: Ghaffari sonuçlarının yeniden üretimi; iki girişli DF türetimi; sipariş.
-- Aralık: montaj, sensör kalibrasyonu, alt sistem testleri, sistem tanılama.
-- Ocak: açı × kazanç deneyleri, karşılaştırma, raporlama.
+**Yapılabilir süre (aşama aşama):**
+
+| Aşama | İş | Süre | Bağımlılık |
+|---|---|---|---|
+| 1–3 | Framing, donanım/yazılım planı, malzeme listeleri; danışmanla netleştirme | 1–2 hafta | — |
+| 4a | Literatür sonucunun yeniden üretimi (önce Ghaffari 2013, sonra Sun 2023), oran eşlemesi | 3–4 hafta | 1–3 |
+| 4b | İki girişli DF türetimi, sınır öngörüsü; simülasyonla karşılaştırma; rejimlerin ayrımı (sönümlü / zorlanmış / LC / kararsız) | 4–6 hafta | 4a |
+| 5a | Sipariş ve teslim (yurt dışı kalemler 2–4 hafta) | 2–4 hafta | 3; 4 ile paralel |
+| 5b | Mekanik tasarım ve 3B baskı (kaplin, gövde, kol), montaj, kablolama | 3–4 hafta | 5a |
+| 5c | Sensör kalibrasyonu, veri kayıt altyapısı, alt sistem testleri, sistem tanılama (J, b, K_s, boşluk, sürtünme, ölü bant) | 3–4 hafta | 5b |
+| 6a | Açı × kazanç deneyleri: 3 kurulum, ≈25 açı × ≈8 kazanç × 3 tekrar ≈ 1800 kısa deney (otomatik betikle) | 3–4 hafta | 5c, 4b |
+| 6b | Kaynak ayrıştırma senaryoları (L) ve dengeleme deneyleri (H) | 2 hafta | 6a |
+| 6c | Analiz, belirsizlik, model–deney farkları, makale yazımı | 5–6 hafta | 6a–b |
+
+Toplam ≈ 6–8 ay. 4. ve 5a aşamaları paralel yürüdüğü için sipariş bekleme süresi takvimi uzatmaz. Kritik yol: 4b (DF türetimi) ve 5c (sistem tanılama).
