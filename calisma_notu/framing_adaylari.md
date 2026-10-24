@@ -108,6 +108,12 @@ Bu boşluk tek başına "Yol 1" için zayıf: üç yakın çalışma onu daralt�
 
 **Diğer:** iki eklemli genelleme (Malzahn'daki θ₂+θ₃ kanyonu) ileriki çalışma; gözlemci döngüsünün kendi LC'sine yerçekiminin etkisi (Yu–Tang 2024, Sun 2025) ise B'de kazanç ekseni olarak gözlemci bant genişliğinin alınmasıyla aynı makalede ikinci eksen olabilir.
 
+### Son tarama sonucu (24 Ekim)
+
+Ayrıntı: `literatur/son_tarama_2026-10-24.md`. 75 ileriye atıf, 17 hedefli sorgu ve 4 web araması yapıldı; doğrudan rakip çıkmadı. Framing'e iki düzeltme:
+- Kaymalı (iki girişli) DF, boşluk için 1973'ten beri var. B'nin katkısı araç değil; Ghaffari çerçevesinin yerçekimli eklem için genişletilmesi ve doğrulanması.
+- Kazanç düzleminde LC sınırının iki öncülü var: Kollár 2003 ve Yang 2017 (döner tabla). Farkımız çalışma açısı ekseni ve yerçekiminin tek yönlü ön yükü.
+
 ## 4. Karşılaştırma
 
 Puan: ●●● güçlü · ●● orta · ● zayıf
