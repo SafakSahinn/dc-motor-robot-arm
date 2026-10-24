@@ -434,6 +434,60 @@ Dosya: `wos/pdf/2026_naval_gun_follow-up_adaptive_backlash_compensation_ShipsOff
 - **Bizim için:** yerçekiminin fiziksel olarak en büyük olduğu eksenlerden birinde (top yükselişi) bile boşluk çalışması yerçekimini "bilinmeyen bozucu" olarak alıyor. Tek açıda çalışılmış, açı taraması yok. Literatürdeki örüntünün bir örneği daha. İlgi düzeyi düşük; yalnızca "yerçekimli eksen ama analiz yok" listesinde anılır.
 - Kaynakçada takip edilebilir: Awan ve ark. 2024 Appl. Sci. 14(22):10265 (açık erişim), "Tracking control and backlash compensation in an inverted pendulum with switched-mode PID controllers": çift DC motorlu geri sürüşle sarkaç. Muhtemelen yine dik dengeye bakıyor, kontrol edilmeli.
 
+## Danışmanın listesinden eklenen kaynaklar (24 Ekim)
+
+Danışman 13 kaynaklı bir karşılaştırma listesi gönderdi. 8'i `Literatür.zip` içinde geldi; bunların 7'si zaten okunmuştu (Sun 2023, Xu 2023, Karim 2018, Ghaffari 2013, C. Wang 2017, Bai 2024, Márton 2009). Yeni olan 5 kaynak aşağıda. PDF'ler `hoca_listesi/pdf/` içinde (depoda değil).
+
+Danışmanın iki uyarısı metinden doğrulandı:
+- **Xu 2023, Şekil 8:** sabit ön yükte (T₁ = −0,1 T_rat) eklem −180°…180° aralığında düzgün hızla süpürülüyor, iki motorun konum farkı Δq açıya göre değişiyor (J1'de −1,4…1,5°). Yazarlar bunu imalat ve montaj hatasına bağlıyor. Yani bir **açı–ofset haritası** var, ama yerçekiminden kaynaklandığı söylenmiyor, hareket halinde ölçülüyor ve limit cycle değil.
+- **Sun 2023:** düşey düzlemde, 90° hedefte, farklı K_p değerleriyle fiziksel deney (K_p=20 salınımsız, K_p=50'de 5°/9 Hz). Tek açı.
+
+## Lu, Sun, Vakakis, Bergman — Influence of backlash in gear reducer on dynamic of single-link manipulator arm (Robotica, cilt 33, 2015)
+
+Dosya: `hoca_listesi/pdf/2015_Lu_Robotica_backlash_planetary_single_link_flexible.pdf` · DOI 10.1017/S0263574714000915
+
+- Sistem: Euler–Bernoulli esnek kol + 2K-H planet redüktör (güneş–planet ve planet–halka arasında boşluk, toplu kütle modeli), Lagrange denklemleri.
+- Girdi: motor torku dışarıdan verilen harmonik dalgalanma (Ω = 5, 10 …). **Açık çevrim**, kontrolcü yok. Yalnız benzetim.
+- Sonuç: cevap boşluğa ve uyarım frekansına birlikte duyarlı.
+- **Bizim için:** zorlanmış cevap (forced response) örneği. Danışmanın simülasyon aşamasında istediği "sönümlü titreşim / zorlanmış cevap / kalıcı çevrim / kararsızlık" ayrımında *zorlanmış* sınıfın literatür örneği. Kapalı çevrim, yerçekimi ön yükü ve salınım sınırı yok. Mekanik model için tamamlayıcı.
+
+## Malzahn — Modeling and control of multi-elastic-link robots under gravity (doktora tezi, TU Dortmund 2014)
+
+Dosya: `hoca_listesi/pdf/2014_Malzahn_dissertation_multi_elastic_link_gravity.pdf` · Eldorado açık erişim
+
+- §4.8 (s. 42–44): TUDOR (iki esnek bağlı kol), 0,3 kg yükle eklem açıları 10° adımlarla taranıyor. Her noktada çekiç darbesiyle uyarılan **sönümlü titreşimin** ilk frekansı (1,56–2,74 Hz) ve logaritmik azalması (0,03–1,24) haritalanıyor.
+- Haritada iki "kanyon" var: θ₂ = 90° ve θ₂ + θ₃ = 90°. Yani **bir bağ düşeyken frekans ve sönüm aniden düşüyor**. Yazarın açıklaması: düşey bağda yerçekimi dişliyi bir kenara bastırmıyor, bağ boşluk içinde serbest. Yatay bağda yerçekimi bağı boşluğun bir ucuna çekiyor.
+- §8: deney noktaları içinde "dik konum boşluğun etkisini en büyük yapar, yatay konum yerçekimini en büyük yapar" diye ayrılıyor. Kontrolcüler (P, yarı-integral, integral) dik hedefte daha zayıf sönüm veriyor.
+- **Yorum:** mekanizmamızın (yerçekimi = açıya bağlı doğal ön yük) **deneysel olarak en açık öncülü**. Fark: (i) esnek bağın dış uyarımla oluşan sönümlü titreşimi haritalanıyor, kendiliğinden süren salınım değil; (ii) kazanç ekseni yok; (iii) öngörü modeli yok ("altta yatan fiziği modellemek çok zor" diyor); (iv) çözüm olarak boşluğa dayanıklı kontrolcü seçiliyor. Malzahn'ın haritası bizim "sönümlü titreşim" sınıfımıza denk; bizim harita "kalıcı çevrim" sınıfı.
+
+## Kollár, Stépán, Turi — Dynamics of delayed piecewise linear systems (EJDE Conf. 10, 2003, s. 163–185)
+
+Dosya: `hoca_listesi/pdf/2003_Kollar_Stepan_Turi_EJDE_delayed_piecewise_linear_pendulum_backlash.pdf` · açık erişim (Huddersfield deposu)
+
+- Sistem: arabalı ters sarkaç, araba tekerleği dişli + elastik dişli kayışla sürülüyor → boşluk. Örneklemeli P–D kontrol, gecikme τ. Üst denge.
+- Yöntem: **parçalı doğrusal sistemin kesin (analitik) çözümü**. DF yok. P–D düzleminde kararlılık haritası, Hopf ve homoklinik çatallanma eğrileri, kararlı limit cycle bölgeleri, gecikmeyle küçülen kararlı bölge.
+- Deney (§5): τ = 5 ms, P–D düzleminde ölçüm noktaları analitik sınırla karşılaştırılıyor; "tam örtüşmüyor ama iyi uyum" diyorlar. Kararlı içte ~0,45 Hz küçük genlikli salınım, sınırda ~12 Hz.
+- **Yorum:** "kazanç düzleminde limit cycle sınırını öngörüp deneyle karşılaştırma" fikri burada var. Ama tek çalışma noktası (üst denge: ön yük sıfır, yerçekimi negatif yay gibi). Çalışma açısı ekseni yok. **Bizim için iki önemi var:** (1) DF'ye alternatif yöntem, yani tam parçalı doğrusal çözüm ya da çatallanma analizi (Esbrook–Tan–Khalil 2014 ile aynı aile); (2) bizim haritanın 180° ucu Kollár'ın durumuna denk.
+
+## Giovannitti, Nabavi, Squillero, Tonda — A virtual sensor for backlash in robotic manipulators (J. Intelligent Manufacturing, cilt 33, 2022, s. 1921–1937)
+
+Dosya: `hoca_listesi/pdf/2022_Giovannitti_JIM_virtual_sensor_backlash.pdf` · DOI 10.1007/s10845-022-01934-z · açık erişim (IRIS PoliTo)
+
+- Fikir: eklem ekseni yatayken motor **sabit hızla tek yönde** döndürülüyor. Yerçekimi torku yön değiştirdiğinde boşluk açılıyor, temas yeniden kurulurken darbe oluyor ve motor enkoderinin hız sinyalinde sönümlü bir titreşim görülüyor. Bu titreşimin modeli meta-sezgisel optimizasyonla (CMA-ES) uydurulup genliğinden boşluk kestiriliyor. Ek sensör yok.
+- Model: iki eylemsizlik + elastik bağlantı + arctan ile yumuşatılmış ölü bölge + yük denkleminde G(θ_l). Kapalı çevrim (konum/hız, motor enkoderinden).
+- Doğrulama: benzetimde mutlak hata < 0,0002–0,0004 rad; laboratuvar tezgâhı (kayış + redüktör + dökme demir yük); üretim hattındaki gerçek robotlardan veri (orada gerçek boşluk ölçülemediği için yalnız tutarlılık gösteriliyor).
+- **Yorum:** yerçekimi torkunun sıfır geçişini **bilerek ölçüm aracı** olarak kullanıyor. Literatürde "yerçekimi boşluğu açar/kapar" fikrinin üçüncü açık kullanımı (Malzahn ve Xu'dan sonra). Fark: hareket halinde, açık bir darbe olayı; sabit hedefte kendiliğinden süren salınım yok, kazanç yok. Bizim "sınırdan boşluk ya da aşınma kestirimi" geliştirme yönü için doğrudan rakip. Bu yöne gidilirse Giovannitti'den farkımız gösterilmeli: duran kolda, kazanç taramasıyla ve öngörü modeline dayalı kestirim.
+
+## Guofa Sun, Xu, Wang, Wang — Variable gain switching exact differential observer-based compensation control for servo system with backlash (IET Control Theory & Applications, cilt 15, sayı 14, 2021, s. 1789–1803)
+
+Açık erişim, tam metin çevrimiçi okundu · DOI 10.1049/cth2.12108
+
+- Model: iki eylemsizlik, anahtarlamalı boşluk torku modeli (kip σ = hız farkının işareti, q̇_d ≥ 0 / < 0), ln cosh ile türevlenebilir yaklaşım. Dış tork τ_d bozucu.
+- Gözlemci: Levant türevleyicisi tabanlı, fal(φ, δ, ε) doğrusal olmayan kazanç. **Kazanç gözlemci hatasının büyüklüğüne göre değişiyor**; kip (σ) değişince kazanç seti de değişiyor. Kararlılık: ortalama bekleme süresi (average dwell time) + Lyapunov.
+- Deney: iki motorlu yüksüz tezgâh ve dört motorlu yüklü tezgâh (yük motoru sürtünmeyi taklit ediyor), sinüs izleme (0,85 rad, 1/8 Hz; 4π rad, 1/6 Hz). Ölçüt: ATE, ARTE, AFTE.
+- **Yerçekimi yok, sabit hedef yok, limit cycle sınırı yok.** Kazanç ayarı hata ve temas kipine bağlı, kol açısına ya da ön yüke bağlı değil.
+- **Bizim için:** "açıya göre ayarlanan gözlemci" önerilirse karşılaştırılacak referans. Fark: Sun'da ayar *tepkisel* (hata büyüdükten ya da kip değiştikten sonra), bizde *öngörülü* (açıdan önceden hesaplanan sınır). Ölçüt de farklı olmalı: aynı salınımsızlık garantisi altında elde edilen bant genişliği ya da yerleşme süresi.
+
 ## Henüz okunmadı (öncelik sırasıyla)
 
 1. Márton, Lantos — Friction and backlash induced limit cycles (ECC 2009)
