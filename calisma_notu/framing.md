@@ -98,22 +98,26 @@ Yenilik bu üçünün yerçekimli bir eklemde açı eksenine taşınması, Ghaff
 | Örnekleme | 1 kHz (ESP32) | Simülasyonun gerçekçi modeliyle aynı. |
 | Tork ve akım | JGB37-520 nominal ≈ 0,34 N·m @ 1 A, durma ≈ 0,49 N·m / 2,3 A; DRV8874 akım sınırı ≈ 2 A | Salınım deneyleri kısa; akım INA228 ile, sıcaklık TMP117 ile izlenir. |
 | Bütçe | Sabit bir tavan yok; 3. aşamada birden fazla malzeme listesi (ekonomik / dengeli / üst sınıf) hazırlanacak, seçim danışmanla yapılacak. Bugünkü dengeli liste ≈ 639 TL + 13 € + 70 $ (motor + elektronik, mekanik hariç). | Ölçüm kalitesi ile maliyet arasındaki seçim, mimari belli olunca yapılmalı. |
-| Süre | Sınav takvimine bağlı değil; aşağıdaki aşama süreleri projenin gerçekçi yapılabilir süresi ≈ 6–8 ay | Tek kişi, ders yüküyle paralel yürütülen bir yüksek lisans projesi varsayımı |
+| Süre | Sınav takvimine bağlı değil; projenin yapılabilir süresi ≈ 4–5 ay (aşama tablosu aşağıda) | Teori ve donanım kolları paralel yürütülür |
 
 **Kapsam dışı:** hareket halinde boşluk geçişi, esnek kol, çok eklemli kol, çift motorlu aktif ön yük. Gözlemci tasarımı ve açıya göre geri besleme harmanlama (O) ana katkı tuttuktan sonra uzantı olarak ele alınır.
 
 **Yapılabilir süre (aşama aşama):**
 
+İki kol paralel yürür: **teori kolu** (4a–4b) ve **donanım kolu** (5a–5c). Deneyler (6a) iki kolun buluştuğu yerde başlar.
+
 | Aşama | İş | Süre | Bağımlılık |
 |---|---|---|---|
-| 1–3 | Framing, donanım/yazılım planı, malzeme listeleri; danışmanla netleştirme | 1–2 hafta | — |
-| 4a | Literatür sonucunun yeniden üretimi (önce Ghaffari 2013, sonra Sun 2023), oran eşlemesi | 3–4 hafta | 1–3 |
-| 4b | İki girişli DF türetimi, sınır öngörüsü; simülasyonla karşılaştırma; rejimlerin ayrımı (sönümlü / zorlanmış / LC / kararsız) | 4–6 hafta | 4a |
-| 5a | Sipariş ve teslim (yurt dışı kalemler 2–4 hafta) | 2–4 hafta | 3; 4 ile paralel |
-| 5b | Mekanik tasarım ve 3B baskı (kaplin, gövde, kol), montaj, kablolama | 3–4 hafta | 5a |
-| 5c | Sensör kalibrasyonu, veri kayıt altyapısı, alt sistem testleri, sistem tanılama (J, b, K_s, boşluk, sürtünme, ölü bant) | 3–4 hafta | 5b |
-| 6a | Açı × kazanç deneyleri: 3 kurulum, ≈25 açı × ≈8 kazanç × 3 tekrar ≈ 1800 kısa deney (otomatik betikle) | 3–4 hafta | 5c, 4b |
-| 6b | Kaynak ayrıştırma senaryoları (L) ve dengeleme deneyleri (H) | 2 hafta | 6a |
-| 6c | Analiz, belirsizlik, model–deney farkları, makale yazımı | 5–6 hafta | 6a–b |
+| 1–3 | Framing, donanım/yazılım planı, malzeme listeleri; danışmanla netleştirme | 1 hafta | — |
+| 4a | Literatür sonucunun yeniden üretimi (önce Ghaffari 2013, sonra Sun 2023), oran eşlemesi | 2–3 hafta | 1–3 |
+| 4b | İki girişli DF türetimi, sınır öngörüsü; simülasyonla karşılaştırma; rejimlerin ayrımı (sönümlü / zorlanmış / LC / kararsız) | 3–4 hafta | 4a |
+| 5a | Sipariş ve teslim; bu sürede firmware iskeleti ve veri kayıt betiği yazılır | 2–3 hafta | 3; 4a ile paralel |
+| 5b | Mekanik tasarım ve 3B baskı (kaplin, gövde, kol), montaj, kablolama | 2 hafta | 5a; 4b ile paralel |
+| 5c | Sensör kalibrasyonu, alt sistem testleri, sistem tanılama (J, b, K_s, boşluk, sürtünme, ölü bant) | 2–3 hafta | 5b |
+| 6a | Açı × kazanç deneyleri: 3 kurulum × ≈20 açı × ≈6 kazanç × 3 tekrar ≈ 1080 kısa deney (otomatik betikle) | 2–3 hafta | 5c, 4b |
+| 6b | Kaynak ayrıştırma senaryoları (L) ve dengeleme deneyleri (H) | 1–2 hafta | 6a |
+| 6c | Analiz, belirsizlik, model–deney farkları, makale yazımı (yöntem bölümleri 6a sırasında başlar) | 3–4 hafta | 6a–b |
 
-Toplam ≈ 6–8 ay. 4. ve 5a aşamaları paralel yürüdüğü için sipariş bekleme süresi takvimi uzatmaz. Kritik yol: 4b (DF türetimi) ve 5c (sistem tanılama).
+**Toplam ≈ 4–5 ay (16–21 hafta).** Kritik yol donanım kolu: 1–3 → 5a → 5b → 5c → 6a → 6b → 6c. Teori kolu (5–7 hafta), donanım hazırlığının (6–8 hafta) içine sığıyor.
+
+**Risk:** DF türetimi gecikirse deneyler durmaz. Deney verisi önce simülasyonla karşılaştırılır, DF karşılaştırması 6c'ye kayar.
