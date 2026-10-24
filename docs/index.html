@@ -432,37 +432,37 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 
   <h3>Dengeli liste, kalem kalem</h3>
   <div class="tbl"><table>
-    <tr><th>Kalem</th><th>Adet</th><th>Temel özellik</th><th>Kaynak</th><th>Fiyat</th><th>Stok</th></tr>
-    <tr><td>JGB37-520 12 V 333 rpm enkoderli (1:30)</td><td class="num">1</td><td>Durma ≈ 0,49 N·m / 2,3 A; kol tarafında 1320 sayım/tur; mil 6 mm D</td><td><a href="https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor">direnc.net</a></td><td class="fiyat">639,29 TL</td><td>Stokta</td></tr>
-    <tr><td>Pololu #4035 (DRV8874)</td><td class="num">1</td><td>2,1 A sürekli, 4,5–37 V, akım ölçüm çıkışı, akım sınırı</td><td><a href="https://www.digikey.com/en/products/detail/pololu/4035/26714680">DigiKey</a> → EKOM</td><td class="fiyat">11,94 $</td><td class="num">313</td></tr>
-    <tr><td>Espressif ESP32-DevKitC-32E</td><td class="num">1</td><td>240 MHz, PCNT, iki I²C</td><td><a href="https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32E/12091810">DigiKey</a> → EKOM</td><td class="fiyat">10,00 $</td><td class="num">731</td></tr>
-    <tr><td>Adafruit AS5600 (#6357)</td><td class="num">1</td><td>12 bit, I²C; mıknatıs dahil değil</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/6357/26832926">DigiKey</a> → EKOM</td><td class="fiyat">5,95 $</td><td class="num">527</td></tr>
-    <tr><td>Radial Magnets 8995, Ø6 × 2,5 mm, diametral</td><td class="num">2</td><td>NdFeB N35; mil ucuna uygun tip</td><td><a href="https://www.digikey.com/en/products/detail/radial-magnets-inc/8995/5126077">DigiKey</a> → EKOM</td><td class="fiyat">0,40 $</td><td class="num">34.505</td></tr>
-    <tr><td>Adafruit INA228 (#5832)</td><td class="num">1</td><td>20 bit, I²C, 85 V</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/5832/21839815">DigiKey</a> → EKOM</td><td class="fiyat">14,95 $</td><td class="num">2.008</td></tr>
-    <tr><td>Adafruit TMP117 (#4821)</td><td class="num">2</td><td>±0,1 °C, I²C ≤ 400 kHz</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/4821/13571586">DigiKey</a> → EKOM</td><td class="fiyat">11,50 $</td><td class="num">857</td></tr>
-    <tr><td>STEMMA QT kablo 100 mm (#4210)</td><td class="num">4</td><td>Lehimsiz bağlantı</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/4210/10230021">DigiKey</a> → EKOM</td><td class="fiyat">0,95 $</td><td class="num">17.903</td></tr>
-    <tr><td>Masaüstü adaptör 12 V ≥ 2 A</td><td class="num">1</td><td>Evdeki kullanılabilir</td><td>evdeki / yerel</td><td class="fiyat">0 / ≈ 250–400 TL</td><td>—</td></tr>
-    <tr><td>CHINT NP2-BE102 acil stop</td><td class="num">1</td><td>NC, 12 V hattında</td><td><a href="https://www.motorobit.com/arama?q=acil+stop">Motorobit</a></td><td class="fiyat">303,00 TL</td><td>Stokta</td></tr>
-    <tr><td>470 µF 25 V kondansatör, DC jak, breadboard, kablolar</td><td class="num">1 set</td><td>—</td><td>direnc.net / yerel</td><td class="fiyat">≈ 275 TL</td><td>Kondansatör stokta</td></tr>
+    <tr><th>Kalem</th><th>Adet</th><th>Temel özellik</th><th>Neden</th><th>Kaynak</th><th>Fiyat</th><th>Stok</th></tr>
+    <tr><td>JGB37-520 12 V 333 rpm enkoderli (1:30)</td><td class="num">1</td><td>Durma ≈ 0,49 N·m / 2,3 A; kol tarafında 1320 sayım/tur; mil 6 mm D</td><td>Simülasyon bu sınıfla yapıldı; yurtiçinde stokta</td><td><a href="https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor">direnc.net</a></td><td class="fiyat">639,29 TL</td><td>Stokta</td></tr>
+    <tr><td>Pololu #4035 (DRV8874)</td><td class="num">1</td><td>2,1 A sürekli, 4,5–37 V, akım ölçüm çıkışı, akım sınırı</td><td>Motorun 2,3 A durma akımını donanımda sınırlar; TB6612 önerilen 1,0 A</td><td><a href="https://www.digikey.com/en/products/detail/pololu/4035/26714680">DigiKey</a> → EKOM</td><td class="fiyat">11,94 $</td><td class="num">313</td></tr>
+    <tr><td>Espressif ESP32-DevKitC-32E</td><td class="num">1</td><td>240 MHz, PCNT, iki I²C</td><td>1 kHz döngü yeterli; ikinci I²C hattı TMP117 için gerekli; orijinal kart</td><td><a href="https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32E/12091810">DigiKey</a> → EKOM</td><td class="fiyat">10,00 $</td><td class="num">731</td></tr>
+    <tr><td>Adafruit AS5600 (#6357)</td><td class="num">1</td><td>12 bit, I²C; mıknatıs dahil değil</td><td>Mutlak kol açısı; motor enkoderinden 3 kat ince, θ<sub>d</sub>'yi zaten motor enkoderi sınırlıyor</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/6357/26832926">DigiKey</a> → EKOM</td><td class="fiyat">5,95 $</td><td class="num">527</td></tr>
+    <tr><td>Radial Magnets 8995, Ø6 × 2,5 mm, diametral</td><td class="num">2</td><td>NdFeB N35; mil ucuna uygun tip</td><td>AS5600 diametral mıknatıs ister; 1 yedek</td><td><a href="https://www.digikey.com/en/products/detail/radial-magnets-inc/8995/5126077">DigiKey</a> → EKOM</td><td class="fiyat">0,40 $</td><td class="num">34.505</td></tr>
+    <tr><td>Adafruit INA228 (#5832)</td><td class="num">1</td><td>20 bit, I²C, 85 V</td><td>Tork kestirimi, ısınma ve besleme gerilimi kaydı</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/5832/21839815">DigiKey</a> → EKOM</td><td class="fiyat">14,95 $</td><td class="num">2.008</td></tr>
+    <tr><td>Adafruit TMP117 (#4821)</td><td class="num">2</td><td>±0,1 °C, I²C ≤ 400 kHz</td><td>Ortam ve motor gövdesi; sargı direnci ve sürtünme sıcaklığa bağlı</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/4821/13571586">DigiKey</a> → EKOM</td><td class="fiyat">11,50 $</td><td class="num">857</td></tr>
+    <tr><td>STEMMA QT kablo 100 mm (#4210)</td><td class="num">4</td><td>JST SH 4 pin</td><td>Sensörleri lehimsiz ve iki ayrı I²C hattına bağlamak</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/4210/10230021">DigiKey</a> → EKOM</td><td class="fiyat">0,95 $</td><td class="num">17.903</td></tr>
+    <tr><td>Masaüstü adaptör 12 V ≥ 2 A</td><td class="num">1</td><td>Regüleli, 5,5 × 2,1 mm jak</td><td>Motor beslemesi; evdeki kullanılabilir (aşağıdaki not)</td><td>evdeki / yerel</td><td class="fiyat">0 / ≈ 250–400 TL</td><td>—</td></tr>
+    <tr><td>CHINT NP2-BE102 acil stop</td><td class="num">1</td><td>NC, metal, mantar başlı</td><td>12 V motor hattını yazılımdan bağımsız kesmek</td><td><a href="https://www.motorobit.com/arama?q=acil+stop">Motorobit</a></td><td class="fiyat">303,00 TL</td><td>Stokta</td></tr>
+    <tr><td>470 µF 25 V kondansatör, DC jak, breadboard, kablolar</td><td class="num">1 set</td><td>470 µF × 2</td><td>Sürücü girişinde dolgu kondansatörü; bağlantılar</td><td>direnc.net / yerel</td><td class="fiyat">≈ 275 TL</td><td>Kondansatör stokta</td></tr>
   </table></div>
   <div class="note"><b>Güç kaynağı neyi değiştirir?</b>Gerilim 12 V olmalı (motor 12 V'luk), akım en az 2 A (sürücünün akım sınırı ≈ 2 A; modem adaptörleri 1–1,5 A, yetmez). Dalgalanmanın etkisi küçük: motor gerilimi PWM ve kapalı çevrimle ayarlanıyor, 470 µF kondansatör yüksek frekansı bastırıyor, INA228 besleme gerilimini her deneyde kaydediyor. Evdeki adaptör etiketinde 12 V ve ≥ 2 A yazıyorsa kullanılabilir; bütün deneylerde aynısı kullanılır ve modeli kayda yazılır. İlk seçim Mean Well GST36E12 DigiKey'de stokta değil; panel tipi Mean Well LRS-35-12 (direnc.net, 739,26 TL, stokta) 230 V kablolama ister.</div>
 
   <h3>Mekanik: iki seçenek</h3>
   <p>Ayarlanabilir boşluk kaplini hazır satılmıyor, iki seçenekte de baskıyla yapılıyor. <b>A:</b> gövde, braket ve yataklama hazır parçalardan. <b>B:</b> gövde, braket, kaplin ve tutucular baskı hizmetiyle.</p>
   <div class="tbl"><table>
-    <tr><th>Kalem</th><th>Seçenek</th><th>Kaynak</th><th>Fiyat</th><th>Stok / not</th></tr>
-    <tr><td>8 mm krom kaplı mil, 500 mm</td><td>A, B</td><td><a href="https://www.motorobit.com/arama?q=8mm+mil">Motorobit</a></td><td class="fiyat">242,40 TL</td><td>Stokta</td></tr>
-    <tr><td>8 mm setuskurlu hex göbek (kol–mil)</td><td>A, B</td><td><a href="https://www.motorobit.com/arama?q=kaplin">Motorobit</a></td><td class="fiyat">121,20 TL</td><td>Stokta</td></tr>
-    <tr><td>Kaplin takımı (0 / 1,5 / 3 / 5°) + mıknatıs ve sensör tutucuları</td><td>A, B</td><td>baskı hizmeti</td><td class="fiyat">≈ 150–300 TL (A)</td><td>B'de toplam baskıya dahil</td></tr>
-    <tr><td>Hassas terazi 0,01 g</td><td>A, B</td><td><a href="https://www.hepsiburada.com/ara?q=hassas+terazi+0.01">Hepsiburada</a></td><td class="fiyat">≈ 260–560 TL</td><td>Pazar araştırması: 260 / 399 / 559,90 TL</td></tr>
-    <tr><td>Alüminyum lama, ağırlıklar (somun/rondela), keçe, vidalar</td><td>A, B</td><td>yerel hırdavat</td><td class="fiyat">≈ 300–350 TL</td><td>Pazar yerlerinde lama bulunamadı</td></tr>
-    <tr><td>KFL08 yataklı rulman</td><td>A (× 2)</td><td><a href="https://www.motorobit.com/kfl08-yatakli-rulman-8mm">Motorobit</a></td><td class="fiyat">106,06 TL × 2</td><td>Stokta</td></tr>
-    <tr><td>2020 sigma profil ≈ 1 m (kesimli)</td><td>A</td><td>yerel profil bayisi</td><td class="fiyat">≈ 300–600 TL</td><td>Pazar araştırması: Hepsiburada'da 20 × 20 yok; Cimri'de 319 TL ilan</td></tr>
-    <tr><td>Köşebent × 8, M5 T-somun ve vida × 20</td><td>A</td><td>pazar yerleri / bayi</td><td class="fiyat">≈ 640–1.040 TL</td><td>Pazar araştırması: köşebent 49–99 TL/adet; T-somun paketi ≈ 190–250 TL</td></tr>
-    <tr><td>37 mm motor için L braket</td><td>A</td><td>yurt dışı (AliExpress)</td><td class="fiyat">≈ 2–5 $</td><td>Türkiye'de bulunamadı</td></tr>
-    <tr><td>Baskı: gövde, braket, kaplin, tutucular, sürtünme diski (250–400 g PETG)</td><td>B</td><td>baskı hizmeti</td><td class="fiyat">≈ 750–2.400 TL</td><td>Pazar araştırması: üniversite tarifesi 6 TL/g; ham PETG ≈ 0,74 TL/g; teklif alınacak</td></tr>
-    <tr><td>SKF 608-2Z</td><td>B (× 2)</td><td><a href="https://www.hepsiburada.com/ara?q=skf+608+2z">Hepsiburada</a></td><td class="fiyat">≈ 160 TL</td><td>İkili paket</td></tr>
-    <tr><td>M3 pirinç insert × 20</td><td>B</td><td><a href="https://www.hepsiburada.com/ara?q=m3+insert+3d+yaz%C4%B1c%C4%B1">Hepsiburada</a></td><td class="fiyat">≈ 560 TL</td><td>10'lu 280 TL</td></tr>
+    <tr><th>Kalem</th><th>Adet</th><th>Seçenek</th><th>Neden</th><th>Kaynak</th><th>Fiyat</th><th>Stok / not</th></tr>
+    <tr><td>8 mm krom kaplı mil, 500 mm</td><td class="num">1</td><td>A, B</td><td>Kol mili ≈ 120 mm kesilir, kalan yedek; kol yükünü motor yatağından alır</td><td><a href="https://www.motorobit.com/arama?q=8mm+mil">Motorobit</a></td><td class="fiyat">242,40 TL</td><td>Stokta</td></tr>
+    <tr><td>8 mm setuskurlu hex göbek</td><td class="num">1</td><td>A, B</td><td>Kol–mil bağlantısı ek boşluk eklememeli</td><td><a href="https://www.motorobit.com/arama?q=kaplin">Motorobit</a></td><td class="fiyat">121,20 TL</td><td>Stokta</td></tr>
+    <tr><td>Kaplin takımı (0 / 1,5 / 3 / 5°) + mıknatıs ve sensör tutucuları</td><td class="num">1 takım</td><td>A, B</td><td>Boşluk düğmesi; hazır satılmıyor</td><td>baskı hizmeti</td><td class="fiyat">≈ 150–300 TL (A)</td><td>B'de toplam baskıya dahil</td></tr>
+    <tr><td>Hassas terazi 0,01 g, ≥ 200 g</td><td class="num">1</td><td>A, B</td><td>Uç kütlesi ve kolu tartmak (\(mg\ell\), \(J_L\))</td><td><a href="https://www.hepsiburada.com/ara?q=hassas+terazi+0.01">Hepsiburada</a></td><td class="fiyat">≈ 260–560 TL</td><td>Pazar araştırması: 260 / 399 / 559,90 TL</td></tr>
+    <tr><td>Alüminyum lama 20 × 3 mm, ağırlıklar (M8 somun/rondela), keçe, vidalar</td><td class="num">1 set</td><td>A, B</td><td>Kol, uç ve karşı ağırlık, sürtünme pabucu, montaj</td><td>yerel hırdavat</td><td class="fiyat">≈ 300–350 TL</td><td>Pazar yerlerinde lama bulunamadı</td></tr>
+    <tr><td>KFL08 yataklı rulman</td><td class="num">2</td><td>A</td><td>Kol milini gövdeye yataklar</td><td><a href="https://www.motorobit.com/kfl08-yatakli-rulman-8mm">Motorobit</a></td><td class="fiyat">106,06 TL × 2</td><td>Stokta</td></tr>
+    <tr><td>2020 sigma profil ≈ 1 m (kesimli)</td><td class="num">1</td><td>A</td><td>Rijit gövde (ilk rezonans ≥ 100 Hz)</td><td>yerel profil bayisi</td><td class="fiyat">≈ 300–600 TL</td><td>Pazar araştırması: Hepsiburada'da 20 × 20 yok; Cimri'de 319 TL ilan</td></tr>
+    <tr><td>Köşebent, M5 T-somun ve vida</td><td class="num">8 + 20 + 20</td><td>A</td><td>Gövde, braket ve yatak bağlantısı</td><td>pazar yerleri / bayi</td><td class="fiyat">≈ 640–1.040 TL</td><td>Pazar araştırması: köşebent 49–99 TL/adet; T-somun paketi ≈ 190–250 TL</td></tr>
+    <tr><td>37 mm motor için L braket</td><td class="num">1</td><td>A</td><td>Motoru gövdeye hizalı bağlamak</td><td>yurt dışı (AliExpress)</td><td class="fiyat">≈ 2–5 $</td><td>Türkiye'de bulunamadı</td></tr>
+    <tr><td>Baskı: gövde, braket, kaplin, tutucular, sürtünme diski (250–400 g PETG)</td><td class="num">1 takım</td><td>B</td><td>Hazır braket ve profil gerekmez</td><td>baskı hizmeti</td><td class="fiyat">≈ 750–2.400 TL</td><td>Pazar araştırması: üniversite tarifesi 6 TL/g; ham PETG ≈ 0,74 TL/g; teklif alınacak</td></tr>
+    <tr><td>SKF 608-2Z</td><td class="num">2</td><td>B</td><td>Baskı gövdeye preslenir; marka rulman açıya göre değişen sürtünmeyi azaltır</td><td><a href="https://www.hepsiburada.com/ara?q=skf+608+2z">Hepsiburada</a></td><td class="fiyat">≈ 160 TL</td><td>İkili paket</td></tr>
+    <tr><td>M3 pirinç insert</td><td class="num">20</td><td>B</td><td>Baskı parçalarda sökülüp takılabilir vida</td><td><a href="https://www.hepsiburada.com/ara?q=m3+insert+3d+yaz%C4%B1c%C4%B1">Hepsiburada</a></td><td class="fiyat">≈ 560 TL</td><td>10'lu 280 TL</td></tr>
   </table></div>
 
   <h3>Toplam</h3>
@@ -479,10 +479,19 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <ul class="plain">
     <li><b>Gerilim ve akım:</b> motor 12 V, DRV8874 4,5–37 V; motor durma 2,3 A, sürücü 2,1 A sürekli → akım sınırı ≈ 2 A.</li>
     <li><b>Mantık ve adresler:</b> her şey 3,3 V; AS5600 0x36 ve INA228 0x40 (I²C-0, 1 MHz), TMP117 0x48 / 0x49 (I²C-1, 400 kHz).</li>
+    <li><b>Güç:</b> adaptör ≥ 24 W (12 V × 2 A); sürücünün akım sınırıyla motor en fazla ≈ 24 W çeker; ESP32 ve sensörler USB'den.</li>
     <li><b>Mil çapları:</b> motor 6 mm D → kaplin; kol mili 8 mm → KFL08 / 608 / göbek / kaplin.</li>
+    <li><b>Mıknatıs:</b> Ø6 diametral, mil ucundaki tutucuda; AS5600 hava aralığı 0,5–3 mm.</li>
     <li><b>Alternatifler:</b> JGA25-370 (küçük rotor), Pololu 37D 64 CPR, üst sınıf maxon + AMT22 (diğer parçalar aynı kalır), DRV8871, Teensy 4.1, panel tipi Mean Well.</li>
   </ul>
-  <p>Kalem kalem gerekçeler, uyum tablosu, montaj sırası ve pazar araştırması: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/malzeme.md"><code>calisma_notu/malzeme.md</code></a>. Parça seçim gerekçeleri ve bütün adaylar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/tasarim_kararlari.md"><code>donanim/tasarim_kararlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</p>
+
+  <h3>Montaj ihtiyaçları</h3>
+  <ul class="plain">
+    <li><b>Takım:</b> havya (pin başlıkları), matkap, eğe (mil üzerinde setuskur düzlüğü), metal testere (mil ve lama), alyan seti, multimetre.</li>
+    <li><b>Sıra:</b> gövde → rulmanlar ve mil (motor miliyle eksen hizası kontrol edilir) → motor braketi ve motor → kaplin, önce 0° parçası → kol, göbek ve ağırlıklar → mıknatıs ve AS5600 → sürtünme pabucu → mekanik durdurucular → elektrik (12 V hattında acil stop, ortak toprak).</li>
+    <li><b>İlk kontrol:</b> kaplin 0° ile \(\theta_d\) genişliği ölçülür; beklenmeyen bir boşluk varsa kol–mil ya da mıknatıs bağlantısı gözden geçirilir. Gövdenin ilk rezonansı darbe testiyle ölçülür.</li>
+  </ul>
+  <p>Kalem kalem gerekçeler, uyum tablosu ve pazar araştırması: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/malzeme.md"><code>calisma_notu/malzeme.md</code></a>. Parça seçim gerekçeleri ve bütün adaylar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/tasarim_kararlari.md"><code>donanim/tasarim_kararlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</p>
 </section>
 
 <section id="baslangic">
@@ -682,7 +691,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   </ul>
   <h3>Hedef çalışma bölgesi (simülasyondan)</h3>
   <ul class="plain">
-    <li>Toplam boşluk ≈ 3° (ayarlanabilir kaplinle 1,5° / 3° / 5°).</li>
+    <li>Toplam boşluk ≈ 3°: motorun kendi boşluğu + ayarlanabilir kaplin (0° / 1,5° / 3° / 5°; 0° motorun kendi boşluğunu ölçmek için).</li>
     <li>Kapalı çevrim hızı \(\omega_c \approx 30\)–45 rad/s (JGB37'nin tork sınırı), hedef \(\rho \approx 0{,}25\)–\(0{,}40\): ölçekleme yasası orada sağlam, sürtünme gürültüsü az.</li>
     <li>Uç kütlesi 0 / 20 / 50 g; açı taraması 0–180°, genelde 10°, 0° ve 180° civarında 1–2° adımlarla.</li>
     <li>Kaynak ayrıştırma senaryoları: kaplin boşluğu, keçe pabuçla eklenen sürtünme, yazılımda bit atılarak üretilen nicemleme.</li>
@@ -978,7 +987,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
             <li>Gerçekçi modelde \(r_s \approx 0{,}23\)–\(0{,}38\)'de yasa sürüyor (idealin 0,7–0,85 katı, dağılım ~5 kat). \(r_s \le 0{,}18\)'de sürtünme baskın.</li>
           </ul>
         </dd>
-        <dt>Bağlantı</dt><dd class="link">→ Deney hedef bölgesi \(r_s \approx 0{,}25\)–\(0{,}40\) (\(\omega_c \approx 30\)–60 rad/s). Kaymalı tanımlama fonksiyonu \(r_s^3\) ilişkisini öngörebilirse makalenin analitik çekirdeği olur.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Deney hedef bölgesi \(r_s \approx 0{,}25\)–\(0{,}40\) (\(\omega_c \approx 30\)–60 rad/s; JGB37-520 seçilince tork sınırı yüzünden 30–45 rad/s). Kaymalı tanımlama fonksiyonu \(r_s^3\) ilişkisini öngörebilirse makalenin analitik çekirdeği olur.</dd>
       </dl>
     </div></li>
   </ol>
@@ -989,7 +998,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
       <h4>Malzeme kararı</h4>
       <dl>
         <dt>Neden</dt><dd>Simülasyon hem yönü doğruladı hem de malzeme seçimini belirledi.</dd>
-        <dt>Ne yaptık</dt><dd>Bulguları parça parça listeye çevirdik (aşağıda Malzeme bölümü).</dd>
+        <dt>Ne yaptık</dt><dd>Bulguları parça parça listeye çevirdik (güncel hali: Malzeme listeleri bölümü).</dd>
         <dt>Sonuç</dt><dd>Sipariş verilebilir. Tek belirsizlik motorun kesin değerleri; satıcının veri sayfası kontrol edilecek.</dd>
         <dt>Bağlantı</dt><dd class="link">→ Kaymalı tanımlama fonksiyonu türetimi yalnız makale için; malzemeyi etkilemiyor, sipariş beklenirken yapılacak.</dd>
       </dl>
