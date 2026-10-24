@@ -71,9 +71,42 @@ Bu boşluk tek başına "Yol 1" için zayıf: üç yakın çalışma onu daralt�
 - **Geliştirme:** duran kolda birkaç açıda kazanç taranır, LC'nin başladığı sınır B'nin modeline ters çevrilerek boşluk genişliği kestirilir.
 - **Ölçüt:** kestirilen boşluğun gerçek boşluktan sapması. **Bizim ayarlanabilir kaplin (1,5 / 3 / 5°) gerçek değeri veriyor**; Giovannitti'nin üretim robotlarında olmayan bir şey. Aynı düzenekte Giovannitti'nin sabit hız testi de uygulanıp iki yöntem karşılaştırılabilir.
 - **Zayıflık:** B'nin modeli tutmazsa F de çöker. LC'yi bilerek uyarmak endüstriyel açıdan tartışmalı (kısa ve kontrollü test olarak savunulabilir).
+- **⚠ Son turda bulunan rakip:** Ruderman, Yamada, Fujimoto 2018 (arXiv 1802.06246), "Backlash identification in two-mass systems by delayed relay feedback". Boşluğu tanılamak için gecikmeli röle geri beslemesiyle boşluk içinde **bilerek kontrollü LC uyandırıyor**; iki eylemsizlikli tezgâh, ~1° boşluk, yerçekimi yok. "LC uyandırarak boşluk kestirimi" fikri yani yeni değil. Kalan fark: yerçekimli kolda bu yöntem yalnız düşeye yakın açılarda çalışır, çünkü başka açılarda yerçekimi boşluğu kapatır. Bu da B'nin mekanizmasının bir başka sonucu.
 
 ### G. Rejim haritası (sönümlü / zorlanmış / LC / kararsız)
 - Danışmanın simülasyon aşamasında zaten istediği sınıflama. Malzahn (sönümlü) ve Lu 2015 (zorlanmış) literatür örnekleri. Tek başına katkı değil, B'nin sonuç bölümü.
+
+### Son tur: ek adaylar (H–M)
+
+**H. Yerçekimi dengelemenin gizli bedeli**
+- Robotlarda enerji ve motor boyutu için yaygın olan yerçekimi dengelemesi (karşı ağırlık, yay) doğal ön yükü de ortadan kaldırır. Soru: dengeleme oranı ne olursa LC başlar?
+- **Ölçüt:** dengeleme oranına göre sınırın kayması; öngörü ile deney karşılaştırması.
+- **Literatür:** kısa aramada dengeleme ile boşluk ve salınım arasındaki etkileşimi inceleyen kaynak çıkmadı (yalnız patentler ve tasarım yazıları).
+- **Not:** karşı ağırlık modelde yalnız mgℓ'yi küçültür, yani B'deki uç kütlesi düğmesinin aynısıdır. Yay ise açıya bağlılığı sinüs dışı bir biçime sokar. Ayrı bir yöntem değil, **B'nin güçlü bir pratik hikâyesi ve tasarım kuralı**.
+
+**I. Pasif ön yük yayı: tek motorlu ucuz anti-boşluk**
+- Yerçekiminin sıfırlandığı açılarda (0° ve 180° civarı) boşluğu kapatacak en küçük burulma yayını B'nin modeliyle boyutlandırmak. Karşılaştırma: çift motorlu aktif ön yük (Sun 2023, Xu 2023).
+- **Ölçüt:** LC'nin ortadan kalkması karşılığında harcanan ek motor torku ve enerji.
+- **Zayıflık:** "ekseni bilerek dengesiz bırakarak dişliyi bastırılı tutmak" uygulamada bilinen bir hile (ör. teleskop kundakları). Ayrı bir katkı değil, B'nin uygulaması.
+
+**L. Açı taramasıyla salınım kaynağının ayrıştırılması (sürtünme / boşluk / nicemleme)**
+- Sürtünme LC'si ve nicemleme LC'si açıdan bağımsızdır; boşluk LC'si açıya bağlıdır. Açı taraması bu yüzden kaynağı ayırt eden bir test olur.
+- **Temel:** Márton 2009 ve Olsson–Åström 2001 (sürtünme LC'si), Horng 2006 (nicemleme). Danışman da Márton'u "sürtünme salınımını boşluk salınımından ayırmak için gerekli" diye işaretlemiş.
+- **Ölçüt:** kaynağı bilinen senaryolarda (kaplin boşluğu ayarlanır, sürtünme keçe pabuçla eklenir, nicemleme yazılımda bit atılarak üretilir) doğru sınıflama oranı.
+- **Literatür:** kısa aramada doğrulanmış bir ayrıştırma testi çıkmadı. Uygulamada dalga biçimi sezgisi kullanılıyor (testere dişi = sürtünme, kare dalga = boşluk).
+- **Güçlü yanı:** DF'nin başarısından bağımsız, yani düşük riskli. Ayrıca B'nin deneyinde gözlenen salınımın gerçekten boşluktan geldiğini göstermek için **zaten gerekli**.
+
+**O. Açıya göre motor ve kol geri beslemesinin harmanlanması**
+- C. Wang 2017'ye göre geri besleme motor tarafından alınırsa LC olmaz ama durağan hata kalır; kol tarafından alınırsa hata gider ama LC çıkar. Yerçekimli kolda 90° civarında kol tarafı güvenli ve hassastır, 0°/180° civarında motor tarafı daha güvenlidir. Öneri: harmanlama ağırlığını açıya göre programlamak.
+- **Ölçüt:** açı boyunca durağan hata ile salınımsızlık birlikte; saf yarı-kapalı ve saf tam-kapalı çevrimle karşılaştırma.
+- **Literatür:** çift döngülü kontrol endüstride standart (maxon EPOS4 kazanç programlayıcı da içeriyor). Açıya ve yerçekimine göre harmanlama kısa aramada çıkmadı.
+- **Not:** iki sensör zaten listede, ek donanım gerekmez. D'ye göre daha az kalabalık bir alan, ama yine B'nin sınır modeline dayanıyor.
+
+**M. Az deneyle güvenli sınır bulma (aktif öğrenme)**
+- B'nin modeli öncül olarak alınır, sınır Gauss süreciyle birkaç deneyde bulunur.
+- **Zayıflık:** "yöntemleri birleştirme" uyarısına doğrudan takılır, ek uzmanlık ister. Düşük öncelik.
+
+**Diğer:** iki eklemli genelleme (Malzahn'daki θ₂+θ₃ kanyonu) ileriki çalışma; gözlemci döngüsünün kendi LC'sine yerçekiminin etkisi (Yu–Tang 2024, Sun 2025) ise B'de kazanç ekseni olarak gözlemci bant genişliğinin alınmasıyla aynı makalede ikinci eksen olabilir.
 
 ## 4. Karşılaştırma
 
@@ -86,8 +119,13 @@ Puan: ●●● güçlü · ●● orta · ● zayıf
 | C. Kesin çözüm / çatallanma | ●● | ●●● | ●●● | ●●● | ● | ●● | B'nin doğrulama aracı |
 | D. Öngörülü kazanç | ●● | ●●● | ●●● | ● | ●● | ● | Uzantı (ileride) |
 | E. Hareket halinde geçiş | ●● | ●● | ●● | ●● | ● | ● | Kapsam dışı |
-| F. Sınırdan boşluk kestirimi | ●●● | ●●● | ●●● | ● | ●● | ●● | Uzantı (deney yeterse) |
+| F. Sınırdan boşluk kestirimi | ●● | ●●● | ●●● | ● | ●● | ●● | Zayıfladı (Ruderman 2018) |
 | G. Rejim haritası | ● | ●● | ●●● | ●●● | ●●● | ●●● | B'nin sonuç bölümü |
+| H. Dengelemenin gizli bedeli | ●●● | ●●● | ●●● | ●● | ●●● | ●● | B'nin pratik hikâyesi |
+| I. Pasif ön yük yayı | ● | ●●● | ●●● | ●● | ●●● | ●● | B'nin uygulaması |
+| L. Açı taramasıyla kaynak ayrıştırma | ●● | ●●● | ●●● | ●●● | ●●● | ●●● | B'nin gerekli bileşeni |
+| O. Açıya göre geri besleme harmanlama | ●● | ●●● | ●●● | ●● | ●● | ●● | Uzantı (D'den iyi) |
+| M. Aktif öğrenme | ● | ●● | ●●● | ●● | ● | ● | Düşük öncelik |
 
 ## 5. Öneri
 
@@ -95,7 +133,9 @@ Puan: ●●● güçlü · ●● orta · ● zayıf
 
 - C, DF'nin bozulduğu çarpma rejiminde referans olarak kullanılır. Simülasyonda zaten "kesin" sonucu veren sayısal benzetim var; C onun analitik ya da yarı analitik karşılığı.
 - G, sonuçların sunuluş biçimi olur.
-- F ya da D, ana katkı tuttuktan sonra eklenebilecek uygulama katmanıdır. F'nin ayarlanabilir kaplin sayesinde gerçek bir ölçütü var; D danışmanın uyarısına daha çok takılıyor.
+- **L, ana katkının zorunlu bileşeni olur:** deneyde görülen salınımın sürtünmeden ya da nicemlemeden değil boşluktan geldiği açı taramasıyla gösterilir. DF'den bağımsız olduğu için riski düşürür.
+- **H, motivasyon ve tasarım kuralı olarak eklenir:** "yerçekimi dengelemesi doğal ön yükü yok eder; ne kadar dengelenirse LC başlar?" Deneyde karşı ağırlık, uç kütlesi düğmesinin karşılığıdır, yani ek donanım gerekmez.
+- Uygulama katmanı (ana katkı tuttuktan sonra): **O** (açıya göre geri besleme harmanlama) D'den daha az kalabalık bir alanda. F, Ruderman 2018 nedeniyle zayıfladı.
 
 ### Oran eşlemesi: bizim r_s ↔ Ghaffari r_gs ↔ C. Wang 2017 r_s
 
