@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 625" width="1040" height="625" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13">
+  <defs>
+    <marker id="okS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2563a8"/></marker>
+    <marker id="okG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#b4441c"/></marker>
+    <marker id="okM" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#555"/></marker>
+    <marker id="okK" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#8a6d00"/></marker>
+  </defs>
+  <rect width="1040" height="625" fill="#ffffff"/>
+
+  <!-- bant başlıkları -->
+  <text x="20" y="78" font-size="12" fill="#666" font-weight="600">GÜÇ VE MEKANİK YOL</text>
+  <text x="20" y="222" font-size="12" fill="#666" font-weight="600">ÖLÇÜM</text>
+  <text x="20" y="398" font-size="12" fill="#666" font-weight="600">KONTROL VE KAYIT</text>
+
+  <!-- Bant 1: güç ve mekanik -->
+  <g text-anchor="middle">
+    <rect x="20" y="90" width="115" height="70" rx="8" fill="#fde8d7" stroke="#b4441c"/>
+    <text x="77" y="120" font-weight="600">12 V 3 A</text><text x="77" y="137">adaptör</text>
+
+    <rect x="165" y="90" width="130" height="70" rx="8" fill="#fde8d7" stroke="#b4441c"/>
+    <text x="230" y="112" font-weight="600">DRV8874</text><text x="230" y="129">H köprüsü</text><text x="230" y="146">akım sınırı ≈ 2 A</text>
+
+    <rect x="325" y="90" width="115" height="70" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
+    <text x="382" y="120" font-weight="600">INA228</text><text x="382" y="137">akım (şant)</text>
+
+    <rect x="470" y="90" width="125" height="70" rx="8" fill="#ececec" stroke="#555"/>
+    <text x="532" y="112" font-weight="600">DC motor</text><text x="532" y="129">+ 1:30 dişli</text><text x="532" y="146">(kendi boşluğu)</text>
+
+    <rect x="625" y="90" width="120" height="70" rx="8" fill="#ececec" stroke="#555"/>
+    <text x="685" y="112" font-weight="600">Kaplin</text><text x="685" y="129">boşluk</text><text x="685" y="146">0 · 1,5 · 3 · 5°</text>
+
+    <rect x="775" y="90" width="115" height="70" rx="8" fill="#ececec" stroke="#555"/>
+    <text x="832" y="120" font-weight="600">Kol mili Ø8</text><text x="832" y="137">2 × 608 rulman</text>
+
+    <rect x="920" y="90" width="105" height="70" rx="8" fill="#ececec" stroke="#555"/>
+    <text x="972" y="112" font-weight="600">Kol 15 cm</text><text x="972" y="129">uç kütlesi</text><text x="972" y="146">karşı ağırlık</text>
+
+    <!-- sürtünme pabucu -->
+    <rect x="775" y="10" width="115" height="48" rx="8" fill="#ececec" stroke="#555" stroke-dasharray="5 3"/>
+    <text x="832" y="30" font-weight="600">Sürtünme pabucu</text><text x="832" y="47">ayarlı (L)</text>
+  </g>
+  <!-- güç okları -->
+  <line x1="135" y1="125" x2="163" y2="125" stroke="#b4441c" stroke-width="2" marker-end="url(#okG)"/>
+  <text x="149" y="117" text-anchor="middle" font-size="11" fill="#b4441c">12 V</text>
+  <line x1="295" y1="125" x2="323" y2="125" stroke="#b4441c" stroke-width="2" marker-end="url(#okG)"/>
+  <line x1="440" y1="125" x2="468" y2="125" stroke="#b4441c" stroke-width="2" marker-end="url(#okG)"/>
+  <!-- mekanik okları -->
+  <line x1="595" y1="125" x2="623" y2="125" stroke="#555" stroke-width="3" marker-end="url(#okM)"/>
+  <line x1="745" y1="125" x2="773" y2="125" stroke="#555" stroke-width="3" marker-end="url(#okM)"/>
+  <line x1="890" y1="125" x2="918" y2="125" stroke="#555" stroke-width="3" marker-end="url(#okM)"/>
+  <line x1="832" y1="58" x2="832" y2="88" stroke="#8a6d00" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#okK)"/>
+
+  <!-- Bant 2: ölçüm -->
+  <g text-anchor="middle">
+    <rect x="470" y="235" width="125" height="58" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
+    <text x="532" y="259" font-weight="600">Motor enkoderi</text><text x="532" y="277">0,27° (kol tarafı)</text>
+
+    <rect x="625" y="235" width="120" height="58" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
+    <text x="685" y="259" font-weight="600">TMP117 × 2</text><text x="685" y="277">ortam + motor</text>
+
+    <rect x="775" y="235" width="115" height="58" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
+    <text x="832" y="259" font-weight="600">AS5600</text><text x="832" y="277">kol açısı 0,088°</text>
+  </g>
+  <!-- sensörlerin bağlı olduğu yerler -->
+  <line x1="532" y1="160" x2="532" y2="235" stroke="#3a7d3a" stroke-width="1.5"/>
+  <text x="526" y="200" font-size="11" fill="#3a7d3a" text-anchor="end">rotorda</text>
+  <path d="M575,160 L575,212 L670,212 L670,235" fill="none" stroke="#8a6d00" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="582" y="206" font-size="11" fill="#8a6d00">gövde ısısı</text>
+  <line x1="832" y1="160" x2="832" y2="235" stroke="#3a7d3a" stroke-width="1.5"/>
+  <text x="838" y="200" font-size="11" fill="#3a7d3a">mil ucunda mıknatıs</text>
+
+  <!-- Bant 3: kontrol -->
+  <g text-anchor="middle">
+    <rect x="20" y="410" width="125" height="100" rx="8" fill="#dde9f7" stroke="#2563a8"/>
+    <text x="82" y="440" font-weight="600">Bilgisayar</text><text x="82" y="458">MATLAB</text><text x="82" y="476">tarama · kayıt</text><text x="82" y="494">analiz</text>
+
+    <rect x="175" y="410" width="850" height="100" rx="8" fill="#dde9f7" stroke="#2563a8"/>
+    <text x="600" y="442" font-weight="600" font-size="14">ESP32-DevKitC · 1 kHz kontrol döngüsü</text>
+    <text x="600" y="465">PCNT (enkoder) · LEDC PWM 20 kHz · I²C-0 1 MHz (AS5600, INA228) · I²C-1 400 kHz (TMP117)</text>
+    <text x="600" y="488">PID / P–PI · güvenlik sınırları (akım, açı, sıcaklık) · zaman damgalı kayıt paketi</text>
+  </g>
+  <!-- sinyal okları -->
+  <line x1="230" y1="408" x2="230" y2="162" stroke="#2563a8" stroke-width="2" marker-end="url(#okS)"/>
+  <text x="236" y="300" font-size="11" fill="#2563a8">PWM · yön</text><text x="236" y="314" font-size="11" fill="#2563a8">nSLEEP</text>
+  <line x1="382" y1="162" x2="382" y2="408" stroke="#2563a8" stroke-width="2" marker-end="url(#okS)"/>
+  <text x="388" y="300" font-size="11" fill="#2563a8">I²C-0</text>
+  <line x1="532" y1="293" x2="532" y2="408" stroke="#2563a8" stroke-width="2" marker-end="url(#okS)"/>
+  <text x="538" y="355" font-size="11" fill="#2563a8">A/B kuadratür</text>
+  <line x1="685" y1="293" x2="685" y2="408" stroke="#2563a8" stroke-width="2" marker-end="url(#okS)"/>
+  <text x="691" y="355" font-size="11" fill="#2563a8">I²C-1</text>
+  <line x1="832" y1="293" x2="832" y2="408" stroke="#2563a8" stroke-width="2" marker-end="url(#okS)"/>
+  <text x="838" y="355" font-size="11" fill="#2563a8">I²C-0</text>
+  <line x1="147" y1="460" x2="173" y2="460" stroke="#2563a8" stroke-width="2" marker-start="url(#okS)" marker-end="url(#okS)"/>
+  <text x="160" y="452" text-anchor="middle" font-size="10" fill="#2563a8">USB</text>
+
+  <!-- açıklama -->
+  <g font-size="12" fill="#333">
+    <line x1="20" y1="560" x2="50" y2="560" stroke="#b4441c" stroke-width="2"/><text x="56" y="564">güç</text>
+    <line x1="110" y1="560" x2="140" y2="560" stroke="#555" stroke-width="3"/><text x="146" y="564">mekanik aktarım</text>
+    <line x1="270" y1="560" x2="300" y2="560" stroke="#2563a8" stroke-width="2"/><text x="306" y="564">sinyal</text>
+    <line x1="370" y1="560" x2="400" y2="560" stroke="#8a6d00" stroke-width="2" stroke-dasharray="5 3"/><text x="406" y="564">fiziksel etki (sürtünme, ısı)</text>
+    <text x="20" y="590">Toplam boşluk = motorun kendi dişli boşluğu + kaplin boşluğu. Kaplinin 0° ayarı motorun kendi boşluğunu ölçmek içindir.</text>
+    <text x="20" y="608">θ_d = θ_M − θ_L  (θ_M: kol tarafına indirgenmiş motor açısı, θ_L: kol açısı)</text>
+  </g>
+</svg>

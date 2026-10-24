@@ -32,7 +32,7 @@ Pratikteki sonucu şu: tek bir açıda ayarlanmış bir kontrolcü başka bir a�
 
 ✓ var · ✗ yok · ~ kısmen
 
-| Çalışma | Yerçekimi modelde | Açı taranıyor | Kazanç taranıyor | Sabit hedefte LC | Sınır öngörüsü | Tek motor | Fiziksel deney |
+| Çalışma | Yerçekimi modelde | Açı taranıyor | Kazanç taranıyor | Sabit hedefte LC | Sınır öngörüsü | Tek tahrik motoru | Fiziksel deney |
 |---|---|---|---|---|---|---|---|
 | Ghaffari 2013 (TMECH) | ✗ | ✗ | ✓ (r_gs) | ✓ | ✓ DF | ✓ | ✓ |
 | C. Wang 2017 (TIE) | ✗ | ✗ | ✓ | ✓ | ~ frekans | ✓ | ✓ |
@@ -45,7 +45,7 @@ Pratikteki sonucu şu: tek bir açıda ayarlanmış bir kontrolcü başka bir a�
 | Malzahn 2014 (tez) | ✓ | ✓ (10°) | ✗ | ✗ (sönümlü) | ✗ | ✓ | ✓ |
 | Giovannitti 2022 (JIM) | ✓ | ~ sürekli dönüş | ✗ | ✗ | ✗ | ✓ | ✓ |
 | Márton 2009 (ECC) | ✗ | ✗ | ✓ | ✓ | ~ yaklaşık | ✓ | ✗ |
-| **Bu çalışma** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| **Bu çalışma (hedef)** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
 Not: C. Wang 2017'nin "r_s"si Ghaffari'nin r_gs'siyle aynı tanım, bizim eski r_s'mizden farklı. Karışıklığı önlemek için bizim oran bundan sonra ρ.
 
@@ -91,8 +91,8 @@ Yenilik bu üçünün yerçekimli bir eklemde açı eksenine taşınması, Ghaff
 | Hareket türü | Sabit hedef θ₀ + küçük adım (≈5°) | Hareket halinde boşluk geçişi kapsam dışı. |
 | Açı taraması | Genelde 10°, 0° ve 180° civarında 1–2° | Simülasyonda sınır bölgeleri bu açılarda. |
 | Kol ve yük | 15 cm alüminyum lama (≈20 g) + değiştirilebilir uç kütlesi 0 / 20 / 50 g → mgℓ ≈ 0,015 / 0,044 / 0,088 N·m | γ'yı açıdan bağımsız değiştirme düğmesi. Karşı ağırlık H için aynı düğme. |
-| Boşluk | Ayarlanabilir kaplin 1,5 / 3 / 5° | Simülasyonda en güçlü düğme; gerçek değeri bilinen boşluk. |
-| Kazanç (bant genişliği) | ω_c ≈ 30–60 rad/s, ρ ≈ 0,25–0,40 (r_gs ≈ 0,5–0,8) | Ghaffari'nin rezonans LC rejimi (DF geçerli); simülasyonda ölçekleme yasası burada sağlam. |
+| Boşluk | Motorun kendi boşluğu + ayarlanabilir kaplin 0 / 1,5 / 3 / 5° | Simülasyonda en güçlü düğme; kaplinin katkısı bilinen boşluk. 0° ayarı motorun kendi boşluğunu ölçmek için. |
+| Kazanç (bant genişliği) | ω_c ≈ 30–45 rad/s (JGB37'nin tork sınırı, `simulasyon/motor_jgb37.m`); hedef ρ ≈ 0,25–0,40 (r_gs ≈ 0,5–0,8) | Ghaffari'nin rezonans LC rejimi (DF geçerli); simülasyonda ölçekleme yasası burada sağlam. ρ ve r_gs değerleri JGA25 parametreleriyle hesaplandı; JGB37'nin tanılanan J_M ve K_s değerleriyle yeniden hesaplanacak. Hedef bölge kaçarsa kaplin malzemesi (K_s) ile ayarlanır. |
 | Kontrolcü | PID (türev motor enkoderinden) ve karşılaştırma için Ghaffari'nin P–PI yapısı | Ghaffari ile birebir karşılaştırma. |
 | Ölçüm çözünürlüğü | Kol açısı AS5600 12 bit = 0,088°; motor enkoderi kol tarafında 0,27° (JGB37-520 1:30: 11 darbe × 4 kenar × 30 = 1320 sayım/tur) | θ_d çözünürlüğünü motor enkoderi sınırlar: 3° boşluk ≈ 11 adım. Bu sınır makalede açıkça yazılacak. |
 | Örnekleme | 1 kHz (ESP32) | Simülasyonun gerçekçi modeliyle aynı. |

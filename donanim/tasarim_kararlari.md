@@ -112,13 +112,15 @@ AS5600 motor enkoderinden üç kat ince; daha ince sensör bu motorla ölçüme 
 | Bağlantı | Protokol | Not |
 |---|---|---|
 | Motor enkoderi → ESP32 | A/B kuadratür → PCNT | Enkoder 3,3–5 V; 3,3 V ile beslenirse çıkış doğrudan ESP32'ye (veri sayfasından teyit) |
-| AS5600 → ESP32 | I²C, 0x36 | 1 MHz hızlı mod |
-| INA228 → ESP32 | I²C, 0x40 | aynı hat |
-| TMP117 × 2 → ESP32 | I²C, 0x48 / 0x49 | 1–10 Hz |
+| AS5600 → ESP32 | I²C-0, 0x36 | 1 MHz (Fast-mode Plus) |
+| INA228 → ESP32 | I²C-0, 0x40 | aynı hat |
+| TMP117 × 2 → ESP32 | **I²C-1** (ikinci hat), 0x48 / 0x49 | **400 kHz**, 1–10 Hz. TMP117 veri sayfasında SCL en fazla 400 kHz; 1 MHz'lik hatta çalışması garanti değil. ESP32'nin iki I²C denetleyicisi var. |
 | ESP32 → DRV8874 | EN'ye 20 kHz PWM, PH yön, nSLEEP HIGH | Akım sınırı ≈ 2 A |
 | ESP32 ↔ bilgisayar | USB seri, 921600 baud | Veri kaydı; kontrol döngüsünde Wi-Fi yok |
 
-**Bilinen risk:** 1 kHz'te iki I²C cihazı (AS5600, INA228) zamanlamayı zorlayabilir; I²C 1 MHz'e çıkarılır, gerekirse INA228 daha seyrek okunur.
+**Bilinen risk:** 1 kHz'te iki I²C cihazı (AS5600, INA228) zamanlamayı zorlayabilir; bu yüzden I²C-0 1 MHz'te çalışır, yavaş TMP117'ler ayrı hatta. Gerekirse INA228 daha seyrek okunur.
+
+**AS5600 filtre ayarı (zorunlu):** varsayılan yavaş filtrede (SF = 00) adım yanıtı gecikmesi **2,2 ms**. Konum geri beslemesi bu sensörden alındığı için bu gecikme döngüde bir faz kaybı yaratır ve salınım sınırını kaydırır. **SF = 11** seçilir: gecikme 0,286 ms, gürültü 0,043° RMS (çözünürlüğün, 0,088°, yarısı). Hızlı filtre eşiği (FTH) kapalı tutulur, çünkü salınım sırasında filtre davranışı değişmemeli. Kalan gecikme benzetim modeline eklenir.
 
 ---
 
