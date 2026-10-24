@@ -15,7 +15,7 @@
   <!-- Bant 1: güç ve mekanik -->
   <g text-anchor="middle">
     <rect x="20" y="90" width="115" height="70" rx="8" fill="#fde8d7" stroke="#b4441c"/>
-    <text x="77" y="120" font-weight="600">12 V 3 A</text><text x="77" y="137">adaptör</text>
+    <text x="77" y="120" font-weight="600">12 V ≥ 2 A</text><text x="77" y="137">adaptör</text>
 
     <rect x="165" y="90" width="130" height="70" rx="8" fill="#fde8d7" stroke="#b4441c"/>
     <text x="230" y="112" font-weight="600">DRV8874</text><text x="230" y="129">H köprüsü</text><text x="230" y="146">akım sınırı ≈ 2 A</text>

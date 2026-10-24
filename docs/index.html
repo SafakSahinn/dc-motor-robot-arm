@@ -141,18 +141,19 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 
 <div class="wrap">
 <nav aria-label="Bölümler">
-  <div class="lbl">Bölümler</div>
+  <div class="lbl">Çalışma notu</div>
   <a href="#hedef">Hedef</a>
+  <a href="#framing">1 · Framing</a>
+  <a href="#kapsam">2 · Kapsam ve kısıtlar</a>
+  <a href="#mimari">3 · Donanım ve yazılım planı</a>
+  <a href="#malzeme">4 · Malzeme listeleri</a>
+  <div class="lbl" style="margin-top:14px">Dayanaklar</div>
   <a href="#baslangic">Başlangıç noktası</a>
   <a href="#tarama">Literatür taraması</a>
   <a href="#rakipler">En yakın çalışmalar</a>
-  <a href="#yon">Seçilen yön</a>
-  <a href="#hipotez">Hipotez</a>
+  <a href="#hipotez">Mekanizma</a>
   <a href="#simulasyon">Simülasyon</a>
   <a href="#deney">Deney planı</a>
-  <a href="#donanim">Gerçek donanım</a>
-  <a href="#kararlar">Tasarım kararları</a>
-  <a href="#malzeme">Malzeme ve alışveriş</a>
   <a href="#yayin">Yayın</a>
   <a href="#siradaki">Sıradaki adım</a>
   <a href="#gelistirme">Geliştirme yönleri</a>
@@ -170,11 +171,318 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <section id="hedef">
   <div class="top"><div class="kicker">Amaç</div><span class="pill done">Netleşti</span></div>
   <h2>Ne yapmak istiyoruz?</h2>
+  <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde, dişli boşluğunun kendiliğinden süren salınıma yol açtığı sınırı kol açısı ve kontrol kazancı cinsinden öngörmek ve bu öngörüyü düşük maliyetli bir düzenekte deneyle doğrulamak.</p>
+  <p>İlk dört bölüm danışmanın istediği çalışma notudur: framing; kapsam ve kısıtlar; donanım ve yazılım planı; malzeme listeleri. Sonraki bölümler bu nota dayanak olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
+</section>
+
+<section id="framing">
+  <div class="top"><div class="kicker">Çalışma notu · 1</div><span class="pill done">Yön seçildi</span></div>
+  <h2>Framing</h2>
+  <p>Literatürde açıkça gösterilebilen bir boşluk tek başına yeterince güçlü değil: yerçekiminin dişliyi bastırması nitel olarak, kazanca bağlı salınım ise yerçekimsiz eksenlerde çalışılmış. Bu yüzden çalışma <b>bir yöntemi belirli bir eksikliğini giderecek şekilde geliştirmeye</b> dayanıyor (danışmanın tanımladığı ikinci yol).</p>
+
+  <h3>Problem</h3>
+  <p>Boşluğun yarattığı salınımın kazanç sınırı tanımlama fonksiyonu (DF) ile öngörülebiliyor (Ghaffari 2013, C. Wang 2017, Bai 2024). Bu analizlerin hepsi yatay eksenler için; dişliye etkiyen ortalama tork sıfır ya da simetrik bir mekanik ön yük olarak alınıyor. Düşey düzlemde dönen kolda ise yerçekimi torku \(mg\ell\sin\theta\) dişliyi tek bir yüze bastıran <b>doğal, tek yönlü ve açıyla değişen bir ön yük</b> gibi davranıyor: kol yataya yakınken dişli bastırılı, düşeye yakınken boşlukta serbest. Pratikteki sonucu: tek açıda ayarlanan bir kontrolcü başka bir açıda salınabilir; yerçekimi dengelemesi de bu doğal ön yükü fark ettirmeden yok edebilir.</p>
+  <p class="thesis">Ana soru: Yerçekimi etkisindeki tek motorlu, dişli boşluklu bir eklemde salınımın başlama sınırı, Ghaffari'nin simetrik ön yük çerçevesi tek yönlü ve açıya bağlı yerçekimi ön yüküne genişletilerek ne doğrulukla öngörülebilir?</p>
+  <h3>Alt sorular</h3>
   <ul class="plain">
-    <li>Yayına dönüşebilecek bir çalışma: literatürde açık bulup onu doldurmak.</li>
-    <li>Kolu fiziksel olarak yapıp sonuçları deneyle doğrulamak.</li>
-    <li>Malzemeyi seçilen yöne göre almak.</li>
+    <li><b>AS1.</b> Sınırı hangi boyutsuz sayılar belirler? Adaylar: \(\gamma = mg\ell\sin\theta_0/(K_s r)\), \(\rho = \omega_c/\omega_{rez}\), \(\varphi = F_C/(K_s r)\).</li>
+    <li><b>AS2.</b> Gözlenen salınım gerçekten boşluktan mı geliyor? Açı taraması sürtünme ve nicemleme kaynaklı salınımı ayırt edebilir mi?</li>
+    <li><b>AS3.</b> Yerçekimi dengeleme oranı sınırı nasıl kaydırır?</li>
   </ul>
+  <h3>Hipotezler</h3>
+  <ul class="plain">
+    <li><b>H1.</b> Kritik kazanç \(|\gamma|\) ile artar; 90° çevresinde kazanç arttıkça daralan bir salınımsız bölge oluşur (simülasyonda \(\gamma_{sınır} \approx 3\rho^3\)). 180° tarafında yerçekimi "negatif yay" gibi davrandığı için salınım orada daha düşük kazançta başlar.</li>
+    <li><b>H2.</b> Simetrik, yerçekimsiz DF bu açı bağımlılığını öngöremez; tek yönlü kaymayı içeren iki girişli DF öngörebilir.</li>
+    <li><b>H3.</b> Sürtünme ve nicemleme salınımı açıdan bağımsız, boşluk salınımı açıya bağlıdır.</li>
+    <li><b>H4.</b> Dengeleme oranı arttıkça etkin \(\gamma\) küçülür; tam dengelemede sınır yatay eksenin sınırına iner.</li>
+  </ul>
+
+  <h3>En yakın literatür</h3>
+  <p>Danışmanın listesindeki 13 kaynak ve son taramada eklenen iki kaynak. ✓ var · ✗ yok · ~ kısmen.</p>
+  <div class="tbl"><table>
+    <tr><th>Çalışma</th><th>Yerçekimi modelde</th><th>Açı taranıyor</th><th>Kazanç taranıyor</th><th>Sabit hedefte salınım</th><th>Sınır öngörüsü</th><th>Tek tahrik motoru</th><th>Fiziksel deney</th></tr>
+    <tr><td>Ghaffari 2013 (TMECH)</td><td>✗</td><td>✗</td><td>✓ (r<sub>gs</sub>)</td><td>✓</td><td>✓ DF</td><td>✓</td><td>✓</td></tr>
+    <tr><td>C. Wang 2017 (TIE)</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td><td>~ frekans</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Bai 2024 (TPEL)</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td><td>✓ DF</td><td>✓</td><td>✓</td></tr>
+    <tr><td>J. Wang 2024 (Nonlinear Dyn.)</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td><td>✓ DF</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Yang 2017 (Proc. IMechE C)</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td><td>~ bölge</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Kollár 2003 (EJDE)</td><td>~ üst denge</td><td>✗</td><td>✓ (P–D)</td><td>✓</td><td>✓ kesin çözüm</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Sun 2023 (TIE)</td><td>✓</td><td>✗ (yalnız 90°)</td><td>~ (2 değer)</td><td>✓</td><td>✗</td><td>✗ (çift motor)</td><td>✓</td></tr>
+    <tr><td>Xu 2023 (RA-L)</td><td>~ nitel</td><td>~ ofset, hareket halinde</td><td>✗</td><td>✗</td><td>✗</td><td>✗ (çift motor)</td><td>✓</td></tr>
+    <tr><td>Malzahn 2014 (tez)</td><td>✓</td><td>✓ (10°)</td><td>✗</td><td>✗ (sönümlü)</td><td>✗</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Giovannitti 2022 (JIM)</td><td>✓</td><td>~ sürekli dönüş</td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Márton 2009 (ECC)</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td><td>~ yaklaşık</td><td>✓</td><td>✗</td></tr>
+    <tr><td>Karim 2018 (M2VIP)</td><td>~ nitel</td><td>~ birkaç poz</td><td>✗</td><td>✗</td><td>✗</td><td>✓</td><td>✓</td></tr>
+    <tr><td>G. Sun 2021 (IET CTA)</td><td>✗</td><td>✗</td><td>~ hataya göre</td><td>✗ (izleme)</td><td>✗</td><td>~</td><td>✓</td></tr>
+    <tr><td>Ruderman 2019 (JDSMC)</td><td>✗</td><td>✗</td><td>✗ (röle)</td><td>✓ (bilerek)</td><td>~</td><td>✓</td><td>✓</td></tr>
+    <tr><td>Lu 2015 (Robotica)</td><td>✗</td><td>✗</td><td>✗ (açık çevrim)</td><td>✗ (zorlanmış)</td><td>✗</td><td>✓</td><td>✗</td></tr>
+    <tr class="sec"><td>Bu çalışma (hedef)</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td></tr>
+  </table></div>
+
+  <h3>Boyutsuz oranların eşlemesi</h3>
+  <p>Kaynaklarda aynı sembol farklı büyüklükleri gösteriyor; bu çalışmadaki tanımlar:</p>
+  <div class="tbl"><table>
+    <tr><th>Büyüklük</th><th>Tanım</th><th>İlişki</th></tr>
+    <tr><td>Ghaffari 2013, r<sub>gs</sub> (C. Wang 2017'de "r<sub>s</sub>")</td><td>\(\sqrt{k_p k_v / K_s}\), P konum + PI hız</td><td>\(r_{gs} = \rho\sqrt{J/J_{eff}} \approx 2\rho\) (simülasyon parametreleri)</td></tr>
+    <tr><td>Bu çalışma, \(\rho\)</td><td>\(\omega_c/\omega_{rez}\), \(\omega_{rez} = \sqrt{K_s/J_{eff}}\)</td><td>PID: \(K_p = J\omega_c^2\), \(K_d = 1{,}4J\omega_c\), \(K_i = K_p\omega_c/4\)</td></tr>
+    <tr><td>Bu çalışma, \(\gamma\)</td><td>\(mg\ell\sin\theta_0/(K_s r)\)</td><td>Ghaffari'deki ön yük oranının tek yönlü, açıya bağlı karşılığı</td></tr>
+    <tr><td>Bu çalışma, \(\varphi\)</td><td>\(F_C/(K_s r)\)</td><td>Sürtünmenin baskın olduğu rejimi ayırır</td></tr>
+  </table></div>
+  <div class="note ok"><b>Eşlemenin sonucu</b>Deney hedef bölgesi \(\rho \approx 0{,}25\)–\(0{,}40\), Ghaffari'nin ölçeğinde \(r_{gs} \approx 0{,}5\)–\(0{,}8\): DF'nin geçerli olduğu "rezonans" rejimi. Simülasyonda sürtünmenin baskın çıktığı düşük kazanç bölgesi de Ghaffari'nin DF'nin bozulduğu "çarpma" rejimine denk geliyor. Çarpan JGB37'nin tanılanan değerleriyle yeniden hesaplanacak.</div>
+
+  <h3>Önerilen katkı</h3>
+  <ul class="plain">
+    <li><b>Temel alınan yöntem:</b> Ghaffari 2013, yani tek döngüye indirgeme, DF ve sertlik oranına göre rejim sınıflaması. <b>Giderilen eksiklik:</b> oradaki ön yük simetrik ve sabit; yerçekimi ön yükü tek yönlü ve açıya bağlı.</li>
+    <li>Çerçevenin iki girişli DF ile genişletilmesi: açı × kazanç düzleminde sınırın öngörüsü ve düzenekten bağımsız boyutsuz biçimi (\(\gamma\), \(\rho\)).</li>
+    <li>Tek motorlu, düşük maliyetli bir düzenekte üç kurulumla deneysel doğrulama; iki sensörle \(\theta_d\) ölçümü.</li>
+    <li>Salınımın kaynağının açı taramasıyla ayrıştırılması (boşluk / sürtünme / nicemleme).</li>
+    <li>Tasarım kuralı: verilen açı aralığı için en büyük güvenli kazanç ve izin verilebilir yerçekimi dengeleme oranı.</li>
+  </ul>
+  <div class="note"><b>İddia edilmeyenler</b>Kaymalı (iki girişli) DF boşluk için 1973'ten beri var. "Yerçekimi dişliyi bastırır" ilkesi nitel olarak biliniyor (Ahmad 1985, Karim 2018, Xu 2023). Kazanç düzleminde sınır çıkarma fikri de yeni değil (Kollár 2003, Yang 2017). Yenilik bu üçünün yerçekimli bir eklemde açı eksenine taşınması, Ghaffari çerçevesine bağlanması ve deneyle doğrulanması.</div>
+
+  <h3>Başarı ölçütleri (öneri)</h3>
+  <div class="tbl"><table>
+    <tr><th>#</th><th>Ölçüt</th><th>Hedef</th></tr>
+    <tr><td>B1</td><td>Her \(\theta_0\)'da kritik kazancın öngörü hatası</td><td>Medyan ≤ %20; yerçekimsiz Ghaffari öngörüsünden en az 2 kat iyi</td></tr>
+    <tr><td>B2</td><td>Sabit kazançta sınırın açı yönündeki hatası</td><td>≤ 5°</td></tr>
+    <tr><td>B3</td><td>Salınım frekansı ve genliği</td><td>Frekans ≤ %15, genlik ≤ %30</td></tr>
+    <tr><td>B4</td><td>Genellenebilirlik</td><td>Üç kurulumun sınır noktaları \((\gamma, \rho)\) düzleminde aynı eğride (dağılım ≤ 2×)</td></tr>
+    <tr><td>B5</td><td>Kaynak ayrıştırma</td><td>Kontrollü senaryolarda doğru sınıflama ≥ %90</td></tr>
+    <tr><td>B6</td><td>Tekrarlanabilirlik ve belirsizlik</td><td>Her sınır noktası ≥ 3 tekrar; yayılım ve ölçüm belirsizliği raporlanır</td></tr>
+    <tr><td>B7</td><td>Dengeleme kuralı</td><td>Dengeleme oranına göre sınır kaymasının öngörüsü B1 doğruluğunda</td></tr>
+  </table></div>
+  <p>Karşılaştırma yöntemleri: yerçekimsiz Ghaffari / simetrik DF; sayısal benzetim; yalnız 90° için Sun 2023 benzeri tek açı ölçümü.</p>
+
+  <details>
+    <summary>Framing yolu nasıl seçildi: aday vurgular</summary>
+    <div class="tbl"><table>
+      <tr><th>Aday</th><th>Fikir</th><th>Rol</th></tr>
+      <tr class="sec"><td>B</td><td>Ghaffari'nin ön yük analizini yerçekiminin tek yönlü, açıya bağlı ön yüküne genişletmek</td><td>Ana katkı</td></tr>
+      <tr><td>A</td><td>Kaymalı DF ile sınır öngörüsü (genel)</td><td>B'nin içinde</td></tr>
+      <tr><td>L</td><td>Açı taramasıyla salınım kaynağını ayırmak</td><td>Zorunlu bileşen (DF'den bağımsız, düşük risk)</td></tr>
+      <tr><td>H</td><td>Yerçekimi dengelemesinin doğal ön yükü yok etmesi</td><td>Motivasyon ve tasarım kuralı</td></tr>
+      <tr><td>C</td><td>Kesin parçalı doğrusal çözüm ya da çatallanma analizi (Kollár ailesi)</td><td>DF'nin bozulduğu rejimde doğrulama aracı</td></tr>
+      <tr><td>O</td><td>Açıya göre motor/kol geri beslemesini harmanlamak</td><td>Uzantı</td></tr>
+      <tr><td>D</td><td>Açıya göre önceden ayarlanan gözlemci (G. Sun 2021'e karşı)</td><td>Uzantı; gözlemci alanı kalabalık</td></tr>
+      <tr><td>F</td><td>Sınırdan boşluk kestirimi</td><td>Zayıfladı: Ruderman 2019 röleyle bilerek salınım uyandırıp boşluk tanılıyor</td></tr>
+      <tr><td>E, G, I, M</td><td>Hareket halinde geçiş, rejim haritası, pasif ön yük yayı, aktif öğrenme</td><td>Kapsam dışı ya da B'nin sonuç bölümü</td></tr>
+    </table></div>
+    <p>Altı ölçütlü karşılaştırma: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing_adaylari.md"><code>calisma_notu/framing_adaylari.md</code></a>. Tam framing metni: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing.md"><code>calisma_notu/framing.md</code></a>.</p>
+  </details>
+</section>
+
+<section id="kapsam">
+  <div class="top"><div class="kicker">Çalışma notu · 2</div><span class="pill done">Tanımlandı</span></div>
+  <h2>Kapsam, kısıtlar ve süre</h2>
+  <p><b>Açı tanımı:</b> 0° kol aşağı sarkık, 90° yatay, 180° dik yukarı.</p>
+  <div class="tbl"><table>
+    <tr><th>Kısıt</th><th>Değer</th><th>Gerekçe</th></tr>
+    <tr><td>Eklem sayısı</td><td>1 (omuz), düşey düzlemde</td><td>Açı bağımlılığını tek değişkene indirger</td></tr>
+    <tr><td>Hareket aralığı</td><td>0–180°; sabit hedef + ≈ 5° adım</td><td>Ön yükün sıfırdan (0°, 180°) en büyüğe (90°) bütün aralığı; hareket halinde boşluk geçişi kapsam dışı</td></tr>
+    <tr><td>Açı taraması</td><td>Genelde 10°, 0° ve 180° civarında 1–2°</td><td>Sınır bölgeleri bu açılarda</td></tr>
+    <tr><td>Kol ve yük</td><td>15 cm alüminyum lama + uç kütlesi 0 / 20 / 50 g (\(mg\ell\) ≈ 0,015 / 0,044 / 0,088 N·m)</td><td>\(\gamma\)'yı açıdan bağımsız değiştirme düğmesi</td></tr>
+    <tr><td>Boşluk</td><td>Motorun kendi boşluğu + kaplin 0 / 1,5 / 3 / 5°</td><td>En güçlü düğme; 0° motorun kendi boşluğunu ölçmek için</td></tr>
+    <tr><td>Hedef hız</td><td>Kapalı çevrim hızı \(\omega_c\) ≈ 30–45 rad/s (JGB37'nin tork sınırı)</td><td>Hız bir hedef değil, kazanç ekseninin sonucu</td></tr>
+    <tr><td>Hedef hassasiyet</td><td>Sınır açıda ±1°, kazançta bir tarama adımı (≈ %10); salınım genliği ve \(\theta_d\) ±0,27°</td><td>Konumlama doğruluğu bir hedef değil</td></tr>
+    <tr><td>Ölçüm</td><td>Kol açısı 0,088° (AS5600); motor enkoderi kol tarafında 0,27°; örnekleme 1 kHz</td><td>\(\theta_d\)'yi motor enkoderi sınırlar: 3° boşluk ≈ 11 adım</td></tr>
+    <tr><td>Bütçe</td><td>Sabit tavan yok; birden fazla malzeme listesi</td><td>Bkz. Malzeme listeleri</td></tr>
+  </table></div>
+
+  <h3>Yapılabilir süre: ≈ 4–5 ay</h3>
+  <p>Teori kolu (4a–4b) ile donanım kolu (5a–5c) paralel yürür; kritik yol donanım kolu.</p>
+  <div class="tbl"><table>
+    <tr><th>Aşama</th><th>İş</th><th>Süre</th></tr>
+    <tr><td>1–3</td><td>Framing, plan, malzeme listeleri; danışmanla netleştirme</td><td class="num">1 hafta</td></tr>
+    <tr><td>4a</td><td>Literatür sonucunun yeniden üretimi (Ghaffari 2013, sonra Sun 2023), oran eşlemesi</td><td class="num">2–3 hafta</td></tr>
+    <tr><td>4b</td><td>İki girişli DF türetimi; simülasyonla karşılaştırma; sönümlü / zorlanmış / kalıcı çevrim / kararsız ayrımı</td><td class="num">3–4 hafta</td></tr>
+    <tr><td>5a</td><td>Sipariş ve teslim; bu sırada firmware iskeleti ve kayıt betiği</td><td class="num">2–3 hafta</td></tr>
+    <tr><td>5b</td><td>Mekanik tasarım, baskı, montaj, kablolama</td><td class="num">2 hafta</td></tr>
+    <tr><td>5c</td><td>Kalibrasyon, alt sistem testleri, sistem tanılama</td><td class="num">2–3 hafta</td></tr>
+    <tr><td>6a</td><td>Açı × kazanç deneyleri (≈ 1080 kısa deney, otomatik)</td><td class="num">2–3 hafta</td></tr>
+    <tr><td>6b</td><td>Kaynak ayrıştırma ve dengeleme deneyleri</td><td class="num">1–2 hafta</td></tr>
+    <tr><td>6c</td><td>Analiz, belirsizlik, model–deney farkları, yazım</td><td class="num">3–4 hafta</td></tr>
+  </table></div>
+
+  <h3>Riskler ve B planları</h3>
+  <div class="tbl"><table>
+    <tr><th>Risk</th><th>B planı</th></tr>
+    <tr><td>DF türetimi gecikir ya da tutmaz</td><td>Deneyler durmaz; önce simülasyonla karşılaştırılır. DF'nin bozulduğu bölgede kesin parçalı doğrusal çözüm.</td></tr>
+    <tr><td>Motorun kendi boşluğu büyük ya da düzensiz</td><td>Boşluk her \(\theta_0\)'da ölçülür, \(\gamma\) o açının boşluğuyla hesaplanır; gerekirse daha düzgün dişli kutulu motor.</td></tr>
+    <tr><td>Sürtünme boşluk salınımını maskeler</td><td>Daha yüksek kazanç ya da daha büyük kaplin boşluğuyla hedef bölgeye çekmek.</td></tr>
+    <tr><td>Motor tork ya da ısı sınırı</td><td>Kısa deneyler, otomatik soğuma beklemesi, 20 g uç kütlesi.</td></tr>
+    <tr><td>Hız kestirimi nicemlemesi</td><td>Filtre sabit tutulur ve modele girer; gerekirse enkoder kenar zamanlaması.</td></tr>
+    <tr><td>Deneyler arası dağılım</td><td>Sıcaklık eşitleme, başlangıç koşulunu sabitleme, tekrar sayısını artırma.</td></tr>
+  </table></div>
+  <p><b>Kapsam dışı:</b> hareket halinde boşluk geçişi, esnek kol, çok eklemli kol, çift motorlu aktif ön yük. Gözlemci tasarımı ve açıya göre geri besleme harmanlama ana katkıdan sonra.</p>
+</section>
+
+<section id="mimari">
+  <div class="top"><div class="kicker">Çalışma notu · 3</div><span class="pill done">Taslak</span></div>
+  <h2>Donanım ve yazılım planı</h2>
+  <p>Her bileşen framing'deki bir ihtiyaçtan türetildi: açı × kazanç sınırını ölçmek için mutlak kol açısı ve yazılımla değişen kazanç; salınımın boşluktan geldiğini göstermek için iki sensör (\(\theta_d = \theta_M - \theta_L\)); Ghaffari ile birebir karşılaştırma için seçilebilir iki kontrolcü; üç kurulum için değiştirilebilir uç kütlesi ve kaplin; kaynak ayrıştırma için ayarlı sürtünme pabucu; dengeleme için karşı ağırlık.</p>
+  <h3>Donanım ve sinyaller</h3>
+  <figure><img src="img/mimari_donanim.svg" alt="Donanım blok şeması: adaptör, DRV8874, INA228, motor, kaplin, kol mili ve kol; altında motor enkoderi, TMP117 ve AS5600; en altta ESP32 ve bilgisayar" style="width:100%"><figcaption>Üst bant güç ve mekanik yol, orta bant ölçüm, alt bant kontrol ve kayıt. I²C-0 (1 MHz): AS5600, INA228. I²C-1 (400 kHz): TMP117 × 2.</figcaption></figure>
+  <div class="tbl"><table>
+    <tr><th>Blok</th><th>Seçim</th><th>Neden</th></tr>
+    <tr><td>Motor</td><td>JGB37-520 12 V 1:30 enkoderli</td><td>Simülasyon bu sınıfla yapıldı; \(\omega_c\) ≈ 30–45 rad/s</td></tr>
+    <tr><td>Sürücü</td><td>Pololu DRV8874</td><td>2,1 A sürekli, donanım akım sınırı (≈ 2 A); motorun durma akımı 2,3 A</td></tr>
+    <tr><td>Kontrol birimi</td><td>Espressif ESP32-DevKitC</td><td>Donanım enkoder sayacı, 20 kHz PWM, iki I²C denetleyicisi</td></tr>
+    <tr><td>Kol tarafı ölçüm</td><td>Adafruit AS5600 + diametral mıknatıs, filtre SF = 11</td><td>Mutlak açı; varsayılan filtre 2,2 ms gecikme verir, SF = 11 ile 0,286 ms</td></tr>
+    <tr><td>Akım</td><td>Adafruit INA228</td><td>Tork kestirimi, ısınma izleme, besleme gerilimi kaydı</td></tr>
+    <tr><td>Sıcaklık</td><td>Adafruit TMP117 × 2 (ayrı I²C hattı)</td><td>Ortam ve motor gövdesi; TMP117 en fazla 400 kHz destekler</td></tr>
+  </table></div>
+
+  <h3>Mekanik yapı</h3>
+  <figure>
+    <div class="tbl"><svg class="diag" viewBox="0 0 760 250" role="img" aria-label="Düzeneğin yan görünüşü: dişli DC motor ve arkasında enkoder, boşluklu kaplin, iki rulman, kol mili, kol ve kol milinin ucunda mıknatıs ve AS5600 sensörü">
+      <line class="d-floor" x1="20" y1="215" x2="740" y2="215"/>
+      <rect class="d-body" x="40" y="80" width="150" height="80" rx="6"/>
+      <text class="d-lbl" x="115" y="117" text-anchor="middle">dişli DC motor</text><text class="d-lbl" x="115" y="135" text-anchor="middle">(JGB37-520)</text>
+      <rect class="d-pcb" x="22" y="90" width="18" height="60" rx="2"/>
+      <text class="d-sm" x="31" y="72" text-anchor="middle">enkoder</text>
+      <rect class="d-shaft" x="190" y="114" width="40" height="12"/>
+      <rect class="d-acc" x="230" y="96" width="60" height="48" rx="4"/>
+      <text class="d-lbl" x="260" y="80" text-anchor="middle">kaplin</text>
+      <text class="d-sm" x="260" y="168" text-anchor="middle">(boşluk burada)</text>
+      <rect class="d-shaft" x="290" y="114" width="380" height="12"/>
+      <rect class="d-bear" x="340" y="100" width="22" height="40" rx="3"/>
+      <rect class="d-bear" x="540" y="100" width="22" height="40" rx="3"/>
+      <text class="d-sm" x="450" y="80" text-anchor="middle">2 rulman, Ø8 kol mili (ayrı döner)</text>
+      <line class="d-lead" x1="362" y1="86" x2="351" y2="100"/><line class="d-lead" x1="538" y1="86" x2="551" y2="100"/>
+      <rect class="d-frame" x="330" y="140" width="42" height="75"/>
+      <rect class="d-frame" x="530" y="140" width="42" height="75"/>
+      <text class="d-sm" x="450" y="205" text-anchor="middle">gövde</text>
+      <rect class="d-arm" x="604" y="20" width="12" height="104" rx="2"/>
+      <circle class="d-tip" cx="610" cy="26" r="11"/>
+      <text class="d-lbl" x="590" y="30" text-anchor="end">kol (15 cm) + uç ağırlığı</text>
+      <rect class="d-mag" x="670" y="110" width="8" height="20"/>
+      <rect class="d-pcb" x="684" y="96" width="14" height="48" rx="2"/>
+      <text class="d-lbl" x="691" y="80" text-anchor="middle">AS5600</text>
+      <text class="d-sm" x="676" y="168" text-anchor="middle">mıknatıs + sensör</text>
+      <text class="d-sm" x="676" y="183" text-anchor="middle">(kol açısı)</text>
+    </svg></div>
+    <figcaption>Yan görünüş, ölçeksiz. Motor açısı motor enkoderinden, kol açısı kol milinin ucundaki AS5600'den okunur; farkları \(\theta_d\) dişlinin boşlukta olup olmadığını gösterir.</figcaption>
+  </figure>
+  <figure>
+    <div class="tbl"><svg class="diag" viewBox="0 0 760 232" role="img" aria-label="Kaplinin önden görünüşü: motor tarafındaki dil, kol tarafındaki daha geniş yuvanın içinde boşta hareket eder">
+      <g transform="translate(130,105)">
+        <circle class="d-body" r="80"/>
+        <path class="d-bg" d="M -26 -80 L 26 -80 L 26 -20 L -26 -20 Z"/>
+        <rect class="d-acc" x="-11" y="-78" width="22" height="58" rx="2"/>
+        <circle class="d-shaft" r="10"/>
+        <text class="d-sm" x="0" y="104" text-anchor="middle">dil yuvanın ortasında: boşta</text>
+      </g>
+      <g transform="translate(380,105)">
+        <circle class="d-body" r="80"/>
+        <path class="d-bg" d="M -26 -80 L 26 -80 L 26 -20 L -26 -20 Z"/>
+        <rect class="d-acc" x="4" y="-78" width="22" height="58" rx="2"/>
+        <circle class="d-shaft" r="10"/>
+        <path class="d-arrow" d="M -40 -95 A 100 100 0 0 1 40 -95"/>
+        <text class="d-sm" x="0" y="104" text-anchor="middle">dil kenara dayandı: kol döner</text>
+      </g>
+      <g transform="translate(560,40)">
+        <text class="d-lbl" x="0" y="0">Parçalar</text>
+        <rect class="d-acc" x="0" y="14" width="18" height="14" rx="2"/><text class="d-sm" x="26" y="26">dil (motor miline)</text>
+        <rect class="d-body" x="0" y="40" width="18" height="14" rx="2"/><text class="d-sm" x="26" y="52">yuvalı parça (kol miline)</text>
+        <text class="d-sm" x="0" y="84">Yuva genişliği = boşluk:</text>
+        <text class="d-sm" x="0" y="102">0° · 1,5° · 3° · 5° için</text>
+        <text class="d-sm" x="0" y="120">dört ayrı parça basılır,</text>
+        <text class="d-sm" x="0" y="138">deneyde değiştirilir.</text>
+      </g>
+    </svg></div>
+    <figcaption>Önden görünüş. Hazır satılmaz; baskıyla yapılır. Toplam boşluk = dişli kutusunun kendi boşluğu + kaplin; 0° parçası motorun kendi boşluğunu ölçmek için.</figcaption>
+  </figure>
+  <ul class="plain">
+    <li><b>İstenmeyen boşluk olmamalı:</b> kol–mil bağlantısı setuskurlu göbekle mil üzerindeki düzlüğe; mıknatıs yapıştırılır. Fazladan bir boşluk kaplin 0° ölçümünde görülür.</li>
+    <li><b>Eksen hizası:</b> motor mili ile kol mili aynı eksende; kaçıklık açıya göre değişen sürtünme yaratır.</li>
+    <li><b>Rijitlik:</b> gövde ve kolun ilk rezonansı beklenen salınım frekanslarının (≈ 5–20 Hz) çok üstünde, hedef ≥ 100 Hz; montajdan sonra darbe testiyle kontrol.</li>
+    <li><b>Düğmeler:</b> uç ve karşı ağırlık (\(\gamma\)), kaplin parçası (boşluk), vidayla ayarlı keçe sürtünme pabucu (\(\varphi\)); 0° altı ve 180° üstü için mekanik durdurucu.</li>
+    <li><b>Elektrik:</b> ortak toprak, enkoder 3,3 V ile beslenir, DRV8874 girişinde ek kondansatör, 12 V hattında elle kesilen acil stop.</li>
+  </ul>
+
+  <h3>Yazılım, modeller ve veri toplama</h3>
+  <figure><img src="img/mimari_yazilim.svg" alt="Yazılım şeması: ESP32 firmware zinciri, bilgisayarda tarama, kayıt, sınıflama ve harita, modeller sütununda tanılama, benzetim, simetrik DF ve iki girişli DF; hepsi karşılaştırmaya bağlanıyor" style="width:100%"><figcaption>Firmware (1 kHz) · bilgisayar tarafı (MATLAB, deney) · modeller (MATLAB) → başarı ölçütleriyle karşılaştırma.</figcaption></figure>
+  <ul class="plain">
+    <li><b>Firmware:</b> 1 kHz donanım zamanlayıcısı, kontrol bir çekirdekte, Wi-Fi kapalı; döngü süresi her pakete yazılır. Kontrolcü PID (konum kol açısından, türev motor enkoderinden, anti-windup) ya da Ghaffari'nin P–PI yapısı. Sürücü ölü bandı telafi edilmez, modele girer.</li>
+    <li><b>Hız kestirimi:</b> bir enkoder sayımı/ms ≈ 4,7 rad/s; salınım hızları ≈ 1 rad/s. Ardışık fark + 50 Hz filtre ya da kenar zamanlaması; seçilen yöntem sabit tutulur ve modele aynen girer.</li>
+    <li><b>Veri toplama:</b> MATLAB tarama betiği her (kurulum, \(\theta_0\), kazanç, tekrar) için adım verir, 10 s kaydeder, motor soğuyunca devam eder (≈ 1080 deney ≈ 5–9 saat). Her dosyada kurulum, kazançlar, sıcaklık, firmware sürümü.</li>
+    <li><b>Sınıflama:</b> son 5 s'den sönümlü / tek kenarlı salınım / iki kenarlı salınım / kararsız; ölçütler kol genliği, \(\theta_d\)'nin boşluk kenarlarına değmesi, baskın frekans, akım doyumu.</li>
+    <li><b>Modeller:</b> sistem tanılama (R, k<sub>t</sub>, J<sub>M</sub>, b, F<sub>C</sub>, K<sub>s</sub>, 2r, ölü bant) → sayısal benzetim (sensör gecikmesi dahil), simetrik DF (referans), iki girişli DF (önerilen), gerekirse kesin çözüm.</li>
+  </ul>
+  <p>Ayrıntılar ve kalibrasyon sırası: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/mimari.md"><code>calisma_notu/mimari.md</code></a>.</p>
+</section>
+
+<section id="malzeme">
+  <div class="top"><div class="kicker">Çalışma notu · 4 · fiyat ve stok 24.10.2026</div><span class="pill done">Dengeli liste önerildi</span></div>
+  <h2>Malzeme listeleri</h2>
+  <p>TL fiyatları KDV dahil; $ fiyatları DigiKey liste fiyatı (1 adet, gümrük hariç). Önce Türk firmaları, bulunamazsa yurt dışı. "Pazar araştırması" notu taşıyan fiyatlar tahmindir.</p>
+  <div class="note ok"><b>Satın alma kanalı: EKOM</b>Adafruit, Pololu ve Espressif kartları Türk elektronik mağazalarında yok; ama DigiKey'in Türkiye yetkili ortağı EKOM (İstanbul) üzerinden alınabiliyor. DigiKey sepeti EKOM'a iletilir; kargo, gümrük ve vergiler dahil TL teklif gelir, teslim ortalama 7 iş günü. Üniversiteler kurumsal hesapla ödeme yapabilir.</div>
+
+  <h3>Elektronik: üç seviye</h3>
+  <div class="tbl"><table>
+    <tr><th>Görev</th><th>Ekonomik (yerli)</th><th>Dengeli (önerilen)</th><th>Üst sınıf</th></tr>
+    <tr><td>Motor + enkoder</td><td>JGB37-520 1:30</td><td class="secili">JGB37-520 1:30</td><td>maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16 (≈ 472 €)</td></tr>
+    <tr><td>Sürücü</td><td>yerli ≥ 2 A modül: <b>tükendi</b></td><td class="secili">Pololu DRV8874</td><td>Pololu DRV8874</td></tr>
+    <tr><td>Denetleyici</td><td>genel ESP32</td><td class="secili">Espressif ESP32-DevKitC-32E</td><td>Espressif ESP32-DevKitC-32E</td></tr>
+    <tr><td>Kol açısı</td><td>markasız AS5600</td><td class="secili">Adafruit AS5600 + diametral mıknatıs</td><td>Same Sky AMT222B-V (73,72 $)</td></tr>
+    <tr><td>Akım</td><td>INA219: <b>tükendi</b></td><td class="secili">Adafruit INA228</td><td>Adafruit INA228</td></tr>
+    <tr><td>Sıcaklık</td><td>—</td><td class="secili">Adafruit TMP117 × 2</td><td>Adafruit TMP117 × 2</td></tr>
+  </table></div>
+  <p>Ekonomik liste bugün kurulamıyor: yerli stokta güvenli bir sürücü ve akım sensörü yok. Dengeli listenin elektroniği zaten ≈ 70 $.</p>
+
+  <h3>Dengeli liste, kalem kalem</h3>
+  <div class="tbl"><table>
+    <tr><th>Kalem</th><th>Adet</th><th>Temel özellik</th><th>Kaynak</th><th>Fiyat</th><th>Stok</th></tr>
+    <tr><td>JGB37-520 12 V 333 rpm enkoderli (1:30)</td><td class="num">1</td><td>Durma ≈ 0,49 N·m / 2,3 A; kol tarafında 1320 sayım/tur; mil 6 mm D</td><td><a href="https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor">direnc.net</a></td><td class="fiyat">639,29 TL</td><td>Stokta</td></tr>
+    <tr><td>Pololu #4035 (DRV8874)</td><td class="num">1</td><td>2,1 A sürekli, 4,5–37 V, akım ölçüm çıkışı, akım sınırı</td><td><a href="https://www.digikey.com/en/products/detail/pololu/4035/26714680">DigiKey</a> → EKOM</td><td class="fiyat">11,94 $</td><td class="num">313</td></tr>
+    <tr><td>Espressif ESP32-DevKitC-32E</td><td class="num">1</td><td>240 MHz, PCNT, iki I²C</td><td><a href="https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32E/12091810">DigiKey</a> → EKOM</td><td class="fiyat">10,00 $</td><td class="num">731</td></tr>
+    <tr><td>Adafruit AS5600 (#6357)</td><td class="num">1</td><td>12 bit, I²C; mıknatıs dahil değil</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/6357/26832926">DigiKey</a> → EKOM</td><td class="fiyat">5,95 $</td><td class="num">527</td></tr>
+    <tr><td>Radial Magnets 8995, Ø6 × 2,5 mm, diametral</td><td class="num">2</td><td>NdFeB N35; mil ucuna uygun tip</td><td><a href="https://www.digikey.com/en/products/detail/radial-magnets-inc/8995/5126077">DigiKey</a> → EKOM</td><td class="fiyat">0,40 $</td><td class="num">34.505</td></tr>
+    <tr><td>Adafruit INA228 (#5832)</td><td class="num">1</td><td>20 bit, I²C, 85 V</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/5832/21839815">DigiKey</a> → EKOM</td><td class="fiyat">14,95 $</td><td class="num">2.008</td></tr>
+    <tr><td>Adafruit TMP117 (#4821)</td><td class="num">2</td><td>±0,1 °C, I²C ≤ 400 kHz</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/4821/13571586">DigiKey</a> → EKOM</td><td class="fiyat">11,50 $</td><td class="num">857</td></tr>
+    <tr><td>STEMMA QT kablo 100 mm (#4210)</td><td class="num">4</td><td>Lehimsiz bağlantı</td><td><a href="https://www.digikey.com/en/products/detail/adafruit-industries-llc/4210/10230021">DigiKey</a> → EKOM</td><td class="fiyat">0,95 $</td><td class="num">17.903</td></tr>
+    <tr><td>Masaüstü adaptör 12 V ≥ 2 A</td><td class="num">1</td><td>Evdeki kullanılabilir</td><td>evdeki / yerel</td><td class="fiyat">0 / ≈ 250–400 TL</td><td>—</td></tr>
+    <tr><td>CHINT NP2-BE102 acil stop</td><td class="num">1</td><td>NC, 12 V hattında</td><td><a href="https://www.motorobit.com/arama?q=acil+stop">Motorobit</a></td><td class="fiyat">303,00 TL</td><td>Stokta</td></tr>
+    <tr><td>470 µF 25 V kondansatör, DC jak, breadboard, kablolar</td><td class="num">1 set</td><td>—</td><td>direnc.net / yerel</td><td class="fiyat">≈ 275 TL</td><td>Kondansatör stokta</td></tr>
+  </table></div>
+  <div class="note"><b>Güç kaynağı neyi değiştirir?</b>Gerilim 12 V olmalı (motor 12 V'luk), akım en az 2 A (sürücünün akım sınırı ≈ 2 A; modem adaptörleri 1–1,5 A, yetmez). Dalgalanmanın etkisi küçük: motor gerilimi PWM ve kapalı çevrimle ayarlanıyor, 470 µF kondansatör yüksek frekansı bastırıyor, INA228 besleme gerilimini her deneyde kaydediyor. Evdeki adaptör etiketinde 12 V ve ≥ 2 A yazıyorsa kullanılabilir; bütün deneylerde aynısı kullanılır ve modeli kayda yazılır. İlk seçim Mean Well GST36E12 DigiKey'de stokta değil; panel tipi Mean Well LRS-35-12 (direnc.net, 739,26 TL, stokta) 230 V kablolama ister.</div>
+
+  <h3>Mekanik: iki seçenek</h3>
+  <p>Ayarlanabilir boşluk kaplini hazır satılmıyor, iki seçenekte de baskıyla yapılıyor. <b>A:</b> gövde, braket ve yataklama hazır parçalardan. <b>B:</b> gövde, braket, kaplin ve tutucular baskı hizmetiyle.</p>
+  <div class="tbl"><table>
+    <tr><th>Kalem</th><th>Seçenek</th><th>Kaynak</th><th>Fiyat</th><th>Stok / not</th></tr>
+    <tr><td>8 mm krom kaplı mil, 500 mm</td><td>A, B</td><td><a href="https://www.motorobit.com/arama?q=8mm+mil">Motorobit</a></td><td class="fiyat">242,40 TL</td><td>Stokta</td></tr>
+    <tr><td>8 mm setuskurlu hex göbek (kol–mil)</td><td>A, B</td><td><a href="https://www.motorobit.com/arama?q=kaplin">Motorobit</a></td><td class="fiyat">121,20 TL</td><td>Stokta</td></tr>
+    <tr><td>Kaplin takımı (0 / 1,5 / 3 / 5°) + mıknatıs ve sensör tutucuları</td><td>A, B</td><td>baskı hizmeti</td><td class="fiyat">≈ 150–300 TL (A)</td><td>B'de toplam baskıya dahil</td></tr>
+    <tr><td>Hassas terazi 0,01 g</td><td>A, B</td><td><a href="https://www.hepsiburada.com/ara?q=hassas+terazi+0.01">Hepsiburada</a></td><td class="fiyat">≈ 260–560 TL</td><td>Pazar araştırması: 260 / 399 / 559,90 TL</td></tr>
+    <tr><td>Alüminyum lama, ağırlıklar (somun/rondela), keçe, vidalar</td><td>A, B</td><td>yerel hırdavat</td><td class="fiyat">≈ 300–350 TL</td><td>Pazar yerlerinde lama bulunamadı</td></tr>
+    <tr><td>KFL08 yataklı rulman</td><td>A (× 2)</td><td><a href="https://www.motorobit.com/kfl08-yatakli-rulman-8mm">Motorobit</a></td><td class="fiyat">106,06 TL × 2</td><td>Stokta</td></tr>
+    <tr><td>2020 sigma profil ≈ 1 m (kesimli)</td><td>A</td><td>yerel profil bayisi</td><td class="fiyat">≈ 300–600 TL</td><td>Pazar araştırması: Hepsiburada'da 20 × 20 yok; Cimri'de 319 TL ilan</td></tr>
+    <tr><td>Köşebent × 8, M5 T-somun ve vida × 20</td><td>A</td><td>pazar yerleri / bayi</td><td class="fiyat">≈ 640–1.040 TL</td><td>Pazar araştırması: köşebent 49–99 TL/adet; T-somun paketi ≈ 190–250 TL</td></tr>
+    <tr><td>37 mm motor için L braket</td><td>A</td><td>yurt dışı (AliExpress)</td><td class="fiyat">≈ 2–5 $</td><td>Türkiye'de bulunamadı</td></tr>
+    <tr><td>Baskı: gövde, braket, kaplin, tutucular, sürtünme diski (250–400 g PETG)</td><td>B</td><td>baskı hizmeti</td><td class="fiyat">≈ 750–2.400 TL</td><td>Pazar araştırması: üniversite tarifesi 6 TL/g; ham PETG ≈ 0,74 TL/g; teklif alınacak</td></tr>
+    <tr><td>SKF 608-2Z</td><td>B (× 2)</td><td><a href="https://www.hepsiburada.com/ara?q=skf+608+2z">Hepsiburada</a></td><td class="fiyat">≈ 160 TL</td><td>İkili paket</td></tr>
+    <tr><td>M3 pirinç insert × 20</td><td>B</td><td><a href="https://www.hepsiburada.com/ara?q=m3+insert+3d+yaz%C4%B1c%C4%B1">Hepsiburada</a></td><td class="fiyat">≈ 560 TL</td><td>10'lu 280 TL</td></tr>
+  </table></div>
+
+  <h3>Toplam</h3>
+  <div class="tbl"><table>
+    <tr><th>Grup</th><th>Türk firmaları (TL)</th><th>EKOM ($, DigiKey liste)</th></tr>
+    <tr><td>Elektronik + güç (dengeli)</td><td>≈ 1.220–1.620</td><td>70,44 + EKOM'un kargo/gümrük payı</td></tr>
+    <tr><td>Mekanik A</td><td>≈ 2.220–3.420</td><td>+ braket ≈ 2–5 $</td></tr>
+    <tr><td>Mekanik B</td><td>≈ 2.390–4.390</td><td>—</td></tr>
+    <tr class="sec"><td>Genel (A ile / B ile)</td><td>≈ 3.440–5.040 / ≈ 3.610–6.010</td><td>≈ 72–75 / ≈ 70</td></tr>
+  </table></div>
+  <p>İki mekanik seçeneğin maliyeti birbirine yakın; seçimi rijitlik (A daha rijit) ve tedarik yükü (B daha az parça) belirlemeli.</p>
+
+  <h3>Uyum ve alternatifler</h3>
+  <ul class="plain">
+    <li><b>Gerilim ve akım:</b> motor 12 V, DRV8874 4,5–37 V; motor durma 2,3 A, sürücü 2,1 A sürekli → akım sınırı ≈ 2 A.</li>
+    <li><b>Mantık ve adresler:</b> her şey 3,3 V; AS5600 0x36 ve INA228 0x40 (I²C-0, 1 MHz), TMP117 0x48 / 0x49 (I²C-1, 400 kHz).</li>
+    <li><b>Mil çapları:</b> motor 6 mm D → kaplin; kol mili 8 mm → KFL08 / 608 / göbek / kaplin.</li>
+    <li><b>Alternatifler:</b> JGA25-370 (küçük rotor), Pololu 37D 64 CPR, üst sınıf maxon + AMT22 (diğer parçalar aynı kalır), DRV8871, Teensy 4.1, panel tipi Mean Well.</li>
+  </ul>
+  <p>Kalem kalem gerekçeler, uyum tablosu, montaj sırası ve pazar araştırması: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/malzeme.md"><code>calisma_notu/malzeme.md</code></a>. Parça seçim gerekçeleri ve bütün adaylar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/tasarim_kararlari.md"><code>donanim/tasarim_kararlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</p>
 </section>
 
 <section id="baslangic">
@@ -202,9 +510,10 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="stats">
     <div class="stat"><b>26 + 12</b><span>IEEE + WoS sorgusu</span></div>
     <div class="stat"><b>130 + 44</b><span>IEEE + WoS sonucu listelendi</span></div>
-    <div class="stat"><b>37</b><span>tam metin okundu</span></div>
-    <div class="stat"><b>0</b><span>açıya bağlı yerçekimi + limit cycle</span></div>
+    <div class="stat"><b>43</b><span>tam metin okundu</span></div>
+    <div class="stat"><b>0</b><span>açı × kazanç sınırı + yerçekimi ön yükü</span></div>
   </div>
+  <div class="note"><b>Danışmanın listesi ve son tarama</b>Danışman 13 kaynaklı bir karşılaştırma listesi gönderdi; 8'inin tam metni geldi, 7'si zaten okunmuştu. Eksik 5 kaynak (Lu 2015, Malzahn 2014, Kollár 2003, Giovannitti 2022, G. Sun 2021) edinilip okundu. Danışmanın uyarısı doğrulandı: Xu 2023 açıya göre ofset ölçüyor, Sun 2023 yerçekimli düzende farklı kazançlarla deney yapıyor, Malzahn 2014 açı taramasıyla sönümlü titreşim haritası çıkarıyor. Yani "yerçekimi + boşluk" tek başına açık bir boşluk değil; çalışma yöntem geliştirmeye dayandırıldı (bkz. Framing). Son tarama: en yakın 8 çalışmanın 75 ileriye atıfı, 17 hedefli sorgu (13'ü sıfır sonuç) ve web araması; doğrudan rakip çıkmadı, kaymalı DF aracının 1973'ten beri var olduğu ve kazanç düzleminde sınırın döner tablada da çıkarıldığı (Yang 2017) not edildi. Ayrıntı: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/son_tarama_2026-10-24.md"><code>literatur/son_tarama_2026-10-24.md</code></a>.</div>
   <h3>Yöntem</h3>
   <ul class="plain">
     <li>IEEE Xplore: kurumsal erişimle 26 sorgu, 31 PDF.</li>
@@ -240,7 +549,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <li>Boşluk + limit cycle çalışmaları hep yatay düzenekler: iki kütleli tahrik, takım tezgâhı, gimbal, döner tabla.</li>
     <li>Tek eklemli kol çalışmaları bile kolu yatay düzleme koyuyor (Wang ve ark. 1999; Malik ve ark. 2009).</li>
     <li>Gerçekte yerçekimi yüklü eklemlerde bile model yerçekimsiz kuruluyor (Kim ve ark. 2009, insansı robot dizi).</li>
-    <li>Sarkaç + boşluk çalışmaları yalnızca dik dengeye bakıyor; orada yerçekimi ön yükü sıfır (Kollár ve ark. 2002; Shahruz 2000).</li>
+    <li>Sarkaç + boşluk çalışmaları yalnızca dik dengeye bakıyor; orada yerçekimi ön yükü sıfır (Kollár ve ark. 2003; Shahruz 2000).</li>
   </ul>
   <details>
     <summary>İlk tarama (web aramaları)</summary>
@@ -268,38 +577,12 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <tr><td><a href="https://doi.org/10.1109/TAES.2025.3584008">Sun ve ark. 2025, IEEE TAES</a></td><td>Gözlemci kazancı + boşluk → limit cycle; DF ile tahmin; takip hatasına göre ayar.</td><td>Yerçekimi yok; ayar takip hatasına göre, bizimki açıya göre.</td></tr>
     <tr><td><a href="https://doi.org/10.1109/AMC51637.2022.9729289">Padron ve ark. 2022, IEEE AMC</a></td><td>Sürtünme sıfır hızda, boşluk sıfır torkta tetiklenir.</td><td>Hipotezimizin tek cümlelik çıkış noktası.</td></tr>
   </table></div>
-  <p>37 makalenin ayrıntılı notları: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>literatur/okuma_notlari.md</code></a>.</p>
-</section>
-
-<section id="yon">
-  <div class="top"><div class="kicker">Üç aday, bir seçim</div><span class="pill done">Seçildi</span></div>
-  <h2>Seçilen yön</h2>
-  <p>İlk web taramasından üç aday yön çıkmıştı. Derin tarama sonunda C yönünü, yerçekimine odaklanarak daralttık.</p>
-  <div class="gaps">
-    <div class="gap">
-      <div class="id">A</div>
-      <h4>Ucuz donanımda model ne kadar tutuyor?</h4>
-      <p>Dişli, boşluk, sürtünme, PWM ve enkoder çözünürlüğünün etkisini adım adım ölçmek.</p>
-      <div class="need">Tek başına yayın için zayıf; deney planının bir parçası olarak kaldı. İlk başta yazdığımız "90° özel, kusurlar en çok orada etkili" iddiası boşluk için yanlıştı: 90°'de yerçekimi dişliyi bastırdığı için boşluk en az orada etkili olmalı.</div>
-    </div>
-    <div class="gap">
-      <div class="id">B</div>
-      <h4>Yük değişince yerçekimi telafisi</h4>
-      <p>Uçtaki kütleyi enkoder ve akımdan kestirip telafi etmek.</p>
-      <div class="need">Seçilmedi. Takılıp çıkarılan ağırlıklar deneyde yine kullanılacak: yerçekimi torkunu açıdan bağımsız değiştirmenin yolu.</div>
-    </div>
-    <div class="gap chosen">
-      <div class="id">C</div>
-      <h4>Boşluk, gözlemci ve yerçekimi</h4>
-      <p>Dişli boşluğunun ürettiği sürekli salınımın (limit cycle) kol açısına nasıl bağlı olduğunu incelemek; buna göre ayarlanan bir gözlemci önermek.</p>
-      <div class="need">Seçilen yön. Gerekli: iki açı sensörü (motor ve kol mili), akım sensörü, hızlı döngü.</div>
-    </div>
-  </div>
+  <p>Danışmanın listesindeki bütün kaynakların karşılaştırması Framing bölümündeki tabloda. 43 makalenin ayrıntılı notları: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>literatur/okuma_notlari.md</code></a>.</p>
 </section>
 
 <section id="hipotez">
-  <div class="top"><div class="kicker">Çalışmanın iddiası</div><span class="pill done">Simülasyonda görüldü</span></div>
-  <h2>Hipotez</h2>
+  <div class="top"><div class="kicker">Hipotezin fiziksel temeli</div><span class="pill done">Simülasyonda görüldü</span></div>
+  <h2>Mekanizma</h2>
   <p class="thesis">Dişli boşluğu, iletilen tork sıfırdan geçtiği anda devreye girer. Kolda bu tork, sabit yerçekimi torku \(mg\ell\sin\theta_0\) ile salınımlı dinamik torkun toplamıdır. Yerçekimi bu sıfır geçişlerini açıya göre engeller ya da serbest bırakır.</p>
   <div class="figs">
     <figure>
@@ -312,17 +595,11 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     </figure>
   </div>
   <div class="note"><b>İlk fikre göre düzeltme</b>"90°'de limit cycle olmaz" koşulsuz doğru değil. Sun ve ark. (2023), yerçekimi en büyükken (90°) bile yüksek kazançta 5° genlikli salınım gördü: dinamik tork yerçekimi torkunu aşınca dişli yine boşluğa düşüyor. Bu yüzden harita tek eksenli olamaz.</div>
-  <div class="note ok"><b>Simülasyonda görüldü</b>Gerçekçi modelde (sürtünme, nicemleme, 1 kHz kontrol) boşluk salınımı 0° ve 180° civarında toplanıyor, sürtünme salınımı açıdan bağımsız. 24 farklı düzenek boyutsuz düzlemde aynı şeride düşüyor; ideal modelde yaklaşık \(\gamma_{sınır} \approx 3\,r_s^3\). Ayrıntı ve grafikler: bir sonraki bölüm, Simülasyon.</div>
+  <div class="note ok"><b>Simülasyonda görüldü</b>Gerçekçi modelde (sürtünme, nicemleme, 1 kHz kontrol) boşluk salınımı 0° ve 180° civarında toplanıyor, sürtünme salınımı açıdan bağımsız. 24 farklı düzenek boyutsuz düzlemde aynı şeride düşüyor; ideal modelde yaklaşık \(\gamma_{sınır} \approx 3\rho^3\) (\(\rho\) simülasyon dosyalarında \(r_s\) adıyla geçiyor). Ayrıntı ve grafikler: Simülasyon bölümü.</div>
   <h3>Çıkarılacak harita</h3>
-  <p>(çalışma açısı \(\theta_0\), konum kazancı \(K_p\)) ya da (\(\theta_0\), gözlemci bant genişliği) düzleminde "limit cycle var / yok" bölgeleri. Yerçekiminin etkisi, bu sınır eğrisinin açıyla nasıl kaydığıdır. Doğal boyutsuz eksen:</p>
+  <p>(çalışma açısı \(\theta_0\), kontrol kazancı) düzleminde "salınım var / yok" bölgeleri. Yerçekiminin etkisi, bu sınır eğrisinin açıyla nasıl kaydığıdır. Doğal boyutsuz eksen:</p>
   <p>\(\gamma = \dfrac{mg\ell\sin\theta_0}{K_s\,r}\) &nbsp;(yerçekimi torku / boşluğu kapatan yay torku; \(K_s\) dişli sertliği, \(r\) boşluk yarı genişliği)</p>
-  <h3>Katkı</h3>
-  <ul class="plain">
-    <li>Yerçekimsiz sistemde sabit referans limit cycle'ı yalnızca kaydırır (Esbrook ve ark. 2014, Önerme 2). Yerçekimli kolda bu geçersiz; bunu analitik ve deneysel olarak göstermek.</li>
-    <li>Kaymalı (bias) tanımlama fonksiyonuyla (DF) açı–kazanç haritası; anahtarlamalı sistem çözümüyle doğrulama.</li>
-    <li>Açıya göre ayarlanan gözlemci: 90° civarında gözlemcinin işinin çoğu yerçekimini telafi etmek, 0° civarında neredeyse tamamı boşluğu telafi etmek.</li>
-    <li>Erişilebilir bir düzenekte (dişli DC motor, ESP32, manyetik açı sensörü, 20 bit akım ölçümü) deneysel doğrulama; ortam ve motor sıcaklığı her deneyle birlikte kaydedilir.</li>
-  </ul>
+  <p>Yerçekimsiz sistemde sabit referans salınımı yalnızca kaydırır (Esbrook ve ark. 2014, Önerme 2); yerçekimli kolda bu geçersiz. Araştırma sorusu, hipotezler ve katkı: Framing bölümü.</p>
   <div class="note"><b>Açıkça kabul edilecek</b>"Yerçekimi dişliyi bastırır, ön yük gibi davranır" fikri yeni değil: endüstriyel robot telafisinde 1985'ten beri kural olarak kullanılıyor (Ahmad 1985), KUKA robotunda nitel olarak gösterildi (Karim ve ark. 2018). 7 eksenli D-Arm kolunda da gözlendi: bağ dik konumdan geçerken toplam tork (esas olarak yerçekimi) yön değiştiriyor, dişli boşluğu geçip karşı yüze çarpıyor ve darbe ile aşınma oluşuyor (Xu ve ark. 2023, IEEE RA-L). Ama hep sabit konum hatası ya da tek cümlelik bir gözlem olarak. Kapalı çevrim kararlılığına, nicel bir haritaya ve gözlemci tasarımına bağlayan çalışma bulunamadı.</div>
 </section>
 
@@ -382,7 +659,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <figure><img src="img/sim_boyutsuz_sinir_ideal.png" alt="İdeal modelde boyutsuz sınır eğrileri"><figcaption>İdeal model: 24 düzeneğin sınır eğrileri. Dikey çizgiler sınıra ulaşmayan (90°'ye kadar salınan) düzenekler.</figcaption></figure>
     <figure><img src="img/sim_boyutsuz_sinir_gercekci.png" alt="Gerçekçi modelde boyutsuz sınır eğrileri"><figcaption>Gerçekçi model: orta–yüksek \(r_s\)'de aynı şerit; düşük \(r_s\)'de sürtünme kaynaklı dağılım.</figcaption></figure>
   </div>
-  <div class="note ok"><b>Simülasyonun sonucu</b>Etki var ve küçük bir düzenekte ölçülebilir. Deney hedef bölgesi: toplam boşluk ≈ 3°, \(r_s \approx 0{,}25\)–\(0{,}40\) (\(\omega_c \approx 30\)–60 rad/s), uç kütlesi ≈ 20 g, iki açı sensörü.</div>
+  <div class="note ok"><b>Simülasyonun sonucu</b>Etki var ve küçük bir düzenekte ölçülebilir. Deney hedef bölgesi: toplam boşluk ≈ 3°, \(r_s = \rho \approx 0{,}25\)–\(0{,}40\), uç kütlesi ≈ 20 g, iki açı sensörü. JGB37-520'nin tork sınırıyla \(\omega_c \approx 30\)–45 rad/s; \(\rho\) tanılanan parametrelerle yeniden hesaplanacak.</div>
 </section>
 
 <section id="deney">
@@ -406,8 +683,9 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <h3>Hedef çalışma bölgesi (simülasyondan)</h3>
   <ul class="plain">
     <li>Toplam boşluk ≈ 3° (ayarlanabilir kaplinle 1,5° / 3° / 5°).</li>
-    <li>Kapalı çevrim hızı \(\omega_c \approx 30\)–60 rad/s, yani \(r_s \approx 0{,}25\)–\(0{,}40\): ölçekleme yasası orada sağlam, sürtünme gürültüsü az.</li>
-    <li>Uç kütlesi ≈ 20 g; açı taraması 0–90°, 0° ve 180° civarında 1°'den ince adımlarla.</li>
+    <li>Kapalı çevrim hızı \(\omega_c \approx 30\)–45 rad/s (JGB37'nin tork sınırı), hedef \(\rho \approx 0{,}25\)–\(0{,}40\): ölçekleme yasası orada sağlam, sürtünme gürültüsü az.</li>
+    <li>Uç kütlesi 0 / 20 / 50 g; açı taraması 0–180°, genelde 10°, 0° ve 180° civarında 1–2° adımlarla.</li>
+    <li>Kaynak ayrıştırma senaryoları: kaplin boşluğu, keçe pabuçla eklenen sürtünme, yazılımda bit atılarak üretilen nicemleme.</li>
     <li>Türev (sönüm) motor enkoderinden; kol hızından alınırsa döngü kararsızlaşıyor.</li>
     <li>Salınım deneyleri birkaç saniye; aralarda motor soğusun, akım INA228 ile izlensin.</li>
   </ul>
@@ -424,257 +702,6 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   </ul>
 </section>
 
-<section id="donanim">
-  <div class="top"><div class="kicker">Modelde değişecekler</div><span class="pill next">Sırada</span></div>
-  <h2>Gerçek donanıma geçince</h2>
-  <p>Temel modeldeki motor değerleri CTMS kılavuzundaki örnek motordan; dişli kutusu yok. Gerçek motor (JGB37-520, 1:30) dişli kutulu ve model buna göre değişecek.</p>
-  <div class="tbl"><table>
-    <tr><th>Değişen</th><th>Etkisi</th></tr>
-    <tr><td>Dişli oranı \(N\)</td><td>\(N = 26\). Kola giden tork \(N\) katına çıkar. Kolun eylemsizliği motora \(1/N^2\) ile yansır.</td></tr>
-    <tr><td>Motor değerleri</td><td>\(R, L, k_t, J_m, b\): veri sayfası kısmi, sistem tanılamayla bulunacak (\(R\) ve \(k_t\) ölçümle, \(J_m\) ve \(b\) adım ve serbest yavaşlama yanıtından).</td></tr>
-    <tr><td>Sıcaklık</td><td>Sargı direnci \(R(T) \approx R_0\,[1 + 0{,}0039\,(T - T_0)]\); motor gövde sıcaklığı ölçüldüğü için modele girebilir.</td></tr>
-    <tr><td>Dişli boşluğu</td><td>Modele ölü bölge olarak girecek; iki kütleli model gerekecek (motor + kol, arada sertlik \(K_s\) ve boşluk \(2r\)).</td></tr>
-    <tr><td>Sürtünme</td><td>Coulomb + yapışma; boşluktan ayrı tanılanacak.</td></tr>
-    <tr><td>PWM ve sürücü</td><td>Darbeli gerilim, ölü bant, akım sınırı.</td></tr>
-    <tr><td>Açı ölçümü</td><td>Motor enkoderi + kol milinde ikinci sensör. Kol milindeki sensörle döngü kapatmak limit cycle riskini artırır; deney için istenen durum.</td></tr>
-  </table></div>
-</section>
-
-<section id="kararlar">
-  <div class="top"><div class="kicker">Neden bu parçalar</div><span class="pill done">Karar verildi</span></div>
-  <h2>Tasarım kararları</h2>
-  <p>Malzemeyi üç düzeyde değerlendirdik: en ucuz ilk liste, maxon motorlu üst sınıf liste ve ikisinin arasındaki dengeli liste. <b>Dengeli liste seçildi:</b> motor ilk listedeki gibi kaldı; ucuz ama kritik parçalar (sürücü, akım ve sıcaklık sensörü, orijinal kartlar) bilinen üreticilerden alındı. Üç liste ve bütün adaylar bir sonraki bölümde. Ayrıntılı hali: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/tasarim_kararlari.md"><code>donanim/tasarim_kararlari.md</code></a>.</p>
-  <div class="tbl"><table>
-    <tr><th>Görev</th><th>Seçim</th><th>Neden</th></tr>
-    <tr><td>Motor + enkoder</td><td>JGB37-520 12 V 1:30 (ya da enkoderli JGA25-370)</td><td>Simülasyon bu sınıfla yapıldı; hemen alınabilir. Parametreler tanılanacak. maxon tek başına dengeli listenin ≈ 10 katı.</td></tr>
-    <tr><td>Sürücü</td><td>Pololu DRV8874</td><td>TB6612FNG önerilen en fazla 1,0 A; motorun durma akımı 2,3 A. DRV8874 2,1 A sürekli, donanım akım sınırı, akım ölçüm çıkışı.</td></tr>
-    <tr><td>Denetleyici</td><td>Espressif ESP32-DevKitC</td><td>Orijinal kart, fark birkaç dolar.</td></tr>
-    <tr><td>Kol açısı</td><td>Adafruit AS5600 + diametral mıknatıs</td><td>Orijinal ams çipi, 5,95 $. Motor enkoderi (0,27°) \(\theta_d\)'yi zaten sınırladığından daha ince sensör ölçüme yansımaz.</td></tr>
-    <tr><td>Akım</td><td>Adafruit INA228, 20 bit</td><td>INA219'a göre ≈ 15 $ fazlası, çözünürlük ≈ 256 kat.</td></tr>
-    <tr><td>Sıcaklık</td><td>Adafruit TMP117 × 2</td><td>Ortam ve motor gövdesi; her deneyle kaydedilir.</td></tr>
-    <tr><td>Güç</td><td>Mean Well 12 V 3 A</td><td>Bilinen marka, düzgün regülasyon.</td></tr>
-  </table></div>
-
-  <h3>1. Motor: neden ilk motorla devam?</h3>
-  <div class="tbl"><table>
-    <tr><th></th><th>JGB37-520 1:30 (seçilen)</th><th>JGA25-370 1:34</th><th>maxon (üst sınıf)</th></tr>
-    <tr><td>Durma torku / akımı</td><td>5 kg·cm (0,49 N·m) / 2,3 A</td><td>≈ 0,41 N·m / ≈ 1–1,5 A</td><td>150 mN·m × 26 / 6,54 A</td></tr>
-    <tr><td>Enkoder, çıkışta</td><td>11 × 4 × 30 = 1320 sayım/tur (0,27°)</td><td>11 × 4 × 34 ≈ 1500 (0,24°)</td><td>≈ 106.500 (0,0034°)</td></tr>
-    <tr><td>Rotor</td><td>Büyük; \(\omega_c\) ≈ 35 rad/s</td><td>Küçük; \(\omega_c\) 45'e kadar</td><td>≈ 8 g·cm²</td></tr>
-    <tr><td>Bulunabilirlik / fiyat</td><td>direnc.net, 639,29 TL</td><td>Online enkoderli yok; Karaköy</td><td>maxon mağaza, ≈ 472 €</td></tr>
-  </table></div>
-  <ul class="plain">
-    <li>Simülasyon bu motor sınıfıyla yapıldı; JGB37 için ayrı tork kontrolü de var (<code>simulasyon/motor_jgb37.m</code>).</li>
-    <li>Parametreler belgesiz ama sistem tanılama zaten planda: direnç, eylemsizlik, sürtünme, ölü bant ve boşluğun birkaç açıda ölçümü.</li>
-    <li>Sınırı: motor enkoderi kaba (0,27°); 1,5–5°'lik boşluk 6–18 adımla ölçülür. Boşluğun varlığı ve genliği görülür, ince ayrıntı için üst sınıf motor gerekir. Makalede açıkça yazılacak.</li>
-  </ul>
-
-  <h3>2. Sürücü: neden TB6612FNG değil?</h3>
-  <p>Toshiba veri sayfasında 1,2 A bir mutlak sınır; önerilen çalışma aralığı en fazla <b>1,0 A</b>, izin verilen kayıp gücü 0,78–1,36 W. Deney akımımız düşük olsa da JGB37'nin durma akımı (2,3 A) bunun iki katı ve TB6612FNG'de koruma yalnız yazılımda kalır. <b>DRV8874</b> (TI çipi, Pololu kartı): 2,1 A sürekli, 4,5–37 V, 1,8–5 V mantık, akım ölçüm çıkışı (≈ 1,1 V/A), çevrim çevrim akım sınırlama (≈ 2 A'e ayarlanacak). Fark ≈ 7 $.</p>
-
-  <h3>3. ESP32 ileride yeterli mi?</h3>
-  <div class="tbl"><table>
-    <tr><th>İhtiyaç</th><th>ESP32</th><th>Durum</th></tr>
-    <tr><td>1 kHz döngü + gözlemci</td><td>240 MHz, çift çekirdek, tek duyarlıklı FPU</td><td>Rahat</td></tr>
-    <tr><td>Motor enkoderi</td><td>Donanım darbe sayacı (PCNT), kuadratür, gürültü filtresi</td><td>Rahat</td></tr>
-    <tr><td>I²C sensörler</td><td>Donanım I²C, 400 kHz – 1 MHz</td><td>Rahat (AS5600, INA228, TMP117 aynı hatta)</td></tr>
-    <tr><td>IoT</td><td>Dahili Wi-Fi</td><td>Ek kart gerekmez</td></tr>
-  </table></div>
-  <p><b>Dikkat edilecekler:</b> double hesap yazılımla ve yavaş, gözlemci float ile yazılacak; Wi-Fi açıkken kontrol döngüsü ayrı çekirdeğe sabitlenecek ve döngü zamanlaması kaydedilecek. İki eklem ve 5 kHz üstü döngüde doğal yükseltme: kontrol Teensy 4.1'e, ESP32 yalnızca IoT için.</p>
-
-  <h3>4. Kol açısı: neden Adafruit AS5600?</h3>
-  <p>\(\theta_d\) = motor açısı/N − kol açısı. Ölçümün inceliğini iki sensörden kaba olanı belirler: dengeli listede bu motor enkoderi (0,27°). AS5600 (0,088°) bunun üç katı ince; AMT22 (0,022°, 73,72 $) bu motorla ölçüme ek bir şey katmaz, maxon gibi ince enkoderli motorla anlamlı olur. Markasız modül yerine Adafruit kartı: orijinal ams çipi, belgeli devre, daha ucuz (5,95 $). Diametral mıknatıs (6 × 2,5 mm) ayrı alınıp mile ortalanacak; doğruluk bu hizalamaya bağlı, bu yüzden sensör motor enkoderine göre birkaç açıda kalibre edilecek.</p>
-
-  <h3>5. Akım: INA228</h3>
-  <p>INA219 12 bit; INA228 ve INA229 aynı 20 bitlik çekirdek (ofset ≤ ±1 µV, kazanç hatası ≤ ±%0,05, 85 V ortak mod), fark yalnız arayüz (I²C / SPI). INA229 için hazır kart yok; Adafruit INA228 hazır ve 14,95 $. 1 kHz döngüde ≈ 0,5 ms dönüşüm süresi. Şant motor hattında; PWM geçişleri ölçümü bozarsa besleme hattına alınır, anlık akım için DRV8874'ün CS çıkışı da kaydedilir.</p>
-
-  <h3>6. Sıcaklık: TMP117 × 2</h3>
-  <p>±0,1 °C (−20…50 °C), 16 bit, I²C. Biri ortam, biri motor gövdesi. Motor sıcaklığı sonuçları ortamdan daha çok etkiler: bakır sargı direnci ≈ %0,39/°C değişir, dişli yağının viskozitesi (sürtünme) sıcaklıkla değişir. Ucuz motorda bu etkiler belgesiz olduğundan ölçmek daha da önemli.</p>
-
-  <h3>7. Haberleşme</h3>
-  <div class="tbl"><table>
-    <tr><th>Bağlantı</th><th>Protokol</th><th>Not</th></tr>
-    <tr><td>Motor enkoderi → ESP32</td><td>A/B kuadratür → PCNT</td><td>Enkoder 3,3–5 V ile çalışır; 3,3 V ile beslenirse çıkış doğrudan ESP32'ye (veri sayfasından teyit edilecek)</td></tr>
-    <tr><td>AS5600 → ESP32</td><td>I²C, 0x36</td><td>1 MHz hızlı mod</td></tr>
-    <tr><td>INA228 → ESP32</td><td>I²C, 0x40</td><td>Aynı hat</td></tr>
-    <tr><td>TMP117 × 2 → ESP32</td><td>I²C, 0x48 / 0x49</td><td>1–10 Hz</td></tr>
-    <tr><td>ESP32 → DRV8874</td><td>EN'ye 20 kHz PWM, PH yön, nSLEEP HIGH</td><td>Akım sınırı ≈ 2 A</td></tr>
-    <tr><td>ESP32 ↔ bilgisayar</td><td>USB seri, 921600 baud</td><td>Veri kaydı; kontrol döngüsünde Wi-Fi yok</td></tr>
-  </table></div>
-  <p><b>Bilinen risk:</b> 1 kHz'te iki I²C cihazı (AS5600 ve INA228) okumak zamanlamayı zorlayabilir; I²C 1 MHz'e çıkarılır, gerekirse INA228 daha seyrek okunur. TMP117'ler yavaş okunur.</p>
-</section>
-
-<section id="malzeme">
-  <div class="top"><div class="kicker">Üç liste · bütün adaylar · fiyat</div><span class="pill done">Dengeli liste seçildi</span></div>
-  <h2>Malzeme ve alışveriş</h2>
-  <p>Aynı düzenek için üç malzeme listesi hazırladık: ilk liste (en ucuz), üst sınıf liste ve ikisinin arasındaki <b>dengeli liste</b>. Seçilen dengeli liste. Fiyatlar üretici ya da satıcı sitelerindeki liste fiyatları (TL fiyatları KDV dahil; $ ve € fiyatları KDV, kargo ve gümrük hariç, 1 adet); değişebilir.</p>
-
-  <h3>Üç liste yan yana</h3>
-  <div class="tbl"><table>
-    <tr><th>Görev</th><th>1. İlk liste (en ucuz)</th><th>2. Dengeli liste (seçilen)</th><th>3. Üst sınıf liste</th></tr>
-    <tr><td>Motor + enkoder</td><td>JGB37-520 12 V 1:30, 639,29 TL</td><td class="secili">JGB37-520 12 V 1:30, 639,29 TL<br><small>(Karaköy'de enkoderli JGA25-370 bulunursa o)</small></td><td>maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16, ≈ 472 €</td></tr>
-    <tr><td>Motor sürücü</td><td>TB6612FNG modülü, 81,36 TL</td><td class="secili">Pololu DRV8874 (#4035), 11,94 $</td><td>Pololu DRV8874 × 2, 23,88 $</td></tr>
-    <tr><td>Denetleyici</td><td>ESP32 DevKit (genel), ≈ 270 TL</td><td class="secili">Espressif ESP32-DevKitC, ≈ 13 €</td><td>Espressif ESP32-DevKitC, ≈ 13 €</td></tr>
-    <tr><td>Kol açısı</td><td>AS5600 modülü (markasız), ≈ 258 TL</td><td class="secili">Adafruit AS5600 (#6357), 5,95 $ + diametral mıknatıs</td><td>AMT22 14 bit (AMT222B-V), 73,72 $</td></tr>
-    <tr><td>Akım</td><td>INA219 modülü, 87,18 TL</td><td class="secili">Adafruit INA228 (#5832), 14,95 $</td><td>Adafruit INA228, 14,95 $</td></tr>
-    <tr><td>Sıcaklık</td><td>—</td><td class="secili">Adafruit TMP117 × 2, 23,00 $</td><td>Adafruit TMP117 × 2, 23,00 $</td></tr>
-    <tr><td>Enkoder alıcısı</td><td>gerekmez</td><td class="secili">gerekmez</td><td>TI AM26LV32E (RS-422)</td></tr>
-    <tr><td>Güç</td><td>Genel 12 V 2 A adaptör</td><td class="secili">Mean Well 12 V 3 A, ≈ 15 $</td><td>Mean Well 12 V 3 A, ≈ 15 $</td></tr>
-    <tr><td><b>Toplam (elektronik + motor)</b></td><td><b>≈ 1.336 TL</b> + adaptör</td><td class="secili"><b>≈ 639 TL + 13 € + 70 $</b></td><td><b>≈ 485 € + 150 $</b></td></tr>
-  </table></div>
-  <p>Mekanik parçalar (rulman, mil, kol, ağırlıklar, vidalar, 3B baskı gövde ve kaplin) üç listede de aynı ve toplama dahil değil.</p>
-
-  <h3>Neden dengeli liste?</h3>
-  <ul class="plain">
-    <li><b>Motor ilk listedeki gibi kaldı.</b> Simülasyon bu motor sınıfıyla yapıldı; sonuçlar doğrudan geçerli. Parametreleri belgesiz olduğu için sistem tanılama zaten planda (direnç, eylemsizlik, sürtünme, boşluk). maxon kombinasyonu tek başına bütün dengeli listenin yaklaşık 10 katı.</li>
-    <li><b>Sürücü değişti, çünkü ucuz ama kritik.</b> TB6612FNG önerilen en fazla 1,0 A sürekli; JGB37-520'nin durma akımı 2,3 A. DRV8874 2,1 A sürekli, donanım akım sınırı ve akım ölçüm çıkışıyla yaklaşık 7 $ fazlası.</li>
-    <li><b>Kol açısı sensöründe AMT22 bu motorla boşa gider.</b> Açı farkı \(\theta_d\) = motor açısı/N − kol açısı; ucuz motorun enkoderi çıkışta ≈ 0,27° çözünürlükte. Kol tarafında 0,022° ile 0,088° arasındaki fark bu yüzden ölçüme yansımaz. Adafruit'in AS5600 kartı aynı çipin orijinali, belgeli ve 5,95 $. Dikkat: mıknatıs ayrı alınacak ve mile ortalanacak.</li>
-    <li><b>INA228 fiyatı az değiştiriyor, çözünürlüğü çok artırıyor</b> (12 bit → 20 bit, ≈ 15 $).</li>
-    <li><b>TMP117 ucuz ve istediğimiz veriyi veriyor:</b> ortam ve motor gövdesi sıcaklığı her deneyle kaydedilir.</li>
-    <li><b>ESP32 ve adaptörde orijinal marka:</b> fark yalnızca birkaç dolar; taklit kartlardaki USB çipi ve regülatör sorunlarından kurtarır.</li>
-    <li><b>Yükseltme yolu açık:</b> sonuçlar umut verirse motor ve kol enkoderi üst sınıf listeye çevrilebilir; sürücü, denetleyici, akım ve sıcaklık sensörleri aynı kalır.</li>
-  </ul>
-  <div class="note"><b>Dengeli listenin sınırı</b>Motor tarafındaki enkoder kaba: çıkışta 1320 sayım/tur (≈ 0,27°). 1,5–5°'lik boşluk bu çözünürlükte 6–18 adımla ölçülür; boşluğun varlığı ve genliği görülür, ama ince ayrıntı için üst sınıf motor gerekir. Makalede bu sınır açıkça yazılmalı.</div>
-
-  <h3>Bütün adaylar</h3>
-  <p>Her görev için değerlendirdiğimiz bütün parçalar ve neden seçildikleri ya da elendikleri. Dengeli listede olanlar renkli.</p>
-
-  <h3>1. Motor, dişli kutusu ve enkoder</h3>
-  <div class="tbl"><table>
-    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
-    <tr class="sec"><td>JGB37-520, 12 V, 1:30 (direnc.net)</td><td>Durma 5 kg·cm / 2,3 A; nominal 3,5 kg·cm @ 1 A; enkoder 11 darbe/tur (çıkışta 1320, 0,27°); 6 mm D mil</td><td class="fiyat">639,29 TL</td><td><b>Dengeli liste.</b> Hemen alınabilir, veri sayfası kısmen var, simülasyon bu sınıfla yapıldı (\(\omega_c\) ≈ 35 rad/s). Eksi: markasız, rotor büyük, parametreler tanılanacak.</td></tr>
-    <tr><td>JGA25-370, 12 V, 1:34</td><td>Durma ≈ 0,41 N·m; 11 darbe/tur; 4 mm D mil</td><td class="fiyat">Türkiye'de online enkoderli sürümü yok</td><td>İlk tercihti (küçük rotor, \(\omega_c\) 45'e kadar); Karaköy'de bulunursa JGB37 yerine alınabilir.</td></tr>
-    <tr><td>maxon DCX 22 L 12 V + GPX 22 LZ 26:1 + ENX 16 EASY 1024</td><td>Durma 150 mN·m / 6,54 A; dişli boşluğu 0,85°; çıkışta ≈ 106.500 sayım/tur (0,0034°)</td><td class="fiyat">220,41 + 150,63 + 101,05 ≈ 472 €</td><td>Üst sınıf liste. Her parametre katalogda; ama dengeli listenin tamamının ≈ 10 katı.</td></tr>
-    <tr><td>maxon, aynı motor + GPX 22 A 21:1</td><td>Boşluk 1,05°</td><td class="fiyat">≈ 436 €</td><td>Üst sınıfın biraz ucuzu.</td></tr>
-    <tr><td>Faulhaber 2232 SR + 20/1R + IEH2-4096</td><td>Enkoder 4096 çizgi/tur</td><td class="fiyat">motor ≈ 112 € (bayi); dişli + enkoder teklif</td><td>maxon sınıfında; teklif istenebilir.</td></tr>
-    <tr><td>Pololu 37D, 12 V, 30:1, 64 CPR (#4752)</td><td>Durma ≈ 14 kg·cm / 5,5 A; çıkışta 1920 sayım/tur (0,19°)</td><td class="fiyat">60,95 $</td><td>Bilinen satıcı ama enkoder JGB37'den yalnız ≈ 1,5 kat ince, durma akımı 5,5 A; ithalat masrafıyla JGB37'ye göre kazancı az.</td></tr>
-    <tr><td>SAMM L tipi, 12 V, 1:42</td><td>Durma ≥ 8,5 kg·cm; 13 darbe/tur</td><td class="fiyat">≈ 826 TL</td><td>Stokta yoktu.</td></tr>
-    <tr><td>Hobi servo (SG90, MG996R)</td><td>İçinde hazır konum kontrolcüsü</td><td class="fiyat">—</td><td>Elendi: kendi kontrolcümüzü devre dışı bırakır.</td></tr>
-  </table></div>
-
-  <h3>2. Geliştirme kartı (denetleyici)</h3>
-  <div class="tbl"><table>
-    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
-    <tr class="sec"><td>Espressif ESP32-DevKitC (WROOM-32E)</td><td>240 MHz çift çekirdek, tek duyarlıklı FPU, donanım enkoder sayacı (PCNT), Wi-Fi</td><td class="fiyat">≈ 13 € (KDV dahil, Conrad)</td><td><b>Dengeli liste.</b> 1 kHz döngü ve gözlemci için rahat; Wi-Fi IoT için hazır. Double yavaş, Wi-Fi döngüden ayrı çekirdekte çalışacak.</td></tr>
-    <tr><td>Genel "ESP32 DevKit" (yerli satıcı)</td><td>Aynı çip; kart üreticisi belirsiz</td><td class="fiyat">≈ 270 TL (f1depo)</td><td>İlk liste. Çalışır, ama USB çipi ve regülatör kalitesi değişken.</td></tr>
-    <tr><td>Espressif ESP32-S3-DevKitC-1 (N8)</td><td>Vektör komutları, dahili USB</td><td class="fiyat">15,95 $ (Adafruit)</td><td>Güçlü alternatif; bizim iş yükümüzde belirgin üstünlüğü yok.</td></tr>
-    <tr><td>Teensy 4.1</td><td>600 MHz Cortex-M7, çift duyarlıklı FPU, 4 donanım enkoder çözücüsü, Ethernet</td><td class="fiyat">31,50 $ (SparkFun)</td><td>Yükseltme yolu: iki eklem ve 5–10 kHz döngüde.</td></tr>
-    <tr><td>STM32 Nucleo-G474RE</td><td>170 MHz Cortex-M4F, motor kontrol zamanlayıcıları</td><td class="fiyat">20,13 $ (DigiKey)</td><td>Endüstri standardı; kurulumu daha zahmetli.</td></tr>
-    <tr><td>Arduino Uno R3 / R4 Minima</td><td>R3: 8 bit 16 MHz; R4: 48 MHz Cortex-M4</td><td class="fiyat">R4 ≈ 23 € (KDV dahil)</td><td>Elendi: 1 kHz döngü + gözlemci + veri kaydı için sınırda.</td></tr>
-  </table></div>
-
-  <h3>3. Motor sürücü</h3>
-  <div class="tbl"><table>
-    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
-    <tr class="sec"><td>Pololu #4035 (TI DRV8874)</td><td>2,1 A sürekli, 4,5–37 V, akım ölçüm çıkışı (≈ 1,1 V/A), ayarlanabilir akım sınırı</td><td class="fiyat">11,94 $</td><td><b>Dengeli liste.</b> JGB37'nin 2,3 A durma akımını donanımda sınırlar; akım sınırı ≈ 2 A.</td></tr>
-    <tr><td>TB6612FNG modülü</td><td>2 kanal; Toshiba: 1,2 A mutlak sınır, önerilen ≤ 1,0 A</td><td class="fiyat">81,36 TL (direnc.net); Pololu #713 4,95 $</td><td>İlk liste. Normal çalışma akımımız düşük olsa da durma akımı sınırın iki katı; koruma yalnız yazılımda kalır.</td></tr>
-    <tr><td>Adafruit DRV8871 (#3190)</td><td>≈ 3,6 A tepe, direnç ile akım sınırı</td><td class="fiyat">≈ 10,4–11,6 $</td><td>Yedek; akım ölçüm çıkışı yok.</td></tr>
-    <tr><td>L298N, BTS7960 modülleri</td><td>Bipolar (2–3 V kayıp) / 40 A sınıfı</td><td class="fiyat">—</td><td>Elendi.</td></tr>
-  </table></div>
-
-  <h3>4. Kol açısı sensörü</h3>
-  <div class="tbl"><table>
-    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
-    <tr class="sec"><td>Adafruit AS5600 (#6357)</td><td>ams AS5600, 12 bit (0,088°), I²C, STEMMA QT; diametral mıknatıs ayrı</td><td class="fiyat">5,95 $</td><td><b>Dengeli liste.</b> Orijinal çip, belgeli kart. Ucuz motorun enkoderi (0,27°) zaten \(\theta_d\)'yi sınırladığı için daha ince sensör ölçüme yansımaz.</td></tr>
-    <tr><td>AS5600 modülü (markasız)</td><td>12 bit, I²C</td><td class="fiyat">≈ 258 TL (Çiçeksepeti)</td><td>İlk liste. Çip orijinal olmayabilir; Adafruit kartı daha ucuz ve belgeli.</td></tr>
-    <tr><td>ams AS5047P + adaptör</td><td>14 bit, SPI + ABI, çok düşük gecikme</td><td class="fiyat">≈ 16,7 $ – 21,7 € (stok sorunlu)</td><td>İyi bir ara seçenek; stok sorunlu.</td></tr>
-    <tr><td>Same Sky AMT22, 14 bit (AMT222B-V)</td><td>±0,2° doğruluk, SPI, mıknatıssız</td><td class="fiyat">73,72 $</td><td>Üst sınıf liste; maxon gibi ince enkoderli bir motorla anlamlı.</td></tr>
-  </table></div>
-
-  <h3>5. Akım sensörü</h3>
-  <div class="tbl"><table>
-    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
-    <tr class="sec"><td>Adafruit INA228 (#5832)</td><td>TI INA228: 20 bit, I²C, 85 V ortak mod, ofset ≤ ±1 µV, kazanç hatası ≤ ±%0,05</td><td class="fiyat">14,95 $</td><td><b>Dengeli liste.</b> INA229 ile aynı çekirdek; fiyatı az, çözünürlüğü ≈ 256 kat artırıyor.</td></tr>
-    <tr><td>INA219 modülü</td><td>12 bit, I²C, 26 V</td><td class="fiyat">87,18 TL (direnc.net)</td><td>İlk liste.</td></tr>
-    <tr><td>TI INA229</td><td>Aynı çekirdek, SPI</td><td class="fiyat">hazır kart bulunamadı</td><td>Kendi PCB'miz gerekirdi.</td></tr>
-    <tr><td>Hall etkili modüller (ACS712 vb.)</td><td>Analog</td><td class="fiyat">—</td><td>Elendi: gürültülü.</td></tr>
-  </table></div>
-
-  <h3>6. Sıcaklık sensörü</h3>
-  <div class="tbl"><table>
-    <tr><th>Seçenek</th><th>Özellik</th><th>Fiyat</th><th>Değerlendirme</th></tr>
-    <tr class="sec"><td>Adafruit TMP117 (#4821) × 2</td><td>±0,1 °C (−20…50 °C), 16 bit, I²C</td><td class="fiyat">11,50 $ (× 2 = 23,00 $)</td><td><b>Dengeli liste.</b> Biri ortam, biri motor gövdesi (0x48, 0x49).</td></tr>
-    <tr><td>Sensirion SHT45</td><td>Sıcaklık + nem</td><td class="fiyat">—</td><td>Nem de istenirse.</td></tr>
-    <tr><td>DS18B20 / NTC</td><td>±0,5 °C / analog</td><td class="fiyat">—</td><td>Elendi: daha az doğru, taklit çok / kalibrasyon gerekir.</td></tr>
-  </table></div>
-
-  <h3>7. Diğer parçalar</h3>
-  <div class="tbl"><table>
-    <tr><th>Parça</th><th>Seçim</th><th>Fiyat</th><th>Neden</th></tr>
-    <tr class="sec"><td>Güç kaynağı</td><td>Mean Well 12 V 3 A (GST36 serisi)</td><td class="fiyat">≈ 14,6 $ – 17 €</td><td>Bilinen marka, düzgün regülasyon; genel adaptörlerde dalgalanma motor gerilimine biner.</td></tr>
-    <tr class="sec"><td>Diametral mıknatıs</td><td>6 × 2,5 mm, AS5600 için</td><td class="fiyat">—</td><td>Eksenel mıknatıs çalışmaz; mile ortalanmalı.</td></tr>
-    <tr class="sec"><td>Rulman</td><td>2 adet, kol mili çapında (SKF / NSK tercih)</td><td class="fiyat">rulmancı</td><td>Kol mili motordan ayrı döner.</td></tr>
-    <tr class="sec"><td>Kol, mil, ağırlıklar, vidalar</td><td>15 cm alüminyum lama, çelik mil, ≈ 20 g uç ağırlığı</td><td class="fiyat">hırdavat</td><td>Yerçekimi torkunu açıdan bağımsız değiştirmek için.</td></tr>
-    <tr class="sec"><td>Gövde, boşluklu kaplin</td><td>3B baskı; kaplin 1,5° / 3° / 5°</td><td class="fiyat">baskı</td><td>Ana deney değişkeni.</td></tr>
-    <tr><td>RS-422 alıcı</td><td>TI AM26LV32E</td><td class="fiyat">birkaç $</td><td>Yalnız üst sınıf listede (maxon enkoderi için).</td></tr>
-  </table></div>
-
-  <h3>Düzenek nasıl birleşiyor</h3>
-  <figure>
-    <div class="tbl"><svg class="diag" viewBox="0 0 760 250" role="img" aria-label="Düzeneğin yan görünüşü: dişli DC motor ve arkasında enkoder, boşluklu kaplin, iki rulman, kol mili, kol ve kol milinin ucunda mıknatıs ve AS5600 sensörü">
-      <line class="d-floor" x1="20" y1="215" x2="740" y2="215"/>
-      <rect class="d-body" x="40" y="80" width="150" height="80" rx="6"/>
-      <text class="d-lbl" x="115" y="117" text-anchor="middle">dişli DC motor</text><text class="d-lbl" x="115" y="135" text-anchor="middle">(JGB37-520)</text>
-      <rect class="d-pcb" x="22" y="90" width="18" height="60" rx="2"/>
-      <text class="d-sm" x="31" y="72" text-anchor="middle">enkoder</text>
-      <rect class="d-shaft" x="190" y="114" width="40" height="12"/>
-      <rect class="d-acc" x="230" y="96" width="60" height="48" rx="4"/>
-      <text class="d-lbl" x="260" y="80" text-anchor="middle">kaplin</text>
-      <text class="d-sm" x="260" y="168" text-anchor="middle">(boşluk burada)</text>
-      <rect class="d-shaft" x="290" y="114" width="380" height="12"/>
-      <rect class="d-bear" x="340" y="100" width="22" height="40" rx="3"/>
-      <rect class="d-bear" x="540" y="100" width="22" height="40" rx="3"/>
-      <text class="d-sm" x="450" y="80" text-anchor="middle">2 rulman (kol mili ayrı döner)</text>
-      <line class="d-lead" x1="362" y1="86" x2="351" y2="100"/><line class="d-lead" x1="538" y1="86" x2="551" y2="100"/>
-      <rect class="d-frame" x="330" y="140" width="42" height="75"/>
-      <rect class="d-frame" x="530" y="140" width="42" height="75"/>
-      <text class="d-sm" x="450" y="205" text-anchor="middle">gövde</text>
-      <rect class="d-arm" x="604" y="20" width="12" height="104" rx="2"/>
-      <circle class="d-tip" cx="610" cy="26" r="11"/>
-      <text class="d-lbl" x="590" y="30" text-anchor="end">kol (15 cm) + uç ağırlığı</text>
-      <rect class="d-mag" x="670" y="110" width="8" height="20"/>
-      <rect class="d-pcb" x="684" y="96" width="14" height="48" rx="2"/>
-      <text class="d-lbl" x="691" y="80" text-anchor="middle">AS5600</text>
-      <text class="d-sm" x="676" y="168" text-anchor="middle">mıknatıs + sensör</text>
-      <text class="d-sm" x="676" y="183" text-anchor="middle">(kol açısı)</text>
-    </svg></div>
-    <figcaption>Yan görünüş, ölçeksiz. Motor açısı motorun enkoderinden, kol açısı kol milinin ucundaki AS5600'den okunur; ikisinin farkı \(\theta_d\) dişlinin boşlukta olup olmadığını gösterir. Bir TMP117 motor gövdesinde, biri ortamda.</figcaption>
-  </figure>
-
-  <h3>Boşluklu kaplin</h3>
-  <figure>
-    <div class="tbl"><svg class="diag" viewBox="0 0 760 232" role="img" aria-label="Kaplinin önden görünüşü: motor tarafındaki dil, kol tarafındaki daha geniş yuvanın içinde boşta hareket eder">
-      <g transform="translate(130,105)">
-        <circle class="d-body" r="80"/>
-        <path class="d-bg" d="M -26 -80 L 26 -80 L 26 -20 L -26 -20 Z"/>
-        <rect class="d-acc" x="-11" y="-78" width="22" height="58" rx="2"/>
-        <circle class="d-shaft" r="10"/>
-        <text class="d-sm" x="0" y="104" text-anchor="middle">dil yuvanın ortasında: boşta</text>
-      </g>
-      <g transform="translate(380,105)">
-        <circle class="d-body" r="80"/>
-        <path class="d-bg" d="M -26 -80 L 26 -80 L 26 -20 L -26 -20 Z"/>
-        <rect class="d-acc" x="4" y="-78" width="22" height="58" rx="2"/>
-        <circle class="d-shaft" r="10"/>
-        <path class="d-arrow" d="M -40 -95 A 100 100 0 0 1 40 -95"/>
-        <text class="d-sm" x="0" y="104" text-anchor="middle">dil kenara dayandı: kol döner</text>
-      </g>
-      <g transform="translate(560,40)">
-        <text class="d-lbl" x="0" y="0">Parçalar</text>
-        <rect class="d-acc" x="0" y="14" width="18" height="14" rx="2"/><text class="d-sm" x="26" y="26">dil (motor miline)</text>
-        <rect class="d-body" x="0" y="40" width="18" height="14" rx="2"/><text class="d-sm" x="26" y="52">yuvalı parça (kol miline)</text>
-        <text class="d-sm" x="0" y="84">Yuva genişliği = boşluk:</text>
-        <text class="d-sm" x="0" y="102">1,5° · 3° · 5° için</text>
-        <text class="d-sm" x="0" y="120">üç ayrı parça basılır,</text>
-        <text class="d-sm" x="0" y="138">deneyde değiştirilir.</text>
-      </g>
-    </svg></div>
-    <figcaption>Önden görünüş. Motor dönmeye başladığında dil önce yuvanın içinde boşta gider, kenara çarpınca kolu çevirir. Hazır satılmaz; 3B baskıyla yapılacak. Toplam boşluk, dişli kutusunun kendi boşluğu ile kaplinin toplamı; motorun kendi boşluğu tanılamada ölçülecek.</figcaption>
-  </figure>
-
-
-  <div class="note"><b>Sipariş öncesi</b>Adafruit parçaları (AS5600, INA228, TMP117) ve Pololu DRV8874 tek siparişte yetkili distribütörden (DigiKey, Mouser) ya da orijinal ürün satan bir bayiden alınırsa kargo ve gümrük tek sefer ödenir. Ayrıntılı liste ve kaynak bağlantıları: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</div>
-</section>
 
 <section id="yayin">
   <div class="top"><div class="kicker">Karar</div><span class="pill done">Dergi yolu</span></div>
@@ -690,32 +717,32 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="top"><div class="kicker">Yol haritası</div><span class="pill next">Sırada</span></div>
   <h2>Sıradaki adım</h2>
   <ul class="plain">
-    <li>Sipariş (dengeli liste): JGB37-520 direnc.net'ten (Karaköy'de enkoderli JGA25-370 bulunursa o); DRV8874, Adafruit AS5600, INA228, TMP117 × 2 tek siparişte yetkili distribütörden; ESP32-DevKitC, Mean Well adaptör, diametral mıknatıs.</li>
-    <li>Beklerken: boşluk kaplini ve gövdenin 3B tasarımı (JGB37 mili 6 mm D).</li>
-    <li>Beklerken: kaymalı tanımlama fonksiyonu türetimi (adım adım), \(\gamma_{sınır} \approx 3\,r_s^3\) ilişkisiyle karşılaştırma.</li>
-    <li>Malzeme gelince: sistem tanılama (motor eylemsizliği, sürtünme, ölü bant, boşluğun birkaç açıda ölçümü), ardından açı taraması deneyleri.</li>
-    <li>Ahmad 1985 (ICRA) ve Kodama ve Shirakawa 1968 (IEEE TAC) makalelerini indirmek; kampüsten Nordin ve Gutman 2002 anketi.</li>
+    <li><b>28 Ekim dersi:</b> framing, plan ve malzeme listeleri danışmanla değerlendirilir; başarı ölçütleri, mekanik seçenek (A / B) ve EKOM üzerinden üniversite hesabıyla sipariş konuşulur.</li>
+    <li><b>4a, literatür sonucunun yeniden üretimi:</b> önce Ghaffari 2013'ün frekans ve rejim sonuçları, sonra Sun 2023 (K<sub>p</sub> = 20 / 50); kaynakların oranları ve kontrolcü parametreleri bu çalışmanın tanımlarına çevrilir.</li>
+    <li><b>4b:</b> iki girişli DF türetimi (adım adım), \(\gamma_{sınır} \approx 3\rho^3\) ilişkisiyle ve simülasyonla karşılaştırma; sönümlü / zorlanmış / kalıcı çevrim / kararsız ayrımı.</li>
+    <li><b>Aynı anda:</b> sipariş (EKOM + yerli kalemler), firmware iskeleti ve MATLAB kayıt betiği, kaplin ve gövde tasarımı.</li>
+    <li><b>Malzeme gelince:</b> kalibrasyon, sistem tanılama, ardından açı × kazanç deneyleri.</li>
   </ul>
 </section>
 
 <section id="gelistirme">
   <div class="top"><div class="kicker">Ana çalışmadan sonra</div><span class="pill open">Fikir</span></div>
   <h2>Geliştirme yönleri</h2>
-  <p>Bulgularımızdan doğal olarak çıkan yönler, yakından uzağa. Önce ana çalışma bitirilecek: hipotezin deneyle doğrulanması ve açıya bağlı gözlemci.</p>
+  <p>Bulgularımızdan doğal olarak çıkan yönler, yakından uzağa. Önce ana çalışma bitirilecek: açı × kazanç sınırının öngörüsü ve deneysel doğrulaması (bkz. Framing). Yerçekimi dengelemesinin etkisi artık ana çalışmanın içinde (dengeleme oranı ve tasarım kuralı).</p>
 
   <h3>Bu düzenekle doğrudan</h3>
   <div class="gaps">
     <div class="gap chosen">
       <div class="id">1</div>
-      <h4>Açıya göre ayarlanan gözlemci</h4>
-      <p>Gözlemci kazancı kol açısına göre değiştirilir; sabit kazançlı gözlemci ve literatürdeki yöntemlerle (LADOB, değişken kazançlı gözlemci) karşılaştırılır.</p>
-      <div class="need">Ana çalışmanın parçası. Ek malzeme yok.</div>
+      <h4>Açıya göre geri besleme harmanlama ya da gözlemci ayarı</h4>
+      <p>Motor ve kol açısı geri beslemesinin ağırlığı ya da gözlemci bant genişliği, öngörülen sınıra göre açıdan önceden ayarlanır. Karşılaştırma: sabit ayar ve hataya göre değişen kazançlı gözlemci (G. Sun 2021).</p>
+      <div class="need">Ana katkı tuttuktan sonraki ilk uzantı. Ek malzeme yok; firmware seçenekleri hazır.</div>
     </div>
-    <div class="gap chosen">
+    <div class="gap">
       <div class="id">2</div>
       <h4>Hareket sırasında boşluk</h4>
       <p>Kol hareket ederken salınımlı ve salınımsız bölgelerden geçer. Yörüngeyi salınımlı bölgeleri hızlı geçecek ya da orada kazancı düşürecek şekilde planlamak.</p>
-      <div class="need">Ana çalışmanın doğal uzantısı. Ek malzeme yok.</div>
+      <div class="need">Şimdilik kapsam dışı; otomotiv aktarma organlarındaki "boşluk geçişi" literatürü ayrıca taranmalı.</div>
     </div>
     <div class="gap">
       <div class="id">3</div>
@@ -727,7 +754,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
       <div class="id">4</div>
       <h4>Boşluk aşınmasını izleme</h4>
       <p>Dişliler aşındıkça boşluk büyür ve salınım bandı genişler. Bandı ölçerek aşınma çalışırken anlaşılır (kestirimci bakım).</p>
-      <div class="need">Aynı düzenek, farklı boşluklu kaplinler aşınmayı taklit eder.</div>
+      <div class="need">Aynı düzenek, farklı boşluklu kaplinler aşınmayı taklit eder. Rakipler: Ruderman 2019 (röleyle bilerek salınım uyandırarak boşluk tanılama) ve Giovannitti 2022 (sabit hızlı dönüşte yerçekimi sıfır geçişinden kestirim).</div>
     </div>
   </div>
 
@@ -736,8 +763,8 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <div class="gap">
       <div class="id">5</div>
       <h4>Yerçekimi dengeleme yayları</h4>
-      <p>İşbirlikçi robotlar ve dış iskeletler yerçekimini yayla dengeler. Ama yerçekimi dişliyi bastırıp salınımı engelliyor: dengelenen kolda bu "bedava ön yük" kaybolur ve salınım artabilir. Pratikte gerçek bir ödünleşim; literatürde görülmedi.</p>
-      <div class="need">En özgün yan yön. Gerekli: yay ve bağlantı parçası.</div>
+      <p>İşbirlikçi robotlar ve dış iskeletler yerçekimini yayla dengeler. Ama yerçekimi dişliyi bastırıp salınımı engelliyor: dengelenen kolda bu "bedava ön yük" kaybolur ve salınım artabilir. Karşı ağırlıkla yapılan dengeleme ana çalışmaya alındı; yay ise ön yükün açıya bağlılığını sinüs dışı bir biçime sokar.</p>
+      <div class="need">Ana çalışmada karşı ağırlıkla; yaylı sürümü sonraki adım. Gerekli: yay ve bağlantı parçası.</div>
     </div>
     <div class="gap">
       <div class="id">6</div>
@@ -995,7 +1022,38 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
         <dt>Neden</dt><dd>maxon kombinasyonu (≈ 472 €) tek başına bütün düzeneğin maliyetini belirliyordu; bazı yükseltmeler ucuz, bazıları pahalıydı.</dd>
         <dt>Ne yaptık</dt><dd>Her görev için bütün adayları fiyatlarıyla topladık ve üç liste çıkardık: ilk liste (≈ 1.336 TL), üst sınıf (≈ 485 € + 150 $), dengeli (≈ 639 TL + 13 € + 70 $).</dd>
         <dt>Sonuç</dt><dd>Dengeli liste seçildi: motor ilk listedeki gibi (JGB37-520), sürücü DRV8874, kol açısı Adafruit AS5600 (orijinal çip), akım INA228, iki TMP117, orijinal ESP32 ve Mean Well. Gerekçe: ucuz motorun enkoderi (0,27°) \(\theta_d\)'yi sınırladığından AMT22'nin inceliği ölçüme yansımaz; INA228 ve TMP117 ise fiyatı az değiştirip veriyi belirgin iyileştiriyor.</dd>
-        <dt>Bağlantı</dt><dd class="link">→ Malzeme ve alışveriş bölümü. Sonuçlar umut verirse motor ve kol enkoderi üst sınıfa yükseltilir; diğer parçalar aynı kalır.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 20: danışmanın yönlendirmesi.</dd>
+      </dl>
+    </div></li>
+  </ol>
+
+  <div class="phase">V. Çalışma notu</div>
+  <ol class="log" style="counter-reset:adim 19">
+    <li><div class="step">
+      <h4>Danışmanın yönlendirmesi</h4>
+      <dl>
+        <dt>Neden</dt><dd>Danışman, donanım ve malzemenin literatüre dayanan bir araştırma çerçevesinden türemesini istedi; 13 kaynaklı bir karşılaştırma listesi ve tam metinler gönderdi.</dd>
+        <dt>Ne yaptık</dt><dd>Listedeki eksik 5 kaynağı edinip okuduk; Xu 2023'ün açı–ofset ölçümünü ve Sun 2023'ün kazanç deneylerini metinden doğruladık.</dd>
+        <dt>Sonuç</dt><dd>"Açıkça gösterilebilen boşluk" yolu zayıf: yerçekimi–boşluk etkileşimi nitel olarak, kazanca bağlı salınım yerçekimsiz olarak çalışılmış. Çalışma yöntem geliştirmeye dayandırılmalı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 21: aday vurgular.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Aday vurgular ve framing kararı</h4>
+      <dl>
+        <dt>Neden</dt><dd>En güçlü katkıyı seçmeden önce farklı vurguları literatürle sınamak.</dd>
+        <dt>Ne yaptık</dt><dd>13 aday çıkardık, altı ölçütle puanladık; Ghaffari 2013'ün oranını bu çalışmanın oranıyla eşledik (\(r_{gs} \approx 2\rho\)); son bir tarama yaptık (75 ileriye atıf, 17 hedefli sorgu).</dd>
+        <dt>Sonuç</dt><dd>Ana katkı: Ghaffari'nin simetrik ön yük analizini yerçekiminin tek yönlü, açıya bağlı ön yüküne genişletmek. Açı taramasıyla kaynak ayrıştırma zorunlu bileşen, dengeleme motivasyon, geri besleme harmanlama uzantı. Deney hedef bölgesi DF'nin geçerli olduğu rejimde. Doğrudan rakip çıkmadı; kaymalı DF'nin kendisinin yeni olmadığı not edildi.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Framing bölümü.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Kapsam, plan ve malzeme</h4>
+      <dl>
+        <dt>Neden</dt><dd>Donanımı framing'in ihtiyaçlarından türetmek.</dd>
+        <dt>Ne yaptık</dt><dd>Kısıtları ve 4–5 aylık aşama planını yazdık; donanım ve yazılım blok şemalarını çizdik; iki kontrol turunda hataları düzelttik (TMP117 ayrı I²C hattına, AS5600 filtresi SF = 11, hız kestirimi nicemlemesi); fiyat ve stokları satıcı sayfalarından doğruladık.</dd>
+        <dt>Sonuç</dt><dd>Elektronik EKOM (DigiKey'in Türkiye ortağı) üzerinden Türkiye'den alınabiliyor; evdeki 12 V ≥ 2 A adaptör yeterli; mekanik iki seçenekli (hazır parça / baskı hizmeti), maliyetleri yakın.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Kapsam, Donanım ve yazılım planı, Malzeme listeleri bölümleri.</dd>
       </dl>
     </div></li>
   </ol>

@@ -16,7 +16,7 @@ Malzemeyi üç düzeyde değerlendirdik: en ucuz **ilk liste**, maxon motorlu **
 | Kol açısı | Adafruit AS5600 + diametral mıknatıs | Orijinal ams çipi; motor enkoderi (0,27°) θ_d'yi sınırladığından daha ince sensör ölçüme yansımaz |
 | Akım | Adafruit INA228 (20 bit) | ≈ 15 $ fazlasına ≈ 256 kat çözünürlük |
 | Sıcaklık | Adafruit TMP117 × 2 | Ortam ve motor gövdesi her deneyle kaydedilir |
-| Güç | Mean Well 12 V 3 A | Bilinen marka, düzgün regülasyon |
+| Güç | Masaüstü 12 V ≥ 2 A adaptör (evdeki kullanılabilir) | 12 V ve ≥ 2 A yeterli; dalgalanmanın etkisi küçük ve INA228 ile kaydediliyor. Mean Well GST36E12 DigiKey'de stokta değil; panel tipi LRS-35-12 alternatif |
 
 Toplam (elektronik + motor): ilk liste ≈ 1.336 TL, **dengeli ≈ 639 TL + 13 € + 70 $**, üst sınıf ≈ 485 € + 150 $.
 
@@ -126,6 +126,6 @@ AS5600 motor enkoderinden üç kat ince; daha ince sensör bu motorla ölçüme 
 
 ## 8. Güç ve mekanik
 
-- **Güç:** Mean Well 12 V 3 A. Genel adaptörlerde dalgalanma doğrudan motor gerilimine biner.
+- **Güç:** masaüstü 12 V ≥ 2 A adaptör (evdeki kullanılabilir). Seçim gerekçesi ve panel tipi alternatif: [`../calisma_notu/malzeme.md`](../calisma_notu/malzeme.md).
 - **Rulman:** 2 adet, kol mili çapında (SKF / NSK tercih).
 - **Kaplin:** 3B baskı, ayarlanabilir boşluk (1,5 / 3 / 5°); JGB37 mili 6 mm D. Toplam boşluk = motorun kendi dişli boşluğu (tanılamada ölçülecek) + kaplin.

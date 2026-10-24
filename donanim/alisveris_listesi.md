@@ -2,6 +2,8 @@
 
 Aynı düzenek için üç malzeme listesi ve her görevde değerlendirilen bütün adaylar, fiyatları ve seçilme/elenme nedenleriyle. **Seçilen: dengeli liste.** Gerekçeler: [`tasarim_kararlari.md`](tasarim_kararlari.md).
 
+> **Güncel liste (24 Ekim 2026):** fiyat ve stokları doğrulanmış, satın alma kanalı (EKOM), iki mekanik seçenek ve toplamlarla birlikte güncel malzeme listesi [`../calisma_notu/malzeme.md`](../calisma_notu/malzeme.md) dosyasında. Bu dosya bütün adayların karşılaştırması olarak korunuyor; güç kaynağı ve mekanik kalemler için güncel olan çalışma notudur.
+
 Fiyatlar üretici ya da satıcı sitelerindeki liste fiyatları: TL fiyatları KDV dahil; $ ve € fiyatları KDV, kargo ve gümrük hariç, 1 adet. Değişebilir. ✅ = dengeli listede.
 
 ---
