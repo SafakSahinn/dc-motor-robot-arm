@@ -62,6 +62,9 @@
 - **Kol:** alüminyum lama; uçta vidalı ağırlık yuvası, milin öbür tarafında karşı ağırlık yuvası (H).
 - **Sürtünme pabucu:** mile bağlı bir disk ve ona vidayla bastırılan keçe pabuç. Sürtünmeyi açıdan bağımsız olarak ekler (L senaryosu).
 - **Güvenlik:** 0° altı ve 180° üstüne geçişi önleyen mekanik durdurucu; yazılımda açı sınırı.
+- **İstenmeyen boşluk olmamalı:** ölçülen boşluk yalnız motor dişlisinden ve kaplinden gelmeli. Kol–mil bağlantısı sıkma göbekli (klemensli) ya da düz yüzeye dayanan iki setuskurla yapılır. Mıknatıs mile yapıştırılır. Kaplinin motor tarafı D kesitli mile boşluksuz oturur. Fazladan bir boşluk varsa kaplin 0° ayarındaki ölçümde görülür.
+- **Eksen hizası:** motor mili ile kol mili aynı eksende olmalı. Kaçıklık kaplinde sıkışma ve açıya göre değişen sürtünme yaratır. Motor için hizalanabilir bir bağlantı braketi kullanılır.
+- **Rijitlik:** gövdenin ve kolun ilk rezonansı, beklenen salınım frekanslarının (≈ 5–20 Hz) çok üstünde olmalı (hedef ≥ 100 Hz). Yoksa gövde titreşimi boşluk salınımına karışır. Gövde alüminyum profil ya da kalın plakadan yapılır. Rezonans, montajdan sonra darbe testiyle (AS5600 ve motor akımı kaydıyla) kontrol edilir.
 
 ## 4. Yazılım mimarisi
 
@@ -73,8 +76,8 @@
 |---|---|
 | Döngü | 1 kHz, donanım zamanlayıcısıyla. Kontrol bir çekirdeğe sabitlenir, Wi-Fi kapalı. Döngü süresi ve gecikmesi her pakete yazılır. |
 | Okuma | Enkoder: PCNT (gürültü filtresi açık; 16 bit sayaç taşması yazılımda izlenir). AS5600: I²C-0 1 MHz, her döngüde; açılışta SF = 11, FTH kapalı yazılır. INA228: I²C-0, dönüşüm süresi ve ortalama sayısı 1 kHz'e göre ayarlanır, her döngüde ya da 500 Hz. TMP117: I²C-1 400 kHz, 10 Hz. |
-| Kestirim | θ_M (kol tarafına indirgenmiş), θ_L, ω_M (ayrık türev + 1. derece filtre), θ_d = θ_M − θ_L |
-| Kontrolcü A: PID | u = K_p e + K_i ∫e − K_d ω_M; e = θ₀ − θ_L. Kazançlar ω_c'den: K_p = J ω_c², K_d = 1,4 J ω_c, K_i = K_p ω_c / 4 (simülasyonla aynı). |
+| Kestirim | θ_M (kol tarafına indirgenmiş), θ_L, ω_M, θ_d = θ_M − θ_L. **Hız kestirimi kritik:** kol tarafında bir enkoder sayımı 0,27° olduğundan 1 kHz'te ardışık fark yöntemi 4,7 rad/s'lik basamaklar verir. Salınım sırasındaki hızlar ise ≈ 1 rad/s mertebesinde, yani bir basamağın altında. Birinci yöntem: ardışık fark + 50 Hz birinci derece filtre (simülasyonun gerçekçi modeliyle aynı; filtre ≈ 3 ms gecikme ekler). İkinci yöntem: enkoder kenarları arasındaki sürenin donanım zamanlayıcısıyla ölçülmesi (ESP32 MCPWM yakalama birimi); düşük hızda çok daha iyi. Hangi yöntem seçilirse seçilsin sabit tutulur, her kayda yazılır ve benzetim modeline aynen girer, çünkü sınır bu ayara duyarlıdır. |
+| Kontrolcü A: PID | u = K_p e + K_i ∫e − K_d ω_M; e = θ₀ − θ_L. Kazançlar ω_c'den: K_p = J ω_c², K_d = 1,4 J ω_c, K_i = K_p ω_c / 4 (simülasyonla aynı). Integral doyması önlemi (anti-windup): çıkış doyumdayken integral dondurulur. Sürücü ölü bandı telafi edilmez, çünkü telafi salınım sınırını değiştirir; ölü bant tanılanıp modele girer. |
 | Kontrolcü B: P–PI | Ghaffari 2013 yapısı: dış konum döngüsü (k_p), iç hız döngüsü (k_v, T_i), hız motor enkoderinden. Ghaffari'nin r_gs tanımıyla birebir karşılaştırma için. |
 | Seçenekler | Yerçekimi ileri beslemesi açık/kapalı; geri besleme kol ya da motor açısından (O uzantısı için hazır); yapay nicemleme (L). Not: ileri besleme dişliden geçen torku değiştirmez (yerçekimi yükü yine dişliden taşınır), yani doğal ön yük yok olmaz; yalnız integral teriminin yükünü alır. Bu yüzden ana deneylerde kapalı tutulur, etkisi ayrıca denenir. |
 | Güvenlik | Yazılım akım sınırı (DRV8874'ün donanım sınırının altında), açı sınırı, motor gövdesi sıcaklık eşiği, iletişim kesilince motoru durdurma |
@@ -122,3 +125,5 @@ Bilgisayar tarafı MATLAB'da yazılır (`serialport` ile seri haberleşme). Sim�
 6. J_M, b: adım ve serbest yavaşlama yanıtı (kol sökülü ve takılı).
 7. K_s: kol bastırılı tutulup küçük tork adımlarıyla.
 8. Döngü zamanlaması: 1 kHz'te titreşim (jitter) ve I²C süresi ölçümü.
+9. Hız kestirimi: bilinen sabit hızda iki yöntemin (ardışık fark + filtre, kenar zamanlaması) karşılaştırılması.
+10. Gövde ve kol rezonansı: darbe testi; ilk rezonansın ≥ 100 Hz olduğunun doğrulanması.

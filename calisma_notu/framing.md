@@ -23,7 +23,7 @@ Pratikteki sonucu şu: tek bir açıda ayarlanmış bir kontrolcü başka bir a�
 
 ## 3. Hipotezler
 
-- **H1.** Kritik kazanç, |γ| büyüdükçe artar. 90° civarında salınımsız bir bölge oluşur, bu bölge kazanç arttıkça daralır. Simülasyonda gözlenen ölçekleme γ_sınır ≈ 3·ρ³ (ρ ≤ 0,33) bunun nicel biçimidir.
+- **H1.** Kritik kazanç, |γ| büyüdükçe artar. 90° civarında salınımsız bir bölge oluşur, bu bölge kazanç arttıkça daralır. Simülasyonda gözlenen ölçekleme γ_sınır ≈ 3·ρ³ (ρ ≤ 0,33) bunun nicel biçimidir. Sınır 90°'ye göre simetrik değildir: 180° tarafında yerçekimi kolu dengeden uzaklaştıran bir "negatif yay" gibi davranır, bu yüzden salınım orada daha düşük kazançta başlar (simülasyonda da görüldü).
 - **H2.** Simetrik ve yerçekimsiz DF (Ghaffari 2013) bu açı bağımlılığını öngöremez. Tek yönlü kaymayı içeren (iki girişli) DF öngörebilir.
 - **H3.** Sürtünme ve nicemleme kaynaklı salınım açıdan bağımsızdır; boşluk kaynaklı salınım açıya bağlıdır.
 - **H4.** Dengeleme oranı arttıkça etkin γ küçülür ve salınımsız bölge daralır. Tam dengelemede sınır, yerçekimsiz (yatay) eksenin sınırına iner.
@@ -45,9 +45,28 @@ Pratikteki sonucu şu: tek bir açıda ayarlanmış bir kontrolcü başka bir a�
 | Malzahn 2014 (tez) | ✓ | ✓ (10°) | ✗ | ✗ (sönümlü) | ✗ | ✓ | ✓ |
 | Giovannitti 2022 (JIM) | ✓ | ~ sürekli dönüş | ✗ | ✗ | ✗ | ✓ | ✓ |
 | Márton 2009 (ECC) | ✗ | ✗ | ✓ | ✓ | ~ yaklaşık | ✓ | ✗ |
+| Karim 2018 (M2VIP) | ~ pozla değişen tork, nitel | ~ birkaç poz | ✗ | ✗ | ✗ | ✓ | ✓ (KUKA) |
+| G. Sun 2021 (IET CTA) | ✗ | ✗ | ~ gözlemci kazancı hataya göre | ✗ (sinüs izleme) | ✗ | ~ çok motorlu tezgâh | ✓ |
+| Ruderman 2019 (JDSMC) | ✗ | ✗ | ✗ (röle) | ✓ (bilerek uyarılan) | ~ | ✓ | ✓ |
+| Lu 2015 (Robotica) | ✗ | ✗ | ✗ (açık çevrim) | ✗ (zorlanmış cevap) | ✗ | ✓ | ✗ |
 | **Bu çalışma (hedef)** | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 
-Not: C. Wang 2017'nin "r_s"si Ghaffari'nin r_gs'siyle aynı tanım, bizim eski r_s'mizden farklı. Karışıklığı önlemek için bizim oran bundan sonra ρ.
+Danışmanın listesindeki 13 kaynağın hepsi tabloda. J. Wang 2024 ile C. Wang 2017 ayrı gruplardır. Ek olarak Yang 2017 ve Ruderman 2019 son taramada eklendi.
+
+### Boyutsuz oranlar ve kontrolcü parametrelerinin eşlemesi
+
+Danışmanın uyardığı gibi kaynaklarda aynı sembol farklı büyüklükleri gösteriyor. Bu çalışmada kullanılacak tanımlar:
+
+| Büyüklük | Kaynaktaki tanım | Bu çalışmadaki karşılığı |
+|---|---|---|
+| Ghaffari 2013, sertlik oranı r_gs | √(k_p k_v / K_s); P konum (k_p, 1/s) + PI hız (k_v, N·m·s/rad) | r_gs = ω_c √(J/K_s) = ρ·√(J/J_eff) |
+| C. Wang 2017, "r_s" | Ghaffari'nin r_gs'siyle aynı tanım | Aynı. Bizim eski "r_s" ile karıştırılmaması için bizim oran **ρ** |
+| Bu çalışma, ρ | ω_c / ω_rez, ω_rez = √(K_s / J_eff), J_eff = J_M J_L / (J_M + J_L) | PID'de K_p = J ω_c², K_d = 1,4 J ω_c, K_i = K_p ω_c / 4 |
+| Bu çalışma, γ | mgℓ·sin θ₀ / (K_s·r): yerçekimi torku / boşluğun yarısını kapatan temas torku | Ghaffari'deki ön yük oranının (τ_p / K_s r) tek yönlü, açıya bağlı karşılığı |
+| Bu çalışma, φ | F_C / (K_s·r) | Sürtünmenin baskın olduğu rejimi ayırır |
+| Sun 2023, K_p = 20 / 50 | Birimi ve döngü yapısı makaleden çıkarılacak | 4a'da ρ'ya çevrilecek |
+
+Kademeli P–PI ile PID birebir aynı yapı değil (bizde K_d K_p'ye bağlı ve integral var). Bu yüzden deneylerde Ghaffari'nin P–PI yapısı da koşulur (bkz. `mimari.md`).
 
 ## 5. Önerilen katkı (Yol 2: yöntem geliştirme)
 
@@ -89,6 +108,8 @@ Yenilik bu üçünün yerçekimli bir eklemde açı eksenine taşınması, Ghaff
 | Eklem sayısı | 1 (omuz), düşey düzlemde döner | Açı bağımlılığını tek değişkene indirger. İki eklem ileriki çalışma (Malzahn'daki θ₂+θ₃ kanyonu). |
 | Hareket aralığı | 0–180° | Ön yükün sıfırdan (0°, 180°) en büyüğe (90°) bütün aralığı. 180° = Kollár'ın üst denge durumu. |
 | Hareket türü | Sabit hedef θ₀ + küçük adım (≈5°) | Hareket halinde boşluk geçişi kapsam dışı. |
+| Hedef hız | Adım yanıtında kapalı çevrim bant genişliği ω_c ≈ 30–45 rad/s (yükselme ≈ 0,05–0,1 s); kol hızı birkaç rad/s'yi geçmez. Yüksek hız bir hedef değil. | Araştırılan olay sabit hedefteki salınım; hız, kazanç ekseninin bir sonucu. |
+| Hedef hassasiyet | Sınırın ölçüm hassasiyeti: açıda ±1° (sınır bölgesinde 1–2° adım), kazançta bir tarama adımı (≈ %10). Salınım genliği ve θ_d ölçümünde ±0,27° (motor enkoderi). Konumlama doğruluğu bir hedef değil. | Başarı ölçütleri (B1–B3) bu çözünürlüklerin üstünde tanımlandı. |
 | Açı taraması | Genelde 10°, 0° ve 180° civarında 1–2° | Simülasyonda sınır bölgeleri bu açılarda. |
 | Kol ve yük | 15 cm alüminyum lama (≈20 g) + değiştirilebilir uç kütlesi 0 / 20 / 50 g → mgℓ ≈ 0,015 / 0,044 / 0,088 N·m | γ'yı açıdan bağımsız değiştirme düğmesi. Karşı ağırlık H için aynı düğme. |
 | Boşluk | Motorun kendi boşluğu + ayarlanabilir kaplin 0 / 1,5 / 3 / 5° | Simülasyonda en güçlü düğme; kaplinin katkısı bilinen boşluk. 0° ayarı motorun kendi boşluğunu ölçmek için. |
@@ -120,4 +141,14 @@ Yenilik bu üçünün yerçekimli bir eklemde açı eksenine taşınması, Ghaff
 
 **Toplam ≈ 4–5 ay (16–21 hafta).** Kritik yol donanım kolu: 1–3 → 5a → 5b → 5c → 6a → 6b → 6c. Teori kolu (5–7 hafta), donanım hazırlığının (6–8 hafta) içine sığıyor.
 
-**Risk:** DF türetimi gecikirse deneyler durmaz. Deney verisi önce simülasyonla karşılaştırılır, DF karşılaştırması 6c'ye kayar.
+## 8. Riskler ve B planları
+
+| Risk | Belirti | B planı |
+|---|---|---|
+| DF türetimi gecikir ya da tutmaz | 4b uzar; öngörü simülasyondan uzak | Deneyler durmaz; deney önce simülasyonla karşılaştırılır. DF'nin bozulduğu bölgede kesin parçalı doğrusal çözüm (Kollár / Esbrook) kullanılır. |
+| Motorun kendi boşluğu çok büyük ya da düzensiz (eksantriklik, açıya göre değişen boşluk) | Kaplin 0° ayarında θ_d genişliği açıya göre değişir | Boşluk her θ₀'da ölçülür ve γ hesabına o açının boşluğu girer. Gerekirse daha düzgün dişli kutulu motor (yükseltme yolu). |
+| Sürtünme baskın (φ büyük), boşluk salınımını maskeler | Salınım her açıda; θ_d kenarlara değmez | Daha yüksek kazanç ya da daha büyük kaplin boşluğuyla ρ ve γ hedef bölgeye çekilir. L senaryosu zaten sürtünme etkisini ayrıca ölçer. |
+| Motor tork ya da ısı sınırı | Akım doyumu; motor gövdesi ısınır | Kısa deneyler, soğuma beklemesi (betikte otomatik), uç kütlesi 50 g yerine 20 g. |
+| Hız kestirimindeki nicemleme ve gecikme | Türev terimi gürültülü; sınır filtre ayarına duyarlı | Filtre sabit tutulur, kaydedilir ve modele girer; gerekirse enkoder kenar zamanlamasıyla hız ölçümü (bkz. `mimari.md`). |
+| Ölçülen sınır deneyler arasında dağınık | Tekrarlar arası yayılım büyük | Sıcaklık eşitleme, tekrar sayısını artırma, başlangıç koşulunu sabitleme (simülasyonda iki kararlı durum şeridi görülmüştü). |
+| Sipariş gecikmesi | 5a uzar | Teori kolu ve firmware iskeleti paralel; yerli muadil parçalar (3. aşamadaki ekonomik liste). |
