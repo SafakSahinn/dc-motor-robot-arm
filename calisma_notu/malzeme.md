@@ -32,11 +32,11 @@ Türk elektronik mağazalarında (direnc.net, Robotistan) INA228, TMP117, Adafru
 | Motor sürücü | Yerli ≥ 2 A modül: BTS7960 **tükendi** (direnc.net) | **Pololu DRV8874 (#4035)** | Pololu DRV8874 |
 | Denetleyici | Genel ESP32 DevKit | **Espressif ESP32-DevKitC-32E** | Espressif ESP32-DevKitC-32E |
 | Kol açısı | AS5600 modülü (markasız) | **Adafruit AS5600 (#6357) + diametral mıknatıs** | Same Sky AMT222B-V (14 bit) |
-| Akım | INA219 modülü: **tükendi** (direnc.net) | **Adafruit INA228 (#5832)** | Adafruit INA228 |
+| Akım | INA219 modülü, 87,18 TL (direnc.net) | **Adafruit INA228 (#5832)** | Adafruit INA228 |
 | Sıcaklık | — | **Adafruit TMP117 (#4821) × 2** | Adafruit TMP117 × 2 |
 | Enkoder alıcısı | gerekmez | gerekmez | TI AM26LV32E (RS-422) |
 
-**Ekonomik listenin bugünkü durumu:** yerli stokta güvenli bir sürücü (≥ 2 A) ve akım sensörü yok. Ekonomik liste bu yüzden şu an kurulamıyor. Dengeli listenin elektroniği (≈ 86 $) zaten düşük maliyetli; aradaki farkın büyük kısmı motordan değil kart kalitesinden geliyor.
+**Ekonomik listenin bugünkü durumu:** yerli stokta güvenli bir sürücü (≥ 2 A) yok; INA219 akım sensörü stokta. Ekonomik liste bu yüzden şu an kurulamıyor. Dengeli listenin elektroniği (≈ 86 $) zaten düşük maliyetli; aradaki farkın büyük kısmı motordan değil kart kalitesinden geliyor.
 
 ### 2.1 Dengeli liste: kalem kalem
 
