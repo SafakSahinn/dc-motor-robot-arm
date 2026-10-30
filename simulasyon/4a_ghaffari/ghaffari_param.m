@@ -37,8 +37,9 @@ p.veps = 0.05;                                     % Coulomb tanh yumuşatma hı
 
 % Benzetim ayarları
 p.dt  = 2e-5;                                      % RK4 adımı [s]
-p.T   = 5;                                         % süre [s]
-p.Tan = 1;                                         % analiz penceresi (son Tan saniye)
+p.T   = 7;                                         % süre [s]
+p.Tan = 4;                                         % analiz penceresi (son Tan saniye; 2 Hz'lik çarpma
+                                                   %   rejiminde >= 8 periyot için)
 p.dec = 5;                                         % kayıt seyreltme
 p.th0 = deg2rad(0.5);                              % başlangıçta yükün hedeften sapması [rad]
 end

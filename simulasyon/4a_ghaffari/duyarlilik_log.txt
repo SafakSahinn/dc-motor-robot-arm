@@ -1,0 +1,29 @@
+durum     değişiklik                            r_gs   f [Hz]   A [der]
+sekil7    taban (T=7 s, son 4 s)               0.990     8.81     0.435
+sekil7    T=20 s, son 4 s                      0.990     8.81     0.435
+sekil7    başlık r_gs=0.90 (kp=9.64)           0.900     7.61     0.294
+sekil7    başlık r_gs=0.90 (kv=16.52)          0.900     8.02     0.331
+sekil7    temas sönümü xi=0                    0.990     9.88     0.841
+sekil7    temas sönümü xi=0.1                  0.990     6.23     0.217
+sekil7    viskoz sürtünme yok                  0.990     9.78     0.779
+sekil7    viskoz yok + temas sönümü yok        0.990    10.71     5.340
+sekil7    başlangıç sapması 0.05 der           0.990     8.81     0.435
+sekil7    başlangıç sapması 0.2 der            0.990     8.81     0.435
+sekil7    başlangıç sapması 1 der              0.990     8.81     0.435
+sekil7    başlangıç sapması 2 der              0.990     8.81     0.435
+sekil7    başlangıç sapması 5 der              0.990     8.81     0.436
+sekil7    integral yok (Ti -> sonsuz)          0.990     8.76     0.417
+sekil8    taban (T=7 s, son 4 s)               0.110     2.11     0.122
+sekil8    T=20 s, son 4 s                      0.110     2.11     0.122
+sekil8    başlık r_gs=0.17 (kp=27.85)          0.170     5.60     0.126
+sekil8    başlık r_gs=0.17 (kv=47.74)          0.170     4.45     0.124
+sekil8    temas sönümü xi=0                    0.110     2.21     0.122
+sekil8    temas sönümü xi=0.1                  0.110     2.21     0.122
+sekil8    viskoz sürtünme yok                  0.110     2.58     0.123
+sekil8    viskoz yok + temas sönümü yok        0.110     2.69     0.123
+sekil8    başlangıç sapması 0.05 der           0.110     2.11     0.122
+sekil8    başlangıç sapması 0.2 der            0.110     2.11     0.122
+sekil8    başlangıç sapması 1 der              0.110     0.00     0.000
+sekil8    başlangıç sapması 2 der              0.110     0.00     0.000
+sekil8    başlangıç sapması 5 der              0.110     0.00     0.000
+sekil8    integral yok (Ti -> sonsuz)          0.110     2.10     0.122
