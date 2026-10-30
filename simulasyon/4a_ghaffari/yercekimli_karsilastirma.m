@@ -48,13 +48,15 @@ sal = reshape(any(B.C >= 3, 1), nr, na);
 ayni = reshape(all(B.C == B.C(1,:), 1), nr, na);
 % DF'ler ince kazanç ızgarasında (benzetim ızgarası da içinde)
 rf = unique([0.2:0.005:1.4 rgs]);  kpf = rf.^2*p.Ks/p.KV;
-y  = yercekimli_df(p, ac, kpf);                     % (b) kg ile
+y  = yercekimli_df(p, ac, kpf);                     % (b) kg ve temas sönümüyle
 y0 = yercekimli_df(p, ac, kpf, 'kg', false);        % (b') kg'siz
+yc = yercekimli_df(p, ac, kpf, 'cs', false);        % (b'') temas sönümsüz
 q = p;  q.mgl = 0;
-g  = yercekimli_df(q, ac, kpf, 'kg', false);        % (a) Ghaffari: beta = 0, kg = 0
+g  = yercekimli_df(q, ac, kpf, 'kg', false, 'cs', false);   % (a) Ghaffari: beta = 0, kg = 0, cs yok
 dfsal = @(d) d.sinif ~= '.';
 kr = @(M, r) arrayfun(@(j) ilk(r, M(:,j)), 1:size(M,2));
-k_sim = kr(sal, rgs);  k_y = kr(dfsal(y), rf);  k_y0 = kr(dfsal(y0), rf);  k_g = kr(dfsal(g), rf);
+k_sim = kr(sal, rgs);  k_y = kr(dfsal(y), rf);  k_y0 = kr(dfsal(y0), rf);  k_yc = kr(dfsal(yc), rf);
+k_g = kr(dfsal(g), rf);
 yaz('\n=== %s: R = %.2f, mgl = %.3f N m, beta(90°) = mgl/(Ks r) = %.2f, %s\n', ad, p.JL/p.JM, p.mgl, p.mgl/(p.Ks*p.r), datestr(now,'yyyy-mm-dd HH:MM'));
 yaz('  harita (satır r_gs, sütun açı 0:15:180). benzetim | yerçekimli DF | Ghaffari.  C/X/? benzetimde salınım, * başlangıca bağlı\n');
 js = 1:3:na;  [~, ir] = ismember(round(rgs*1000), round(rf*1000));
@@ -71,12 +73,14 @@ yaz('   açı      : %s\n', sprintf('%6d', ac(js)));
 yaz('   benzetim : %s\n', sprintf('%6.2f', k_sim(js)));
 yaz('   yerç. DF : %s\n', sprintf('%6.2f', k_y(js)));
 yaz('   kg''siz  : %s\n', sprintf('%6.2f', k_y0(js)));
+yaz('   cs''siz  : %s\n', sprintf('%6.2f', k_yc(js)));
 yaz('   Ghaffari : %s\n', sprintf('%6.2f', k_g(js)));
-ok = ~isnan(k_sim);
-e_y = abs(k_y(ok) - k_sim(ok))./k_sim(ok);  e_g = abs(k_g(ok) - k_sim(ok))./k_sim(ok);
-e_y(isnan(e_y)) = 1;  e_g(isnan(e_g)) = 1;          % öngörü yoksa %100 hata
-yaz('  B1: kritik kazanç hatası, medyan (en çok): yerçekimli DF %%%.0f (%%%.0f), Ghaffari %%%.0f (%%%.0f)  [%d açı]\n', ...
-    100*median(e_y), 100*max(e_y), 100*median(e_g), 100*max(e_g), sum(ok));
+% 0° ve 180°'de (beta = 0) DF her kazançta çevrim öngörür: kritik kazanç tanımsız, dışarıda
+ok = ~isnan(k_sim) & abs(sin(deg2rad(ac))) > 1e-9;
+hata = @(k) min(1, abs(k(ok) - k_sim(ok))./k_sim(ok) + isnan(k(ok)));   % öngörü yoksa %100
+e_y = hata(k_y);  e_c = hata(k_yc);  e_g = hata(k_g);
+yaz('  B1: kritik kazanç hatası, medyan (en çok) [%d açı, 0° ve 180° hariç]: yerçekimli DF %%%.0f (%%%.0f), cs''siz %%%.0f (%%%.0f), Ghaffari %%%.0f (%%%.0f)\n', ...
+    sum(ok), 100*median(e_y), 100*max(e_y), 100*median(e_c), 100*max(e_c), 100*median(e_g), 100*max(e_g));
 % B2: her r_gs'de bastırma bölgesinin açı sınırları (benzetim ve yerçekimli DF)
 yaz('  B2: bastırma bölgesi (salınımsız açılar) [alt, üst] derece\n');
 e2 = [];
