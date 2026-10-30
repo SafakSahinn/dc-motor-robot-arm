@@ -1,0 +1,8 @@
+durum                                  beklenen          | başlangıç sapması 0,05° / 0,5° / 2°: sınıf (A [der], f [Hz], zarf değişimi)
+denge: tabla, düşük kazanç             denge             | denge (0, 0, +0.00) / denge (0, 0, +0.00) / denge (0, 0, +0.00)
+sönümlü: boşluksuz, kararlı kazanç     sönümlü titreşim  | denge (2.61e-08, 0, +0.00) / sönümlü titreşim (2.61e-07, 0, +0.00) / sönümlü titreşim (1.04e-06, 0, +0.00)  <- başlangıç koşuluna bağlı
+zorlanmış: boşluksuz + 3 Hz bozucu     zorlanmış cevap   | zorlanmış cevap (0.0496, 3, +0.00) / zorlanmış cevap (0.0496, 3, +0.00) / zorlanmış cevap (0.0496, 3, +0.00)
+kalıcı çevrim: Şekil 7 (kalibre)       kalıcı çevrim     | kalıcı çevrim (1.09, 10.1, +0.06, yakınsıyor) / kalıcı çevrim (1.09, 10.1, +0.04) / kalıcı çevrim (1.09, 10.1, +0.02)
+kalıcı çevrim: tabla, Tmax 360         kalıcı çevrim     | kalıcı çevrim (0.154, 12.6, +0.00) / kalıcı çevrim (0.154, 12.6, -0.00) / kalıcı çevrim (0.154, 12.6, -0.00)
+kararsız: tabla, sürtünmesiz, kp 18    kararsız          | kararsız (3.91e+05, 15.4, +8.12) / kararsız (9.79e+05, 15.4, +7.95) / kararsız (2.49e+06, 15.3, +7.59)
+çarpma: Şekil 8 (kalibre)              kalıcı çevrim     | kalıcı çevrim (0.124, 2.61, +0.00) / kalıcı çevrim (0.124, 2.62, +0.00) / denge (7.74e-14, 0, +0.00)  <- başlangıç koşuluna bağlı

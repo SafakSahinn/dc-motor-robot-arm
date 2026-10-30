@@ -34,6 +34,7 @@ p.xis = 0.02;                                      % temas sönümü (makalede y
 if strcmp(durum,'tabla'), p.xis = 0; end           % döner tabla: makalenin sürtünmesiz benzetimine
                                                    %   ξ = 0 uyuyor (tabla_sonuclar.md)
 p.cs  = 2*p.xis*p.ks/p.wa;
+p.dA = 0;  p.df = 0;                               % yük bozucusu genliği [N m, yük tarafı] ve frekansı [Hz]
 p.Tmax = Inf;                                      % motor tork sınırı [N m] (makalede yok)
 p.veps = 0.05;                                     % Coulomb tanh yumuşatma hızı, motor tarafı [rad/s]
 %   (RK4 kararlılığı: Fcm/(veps*Jm)*dt < 2; yük tarafında veps/kr, yani aynı göreli kayma)
