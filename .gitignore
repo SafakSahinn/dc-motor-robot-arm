@@ -20,3 +20,6 @@ latex/blok_diyagram.pdf
 literatur/**/pdf/
 # kişisel ve ders belgeleri
 ozel/
+
+# Python önbelleği
+__pycache__/
