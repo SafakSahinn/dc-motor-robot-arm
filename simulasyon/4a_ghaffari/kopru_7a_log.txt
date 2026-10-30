@@ -1,0 +1,5 @@
+durum                        | ghaffari2013: f [Hz], A_thd, A_thl [der] | kol_benzetim (P-PI, g = 0)  
+Şekil 7 (kalibre)            |  10.10    1.077    1.092 (r_gs 0.99) |  10.10    1.078    1.093 (r_gs 0.99)
+Şekil 8 (kalibre)            |   2.61    0.123    0.124 (r_gs 0.11) |   2.60    0.123    0.124 (r_gs 0.11)
+tabla, sürtünmesiz, kp 8,3   |   7.88    0.067    0.067 (r_gs 0.99) |   7.87    0.067    0.067 (r_gs 0.99)
+tabla, sürtünmesiz, kp 11,7  |  13.09    0.194    0.194 (r_gs 1.18) |  13.09    0.194    0.194 (r_gs 1.18)

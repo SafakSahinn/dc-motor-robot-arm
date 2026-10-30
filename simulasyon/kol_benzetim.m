@@ -15,12 +15,19 @@ function out = kol_benzetim(p, theta0_deg, wc)
 % Ardından doyum (+-Tmax) ve sürücü ölü bandı (|tau| < olu -> 0).
 % Kazançlar rijit model (J = JM + JL) için kapalı çevrim hızı wc'ye göre:
 %   Kp = J wc^2,  Kd = 2*0.7*J*wc,  Ki = Kp*wc/4.
+%
+% p.kontrol = 'PPI' ise Ghaffari 2013 kaskadı (kol tarafı büyüklüklerle); bu durumda
+% üçüncü argüman wc yerine konum kazancı kp [1/s] olarak okunur:
+%   wcmd = kp e,  tau = KV (wcmd - v) + KI z,  z = sum(wcmd - v)*Ts,  v = motor hızı
+%   KV = kv kr^2, KI = kr^2/Ti (Ghaffari'nin motor tarafı kv, Ti'sinden); r_gs = sqrt(kp KV / Ks).
 
 th_ref = deg2rad(theta0_deg(:)');
 wc     = wc(:)';
 n      = numel(th_ref);
 J      = p.JM + p.JL;
 Kp = J*wc.^2;  Kd = 2*0.7*J*wc;  Ki = Kp.*wc/4;
+ppi = isfield(p,'kontrol') && strcmp(p.kontrol,'PPI');
+if ppi, kpP = wc;  KV = p.KV.*ones(1,n);  KI = p.KI.*ones(1,n); end
 motorD = strcmp(p.Dkaynak,'motor');
 
 % Başlangıç: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
@@ -50,10 +57,17 @@ for i = 0:nStep-1
             yv_prev = yv;  v = vhat;
         end
         e  = th_ref - thm;
-        u0 = Kp.*e + Ki.*z - Kd.*v;
+        if ppi
+            ev = kpP.*e - v;                       % hız hatası (kol tarafı)
+            u0 = KV.*ev + KI.*z;
+            iz = ev;
+        else
+            u0 = Kp.*e + Ki.*z - Kd.*v;
+            iz = e;
+        end
         u  = min(max(u0,-p.Tmax),p.Tmax);
-        doy = (u0 > p.Tmax & e > 0) | (u0 < -p.Tmax & e < 0);
-        z  = z + e*p.Ts .* ~doy;                   % basit anti-windup
+        doy = (u0 > p.Tmax & iz > 0) | (u0 < -p.Tmax & iz < 0);
+        z  = z + iz*p.Ts .* ~doy;                  % basit anti-windup
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
     end
     k1 = f(x);  k2 = f(x+0.5*p.dt*k1);  k3 = f(x+0.5*p.dt*k2);  k4 = f(x+p.dt*k3);
