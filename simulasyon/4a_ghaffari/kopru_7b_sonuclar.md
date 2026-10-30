@@ -35,6 +35,7 @@ Sitedeki "≈ 2ρ" eski simülasyon parametrelerinden (JGA25, 50 g). Ancak bulgu
 ## Bu çalışma için anlamı
 
 1. **Framing'deki varsayım bu parametrelerle tutmuyor.** "Deney bölgesi (ρ ≈ 0,25–0,40) Ghaffari'nin DF'nin geçerli olduğu rezonans rejiminde" denmişti; dengeli listenin düzeneğinde bölge düşük temaslı, çarpmaya benzeyen bir rejimde ve yerçekimsiz DF bile frekansı 2 kat yüksek veriyor.
+   **Güncelleme (4b, [`yercekimli_sonuclar.md`](yercekimli_sonuclar.md)):** frekans farkının büyük kısmı DF'de temas sönümünün olmamasından. Temas sönümü eklenince A'da benzetim/DF frekans oranı 0,94. Düşük temaslı rejim gözlemi doğru, ama DF bu düzenekte de kullanılabilir.
 2. **Karar gerektiren seçenekler** (4b'nin yöntemini ve mekanik tasarımı etkiliyor):
    - **A. Düzeneği koru (R ≈ 0,2):** 4b'nin temeli DF olamaz; kesin parçalı çözüm (Kollár, Esbrook) ya da çarpma haritaları gerekir. Ghaffari karşılaştırması yine yapılabilir, ama "genişletme" çerçevesi zayıflar.
    - **B. Dengelenmiş ek eylemsizlik (R ≥ 1):** kol miline simetrik bir disk ya da iki uçlu karşı ağırlıklı çubuk; yerçekimi torkunu değiştirmez (γ aynı kalır), Ghaffari'nin rezonans rejimine taşır, DF'yi geçerli kılar. Ucuz ve ayarlanabilir: R deneysel bir değişken olur (mevcut "3 kurulum" planına uyar). Bedeli: daha düşük f_a (R = 2'de 5,9 Hz) ve daha büyük yük eylemsizliği (R = 2 için ≈ 7·10⁻³ kg·m², örn. 10 cm'de iki × 0,36 kg).

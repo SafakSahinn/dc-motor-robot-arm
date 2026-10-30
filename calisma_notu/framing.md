@@ -64,7 +64,7 @@ Danışmanın uyardığı gibi kaynaklarda aynı sembol farklı büyüklükleri 
 | Bu çalışma, ρ | ω_c / ω_rez, ω_rez = √(K_s / J_eff), J_eff = J_M J_L / (J_M + J_L) | PID'de K_p = J ω_c², K_d = 1,4 J ω_c, K_i = K_p ω_c / 4 |
 | Bu çalışma, γ | mgℓ·sin θ₀ / (K_s·r): yerçekimi torku / boşluğun yarısını kapatan temas torku | Ghaffari'deki ön yük oranının (τ_p / K_s r) tek yönlü, açıya bağlı karşılığı |
 | Bu çalışma, φ | F_C / (K_s·r) | Sürtünmenin baskın olduğu rejimi ayırır |
-| Sun 2023, K_p = 20 / 50 | Birimi ve döngü yapısı makaleden çıkarılacak | 4a'da ρ'ya çevrilecek |
+| Sun 2023, K_p = 20 / 50 | P konum (K_p, 1/s) + PI hız; hız PI katsayıları makalede yok | k_v gözlenen 9 Hz'den tahmin: r_gs ≈ 0,15 / 0,23, γ(90°) ≈ 0,024 ([`esleme_tablosu.md`](../simulasyon/4a_ghaffari/esleme_tablosu.md)) |
 
 Kademeli P–PI ile PID birebir aynı yapı değil (bizde K_d K_p'ye bağlı ve integral var). Bu yüzden deneylerde Ghaffari'nin P–PI yapısı da koşulur (bkz. `mimari.md`).
 
