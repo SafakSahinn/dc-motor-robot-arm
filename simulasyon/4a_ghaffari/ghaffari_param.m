@@ -31,6 +31,8 @@ p.Jl  = p.Jle*p.kr^2;
 p.ks  = p.kse*p.kr^2;
 p.cl  = p.cle*p.kr^2;
 p.xis = 0.02;                                      % temas sönümü (makalede yok), wa'ya göre
+if strcmp(durum,'tabla'), p.xis = 0; end           % döner tabla: makalenin sürtünmesiz benzetimine
+                                                   %   ξ = 0 uyuyor (tabla_sonuclar.md)
 p.cs  = 2*p.xis*p.ks/p.wa;
 p.veps = 0.05;                                     % Coulomb tanh yumuşatma hızı, motor tarafı [rad/s]
 %   (RK4 kararlılığı: Fcm/(veps*Jm)*dt < 2; yük tarafında veps/kr, yani aynı göreli kayma)
