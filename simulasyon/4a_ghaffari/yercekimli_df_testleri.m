@@ -6,9 +6,10 @@ function yercekimli_df_testleri
 %  4) beta = 0, kg = 0, cs yok: frekans ve n_req ghaffari_df ile aynı (D düzeneği)
 %  5) h kapalı biçim = sayısal integral
 %  6) cs -> 0: genlik taramalı yol, kazanç taramalı yolla aynı sınıfları verir (D, açı x r_gs)
+%  7) Tmax çok büyük: tork sınırlı yol, sınırsız yolla aynı sınıflar ('S' = 'X')
 addpath(fileparts(fileparts(mfilename('fullpath'))));
 dz = yercekimli_df('dz');
-ok = true(1,6);
+ok = true(1,7);
 psi = linspace(0, 2*pi, 200001);  psi(end) = [];
 rng(1);  e = 0;  e5 = 0;
 for i = 1:200
@@ -36,7 +37,10 @@ rg = 0.3:0.1:1.1;  k6 = rg.^2*p.Ks/p.KV;  ac = 0:15:180;  q = p;  q.cs = 1e-9;
 d1 = yercekimli_df(p, ac, k6, 'cs', false);  d2 = yercekimli_df(q, ac, k6);
 u6 = mean(d1.sinif(:) == d2.sinif(:));  ok(6) = u6 > 0.97;
 fprintf('6) cs -> 0: sınıf uyumu %%%.0f (%d nokta)\n', 100*u6, numel(d1.sinif));
-fprintf('sonuç: %d/6\n', sum(ok));
+q = p;  q.Tmax = 1e6;  d3 = yercekimli_df(q, ac, k6, 'Tmax', true);  d4 = yercekimli_df(p, ac, k6);
+ok(7) = isequal(strrep(d3.sinif(:)', 'S', 'X'), d4.sinif(:)');
+fprintf('7) Tmax çok büyük: doyumlu yol doyumsuzla aynı sınıflar (S = X): %d\n', ok(7));
+fprintf('sonuç: %d/7\n', sum(ok));
 end
 
 function n1 = nth(dz, a)

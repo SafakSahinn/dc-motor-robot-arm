@@ -5,6 +5,7 @@ function d = yercekimli_df(p, th0_deg, kp, varargin)
 % Dişli sapması x = B + A sin(wt) (B: ön yükten gelen ortalama, A: salınım genliği).
 % Ölü bölge (yarı genişlik r, sertlik Ks), r ile normalize: b = B/r, a = A/r.
 %   (i)  DC dengesi:      n0(a,b) = beta,  beta = mgl sin(th0) / (Ks r)    -> b(a)
+%        (beta, framing.md'deki gamma ile aynı oran; kodda d.beta adıyla)
 %   (ii) birinci harmonik: n1(a,b(a)) * L(jw) = -1                           -> w, a
 % L(s) = Ks (C kp + P + M) / (M P), M = Jm s^2 + cm s + C s, P = Jl s^2 + cl s + kg,
 % C = KV + KI/s.  kg = 0 iken L Ghaffari'nin G H'si (denklem 5-6) ile aynı.
@@ -23,11 +24,16 @@ function d = yercekimli_df(p, th0_deg, kp, varargin)
 %   tam temasta (Ks, cs) kararsız -> 'X';  eğride kararsız a var -> 'C' (kararlı çevrim, kararlıya
 %   dönülen en büyük a; a1 = ilk kararsız a, beta > 0 ise eşik);  yoksa '.'.
 %   n_req bu durumda kararlı çevrimdeki n1.
+% Tork sınırı (seçenek 'Tmax', true/false; varsayılan false; yalnız temas sönümlü yolda):
+% ön yüklü doyumun DF'si (doyumda_kararsiz). Dişli eğrisindeki kararsız genliklerin hiçbirinde
+% gerçek doyum kazancıyla döngü kararsız kalmıyorsa çevrim söner ('.'); tam temasta kararsızlık
+% doyumla sınırlanır ('S'). Benzetimdeki anti-windup DF'de yok. f, a2, A_th doyumsuz değerler.
 % Çıktı alanları th0 x kp boyutunda (satır kp, sütun açı; secenekler.m'deki AC, KP ile aynı).
 if ischar(p) && strcmp(p, 'dz'), d = @dz_harmonik; return; end   % testler için
-o = struct('kg', true, 'cs', true);
+o = struct('kg', true, 'cs', true, 'Tmax', false);
 for i = 1:2:numel(varargin), o.(varargin{i}) = varargin{i+1}; end
 cs = o.cs*p.cs;
+doy = o.Tmax && isfinite(p.Tmax) && cs > 0;      % tork sınırı yalnız temas sönümlü yolda
 th0 = deg2rad(th0_deg(:)');  kp = kp(:);
 [TH, KP] = meshgrid(th0, kp);
 beta = p.mgl*sin(TH)/(p.Ks*p.r);
@@ -47,7 +53,8 @@ for m = 1:numel(TH)
     [a, n1, h] = n1_egrisi(beta(m));
     d.n1min(m) = min(n1);
     if kar(p.Ks, cs)
-        d.sinif(m) = 'X';  continue;
+        d.sinif(m) = 'X';  if doy, d.sinif(m) = 'S'; end   % S: doyumla sınırlanan salınım
+        continue;
     end
     if cs == 0
         % (0, 1) aralığındaki kararsız kazançların üst sınırı = kararlı çevrimin n'i (n_req);
@@ -70,7 +77,10 @@ for m = 1:numel(TH)
         if ~any(u), continue; end
         d.a1(m) = a(find(u, 1))*(beta(m) > 0);
         j = find(u, 1, 'last');
-        if j == numel(a), d.sinif(m) = 'X'; continue; end
+        if j == numel(a), d.sinif(m) = 'X';  if doy, d.sinif(m) = 'S'; end, continue; end
+        if doy && ~doyumda_kararsiz(p, P, KP(m), sin(TH(m)), a, n1, h, cs, find(u))
+            continue;                              % doyum kazancı çevrimi söndürüyor
+        end
         % a_j ile a_j+1 arasında doğrusal ara değerle kararlılık sınırı
         ara = @(t) deal(n1(j) + t*(n1(j+1)-n1(j)), h(j) + t*(h(j+1)-h(j)));
         lo = 0;  hi = 1;
@@ -89,6 +99,58 @@ for m = 1:numel(TH)
 end
 d.TH = TH;  d.KP = KP;
 d.rgs = sqrt(KP*p.KV/p.Ks);
+end
+
+function var = doyumda_kararsiz(p, P, kp, sth, a, n1, h, cs, iu)
+% Tork sınırı: sat(u) = u - dz_Tmax(u), ön yük u0 (ortalama tork = mgl sin th0).
+% Doyum kazancı n_s kontrolcü çıkışını ölçekler. Dişli eğrisindeki kararsız her a için:
+% n_s'nin kararlılık sınırı ns_m (ikiye bölme), sınırdaki w'de motor komutu genliği
+% U = |T_ux(jw)| A, T_ux = C (kp E/P + jw (1 + E/P)), E = k_e + c_e jw; gerçek doyum kazancı
+% n_s(U) > ns_m olan bir a varsa doyum çevrimi söndüremez (var = true).
+var = false;
+[ups, ns] = sat_egrisi(p.mgl*sth/p.Tmax);
+karN = @(k, c, g) any(real(kokN(p, P, kp, k, c, g)) > 1e-9);
+iu = iu(unique(round(linspace(1, numel(iu), min(numel(iu), 60)))));
+gs = linspace(0.01, 1, 40);
+for i = iu
+    kk = p.Ks*n1(i);  cc = cs*h(i);
+    % g = 1'deki kararsızlığa bitişik kararlı aralığın üst sınırı ns_m (çok küçük g'de yük
+    % serbest kalır, 90° üstünde yerçekimiyle kararsızdır: o uç kullanılmaz)
+    st = ~arrayfun(@(g) karN(kk, cc, g), gs);
+    j = find(st, 1, 'last');
+    if isempty(j), var = true; return; end         % hiçbir doyum kazancı kararlı kılmıyor
+    if j == numel(gs), continue; end
+    lo = gs(j);  hi = gs(j+1);                     % lo kararlı, hi kararsız
+    for it = 1:20, mid = (lo+hi)/2; if karN(kk, cc, mid), hi = mid; else, lo = mid; end, end
+    z = kokN(p, P, kp, kk, cc, hi);  [~, i0] = max(real(z));  w = abs(imag(z(i0)));
+    s = 1i*w;  E = kk + cc*s;  Pw = polyval(P, s);
+    U = abs((p.KV + p.KI/s)*(kp*E/Pw + s*(1 + E/Pw)))*a(i)*p.r;
+    if interp1(ups, ns, min(max(U/p.Tmax, ups(1)), ups(end))) > lo, var = true; return; end
+end
+end
+
+function z = kokN(p, P, kp, k, c, g)
+% doyum kazancı g ile karakteristik polinom:
+% s Mg (P + E) + E g kp (KV s + KI) + s E P,  s Mg = s (Jm s^2 + cm s) + g s (KV s + KI)
+Mg = [p.JM, p.bM + g*p.KV, g*p.KI];  E = [c k];
+z = roots(conv([1 0], conv(Mg, P + [0 E])) + [0 0 0 conv(E, g*kp*[p.KV p.KI])] ...
+          + [0 conv([1 0], conv(E, P))]);
+end
+
+function [ups, ns] = sat_egrisi(gam)
+% Ön yüklü doyumun temel harmonik kazancı: normalize genlik ups = U/Tmax, ortalama
+% u0/Tmax = m, DC dengesi m - n0_dz(ups, m) = gam (gam = mgl sin th0 / Tmax), ns = 1 - n1_dz.
+persistent tab
+key = round(gam*1e6);
+if isempty(tab), tab = containers.Map('KeyType','double','ValueType','any'); end
+if isKey(tab, key), v = tab(key); [ups, ns] = v{:}; return; end
+ups = logspace(-3, 2, 300);  ns = zeros(size(ups));
+for i = 1:numel(ups)
+    if gam == 0, m = 0;
+    else, m = fzero(@(m) m - dz_harmonik(ups(i), m) - gam, [0, gam + ups(i) + 2]); end
+    [~, n1] = dz_harmonik(ups(i), m);  ns(i) = 1 - n1;
+end
+tab(key) = {ups, ns};
 end
 
 function x = ters(y, x, y0)

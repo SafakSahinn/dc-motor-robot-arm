@@ -36,6 +36,7 @@ x = zeros(4,n);
 x(3,:) = th_ref - deg2rad(p.adim);
 x(1,:) = x(3,:);
 z = zeros(1,n);  u = zeros(1,n);
+if isfield(p,'x0'), x = p.x0;  z = p.z0; end        % önceki benzetimin son durumundan sürdür
 gL = 0;  if isfield(p,'gL'), gL = p.gL; end
 thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
 if motorD, qv = p.qM; else, qv = p.qL; end
@@ -87,6 +88,7 @@ end
 t = (1:nRec)'*p.dt*p.dec;
 out.t = t;  out.th = TH;  out.delta = DEL;  out.tau_s = TAU;  out.u = U;
 out.theta0_deg = theta0_deg;  out.wc = wc;
+out.x_son = x;  out.z_son = z;                     % p.x0, p.z0 ile sürdürmek için
 
 % --- Analiz ---
 thd = rad2deg(TH);
