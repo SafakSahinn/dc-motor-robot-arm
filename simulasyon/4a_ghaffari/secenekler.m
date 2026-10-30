@@ -18,7 +18,7 @@ sm  = '.sZCX?';                                    % denge, sönümlü, zorlanm�
 fid = fopen('secenekler_log.txt','a');
 R = struct();
 for i = 1:numel(S)
-    p = duzenek(S{i});
+    p = secenek_duzenek(S{i});
     wa = sqrt(p.Ks/p.JL);
     p.kontrol = 'PPI';  p.KV = wa*(p.JM+p.JL);  p.KI = 0.05*wa*p.KV;
     kp = rgs.^2*p.Ks/p.KV;
@@ -64,24 +64,6 @@ for i = 1:numel(S)
 end
 save(sprintf('secenekler_%s.mat', strjoin(S,'')), 'R', 'rgs', 'ac', 'bas');
 fclose(fid);
-end
-
-function p = duzenek(ad)
-p = parametreler('ideal');
-p.N = 30;  Jrot = 4e-6;  p.Tmax = 0.49;
-mRod = 0.020;  L = 0.15;  mTip = 0.020;
-p.JL  = mRod*L^2/3 + mTip*L^2;
-p.mgl = 9.81*(mRod*L/2 + mTip*L);
-p.JM  = Jrot*p.N^2;
-switch ad
-    case 'B1', p.JL = 1*p.JM;                     % dengelenmiş ek eylemsizlik: mgl değişmez
-    case 'B2', p.JL = 2*p.JM;
-    case 'C',  p.N = 10;  p.JM = Jrot*p.N^2;  p.Tmax = 0.49/3;
-    case 'D',  mTip = (p.JM - mRod*L^2/3)/L^2;   % J_L = J_M
-               p.JL = mRod*L^2/3 + mTip*L^2;  p.mgl = 9.81*(mRod*L/2 + mTip*L);
-end
-p.r = deg2rad(1.5);
-p.dt = 1e-4;  p.Ts = p.dt;  p.T = 8;  p.Tan = p.T;  p.dec = 5;
 end
 
 function yaz(fid, varargin)

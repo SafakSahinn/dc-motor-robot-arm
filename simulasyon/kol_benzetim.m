@@ -11,6 +11,7 @@ function out = kol_benzetim(p, theta0_deg, wc)
 % Kontrolcü her p.Ts saniyede bir çalışır, arada tork sabit tutulur:
 %   tau = Kp e + Ki z - Kd v,   e = th_ref - th_ölçülen,  z = sum(e)*Ts
 %   v   = motor hızı (p.Dkaynak='motor') ya da kol hızı ('kol');
+%   p.gL > 0 ise kol açısı ölçümü gL kontrol örneği gecikmeli kullanılır (AS5600 filtresi + I2C okuması).
 %         p.fv sonluysa nicemlenmiş açının farkından + birinci derece filtreyle kestirilir.
 % Ardından doyum (+-Tmax) ve sürücü ölü bandı (|tau| < olu -> 0).
 % Kazançlar rijit model (J = JM + JL) için kapalı çevrim hızı wc'ye göre:
@@ -35,6 +36,8 @@ x = zeros(4,n);
 x(3,:) = th_ref - deg2rad(p.adim);
 x(1,:) = x(3,:);
 z = zeros(1,n);  u = zeros(1,n);
+gL = 0;  if isfield(p,'gL'), gL = p.gL; end
+thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
 if motorD, qv = p.qM; else, qv = p.qL; end
 yv_prev = olc(x(1+2*~motorD,:), qv);  vhat = zeros(1,n);
 aV = 1 - exp(-2*pi*p.fv*p.Ts);                     % filtre katsayısı (fv=Inf -> 1)
@@ -49,6 +52,7 @@ k = 0;
 for i = 0:nStep-1
     if mod(i,kCtl) == 0                            % ---- kontrolcü örneği ----
         thm = olc(x(3,:), p.qL);
+        if gL > 0, thBuf = [thBuf(2:end,:); thm];  thm = thBuf(1,:); end
         if isinf(p.fv)
             v = motorD*x(2,:) + ~motorD*x(4,:);
         else

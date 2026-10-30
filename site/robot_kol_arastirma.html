@@ -132,6 +132,21 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   section{padding:18px 16px}
 }
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+.hm-izgara{display:flex; flex-wrap:wrap; gap:14px; margin-top:10px; max-width:100%; overflow-x:auto}
+@media (max-width:640px){.hm td{width:21px; height:20px; font-size:10px} .hm th{padding:2px 2px; font-size:10px}}
+.hm{border-collapse:collapse; font:12px var(--mono); width:auto}
+.hm caption{font:500 12px var(--mono); color:var(--muted); text-align:left; padding-bottom:4px; caption-side:top}
+.hm th{font-weight:400; color:var(--muted); padding:2px 5px; background:none; border:none; text-align:center}
+.hm td{width:26px; height:22px; text-align:center; padding:0; border:1px solid var(--paper)}
+.hm .h0{background:var(--bg); color:var(--muted)}
+.hm .h1{background:var(--accent-soft); color:var(--accent)}
+.hm .h2{background:var(--todo-soft); color:var(--todo)}
+.hm .h3{background:var(--warn); color:var(--paper); font-weight:500}
+.hm .h4{background:#b03a2e; color:#fff; font-weight:500}
+.hm .h5{background:var(--todo-soft); color:var(--todo)}
+.hm-anahtar{display:flex; flex-wrap:wrap; gap:6px 16px; margin-top:10px; font:12px var(--mono); color:var(--muted)}
+.hm-anahtar span{display:inline-flex; align-items:center; gap:6px}
+.hm-anahtar i{display:inline-block; width:14px; height:14px; border-radius:2px}
 </style>
 
 <div class="wrap">
@@ -142,6 +157,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#kapsam">2 · Kapsam ve kısıtlar</a>
   <a href="#mimari">3 · Donanım ve yazılım planı</a>
   <a href="#malzeme">4 · Malzeme listeleri</a>
+  <a href="#duzenek">5 · Düzenek seçenekleri</a>
   <div class="lbl" style="margin-top:14px">Dayanaklar</div>
   <a href="#baslangic">Başlangıç noktası</a>
   <a href="#tarama">Literatür taraması</a>
@@ -159,7 +175,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <header>
   <div class="kicker">Çalışma notu</div>
   <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı</h1>
-  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri.</p>
+  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri.</p>
   <div class="meta"><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
 </header>
 
@@ -167,7 +183,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="top"><div class="kicker">Çalışma notu</div></div>
   <h2>Amaç</h2>
   <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde, dişli boşluğunun kendiliğinden süren salınıma yol açtığı sınırı kol açısı ve kontrol kazancı cinsinden öngörmek ve bu öngörüyü düşük maliyetli bir düzenekte deneyle doğrulamak.</p>
-  <p>Not dört bölümden oluşur: framing; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
+  <p>Not beş bölümden oluşur: framing; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri; düzenek seçenekleri. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
 </section>
 
 <section id="framing">
@@ -218,12 +234,12 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <p>Kaynaklarda aynı sembol farklı büyüklükleri gösteriyor; bu çalışmadaki tanımlar:</p>
   <div class="tbl"><table>
     <tr><th>Büyüklük</th><th>Tanım</th><th>İlişki</th></tr>
-    <tr><td>Ghaffari 2013, r<sub>gs</sub> (C. Wang 2017'de "r<sub>s</sub>")</td><td>\(\sqrt{k_p k_v / K_s}\), P konum + PI hız</td><td>\(r_{gs} = \rho\sqrt{J/J_{eff}} \approx 2\rho\) (simülasyon parametreleri)</td></tr>
+    <tr><td>Ghaffari 2013, r<sub>gs</sub> (C. Wang 2017'de "r<sub>s</sub>")</td><td>\(\sqrt{k_p k_v / K_s}\), P konum + PI hız</td><td>\(r_{gs} = \rho\,(J_M+J_L)/\sqrt{J_M J_L}\); JGB37 düzeneğinde uç kütlesi 0 / 20 / 50 g için \(5{,}1\rho\) / \(2{,}9\rho\) / \(2{,}3\rho\)</td></tr>
     <tr><td>Bu çalışma, \(\rho\)</td><td>\(\omega_c/\omega_{rez}\), \(\omega_{rez} = \sqrt{K_s/J_{eff}}\)</td><td>PID: \(K_p = J\omega_c^2\), \(K_d = 1{,}4J\omega_c\), \(K_i = K_p\omega_c/4\)</td></tr>
     <tr><td>Bu çalışma, \(\gamma\)</td><td>\(mg\ell\sin\theta_0/(K_s r)\)</td><td>Ghaffari'deki ön yük oranının tek yönlü, açıya bağlı karşılığı</td></tr>
     <tr><td>Bu çalışma, \(\varphi\)</td><td>\(F_C/(K_s r)\)</td><td>Sürtünmenin baskın olduğu rejimi ayırır</td></tr>
   </table></div>
-  <div class="note ok"><b>Eşlemenin sonucu</b>Deney hedef bölgesi \(\rho \approx 0{,}25\)–\(0{,}40\), Ghaffari'nin ölçeğinde \(r_{gs} \approx 0{,}5\)–\(0{,}8\): DF'nin geçerli olduğu "rezonans" rejimi. Simülasyonda sürtünmenin baskın çıktığı düşük kazanç bölgesi de Ghaffari'nin DF'nin bozulduğu "çarpma" rejimine denk geliyor. Çarpan JGB37'nin tanılanan değerleriyle yeniden hesaplanacak.</div>
+  <div class="note"><b>Eşlemenin sonucu</b>Dengeli listedeki düzenekte kolun eylemsizliği motorun kol tarafına yansıyan eylemsizliğinin yalnız ≈ 0,17'si (Ghaffari'nin düzeneklerinde 0,8–2,1). Bu durumda deney bölgesi (\(\rho \approx 0{,}25\)–\(0{,}40\), \(r_{gs} \approx 0{,}7\)–\(1{,}1\)) dişlilerin zamanın çoğunda temas etmediği bir rejime düşüyor ve yerçekimsiz DF bile salınım frekansını 2–3 kat yüksek veriyor. Eylemsizlik oranı ≈ 1'e çıkarılınca DF yeniden geçerli: bkz. <a href="#duzenek">Düzenek seçenekleri</a>.</div>
 
   <h3>Önerilen katkı</h3>
   <ul class="plain">
@@ -487,6 +503,121 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <li><b>İlk kontrol:</b> kaplin 0° ile \(\theta_d\) genişliği ölçülür; beklenmeyen bir boşluk varsa kol–mil ya da mıknatıs bağlantısı gözden geçirilir. Gövdenin ilk rezonansı darbe testiyle ölçülür.</li>
   </ul>
   <p>Kalem kalem gerekçeler, uyum tablosu ve pazar araştırması: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/malzeme.md"><code>calisma_notu/malzeme.md</code></a>. Parça seçim gerekçeleri ve bütün adaylar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/tasarim_kararlari.md"><code>donanim/tasarim_kararlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/donanim/alisveris_listesi.md"><code>donanim/alisveris_listesi.md</code></a>.</p>
+</section>
+
+<section id="duzenek">
+  <div class="top"><div class="kicker">Çalışma notu · 5</div></div>
+  <h2>Düzenek seçenekleri</h2>
+  <p>Simülasyon ve doğrulama aşamasının ilk adımı olarak Ghaffari ve Mohammadiasl 2013 bu çalışmanın modeliyle yeniden üretildi: tam DF, deneye uyum (%20,2 / %22,1; makalede %19,6 / %21,4) ve benzetim eğrileri birebir; yerçekimi kapatılıp aynı P–PI kontrolcüyle koşulduğunda bu çalışmanın kol modeli Ghaffari'nin modeliyle aynı sonucu veriyor. Ayrıntılar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/simulasyon/4a_ghaffari"><code>simulasyon/4a_ghaffari/</code></a>.</p>
+  <p>Aynı model dengeli listedeki düzeneğe uygulandığında belirleyici bir oran ortaya çıktı: kolun eylemsizliği, motorun kol tarafına yansıyan eylemsizliğinin yalnız ≈ 0,17'si (R = J<sub>L</sub>/J<sub>M</sub>; Ghaffari'nin düzeneklerinde 0,8–2,1). Bu durumda dişliler zamanın çoğunda temas etmiyor ve yerçekimsiz DF bile salınım frekansını 2–3 kat yüksek veriyor. Bu nedenle beş düzenek aynı ölçütlerle karşılaştırıldı.</p>
+
+  <div class="tbl"><table>
+    <tr><th>Düzenek</th><th>Tanım</th><th>R</th><th>f<sub>a</sub></th><th>mgℓ / T<sub>maks</sub></th></tr>
+    <tr><td>A</td><td>Dengeli liste: JGB37-520 1:30, 20 g çubuk + 20 g uç</td><td class="num">0,17</td><td class="num">20,5 Hz</td><td class="num">0,09</td></tr>
+    <tr><td>B1</td><td>A + dengelenmiş ek eylemsizlik (yerçekimi torku değişmez), J<sub>L</sub> = J<sub>M</sub></td><td class="num">1,0</td><td class="num">8,4 Hz</td><td class="num">0,09</td></tr>
+    <tr><td>B2</td><td>A + dengelenmiş ek eylemsizlik, J<sub>L</sub> = 2 J<sub>M</sub></td><td class="num">2,0</td><td class="num">5,9 Hz</td><td class="num">0,09</td></tr>
+    <tr><td>C</td><td>JGB37-520 1:10, aynı kol</td><td class="num">1,5</td><td class="num">20,5 Hz</td><td class="num">0,27</td></tr>
+    <tr><td>D</td><td>A + ağır uç kütlesi (≈ 153 g), J<sub>L</sub> = J<sub>M</sub></td><td class="num">1,0</td><td class="num">8,4 Hz</td><td class="num">0,49</td></tr>
+  </table></div>
+
+  <h3>Karşılaştırma</h3>
+  <div class="tbl"><table>
+    <tr><th>Düzenek</th><th>Ghaffari DF'si (benzetim / DF frekansı, r<sub>gs</sub> 0,5–0,9)</th><th>Açıya bağlı bastırma</th><th>Tork payı (doyum, ort.)</th><th>Sensör ve sürtünmeyle</th></tr>
+    <tr><td>A</td><td>geçersiz (0,37–0,52)</td><td>r<sub>gs</sub> 0,5–0,9 boyunca</td><td>rahat (%7)</td><td>örüntü korunuyor</td></tr>
+    <tr><td>B1, B2</td><td>geçerli (0,72–0,94)</td><td>yalnız r<sub>gs</sub> ≤ 0,5</td><td>orta (%21–24)</td><td>örüntü zayıf kalıyor</td></tr>
+    <tr><td>C</td><td>kısmen (0,63–0,83)</td><td>r<sub>gs</sub> 0,5–0,9</td><td>dar (%22)</td><td>bozuluyor (doyum %64–71)</td></tr>
+    <tr class="sec"><td>D</td><td>geçerli (0,72–0,90)</td><td>r<sub>gs</sub> 0,5–1,1 boyunca</td><td>dar (%16)</td><td>örüntü korunuyor</td></tr>
+  </table></div>
+
+  <h3>Açı × kazanç haritaları</h3>
+  <p>Yerçekimi açık, gerçek tork sınırıyla, P–PI kontrol, toplam boşluk 3°. Her hücre üç başlangıç sapmasıyla koşuldu; <code>*</code> sonucun başlangıç koşuluna bağlı olduğunu gösterir. Açı: 0° sarkık, 90° yatay, 180° dik.</p>
+  <div class="hm-anahtar">
+    <span><i style="background:var(--bg); border:1px solid var(--line)"></i>denge</span>
+    <span><i style="background:var(--accent-soft)"></i>s · sönümlü titreşim</span>
+    <span><i style="background:var(--warn)"></i>C · kalıcı çevrim</span>
+    <span><i style="background:#b03a2e"></i>X · kararsız</span>
+    <span><i style="background:var(--todo-soft)"></i>? · düzensiz</span>
+  </div>
+  <p style="margin-top:14px"><b>İdeal sensör, sürekli kontrol</b></p>
+  <div class="hm-izgara">
+<table class="hm"><caption>A · R 0,17</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>B1 · R 1, dengeli ek</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>B2 · R 2, dengeli ek</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim">s</td></tr>
+<tr><th>0,5</th><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>C · 1:10 dişli</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h1" title="sönümlü titreşim">s</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>D · R 1, ağır uç</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h1" title="sönümlü titreşim">s</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h4" title="kararsız (başlangıç koşuluna bağlı)">X*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+</div>
+  <p style="margin-top:14px"><b>1 kHz kontrol, AS5600 (12 bit, 1 örnek gecikme), motor enkoderi kenar zamanlaması, Coulomb ve yapışma sürtünmesi, sürücü ölü bandı</b></p>
+  <div class="hm-izgara">
+<table class="hm"><caption>A · R 0,17 · sensör + sürtünme</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>D · R 1, ağır uç · sensör + sürtünme</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h4" title="kararsız (başlangıç koşuluna bağlı)">X*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim">s</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+</div>
+
+  <h3>Sonuçlar</h3>
+  <ul class="plain">
+    <li><b>Açıya bağlı bastırma beş düzenekte de görülüyor:</b> 0° ve 180°'de (sin θ<sub>0</sub> = 0) kalıcı çevrim, ara açılarda kazanç arttıkça daralan bir bastırma bölgesi. Düzenekler bu bölgenin hangi kazanç aralığında görüldüğüyle ayrılıyor.</li>
+    <li><b>Dengelenmiş ek eylemsizlik (B)</b> DF'yi geçerli kılıyor, ama salınımın dinamik torkunu büyüttüğü hâlde yerçekimi torkunu değiştirmediği için bastırma yalnız düşük kazançta kalıyor.</li>
+    <li><b>Ağır uç kütlesi (D)</b> eylemsizlikle birlikte yerçekimi torkunu da büyütüyor: yerçekimsiz davranışı B1 ile aynı (DF geçerli, Ghaffari'nin kararsızlık eşiği tutuyor), yerçekimli haritası A'ya benziyor. Bedeli tork payı: 90°'de yerçekimi motor torkunun yarısını alıyor.</li>
+    <li><b>Düşük dişli oranı (C)</b> sensörlerle eleniyor: motor enkoderinin kol tarafı çözünürlüğü 3 kat kaba (sayım başına 0,82°), tork payı dar.</li>
+    <li><b>Hız kestirimi belirleyici:</b> motor hızı enkoderin ardışık farkından alındığında (1 sayım = 4,7 rad/s basamak) doyum A'da %7'den %24'e çıkıyor ve düşük kazançta düzensiz noktalar beliriyor; kenar zamanlamasıyla haritalar ideal duruma yaklaşıyor.</li>
+  </ul>
+  <div class="note ok"><b>Önerilen düzenek</b>D: JGB37-520 1:30 ve uç kütlesi 0–150 g arasında değiştirilebilen kol. A ile D aynı düzeneğin iki ucu olur ve eylemsizlik oranı deneyde bir değişken olarak taranır: DF'ye dayalı öngörü D tarafında doğrulanır, A tarafında DF'nin bozulduğu bölge de ayrı bir sonuç olarak raporlanır. Motor hızı ESP32'nin MCPWM yakalama birimiyle enkoder kenar zamanlamasından ölçülür; motor ısınması (90°'de sürekli ≈ 0,24 N·m) TMP117 ile izlenir.</div>
+  <p>Rotor eylemsizliği ve dişli teması sertliği tahmin değerlerdir; eylemsizlik oranı ve frekanslar bu değerlere bağlıdır ve sistem tanılamada ölçülecektir. Ayrıntılı notlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/secenekler_sonuclar.md"><code>secenekler_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/sensor_7c_sonuclar.md"><code>sensor_7c_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/kopru_7b_sonuclar.md"><code>kopru_7b_sonuclar.md</code></a>.</p>
 </section>
 
 <section id="baslangic">
