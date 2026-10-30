@@ -1,0 +1,29 @@
+sekil,kp_1_s,kv_Nms_rad,r_gs,deney_Hz,sim_Hz,sim_surtunmesiz_Hz,df_Hz,e_se_tablo_yuzde,e_te_tablo_yuzde,not
+11a,11.7,20,1.18,10.94,11.14,13.10,13.10,1.8,20,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11a,13.3,20,1.26,12.02,12.02,14.80,14.80,0,23,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11a,15,20,1.34,12.50,13.28,15.29,15.29,5.5,21,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11a,16.7,20,1.41,13.04,13.34,15.30,15.30,2.3,17,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11a,18.3,20,1.48,13.06,13.36,15.37,15.37,2.3,17,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11b,11.6,20,1.17,10.95,11.14,13.14,13.14,1.8,20,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11b,11.6,25,1.31,11.49,11.69,14.63,14.63,1.7,27,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11b,11.6,30,1.44,12.48,11.98,15.30,15.30,-4,22,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11b,11.6,40,1.66,12.79,13.08,15.26,15.26,2.3,19,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11b,11.6,50,1.86,12.68,13.62,15.30,15.30,7,19,rezonans bolgesi; surtunmesiz sim DF ile cakisik
+11a,3.8,20,0.67,0.0,0.0,0.0,0.0,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,5.8,20,0.83,0.0,0.0,0.0,0.0,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,6.2,20,0.86,0.0,0.0,0.0,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,6.7,20,0.89,0.0,0.0,4.0,6.0,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,6.9,20,0.91,0.0,,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,8.3,20,0.99,0.0,0.0,8.0,9.0,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,8.6,20,1.01,0.0,,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,10,20,1.09,,0.0,11.0,11.3,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11a,10.2,20,1.10,0.0,,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,0,0.00,0.0,0.0,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,1.5,0.32,0.0,0.0,0.0,0.0,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,2,0.37,,,3.1,4.5,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,3,0.45,0.0,0.0,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,5,0.59,0.0,0.0,5.1,6.6,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,10,0.83,0.0,0.0,8.6,9.3,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,15,1.02,,,11.0,11.4,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,17,1.08,,0.0,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
+11b,11.6,17.5,1.10,0.0,,,,,,dusuk kazanc; 0 = salinim yok; teori noktalari gozle +-0.3 Hz
