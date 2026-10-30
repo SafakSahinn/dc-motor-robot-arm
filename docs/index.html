@@ -165,6 +165,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#mimari">3 · Donanım ve yazılım planı</a>
   <a href="#malzeme">4 · Malzeme listeleri</a>
   <a href="#duzenek">5 · Düzenek seçenekleri</a>
+  <a href="#yontem">6 · Yeniden üretim ve yöntem</a>
   <div class="lbl" style="margin-top:14px">Dayanaklar</div>
   <a href="#baslangic">Başlangıç noktası</a>
   <a href="#tarama">Literatür taraması</a>
@@ -182,7 +183,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <header>
   <div class="kicker">Çalışma notu</div>
   <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı</h1>
-  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri.</p>
+  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem.</p>
   <div class="meta"><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
 </header>
 
@@ -190,7 +191,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="top"><div class="kicker">Çalışma notu</div></div>
   <h2>Amaç</h2>
   <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde, dişli boşluğunun kendiliğinden süren salınıma yol açtığı sınırı kol açısı ve kontrol kazancı cinsinden öngörmek ve bu öngörüyü düşük maliyetli bir düzenekte deneyle doğrulamak.</p>
-  <p>Not beş bölümden oluşur: framing; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri; düzenek seçenekleri. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
+  <p>Not altı bölümden oluşur: framing; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri; düzenek seçenekleri; literatür sonucunun yeniden üretimi ve önerilen yöntem. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
 </section>
 
 <section id="framing">
@@ -516,7 +517,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="top"><div class="kicker">Çalışma notu · 5</div></div>
   <h2>Düzenek seçenekleri</h2>
   <p>Simülasyon ve doğrulama aşamasının ilk adımı olarak Ghaffari ve Mohammadiasl 2013 bu çalışmanın modeliyle yeniden üretildi: tam DF, deneye uyum (%20,2 / %22,1; makalede %19,6 / %21,4) ve benzetim eğrileri birebir; yerçekimi kapatılıp aynı P–PI kontrolcüyle koşulduğunda bu çalışmanın kol modeli Ghaffari'nin modeliyle aynı sonucu veriyor. Ayrıntılar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/simulasyon/4a_ghaffari"><code>simulasyon/4a_ghaffari/</code></a>.</p>
-  <p>Aynı model dengeli listedeki düzeneğe uygulandığında belirleyici bir oran ortaya çıktı: kolun eylemsizliği, motorun kol tarafına yansıyan eylemsizliğinin yalnız ≈ 0,17'si (R = J<sub>L</sub>/J<sub>M</sub>; Ghaffari'nin düzeneklerinde 0,8–2,1). Bu durumda dişliler zamanın çoğunda temas etmiyor ve yerçekimsiz DF bile salınım frekansını 2–3 kat yüksek veriyor. Bu nedenle beş düzenek aynı ölçütlerle karşılaştırıldı.</p>
+  <p>Aynı model dengeli listedeki düzeneğe uygulandığında belirleyici bir oran ortaya çıktı: kolun eylemsizliği, motorun kol tarafına yansıyan eylemsizliğinin yalnız ≈ 0,17'si (R = J<sub>L</sub>/J<sub>M</sub>; Ghaffari'nin düzeneklerinde 0,8–2,1). Bu durumda dişliler zamanın çoğunda temas etmiyor ve temas sönümünü içermeyen yerçekimsiz DF salınım frekansını 2–3 kat yüksek veriyor; temas sönümü eklenince bu fark büyük ölçüde kapanıyor (6. bölüm). Beş düzenek aynı ölçütlerle karşılaştırıldı.</p>
 
   <div class="tbl"><table>
     <tr><th>Düzenek</th><th>Tanım</th><th>R</th><th>f<sub>a</sub></th><th>mgℓ / T<sub>maks</sub></th></tr>
@@ -530,7 +531,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <h3>Karşılaştırma</h3>
   <div class="tbl"><table>
     <tr><th>Düzenek</th><th>Ghaffari DF'si (benzetim / DF frekansı, r<sub>gs</sub> 0,5–0,9)</th><th>Açıya bağlı bastırma</th><th>Tork payı (doyum, ort.)</th><th>Sensör ve sürtünmeyle</th></tr>
-    <tr><td>A</td><td>geçersiz (0,37–0,52)</td><td>r<sub>gs</sub> 0,5–0,9 boyunca</td><td>rahat (%7)</td><td>örüntü korunuyor</td></tr>
+    <tr><td>A</td><td>temas sönümsüz DF ile 0,37–0,52; temas sönümüyle 0,94 (6. bölüm)</td><td>r<sub>gs</sub> 0,5–0,9 boyunca</td><td>rahat (%7)</td><td>örüntü korunuyor</td></tr>
     <tr><td>B1, B2</td><td>geçerli (0,72–0,94)</td><td>yalnız r<sub>gs</sub> ≤ 0,5</td><td>orta (%21–24)</td><td>örüntü zayıf kalıyor</td></tr>
     <tr><td>C</td><td>kısmen (0,63–0,83)</td><td>r<sub>gs</sub> 0,5–0,9</td><td>dar (%22)</td><td>bozuluyor (doyum %64–71)</td></tr>
     <tr class="sec"><td>D</td><td>geçerli (0,72–0,90)</td><td>r<sub>gs</sub> 0,5–1,1 boyunca</td><td>dar (%16)</td><td>örüntü korunuyor</td></tr>
@@ -625,6 +626,126 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   </ul>
   <div class="note ok"><b>Önerilen düzenek</b>D: JGB37-520 1:30 ve uç kütlesi 0–150 g arasında değiştirilebilen kol. A ile D aynı düzeneğin iki ucu olur ve eylemsizlik oranı deneyde bir değişken olarak taranır: DF'ye dayalı öngörü D tarafında doğrulanır, A tarafında DF'nin bozulduğu bölge de ayrı bir sonuç olarak raporlanır. Motor hızı ESP32'nin MCPWM yakalama birimiyle enkoder kenar zamanlamasından ölçülür; motor ısınması (90°'de sürekli ≈ 0,24 N·m) TMP117 ile izlenir.</div>
   <p>Rotor eylemsizliği ve dişli teması sertliği tahmin değerlerdir; eylemsizlik oranı ve frekanslar bu değerlere bağlıdır ve sistem tanılamada ölçülecektir. Ayrıntılı notlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/secenekler_sonuclar.md"><code>secenekler_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/sensor_7c_sonuclar.md"><code>sensor_7c_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/kopru_7b_sonuclar.md"><code>kopru_7b_sonuclar.md</code></a>.</p>
+</section>
+
+<section id="yontem">
+  <div class="top"><div class="kicker">Çalışma notu · 6</div></div>
+  <h2>Literatür sonucunun yeniden üretimi ve önerilen yöntem</h2>
+  <p>Bu bölüm 4. aşamanın dört maddesini karşılar: yakın bir literatür sonucunun uygun model ve parametrelerle yeniden üretilmesi, önerilen katkının etkisinin karşılaştırmalı incelenmesi, kaynaklardaki boyutsuz oranların ve kontrolcü parametrelerinin bu çalışmanın tanımlarıyla eşlenmesi, sönümlü titreşim, zorlanmış cevap, kalıcı çevrim ve kararsızlığın ayrılması. Kod ve ayrıntılı sonuçlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/simulasyon/4a_ghaffari"><code>simulasyon/4a_ghaffari/</code></a>.</p>
+
+  <div class="tbl"><table>
+    <tr><th>Madde</th><th>Yapılan</th><th>Sonuç</th><th>Açık kalan ve nedeni</th></tr>
+    <tr><td>Yeniden üretim</td><td>Ghaffari ve Mohammadiasl 2013: tam DF, döner tabla deneyi, Şekil 7–8 rejimleri</td><td>DF'nin deneye uyumu %20,2 / %22,1 (makalede %19,6 / %21,4); rejimler ve frekanslar birebir</td><td>Sürtünmeli uyum yalnız makalede verilmeyen bir tork sınırıyla. Sun 2023 nicel olarak yeniden üretilmedi: hız döngüsünün PI katsayıları ve temas sönümü makalede yok; oranları gözlenen frekanstan tahminle eşlendi.</td></tr>
+    <tr><td>Önerilen katkı, karşılaştırmalı</td><td>Yerçekimli iki girişli DF (temas sönümü ve tork sınırıyla); D ve A düzeneklerinde açı × kazanç benzetimiyle, Ghaffari DF'siyle yan yana</td><td>D'de kritik kazanç hatası medyan %19 (Ghaffari %81); çevrim frekansı benzetim/DF 0,89</td><td>Açı yönünde sınır hatası 15° (hedef 5°). Düşük kazançlı çarpma rejiminde DF zayıf (aşağıda γ<sub>sınır</sub>).</td></tr>
+    <tr><td>Oran ve parametre eşlemesi</td><td>r<sub>gs</sub>, ρ, γ, ζ<sub>c</sub>, μ; P–PI ↔ PID; Ghaffari 2013, C. Wang 2017, Sun 2023, A, D tek tabloda</td><td>Sun 2023'te γ(90°) ≈ 0,024: yerçekimi ön yükü boşluk ölçeğinde çok küçük, 90°'deki salınımla tutarlı</td><td>Sun 2023'ün k<sub>v</sub>'si tahmin (makalede yok).</td></tr>
+    <tr><td>Rejim ayrımı</td><td>Ortak sınıflandırıcı (benzetim ve deney verisine aynı): denge, sönümlü titreşim, zorlanmış cevap, kalıcı çevrim, kararsız, düzensiz; yerçekimli düzenekte zorlanmış cevap</td><td>Doğrulama 7/7; iki kararlılık benzetimde gösterildi</td><td>Zorlama frekansı çevrimin bir harmoniğine yakınsa zorlanmış cevap ile çevrim ayrılamıyor; deneyde zorlama frekansı buna göre seçilmeli.</td></tr>
+  </table></div>
+
+  <h3>Yöntem: yerçekimli iki girişli DF</h3>
+  <p>Ghaffari'nin tek döngülü \(G(s)H(s)\) biçimi korunur; dişli ölü bölgesine giren sapma, ortalaması sıfır olmayan bir sinüs olarak alınır: \(\theta_d = B + A\sin\omega t\). İki koşul birlikte çözülür:</p>
+  <ul class="plain">
+    <li><b>DC dengesi:</b> dişlinin ilettiği ortalama tork yükü taşır, \(N_0(A,B) = mg\ell\sin\theta_0\). Bu, her salınım genliği için ön sapmayı \(B\) belirler.</li>
+    <li><b>Birinci harmonik:</b> \(N_1(A,B)\,G(j\omega)H(j\omega) = -1\). Yerçekimi yokken (\(B = 0\)) Ghaffari'nin DF'si birebir geri gelir.</li>
+  </ul>
+  <p>Tek açı parametresi \(\gamma = mg\ell\sin\theta_0/(K_s r)\). Yerçekimi dişliyi bir yüze bastırdığı için etkin kazanç \(N_1\) sıfıra inemez; en küçük değeri \(N_{1,\min}(\gamma)\) (γ = 0,1 → 0,16; 0,5 → 0,44; 0,92 → 0,59). Çevrim ancak döngünün gerektirdiği kazanç bu değerin üstündeyse oluşur. İki ek: temas sönümü (yalnız temasta etkili; dişli eşdeğer yay + sönümleyici olur) ve ön yüklü tork sınırı (doyum = giriş − ölü bölge; ortalama motor torku \(mg\ell\sin\theta_0\)). Kararlılık her adımda kapalı çevrim kökleriyle denetlenir. Sağlamalar 7/7: kapalı biçim sayısal integralle, \(\gamma = 0\)'da Ghaffari'nin denklem 10'u ve frekansları, sönüm ve tork sınırı limitleri.</p>
+
+  <h3>Karşılaştırma</h3>
+  <figure>
+<svg class="plot" viewBox="0 0 640 330" role="img" aria-labelledby="krt-t krt-d">
+<title id="krt-t">D düzeneğinde kritik kazancın açıyla değişimi</title>
+<desc id="krt-d">Salınımın başladığı en küçük r_gs, açıya göre: benzetim noktaları, yerçekimli DF eğrisi, tork sınırsız DF eğrisi; Ghaffari DF her kazançta çevrim öngörür.</desc>
+<line class="axis" x1="56" x2="620" y1="290.0" y2="290.0" stroke-opacity="1"/>
+<text x="50" y="294.0" text-anchor="end">0</text>
+<line class="axis" x1="56" x2="620" y1="248.5" y2="248.5" stroke-opacity=".25"/>
+<text x="50" y="252.5" text-anchor="end">0,2</text>
+<line class="axis" x1="56" x2="620" y1="206.9" y2="206.9" stroke-opacity=".25"/>
+<text x="50" y="210.9" text-anchor="end">0,4</text>
+<line class="axis" x1="56" x2="620" y1="165.4" y2="165.4" stroke-opacity=".25"/>
+<text x="50" y="169.4" text-anchor="end">0,6</text>
+<line class="axis" x1="56" x2="620" y1="123.8" y2="123.8" stroke-opacity=".25"/>
+<text x="50" y="127.8" text-anchor="end">0,8</text>
+<line class="axis" x1="56" x2="620" y1="82.3" y2="82.3" stroke-opacity=".25"/>
+<text x="50" y="86.3" text-anchor="end">1</text>
+<line class="axis" x1="56" x2="620" y1="40.8" y2="40.8" stroke-opacity=".25"/>
+<text x="50" y="44.8" text-anchor="end">1,2</text>
+<line class="axis" x1="56.0" x2="56.0" y1="290" y2="295"/>
+<text x="56.0" y="308" text-anchor="middle">0°</text>
+<line class="axis" x1="150.0" x2="150.0" y1="290" y2="295"/>
+<text x="150.0" y="308" text-anchor="middle">30°</text>
+<line class="axis" x1="244.0" x2="244.0" y1="290" y2="295"/>
+<text x="244.0" y="308" text-anchor="middle">60°</text>
+<line class="axis" x1="338.0" x2="338.0" y1="290" y2="295"/>
+<text x="338.0" y="308" text-anchor="middle">90°</text>
+<line class="axis" x1="432.0" x2="432.0" y1="290" y2="295"/>
+<text x="432.0" y="308" text-anchor="middle">120°</text>
+<line class="axis" x1="526.0" x2="526.0" y1="290" y2="295"/>
+<text x="526.0" y="308" text-anchor="middle">150°</text>
+<line class="axis" x1="620.0" x2="620.0" y1="290" y2="295"/>
+<text x="620.0" y="308" text-anchor="middle">180°</text>
+<text x="338" y="328" text-anchor="middle">açı θ₀</text>
+<text x="14" y="155" transform="rotate(-90 14 155)" text-anchor="middle">kritik r_gs</text>
+<line x1="56.0" x2="620.0" y1="287.0" y2="287.0" stroke="var(--warn)" stroke-width="5" stroke-opacity=".55"/>
+<polyline class="curve" points="71.7,206.9 87.3,182.0 103.0,167.5 118.7,157.1 134.3,148.8 150.0,140.5 165.7,136.3 181.3,132.2 197.0,128.0 212.7,125.9 228.3,121.8 244.0,119.7 259.7,119.7 275.3,117.6 291.0,117.6 306.7,115.5 322.3,115.5 338.0,115.5 353.7,115.5 369.3,115.5 385.0,117.6 400.7,117.6 416.3,119.7 432.0,121.8 447.7,123.8 463.3,125.9 479.0,130.1 494.7,132.2 510.3,138.4 526.0,142.5 541.7,148.8 557.3,159.2 573.0,169.5 588.7,186.2 604.3,211.1" style="stroke:var(--todo);stroke-dasharray:6 4;stroke-width:1.8"/>
+<polyline class="curve" points="71.7,206.9 87.3,182.0 103.0,167.5 118.7,157.1 134.3,148.8 150.0,140.5 165.7,136.3 181.3,132.2 197.0,128.0 212.7,123.8 228.3,119.7 244.0,113.5 259.7,103.1 275.3,90.6 291.0,76.1 306.7,65.7 322.3,65.7 338.0,65.7 353.7,65.7 369.3,65.7 385.0,78.2 400.7,92.7 416.3,105.2 432.0,113.5 447.7,121.8 463.3,125.9 479.0,130.1 494.7,132.2 510.3,138.4 526.0,142.5 541.7,148.8 557.3,159.2 573.0,169.5 588.7,186.2 604.3,211.1"/>
+<circle cx="56.0" cy="217.3" r="3.6" fill="var(--ink)"/>
+<circle cx="71.7" cy="165.4" r="3.6" fill="var(--ink)"/>
+<circle cx="87.3" cy="144.6" r="3.6" fill="var(--ink)"/>
+<circle cx="103.0" cy="134.2" r="3.6" fill="var(--ink)"/>
+<circle cx="118.7" cy="134.2" r="3.6" fill="var(--ink)"/>
+<circle cx="134.3" cy="123.8" r="3.6" fill="var(--ink)"/>
+<circle cx="150.0" cy="113.5" r="3.6" fill="var(--ink)"/>
+<circle cx="165.7" cy="113.5" r="3.6" fill="var(--ink)"/>
+<circle cx="181.3" cy="40.8" r="3.6" fill="var(--ink)"/>
+<circle cx="212.7" cy="82.3" r="3.6" fill="var(--ink)"/>
+<circle cx="228.3" cy="71.9" r="3.6" fill="var(--ink)"/>
+<circle cx="244.0" cy="71.9" r="3.6" fill="var(--ink)"/>
+<circle cx="259.7" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="275.3" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="291.0" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="306.7" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="322.3" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="338.0" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="353.7" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="369.3" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="385.0" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="400.7" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="416.3" cy="61.5" r="3.6" fill="var(--ink)"/>
+<circle cx="432.0" cy="71.9" r="3.6" fill="var(--ink)"/>
+<circle cx="447.7" cy="71.9" r="3.6" fill="var(--ink)"/>
+<circle cx="463.3" cy="82.3" r="3.6" fill="var(--ink)"/>
+<circle cx="479.0" cy="82.3" r="3.6" fill="var(--ink)"/>
+<circle cx="494.7" cy="51.2" r="3.6" fill="var(--ink)"/>
+<circle cx="510.3" cy="30.4" r="3.6" fill="var(--ink)"/>
+<circle cx="526.0" cy="113.5" r="3.6" fill="var(--ink)"/>
+<circle cx="541.7" cy="123.8" r="3.6" fill="var(--ink)"/>
+<circle cx="557.3" cy="134.2" r="3.6" fill="var(--ink)"/>
+<circle cx="573.0" cy="134.2" r="3.6" fill="var(--ink)"/>
+<circle cx="588.7" cy="144.6" r="3.6" fill="var(--ink)"/>
+<circle cx="604.3" cy="165.4" r="3.6" fill="var(--ink)"/>
+<circle cx="620.0" cy="227.7" r="3.6" fill="var(--ink)"/>
+<circle cx="250" cy="176" r="3.6" fill="var(--ink)"/><text x="262" y="180">benzetim</text>
+<line x1="244" x2="258" y1="194" y2="194" class="curve"/><text x="262" y="198">yerçekimli DF</text>
+<line x1="244" x2="258" y1="212" y2="212" style="stroke:var(--todo);stroke-dasharray:6 4;stroke-width:1.8"/><text x="262" y="216">tork sınırsız DF</text>
+<line x1="244" x2="258" y1="230" y2="230" stroke="var(--warn)" stroke-width="5" stroke-opacity=".55"/><text x="262" y="234">Ghaffari DF (her kazançta çevrim)</text>
+</svg>
+    <figcaption>D düzeneği (R = 1, γ(90°) = 0,92): salınımın başladığı en küçük r<sub>gs</sub>. Benzetim 5° × 0,05 adımlı ızgarada, her nokta üç başlangıç sapmasıyla. 40–45° ve 140–145°'deki dağınık noktalar yüksek kazançtaki düzensiz salınım bölgesinden. 0° ve 180°'de γ = 0 ve DF her kazançta çevrim öngörür.</figcaption>
+  </figure>
+  <div class="tbl"><table>
+    <tr><th>Ölçüt</th><th>Hedef</th><th>D</th><th>A</th><th>Ghaffari DF (D / A)</th></tr>
+    <tr class="sec"><td>Kritik kazanç hatası, medyan (en çok)</td><td>≤ %20, Ghaffari'den ≥ 2 kat iyi</td><td class="num">%19 (%42)</td><td class="num">%27 (%58)</td><td class="num">%81 / %79</td></tr>
+    <tr><td>Açı yönünde sınır hatası, medyan</td><td>≤ 5°</td><td class="num">15°</td><td class="num">20°</td><td>açıya duyarsız</td></tr>
+    <tr><td>Çevrim frekansı, benzetim / DF</td><td>sapma ≤ %15</td><td class="num">0,89</td><td class="num">0,94</td><td></td></tr>
+  </table></div>
+  <p>Hatanın ayrışması (D, kritik kazanç medyanı): temas sönümsüz DF %30, temas sönümüyle %24, tork sınırıyla %19. Kalan hata sistematik ve temkinli yönde: DF çevrimi benzetimden biraz daha düşük kazançta öngörüyor; fark en çok γ'nın küçük olduğu 15–45°'de.</p>
+
+  <h3>Bulgular</h3>
+  <ul class="plain">
+    <li><b>İki kararlılık.</b> γ > 0 iken DF, dengenin küçük sarsıntıya karşı kararlı, büyük sarsıntıda kalıcı çevrime geçebildiği bir bölge öngörüyor. Benzetimde (D, 90°, r<sub>gs</sub> 0,95) 0,05 N·m'ye kadar sarsıntılar sönüyor, 0,10 N·m kalıcı çevrimi başlatıyor; çevrim frekansı 7,08 Hz (DF 7,12 Hz). Haritalardaki başlangıç koşuluna bağlı noktaların açıklaması bu. Deneyde her nokta küçük ve büyük sarsıntıyla ölçülmeli; sınır "salınım başlatılabilir" ve "kendiliğinden başlar" diye iki eğri olarak raporlanmalı.</li>
+    <li><b>Temas sönümü belirleyici.</b> Temas sönümü DF'ye eklenince A'da benzetim/DF frekans oranı 0,51'den 0,94'e, kritik kazanç hatası %55'ten %27'ye iniyor. 5. bölümde A için görülen DF bozulmasının büyük kısmı bundan. Ghaffari'nin Şekil 7'si de ancak küçük bir temas sönümüyle yeniden üretilebilmişti. Kaynakların hiçbiri temas sönümünü raporlamıyor; düzenekte tanılanması gerekiyor.</li>
+    <li><b>Tork sınırı çevrimi söndürüyor.</b> D'de 75–105° arasında kritik kazanç tork sınırıyla 0,84'ten 1,08'e çıkıyor (benzetim 1,10). Tork sınırsız benzetimin kalıcı çevriminden başlatılıp tork sınırı açılınca çevrim sönüyor; bu bir başlangıç koşulu etkisi değil.</li>
+    <li><b>Sun 2023 ile tutarlılık.</b> Ağır yüke rağmen γ(90°) ≈ 0,02–0,05; DF'ye göre bu ön yükte bastırma neredeyse yok, sınır Ghaffari'ninkine çok yakın. Yerçekiminin etkisini belirleyen yükün büyüklüğü değil, yük / (boşluk × sertlik) oranı.</li>
+    <li><b>γ<sub>sınır</sub> ≈ 3ρ³ ilişkisi.</b> 24 düzeneklik boyutsuz haritada DF bir üs yasası ve düzeneklerin tek eğride toplanmasını veriyor (DF ≈ 5,5ρ<sup>2,5</sup>, benzetim ≈ 3,3ρ<sup>3,0</sup>), ama sınırı 2,6–7,7 kat yüksek öngörüyor. Fark düşük kazançlı çarpma rejiminde en büyük, deney hedef bölgesinde (ρ ≈ 0,3) 2,6 kat ve azalıyor. Bu bölge için çarpmalı modelleme gerekiyor.</li>
+  </ul>
 </section>
 
 <section id="baslangic">
@@ -910,8 +1031,8 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <h2>Sonraki adımlar</h2>
   <ul class="plain">
     <li><b>Görüşülecek konular:</b> başarı ölçütleri, mekanik seçenek (A / B), siparişin EKOM üzerinden üniversite hesabıyla verilmesi.</li>
-    <li><b>4a, literatür sonucunun yeniden üretimi:</b> önce Ghaffari 2013'ün frekans ve rejim sonuçları, sonra Sun 2023 (K<sub>p</sub> = 20 / 50); kaynakların oranları ve kontrolcü parametreleri bu çalışmanın tanımlarına çevrilir.</li>
-    <li><b>4b:</b> iki girişli DF türetimi (adım adım), \(\gamma_{sınır} \approx 3\rho^3\) ilişkisiyle ve simülasyonla karşılaştırma; sönümlü / zorlanmış / kalıcı çevrim / kararsız ayrımı.</li>
+    <li><b>Yöntem tarafında (6. bölüm):</b> temas sönümünün ve dişli sertliğinin düzenekte tanılanması (DF'nin en duyarlı olduğu iki parametre); düşük kazançlı çarpma rejimi için çarpmalı model; Sun 2023 için hız döngüsü katsayılarının yazarlardan istenmesi ya da düzenekte K<sub>p</sub> = 20 / 50 eşdeğeri bir sınama.</li>
+    <li><b>Deney tasarımına etkisi:</b> her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm (iki kararlılık); zorlama frekansının çevrim frekansının harmoniklerinden uzak seçilmesi.</li>
     <li><b>Aynı anda:</b> sipariş (EKOM + yerli kalemler), firmware iskeleti ve MATLAB kayıt betiği, kaplin ve gövde tasarımı.</li>
     <li><b>Malzeme gelince:</b> kalibrasyon, sistem tanılama, ardından açı × kazanç deneyleri.</li>
   </ul>
