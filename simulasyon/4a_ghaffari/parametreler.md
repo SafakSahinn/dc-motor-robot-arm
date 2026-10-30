@@ -47,7 +47,7 @@ Döner tabla sürtünmeleri (Ek): cm = 0,0421 N·m·s/rad, cle = 0,0982 N·m·s/
 
 ## Kararlar
 
-1. **Şekil 7/8'in r_gs değerleri.** Metindeki "aynı r_gs değerlerinde (0,9 ve 0,17) aynı rejimler yine görülüyor" cümlesi, ωa sabit tutularak farklı kazançlarla tekrarlanan simülasyonlara ait okunuyor. Kazançlar sabitken r_gs ∝ 1/ωa olduğundan iki şeklin oranı 99/11 = 9 olmalı; parametrelerden çıkan 0,99/0,11 bunu veriyor, 0,9/0,17 (oran 5,3) vermiyor. Karar: Şekil 7/8 parametrelerle (r_gs = 0,99 ve 0,11) üretilir; ek olarak ωa sabitken kazançlar r_gs = 0,9 ve 0,17 verecek biçimde ayarlanıp aynı rejimlerin görüldüğü sınanır.
+1. **Şekil 7/8'in r_gs değerleri: makale içi tutarsızlık.** Şekil başlıklarında kp = 11,67, kv = 20 ile r_gs = 0,9 (ωa = 11 Hz) ve 0,17 (ωa = 99 Hz) yazıyor; aynı parametrelerden denklem 7 ile 0,99 ve 0,11 çıkıyor. Kazançlar sabitken r_gs ∝ 1/ωa olduğundan iki şeklin oranı 99/11 = 9 olmalı; 0,9/0,17 = 5,3. Tek bir tanım ikisini birden açıklamıyor: 0,9 için R ≈ 2,57, 0,17 için R ≈ 0,89 gerekirdi. Karar: Şekil 7/8 makalenin parametreleriyle (r_gs = 0,99 ve 0,11) üretilir; ek olarak ωa sabitken kazançlar r_gs = 0,9 ve 0,17 verecek biçimde ayarlanıp aynı rejimlerin görüldüğü sınanır. Şekillerden okunan değerler (Adım 4'te karşılaştırma için): Şekil 7 ≈ 10,3 Hz, θd genliği ≈ 1,05°; Şekil 8 ≈ 2,4 Hz, θd ±0,10°'de düzleşiyor.
 2. **Şekil 7/8'in sürtünme ve sönümü.** Makalede verilmiyor. Karar: viskoz terimler döner tabladan (cm = 0,0421, cle = 0,0982), Coulomb sürtünme sıfır (makalenin DF analizindeki varsayımla aynı). Döner tabla taraması makalenin verdiği gerçek sürtünmelerle yapılır.
 
 ## Adımlar
