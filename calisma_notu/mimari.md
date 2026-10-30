@@ -103,9 +103,9 @@ Bilgisayar tarafı MATLAB'da yazılır (`serialport` ile seri haberleşme). Sim�
 
 | Model | Amaç | Durum |
 |---|---|---|
-| Sistem tanılama modelleri: motor elektrik (R, k_t), mekanik (J_M, b, F_C), dişli teması (K_s), boşluk (2r), sürücü ölü bandı | Benzetim ve DF parametreleri | Deney tarifleri literatürde (Yamada 2016, Malik 2009) |
+| Sistem tanılama modelleri: motor elektrik (R, k_t), mekanik (J_M, b, F_C), dişli teması (K_s), boşluk (2r), sürücü ölü bandı, sürücü akım (tork) sınırı | Benzetim ve DF parametreleri | Deney tarifleri literatürde (Yamada 2016, Malik 2009) |
 | Sayısal benzetim: iki kütle + boşluk + yerçekimi + Stribeck sürtünmesi + nicemleme + ayrık zaman + sensör gecikmesi (AS5600 filtresi 0,286 ms ve I²C okuma süresi) | "Kesin" referans; rejim ayrımı | Var (`simulasyon/`); tanılanan parametrelerle ve sensör gecikmesiyle güncellenecek |
-| Ghaffari / simetrik DF | Yerçekimsiz referans öngörü (B1'deki karşılaştırma) | 4a'da yeniden üretilecek |
+| Ghaffari / simetrik DF | Yerçekimsiz referans öngörü (B1'deki karşılaştırma) | 4a'da yeniden üretildi (`simulasyon/4a_ghaffari/`): tam DF ve sürtünmesiz benzetim birebir; sürtünmeli uyum için tork sınırı gerekti |
 | İki girişli DF | Önerilen öngörü | 4b'de türetilecek |
 | Kesin parçalı doğrusal çözüm (Kollár / Esbrook yöntemi) | DF'nin bozulduğu rejimde referans | Gerekirse |
 
@@ -127,3 +127,6 @@ Bilgisayar tarafı MATLAB'da yazılır (`serialport` ile seri haberleşme). Sim�
 8. Döngü zamanlaması: 1 kHz'te titreşim (jitter) ve I²C süresi ölçümü.
 9. Hız kestirimi: bilinen sabit hızda iki yöntemin (ardışık fark + filtre, kenar zamanlaması) karşılaştırılması.
 10. Gövde ve kol rezonansı: darbe testi; ilk rezonansın ≥ 100 Hz olduğunun doğrulanması.
+11. Akım ve tork sınırı: DRV8874'ün donanım akım sınırı ve firmware'deki yazılım sınırı kilitli rotorda INA228 ile ölçülür; tork sınırı = k_t · I_sınır (k_t 1. adımdaki tanılamadan). Benzetimde ve DF'de aynı değer kullanılır; deney kayıtlarına sürücü ayarı ve ölçülen sınır yazılır.
+
+**Neden ayrı bir adım?** Ghaffari 2013'ün yeniden üretiminde (4a, `simulasyon/4a_ghaffari/tabla_sonuclar.md`) makaledeki sürtünmeli benzetimin deneye uyumu (%2–3) ancak makalede hiç belirtilmeyen bir motor tork sınırı eklenince yakalandı: sınırsız modelde hata %18–20, Tmax ≈ 360 N·m ile %3,9; sınır çok düşükse (≤ 40 N·m) salınım tamamen kayboluyor. Yani tork (akım) sınırı kalıcı çevrimin genliğini ve frekansını doğrudan belirliyor. Bu çalışmada aynı rolü DRV8874'ün ≈ 2 A'lik sınırı oynayacak; ölçülmeden modele varsayılan değer girilmemeli.
