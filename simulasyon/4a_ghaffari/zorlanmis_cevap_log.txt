@@ -1,0 +1,29 @@
+D: mgl = 0.240 N m, gamma(90°) = 0.92, Tmax = 0.49 N m
+1) 90°, küçük bozucu                     r_gs 0.60, bozucu 0.03 N m @ 3 Hz: zorlanmış cevap, genlik 0.346°, f 3.00 Hz, zorlama payı 1.00, boşlukta geçen süre %0
+2) 90°, ön yükü aşan bozucu              r_gs 0.60, bozucu 0.30 N m @ 3 Hz: zorlanmış cevap, genlik 8.256°, f 3.00 Hz, zorlama payı 1.00, boşlukta geçen süre %13
+3) 0°, küçük bozucu (çevrim bölgesi)     r_gs 0.60, bozucu 0.03 N m @ 3 Hz: zorlanmış cevap, genlik 2.384°, f 3.00 Hz, zorlama payı 1.00, boşlukta geçen süre %61
+3b) 0°, bozucusuz                        r_gs 0.60, bozucu 0.00 N m @ 3 Hz: sönümlü titreşim, genlik 0.178°, f 1.30 Hz, zorlama payı NaN, boşlukta geçen süre %100
+3c) 0°, güçlü çevrim + küçük bozucu      r_gs 0.90, bozucu 0.03 N m @ 3 Hz: zorlanmış cevap, genlik 5.315°, f 6.43 Hz, zorlama payı 0.89, boşlukta geçen süre %26
+3e) 3c, bozucu 4,5 Hz (harmonik çevrimden uzak) r_gs 0.90, bozucu 0.03 N m @ 4.5 Hz: kalıcı çevrim, genlik 5.222°, f 6.43 Hz, zorlama payı 0.00, boşlukta geçen süre %26
+3d) 0°, güçlü çevrim, bozucusuz          r_gs 0.90, bozucu 0.00 N m @ 3 Hz: sönümlü titreşim, genlik 0.178°, f 1.30 Hz, zorlama payı NaN, boşlukta geçen süre %100
+4) iki kararlılık, 90°, r_gs 0.88, tork sınırsız. DF: C, f 6.60 Hz, eşik a1 = 2.05 r, çevrim a2 = 3.39 r
+   bozucu 0.00 N m @ 6.60 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 0.00 Hz)
+   bozucu 0.02 N m @ 6.60 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 0.00 Hz)
+   bozucu 0.05 N m @ 6.60 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 0.00 Hz)
+   bozucu 0.10 N m @ 6.60 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 6.24 Hz)
+   bozucu 0.20 N m @ 6.60 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 7.66 Hz)
+   bozucu 0.40 N m @ 6.60 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 8.13 Hz)
+4) iki kararlılık, 90°, r_gs 0.95, tork sınırsız. DF: C, f 7.12 Hz, eşik a1 = 1.76 r, çevrim a2 = 5.19 r
+   bozucu 0.00 N m @ 7.12 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 0.00 Hz)
+   bozucu 0.02 N m @ 7.12 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 0.00 Hz)
+   bozucu 0.05 N m @ 7.12 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 0.00 Hz)
+   bozucu 0.10 N m @ 7.12 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 8.13°, f 7.08 Hz)
+   bozucu 0.20 N m @ 7.12 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 8.14°, f 7.08 Hz)
+   bozucu 0.40 N m @ 7.12 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 8.14°, f 7.08 Hz)
+4) iki kararlılık, 90°, r_gs 1.00, tork sınırsız. DF: C, f 7.48 Hz, eşik a1 = 1.46 r, çevrim a2 = 8.08 r
+   bozucu 0.00 N m @ 7.48 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 13.09°, f 7.48 Hz)
+   bozucu 0.02 N m @ 7.48 Hz, 3 s sonra kesildi -> sönümlü titreşim (genlik 0.00°, f 8.01 Hz)
+   bozucu 0.05 N m @ 7.48 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 13.09°, f 7.48 Hz)
+   bozucu 0.10 N m @ 7.48 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 13.09°, f 7.48 Hz)
+   bozucu 0.20 N m @ 7.48 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 13.09°, f 7.48 Hz)
+   bozucu 0.40 N m @ 7.48 Hz, 3 s sonra kesildi -> kalıcı çevrim (genlik 13.09°, f 7.48 Hz)

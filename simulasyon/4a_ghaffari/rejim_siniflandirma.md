@@ -52,3 +52,31 @@ Testlerin ilk sürümünde iki hata görüldü ve düzeltildi: (i) sönüm başl
 - Aynı fonksiyon deney kayıtlarına doğrudan uygulanır (t, θ_kol − θ_hedef).
 - Deneyde zorlama yalnız bilinçli olarak verildiğinde (f_z) aranır; tabandaki titreşim kaynakları (motor dişli kademesi, PWM) için ayrıca spektrum kontrolü gerekebilir.
 - Sınıflandırma açı × kazanç taramasında her noktaya otomatik uygulanır (mimari.md, 4.2).
+
+## Ek: yerçekimli düzenekte zorlanmış cevap ve iki kararlılık
+
+Kod: [`zorlanmis_cevap.m`](zorlanmis_cevap.m). Kayıt: [`zorlanmis_cevap_log.txt`](zorlanmis_cevap_log.txt). Düzenek D (R = 1, mgℓ = 0,24 N·m, γ(90°) = 0,92), P–PI, kola sinüs yük bozucusu `p.dA sin(2π p.df t)` (`kol_benzetim`, isteğe bağlı `p.dT`'de kesilir).
+
+| Durum | r_gs | Bozucu | Sınıf | Genlik | f | Boşlukta geçen süre |
+|---|---|---|---|---|---|---|
+| 90°, küçük bozucu | 0,6 | 0,03 N·m, 3 Hz | zorlanmış cevap | 0,35° | 3,00 Hz | %0 |
+| 90°, ön yükü aşan bozucu | 0,6 | 0,30 N·m, 3 Hz | zorlanmış cevap | 8,3° | 3,00 Hz | %13 |
+| 0°, küçük bozucu | 0,6 | 0,03 N·m, 3 Hz | zorlanmış cevap | 2,4° | 3,00 Hz | %61 |
+| 0°, bozucusuz | 0,6 | yok | sönümlü titreşim | 0,18° | 1,30 Hz | %100 |
+| 0°, güçlü çevrim + bozucu | 0,9 | 0,03 N·m, 4,5 Hz | **kalıcı çevrim** | 5,2° | 6,43 Hz | %26 |
+| 0°, aynı, bozucu 3 Hz | 0,9 | 0,03 N·m, 3 Hz | zorlanmış cevap³ | 5,3° | 6,43 Hz | %26 |
+
+³ Çevrim frekansı (6,43 Hz) bozucunun 2. harmoniğine (6 Hz) yakın olduğu için güç harmonik bandına sayılıyor. Zorlama frekansı çevrimin harmoniklerinden uzak seçilmeli; deneyde zorlama frekansı buna göre planlanır.
+
+- 90°'de yerçekimi ön yükü küçük bozucuda temasın kopmasını önlüyor: cevap doğrusal ve yalnız zorlama frekansında. Bozucu ön yükü aşınca temas kopuyor, cevap yine zorlama frekansında ama genliği büyüyor.
+- 0°'de kol, küçük başlangıç sapmasında boşluğun içinde sarkaç gibi asılı kalıyor (1,3 Hz, temas yok); bozucu dişleri temasa getirince r_gs 0,6'da salınım bozucuya kilitleniyor, r_gs 0,9'da kendi frekansında (6,43 Hz) çevrim sürüyor.
+
+**İki kararlılık (yerçekimli DF'nin öngörüsü):** 90°, tork sınırsız; bozucu DF'nin çevrim frekansında 3 s uygulanıp kesiliyor, sınıf t > 4 s'den.
+
+| r_gs | DF | Bozucu 0 / 0,02 / 0,05 / 0,10 / 0,20 / 0,40 N·m |
+|---|---|---|
+| 0,88 | çevrim, 6,60 Hz | hepsi sönüyor (bu kazançta benzetimde çevrim yok: DF'nin kazanç hatası) |
+| 0,95 | çevrim, 7,12 Hz | sönüyor / sönüyor / sönüyor / **çevrim 7,08 Hz** / çevrim / çevrim |
+| 1,00 | çevrim, 7,48 Hz | çevrim 7,48 Hz / sönüyor / çevrim / çevrim / çevrim / çevrim |
+
+r_gs 0,95'te denge küçük sarsıntıya karşı kararlı, 0,10 N·m'lik sarsıntı kalıcı çevrimi başlatıyor; çevrim frekansı DF'ninkiyle %0,6 farklı. Benzetim haritalarındaki "başlangıç koşuluna bağlı" (`*`) noktaların açıklaması bu. Deney için sonuç: her noktada küçük ve büyük sarsıntılı iki ölçüm gerekir; sınır "salınım başlatılabilir" ve "kendiliğinden başlar" diye iki eğri olarak raporlanmalı.

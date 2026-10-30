@@ -21,8 +21,15 @@ function out = kol_benzetim(p, theta0_deg, wc)
 % üçüncü argüman wc yerine konum kazancı kp [1/s] olarak okunur:
 %   wcmd = kp e,  tau = KV (wcmd - v) + KI z,  z = sum(wcmd - v)*Ts,  v = motor hızı
 %   KV = kv kr^2, KI = kr^2/Ti (Ghaffari'nin motor tarafı kv, Ti'sinden); r_gs = sqrt(kp KV / Ks).
+%
+% İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df t) [N m] kola etki eder,
+% p.dT verilirse t >= dT'de kesilir. p.x0, p.z0: önceki benzetimin son durumundan sürdürme.
 
 th_ref = deg2rad(theta0_deg(:)');
+dA = 0;  df = 0;  dT = Inf;
+if isfield(p,'dA'), dA = p.dA;  df = p.df; end
+if isfield(p,'dT'), dT = p.dT; end
+bozucu = @(tt) dA*sin(2*pi*df*tt)*(tt < dT);
 wc     = wc(:)';
 n      = numel(th_ref);
 J      = p.JM + p.JL;
@@ -75,12 +82,14 @@ for i = 0:nStep-1
         z  = z + iz*p.Ts .* ~doy;                  % basit anti-windup
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
     end
-    k1 = f(x);  k2 = f(x+0.5*p.dt*k1);  k3 = f(x+0.5*p.dt*k2);  k4 = f(x+p.dt*k3);
+    tt = i*p.dt;
+    k1 = f(x, tt);  k2 = f(x+0.5*p.dt*k1, tt+0.5*p.dt);  k3 = f(x+0.5*p.dt*k2, tt+0.5*p.dt);
+    k4 = f(x+p.dt*k3, tt+p.dt);
     x = x + p.dt/6*(k1+2*k2+2*k3+k4);
     ii = i+1;
     if ii > iAn && mod(ii-iAn,p.dec)==0
         k = k+1;
-        [~,ts] = f(x);
+        [~,ts] = f(x, tt+p.dt);
         TH(k,:) = x(3,:);  DEL(k,:) = x(1,:)-x(3,:);  TAU(k,:) = ts;  U(k,:) = u;
     end
 end
@@ -113,7 +122,7 @@ sapma = abs(thd - theta0_deg(:)');
 out.kararsiz = mean(sapma(end-round(end/3):end,:)) > 10 | max(sapma) > 45;
 out.sinif(out.kararsiz) = 4;
 
-    function [dx, ts] = f(x)
+    function [dx, ts] = f(x, tt)
         phi = x(1,:); dphi = x(2,:); th = x(3,:); dth = x(4,:);
         d = phi - th;  dd = dphi - dth;
         ts = zeros(size(d));
@@ -128,7 +137,7 @@ out.sinif(out.kararsiz) = 4;
         dx = [dphi;
               (u - p.bM*dphi - tf - ts)/p.JM;
               dth;
-              (ts - p.bL*dth - p.mgl*sin(th))/p.JL];
+              (ts - p.bL*dth - p.mgl*sin(th) + bozucu(tt))/p.JL];
     end
 end
 
