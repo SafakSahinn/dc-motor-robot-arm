@@ -124,6 +124,8 @@ ol.log > li::before{content:counter(adim); font:700 22px/1 var(--display); color
 .diag .d-mag{fill:var(--warn)}
 .diag .d-lead{stroke:var(--muted); stroke-width:1}
 .diag .d-arrow{fill:none; stroke:var(--warn); stroke-width:1.8}
+.diag .d-cite{fill:none; stroke:var(--muted); stroke-width:1.6}
+.diag .d-ahead{fill:var(--muted)}
 .diag .w1{stroke:#c0392b; stroke-width:2.2} .diag .w2{stroke:var(--muted); stroke-width:2.2}
 .diag .w3{stroke:#c9a400; stroke-width:2.2} .diag .w4{stroke:#2e8b57; stroke-width:2.2}
 .diag .w5{stroke:#2f6db5; stroke-width:2.2} .diag .w6{stroke:var(--ink); stroke-width:2.2}
@@ -586,6 +588,57 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <tr><td><a href="https://doi.org/10.1109/TAES.2025.3584008">Sun ve ark. 2025, IEEE TAES</a></td><td>Gözlemci kazancı + boşluk → limit cycle; DF ile tahmin; takip hatasına göre ayar.</td><td>Yerçekimi yok; ayar takip hatasına göre, burada açıya göre.</td></tr>
     <tr><td><a href="https://doi.org/10.1109/AMC51637.2022.9729289">Padron ve ark. 2022, IEEE AMC</a></td><td>Sürtünme sıfır hızda, boşluk sıfır torkta tetiklenir.</td><td>Hipotezimizin tek cümlelik çıkış noktası.</td></tr>
   </table></div>
+  <h3>Kaynaklar arası bağlantı</h3>
+  <p>En yakın beş çalışma birbirinden bağımsız değil; aralarında doğrudan bir atıf zinciri var (OpenAlex atıf verisi, J. Wang 2024 ve C. Wang 2017 için kaynakçadan doğrulandı). Dört ayrı kurumdan dört ayrı grup; ortak yazar yok.</p>
+  <div class="tbl"><svg class="diag" viewBox="0 0 760 300" role="img" aria-label="Atıf zinciri: C. Wang 2017 Ghaffari 2013'e atıf yapıyor; Sun 2023 Ghaffari 2013'e ve C. Wang 2017'ye; Bai 2024 C. Wang 2017'ye ve Sun 2023'e; J. Wang 2024 yalnızca C. Wang 2017'ye">
+    <defs><marker id="ah-cite" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="d-ahead" d="M0,0 L10,5 L0,10 z"/></marker></defs>
+    <path class="d-cite" d="M91,120 Q91,18 407,60" marker-end="url(#ah-cite)"/>
+    <path class="d-cite" d="M166,151 L203,151" marker-end="url(#ah-cite)"/>
+    <path class="d-cite" d="M356,138 L407,92" marker-end="url(#ah-cite)"/>
+    <path class="d-cite" d="M356,150 Q640,150 660,105" marker-end="url(#ah-cite)"/>
+    <path class="d-cite" d="M356,166 L591,236" marker-end="url(#ah-cite)"/>
+    <path class="d-cite" d="M560,71 L591,71" marker-end="url(#ah-cite)"/>
+    <rect class="d-body" x="16" y="120" width="150" height="62" rx="6"/>
+    <text class="d-lbl" x="91" y="142" text-anchor="middle">Ghaffari 2013</text>
+    <text class="d-sm" x="91" y="159" text-anchor="middle">IEEE/ASME TMECH</text>
+    <text class="d-sm" x="91" y="174" text-anchor="middle">K. N. Toosi, İran</text>
+    <rect class="d-body" x="206" y="120" width="150" height="62" rx="6"/>
+    <text class="d-lbl" x="281" y="142" text-anchor="middle">C. Wang 2017</text>
+    <text class="d-sm" x="281" y="159" text-anchor="middle">IEEE TIE</text>
+    <text class="d-sm" x="281" y="174" text-anchor="middle">Harbin</text>
+    <rect class="d-acc" x="410" y="40" width="150" height="62" rx="6"/>
+    <text class="d-lbl" x="485" y="62" text-anchor="middle">Sun 2023</text>
+    <text class="d-sm" x="485" y="79" text-anchor="middle">IEEE TIE</text>
+    <text class="d-sm" x="485" y="94" text-anchor="middle">Nanjing (NJUST)</text>
+    <rect class="d-body" x="594" y="40" width="150" height="62" rx="6"/>
+    <text class="d-lbl" x="669" y="62" text-anchor="middle">Bai 2024</text>
+    <text class="d-sm" x="669" y="79" text-anchor="middle">IEEE TPEL</text>
+    <text class="d-sm" x="669" y="94" text-anchor="middle">Xi'an</text>
+    <rect class="d-body" x="594" y="210" width="150" height="62" rx="6"/>
+    <text class="d-lbl" x="669" y="232" text-anchor="middle">J. Wang 2024</text>
+    <text class="d-sm" x="669" y="249" text-anchor="middle">Nonlinear Dyn.</text>
+    <text class="d-sm" x="669" y="264" text-anchor="middle">Nanjing (NJUST)</text>
+    <rect class="d-body" x="16" y="232" width="14" height="10" rx="2"/>
+    <text class="d-sm" x="36" y="241">DF ile salınım öngörüsü, yerçekimsiz</text>
+    <rect class="d-acc" x="16" y="252" width="14" height="10" rx="2"/>
+    <text class="d-sm" x="36" y="261">Yerçekimi modelde, DF analizi yok</text>
+    <path class="d-cite" d="M16,281 L44,281" marker-end="url(#ah-cite)"/>
+    <text class="d-sm" x="52" y="285">kaynaktan ona atıf yapan çalışmaya</text>
+  </svg></div>
+  <div class="tbl"><table>
+    <tr><th>Çalışma</th><th>DF ile salınım öngörüsü</th><th>Yerçekimi modelde</th><th>Salınımı bastırma yolu</th><th>Atıf yaptığı</th></tr>
+    <tr><td>Ghaffari 2013</td><td>✓</td><td>✗</td><td>yalnız analiz</td><td>—</td></tr>
+    <tr><td>C. Wang 2017</td><td>✓</td><td>✗</td><td>kontrolcü ayarı</td><td>Ghaffari 2013</td></tr>
+    <tr><td>Sun 2023</td><td>✗</td><td>✓</td><td>çift motorla ön yük</td><td>Ghaffari 2013, C. Wang 2017</td></tr>
+    <tr><td>Bai 2024</td><td>✓</td><td>✗</td><td>gözlemci</td><td>C. Wang 2017, Sun 2023</td></tr>
+    <tr><td>J. Wang 2024</td><td>✓</td><td>✗</td><td>gözlemci (NESO)</td><td>C. Wang 2017</td></tr>
+  </table></div>
+  <ul class="plain">
+    <li><b>Kök:</b> Ghaffari 2013, boşluklu eksendeki salınımı tanımlama fonksiyonuyla hesaplıyor ve sertlik oranı \(r_{gs}\) ile rejimlere ayırıyor.</li>
+    <li><b>Köprü:</b> C. Wang 2017 aynı çerçeveyi iki kütleli sisteme taşıyor; \(r_s\) oranı \(r_{gs}\)'nin karşılığı. Sonraki üç çalışmanın hepsi ona atıf yapıyor.</li>
+    <li><b>İki kol:</b> analiz kolu (Ghaffari → C. Wang → Bai, J. Wang) salınımı öngörüyor ama yerçekimini içermiyor; Sun 2023 yerçekimini modelliyor ama öngörü yapmıyor ve tek açıda çalışıyor. Bu çalışma iki kolu birleştiriyor.</li>
+    <li><b>Yeniden üretim sırası:</b> önce Ghaffari 2013 (analiz kolunun temeli), oranlar C. Wang 2017 üzerinden eşlenir, ardından Sun 2023 (yerçekimli tek karşılaştırma noktası).</li>
+  </ul>
   <p>Karşılaştırma listesindeki bütün kaynaklar Framing bölümündeki tabloda. 43 makalenin ayrıntılı notları: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>literatur/okuma_notlari.md</code></a>.</p>
 </section>
 
