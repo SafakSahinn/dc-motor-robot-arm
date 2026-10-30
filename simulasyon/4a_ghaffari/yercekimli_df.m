@@ -41,13 +41,25 @@ kg = o.kg*p.mgl*cos(TH);
 d.beta = beta;  d.n_req = nan(size(TH));  d.f = nan(size(TH));
 d.n1min = nan(size(TH));  d.a1 = nan(size(TH));  d.a2 = nan(size(TH));
 d.A_th = nan(size(TH));   d.sinif = repmat('.', size(TH));
-M = [p.JM, p.bM + p.KV, p.KI];                     % M(s) = Jm s^2 + cm s + C s (polinom)
+% Kontrolcü iki polinomla: u = -(cv(s)/s) s phi - (pc(s)/s) th  (hata = -th, hedef 0)
+%   P-PI: cv = [KV KI], pc = kp [KV KI]      PID (p.kontrol ~= 'PPI', üçüncü argüman wc):
+%   cv = [Kd 0], pc = [Kp Ki], Kp = J wc^2, Kd = 1,4 J wc, Ki = Kp wc / 4 (kol_benzetim ile aynı)
+ppi = isfield(p,'kontrol') && strcmp(p.kontrol,'PPI');
+d.rgs = nan(size(TH));
 for m = 1:numel(TH)
+    if ppi
+        cv = [p.KV p.KI];  pc = KP(m)*[p.KV p.KI];
+    else
+        J = p.JM + p.JL;  Kp = J*KP(m)^2;
+        cv = [1.4*J*KP(m) 0];  pc = [Kp Kp*KP(m)/4];
+    end
+    d.rgs(m) = sqrt(pc(1)/p.Ks);
+    M = [p.JM, p.bM + cv(1), cv(2)];               % M(s) = Jm s^2 + cm s + cv(s)
     P = [p.JL, p.bL, kg(m)];
     % dişli eşdeğeri (k + c s) için karakteristik polinom: s M P + (k + c s) Q,
-    % Q = kp (KV s + KI) + s (P + M)
+    % Q = pc(s) + s (P + M)
     c0 = conv([1 0], conv(M, P));
-    Q  = [0 0 KP(m)*[p.KV p.KI]] + conv([1 0], P + M);
+    Q  = [0 0 pc] + conv([1 0], P + M);
     kok = @(k, c) roots(c0 + conv([0 c k], Q));
     kar = @(k, c) any(real(kok(k, c)) > 1e-9);     % kararsız mı
     [a, n1, h] = n1_egrisi(beta(m));
@@ -78,7 +90,7 @@ for m = 1:numel(TH)
         d.a1(m) = a(find(u, 1))*(beta(m) > 0);
         j = find(u, 1, 'last');
         if j == numel(a), d.sinif(m) = 'X';  if doy, d.sinif(m) = 'S'; end, continue; end
-        if doy && ~doyumda_kararsiz(p, P, KP(m), sin(TH(m)), a, n1, h, cs, find(u))
+        if doy && ~doyumda_kararsiz(p, P, cv, pc, sin(TH(m)), a, n1, h, cs, find(u))
             continue;                              % doyum kazancı çevrimi söndürüyor
         end
         % a_j ile a_j+1 arasında doğrusal ara değerle kararlılık sınırı
@@ -98,18 +110,17 @@ for m = 1:numel(TH)
     d.A_th(m) = rad2deg(abs(p.Ks*d.n_req(m) + 1i*wc*ce)*d.a2(m)*p.r/abs(polyval(P, 1i*wc)));
 end
 d.TH = TH;  d.KP = KP;
-d.rgs = sqrt(KP*p.KV/p.Ks);
 end
 
-function var = doyumda_kararsiz(p, P, kp, sth, a, n1, h, cs, iu)
+function var = doyumda_kararsiz(p, P, cv, pc, sth, a, n1, h, cs, iu)
 % Tork sınırı: sat(u) = u - dz_Tmax(u), ön yük u0 (ortalama tork = mgl sin th0).
 % Doyum kazancı n_s kontrolcü çıkışını ölçekler. Dişli eğrisindeki kararsız her a için:
 % n_s'nin kararlılık sınırı ns_m (ikiye bölme), sınırdaki w'de motor komutu genliği
-% U = |T_ux(jw)| A, T_ux = C (kp E/P + jw (1 + E/P)), E = k_e + c_e jw; gerçek doyum kazancı
+% U = |T_ux(jw)| A, T_ux = (pc/s) E/P + cv (1 + E/P), E = k_e + c_e jw; gerçek doyum kazancı
 % n_s(U) > ns_m olan bir a varsa doyum çevrimi söndüremez (var = true).
 var = false;
 [ups, ns] = sat_egrisi(p.mgl*sth/p.Tmax);
-karN = @(k, c, g) any(real(kokN(p, P, kp, k, c, g)) > 1e-9);
+karN = @(k, c, g) any(real(kokN(p, P, cv, pc, k, c, g)) > 1e-9);
 iu = iu(unique(round(linspace(1, numel(iu), min(numel(iu), 60)))));
 gs = linspace(0.01, 1, 40);
 for i = iu
@@ -122,18 +133,18 @@ for i = iu
     if j == numel(gs), continue; end
     lo = gs(j);  hi = gs(j+1);                     % lo kararlı, hi kararsız
     for it = 1:20, mid = (lo+hi)/2; if karN(kk, cc, mid), hi = mid; else, lo = mid; end, end
-    z = kokN(p, P, kp, kk, cc, hi);  [~, i0] = max(real(z));  w = abs(imag(z(i0)));
+    z = kokN(p, P, cv, pc, kk, cc, hi);  [~, i0] = max(real(z));  w = abs(imag(z(i0)));
     s = 1i*w;  E = kk + cc*s;  Pw = polyval(P, s);
-    U = abs((p.KV + p.KI/s)*(kp*E/Pw + s*(1 + E/Pw)))*a(i)*p.r;
+    U = abs(polyval(pc, s)/s*E/Pw + polyval(cv, s)*(1 + E/Pw))*a(i)*p.r;
     if interp1(ups, ns, min(max(U/p.Tmax, ups(1)), ups(end))) > lo, var = true; return; end
 end
 end
 
-function z = kokN(p, P, kp, k, c, g)
+function z = kokN(p, P, cv, pc, k, c, g)
 % doyum kazancı g ile karakteristik polinom:
-% s Mg (P + E) + E g kp (KV s + KI) + s E P,  s Mg = s (Jm s^2 + cm s) + g s (KV s + KI)
-Mg = [p.JM, p.bM + g*p.KV, g*p.KI];  E = [c k];
-z = roots(conv([1 0], conv(Mg, P + [0 E])) + [0 0 0 conv(E, g*kp*[p.KV p.KI])] ...
+% s Mg (P + E) + E g pc(s) + s E P,  Mg = Jm s^2 + cm s + g cv(s)
+Mg = [p.JM, p.bM + g*cv(1), g*cv(2)];  E = [c k];
+z = roots(conv([1 0], conv(Mg, P + [0 E])) + [0 0 0 conv(E, g*pc)] ...
           + [0 conv([1 0], conv(E, P))]);
 end
 

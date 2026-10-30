@@ -25,7 +25,7 @@ fprintf('2) a = 0,4, b = 1,5: n0 = %.6f (0,5), n1 = %.6f (1)\n', n0, n1);
 x = [1.5 3 10];  ng = 1 - 2/pi*(asin(1./x) + sqrt(1-1./x.^2)./x);  n1 = arrayfun(@(a) nth(dz, a), x);
 ok(3) = max(abs(n1-ng)) < 1e-12;  fprintf('3) b = 0: n1 = %s, Ghaffari dn. 10: %s\n', num2str(n1,'%.6f '), num2str(ng,'%.6f '));
 p = secenek_duzenek('D');  wa = sqrt(p.Ks/p.JL);
-p.KV = wa*(p.JM+p.JL);  p.KI = 0.05*wa*p.KV;
+p.kontrol = 'PPI';  p.KV = wa*(p.JM+p.JL);  p.KI = 0.05*wa*p.KV;
 rgs = [0.3 0.5 0.7 0.9];  kp = rgs.^2*p.Ks/p.KV;
 q = p;  q.mgl = 0;
 d = yercekimli_df(q, 0, kp, 'kg', false, 'cs', false);

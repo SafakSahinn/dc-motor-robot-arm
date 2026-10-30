@@ -49,3 +49,19 @@ Katkıların ayrışması (D, B1 medyanı): sönümsüz %30 → temas sönümüy
 - **A için önceki yorum düzeltilmeli:** [`kopru_7b_sonuclar.md`](kopru_7b_sonuclar.md) ve [`secenekler_sonuclar.md`](secenekler_sonuclar.md)'de A'daki DF bozulması (frekans 2–5× yüksek) R = 0,17'ye bağlanmıştı. Temas sönümü eklenince A'nın frekans oranı 0,51'den 0,94'e çıktı: bozulmanın büyük kısmı eksik temas sönümünden. Hafif kolda c_s görece büyük (temas modu sönüm oranı R'ye bağlı).
 - **Belirsizlik:** K_s (10) ve c_s (0,02) tahmin; c_s'nin etkisi büyük olduğu için düzenekte tanılanmalı.
 - r_gs ≥ 1,0'da DF tam temasta kararsızlık öngörür; tork sınırıyla bu "S" (doyumla sınırlanan salınım) olarak işaretlenir, benzetimde düzensiz ya da çarpmalı salınım görülür. Bu bölgenin ayrıntısı DF'nin kapsamı dışında.
+
+## Ek: γ_sınır ≈ 3ρ³ yasası (2026-10-18 boyutsuz haritası)
+
+Kod: [`yasa_df.m`](yasa_df.m). Kayıt: [`yasa_df_log.txt`](yasa_df_log.txt). DF'ye PID desteği eklendi (kontrolcü iki polinomla: hız geri beslemesi [K_d 0] ve konum [K_p K_i]; P–PI'de [K_V K_I] ve k_p[K_V K_I]). Boyutsuz haritanın 24 düzeneği (uç kütlesi 0/20/50/100 g × 2r 1,5/3/5° × K_s 10/30; R 0,09–1,38; ideal model, PID) aynı açı ve kazanç ızgarasında DF ile hesaplandı; γ_sınır, 0°'dan başlayan kesintisiz salınım bandının bittiği γ.
+
+| ρ | 0,13 | 0,18 | 0,23 | 0,28 | 0,33 |
+|---|---|---|---|---|---|
+| Benzetim, medyan (düzenekler arası max/min) | 0,006 (2,2×) | 0,017 (1,9×) | 0,035 (2,9×) | 0,066 (2,1×) | 0,14 (3,7×) |
+| Yerçekimli DF | 0,030 (2,0×) | 0,070 (1,2×) | 0,129 (1,5×) | 0,248 (1,3×) | 0,387 (1,4×) |
+| DF / benzetim (düzenek bazında medyan) | 5,6 | 4,3 | 3,8 | 3,9 | 2,6 |
+
+Üs yasası uyumu (ρ 0,08–0,33): benzetim γ_sınır ≈ 3,3 ρ^3,0; DF γ_sınır ≈ 5,5 ρ^2,5. Tork sınırının DF'de etkisi yok (bu düzeneklerde salınım genliği doyuma ulaşmadan sınır belirleniyor).
+
+- DF yasanın **biçimini** veriyor: bir üs yasası ve düzeneklerin tek bir eğri üzerinde toplanması (dağılım 1,2–2×). Üs 2,5'e karşı 3,0.
+- DF sınırı **2,6–7,7 kat yüksek** öngörüyor (salınımın daha büyük ön yükte de sürdüğünü söylüyor); sapma düşük kazançta en büyük. Bu bölge Ghaffari'nin çarpma rejimi (r_gs ≲ 0,4), tek harmonik varsayımının en zayıf olduğu yer. Hata yönü D haritasındaki (kritik kazancın düşük öngörülmesi) ile aynı.
+- Yasanın analitik karşılığı için DF tek başına yeterli değil; çarpma rejiminde kesin parçalı çözüm (Kollár 2003, Esbrook 2014 yaklaşımı) ya da çarpmalı DF gerekir. ρ ≳ 0,3 (deney hedef bölgesi 0,25–0,40) tarafında fark 2,6× ve azalıyor.

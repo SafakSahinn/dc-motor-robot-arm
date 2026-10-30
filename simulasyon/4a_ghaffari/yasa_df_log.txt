@@ -1,0 +1,15 @@
+gamma_sınır: medyan (düzenekler arası max/min), yalnız sonlu ve > 0 olanlar
+  rho |           benzetim |      DF (Tmax ile) |      DF (Tmax yok) | 3 rho^3 | DF/benzetim (düzenek bazında medyan, en çok sapma)
+ 0.08 |   0.002 (  1.1x)    |   0.012 (  1.7x)    |   0.012 (  1.7x)    |  0.0015 | 7.74 (6.85-7.77, 3 düzenek)
+ 0.13 |   0.006 (  2.2x)    |   0.030 (  2.0x)    |   0.030 (  2.0x)    |  0.0066 | 5.62 (4.95-8.67, 8 düzenek)
+ 0.18 |   0.017 (  1.9x)    |   0.070 (  1.2x)    |   0.070 (  1.2x)    |  0.0175 | 4.27 (3.76-6.85, 10 düzenek)
+ 0.23 |   0.035 (  2.9x)    |   0.129 (  1.5x)    |   0.129 (  1.5x)    |  0.0365 | 3.76 (2.99-7.77, 9 düzenek)
+ 0.28 |   0.066 (  2.1x)    |   0.248 (  1.3x)    |   0.248 (  1.3x)    |  0.0659 | 3.89 (2.27-4.28, 7 düzenek)
+ 0.33 |   0.143 (  3.7x)    |   0.387 (  1.4x)    |   0.387 (  1.4x)    |  0.1078 | 2.57 (2.13-3.43, 4 düzenek)
+ 0.38 |   0.275 (  8.9x)    |   0.636 (  1.3x)    |   0.636 (  1.3x)    |  0.1646 | 1.81 (1.64-1.99, 2 düzenek)
+ 0.43 |   0.277 ( 16.8x)    |     NaN (  NaNx)    |     NaN (  NaNx)    |  0.2385 | -
+ 0.48 |   0.229 (  4.9x)    |     NaN (  NaNx)    |     NaN (  NaNx)    |  0.3318 | -
+benzetim      : gamma_sınır ≈ 3.30 rho^3.03  (rho 0.08-0.33)
+DF (Tmax ile) : gamma_sınır ≈ 5.53 rho^2.49  (rho 0.08-0.33)
+DF (Tmax yok) : gamma_sınır ≈ 5.53 rho^2.49  (rho 0.08-0.33)
+R = J_L/J_M aralığı: 0.09-1.38
