@@ -14,6 +14,7 @@ function out = ghaffari2013(p, kp, kv)
 %   wc  = kp (th_ref - thl)                konum P, yük sensörü
 %   e_v = kr wc - wm                       hız hatası, motor enkoderi
 %   tau_m = kv e_v + z/Ti,  dz/dt = e_v    "kv + 1/(s Ti)" (denklem 5 ile aynı biçim)
+%   tau_m +-p.Tmax ile sınırlanır (makalede yok; varsayılan Inf); doyumda integral durur.
 % th_ref = 0; başlangıçta yük p.th0 kadar sapmış, motor boşluğun ortasında, durgun.
 
 kp = kp(:)';  kv = kv(:)';  n = numel(kp);
@@ -64,13 +65,15 @@ end
         ts(sol) = min(p.ks*(thd(sol)+p.delta) + p.cs*dthd(sol), 0);
         wc  = kp.*(0 - thl);
         ev  = p.kr*wc - wm;
-        tm  = kv.*ev + z/p.Ti;
+        tm0 = kv.*ev + z/p.Ti;
+        tm  = min(max(tm0, -p.Tmax), p.Tmax);
+        doy = (tm0 > p.Tmax & ev > 0) | (tm0 < -p.Tmax & ev < 0);
         tfm = p.Fcm*tanh(wm/p.veps);
         tfl = p.Fcl*tanh(wl*p.kr/p.veps);
         dx = [wm;
               (tm - p.cm*wm - tfm - ts/p.kr)/p.Jm;
               wl;
               (ts - p.cl*wl - tfl)/p.Jl;
-              ev];
+              ev.*~doy];
     end
 end
