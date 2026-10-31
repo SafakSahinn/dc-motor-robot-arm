@@ -23,3 +23,7 @@ ozel/
 
 # Python önbelleği
 __pycache__/
+
+# Simulink derleme artıkları
+slprj/
+*.slxc
