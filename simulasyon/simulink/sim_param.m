@@ -29,6 +29,23 @@ th0 = S.ref - deg2rad(p.adim);
 S.x0 = [th0; 0; th0; 0];
 S.z0 = 0;
 if isfield(p,'x0'), S.x0 = p.x0(:);  S.z0 = p.z0; end
+% Elektrik motoru (sm_model_kur(..., 'elektrik')). p.mot: 1 gerilim, 2 zıt EMK kompanzasyonu, 3 akım döngüsü.
+% Kol tarafına indirgenmiş eşdeğer ideal motor (Kt = Ke = Km), JGB37-520 12 V 1:30 veri sayfasından:
+%   Km = Vs / w0 (w0 = 333 rpm çıkışta boşta hız), Ra = Km Vs / T_durma (T_durma = 0.49 N m).
+%   Böylece durma torku, boşta hız ve zıt EMK sönümü Km^2/Ra = T_durma/w0 veri sayfasıyla aynı. Akım ölçeği
+%   veri sayfasından farklı (durma 1.42 A, gerçekte 2.3 A; fark dişli verimi): DRV8874'ün 2 A sınırı tork
+%   eşdeğeriyle ölçeklenir, Ilim = (2/2.3) Vs/Ra (yani tork sınırı 0.87 x 0.49 = 0.43 N m).
+%   La tahmini 2.5 mH (elektrik zaman sabiti ~0.3 ms). Akım PI: kutup-sıfır sadeleştirme, bant 500 Hz.
+S.mot = 0;  S.Vs = 12;  S.Km = 1;  S.Ra = 1;  S.La = 1e-3;  S.Ilim = Inf;  S.Kpi = 0;  S.Kii = 0;  S.Tsur = p.dt;
+if isfield(p,'mot') && p.mot > 0
+    S.mot = p.mot;
+    w0 = 333*2*pi/60;  Td = 0.49;
+    S.Km = S.Vs/w0;  S.Ra = S.Km*S.Vs/Td;  S.La = 2.5e-3;
+    S.Ilim = (2/2.3)*S.Vs/S.Ra;
+    if isfield(p,'Ilim'), S.Ilim = p.Ilim; end
+    wi = 2*pi*500;  S.Kpi = S.La*wi;  S.Kii = S.Ra*wi;
+    S.Tsur = 1e-4;
+end
 % blok_ayrik'in Unit Delay başlangıcı: [tampon(21); vhat; yprev; z] (blok_sensor'un ilk çağrısıyla aynı)
 olc = @(x, q) (q > 0)*q*floor(x/max(q,eps)) + (q == 0)*x;
 if S.motorD > 0, yp = olc(S.x0(1), S.qM); else, yp = olc(S.x0(3), S.qL); end

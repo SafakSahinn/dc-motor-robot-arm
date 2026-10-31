@@ -1,4 +1,4 @@
-function sm_model_kur(ad)
+function sm_model_kur(ad, motor)
 % SM_MODEL_KUR  Kolun mekaniğini Simscape fiziksel bloklarıyla kurar (kol_model'den bağımsız çapraz kontrol).
 %
 % Fiziksel ağ (Simscape, mekanik dönel alan):
@@ -10,11 +10,19 @@ function sm_model_kur(ad)
 % Simulink tarafı: blok_ayrik (sensör + kontrolcü, kol_model ile aynı hesap, durumlar Unit Delay'de),
 %                  blok_yuk (sürtünme, yerçekimi, bozucu).
 % Çözücü: global ode4, adım dt (kol_model ile aynı). Çalışma alanında S, Ts, dt, T, dec, gecis gerekir.
+%
+% motor = 'ideal'    (varsayılan) motor = ideal tork kaynağı (kol_benzetim ile aynı varsayım)
+% motor = 'elektrik' Simscape Electrical DC Motor (Ra, La, Km; kol tarafına indirgenmiş eşdeğer) +
+%                    kontrollü gerilim kaynağı (DRV8874 ortalama modeli) + akım sensörü (IPROPI);
+%                    tork komutu -> gerilim çevrimi blok_surucu'da (S.mot = 1, 2, 3), örnekleme Tsur.
+%                    Ek çıkışlar: 3 = akım i [A], 4 = gerilim V [V]. Ek değişken: Tsur.
 if nargin < 1, ad = 'sm_kol_model'; end
+if nargin < 2, motor = 'ideal'; end
+elk = strcmp(motor, 'elektrik');
 kok = fileparts(mfilename('fullpath'));
 if bdIsLoaded(ad), close_system(ad, 0); end
 new_system(ad);  load_system(ad);
-load_system('fl_lib');  load_system('nesl_utility');
+load_system('fl_lib');  load_system('nesl_utility');  if elk, load_system('ee_lib'); end
 fm = 'fl_lib/Mechanical/';
 
 % --- fiziksel bloklar ---
@@ -72,7 +80,14 @@ fb(ad, 'olc_L', 'R2', 'ps_th', 'L1');   fb(ad, 'olc_L', 'R1', 'ps_dth', 'L1');
 % --- sinyal bağlantıları ---
 for i = 1:4, add_line(ad, ['ps_' c{i,1} '/1'], sprintf('mux/%d', i), 'autorouting', 'on'); end
 add_line(ad, 'mux/1', 'yuk/1', 'autorouting', 'on');
-add_line(ad, 'kontrolcu/1', 'yuk/2', 'autorouting', 'on');
+if elk   % motor torku elektrik ağından gelir; tork_m yalnız Stribeck sürtünmesini taşır (yuk'a u = 0)
+    add_block('simulink/Sources/Constant', [ad '/sifir'], 'Value', '0', 'Position', [960 70 990 90]);
+    add_line(ad, 'sifir/1', 'yuk/2', 'autorouting', 'on');
+else
+    add_line(ad, 'kontrolcu/1', 'yuk/2', 'autorouting', 'on');
+    add_block('simulink/Sinks/Terminator', [ad '/v_bos'], 'Position', [1340 300 1360 320]);
+    add_line(ad, 'kontrolcu/3', 'v_bos/1', 'autorouting', 'on');
+end
 add_line(ad, 'saat/1', 'yuk/3', 'autorouting', 'on');
 add_line(ad, 'yuk/1', 'sps_m/1', 'autorouting', 'on');
 add_line(ad, 'yuk/2', 'sps_L/1', 'autorouting', 'on');
@@ -82,6 +97,8 @@ add_line(ad, 'kontrolcu/2', 'durum/1', 'autorouting', 'on');
 add_line(ad, 'mux/1', 'x_out/1', 'autorouting', 'on');
 add_line(ad, 'kontrolcu/1', 'u_out/1', 'autorouting', 'on');
 
+if elk, elektrik_ekle(ad, kok); end
+
 set_param(ad, 'SolverType', 'Fixed-step', 'Solver', 'ode4', 'FixedStep', 'dt', ...
           'StopTime', 'T', 'SaveOutput', 'on', 'OutputSaveName', 'yout', ...
           'SaveFormat', 'Dataset', 'Decimation', 'dec', 'SaveTime', 'off', ...
@@ -90,6 +107,49 @@ set_param(ad, 'SolverType', 'Fixed-step', 'Solver', 'ode4', 'FixedStep', 'dt', .
 save_system(ad, fullfile(kok, [ad '.slx']));
 close_system(ad, 0);
 fprintf('%s.slx kuruldu\n', ad);
+end
+
+function elektrik_ekle(ad, kok)
+% DC motor + DRV8874 (ortalama) + akım ölçümü + firmware'in tork -> gerilim çevrimi.
+ekle(ad, 'ee_lib/Electromechanical/Brushed Motors/DC Motor', 'motor', [120 300], ...
+     'field_option', 'ee.enum.field_option.pm', 'parameterization', 'ee.enum.dcparam_option.circuit_param', ...
+     'Ra', 'S.Ra', 'La', 'S.La', 'emf_or_torque', 'ee.enum.emf_or_torque.kv', ...
+     'Kv', 'S.Km', 'Kv_unit', 'V*s/rad', 'J', '0', 'lam', '0');   % rotor eylemsizliği JM bloğunda
+ekle(ad, 'fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', 'kaynak', [-80 300]);
+ekle(ad, 'fl_lib/Electrical/Electrical Sensors/Current Sensor', 'akim', [20 220]);
+ekle(ad, 'fl_lib/Electrical/Electrical Elements/Electrical Reference', 'etoprak', [20 420]);
+ekle(ad, 'nesl_utility/Simulink-PS Converter', 'sps_V', [-160 220], 'Unit', 'V', ...
+     'FilteringAndDerivatives', 'zero');   % gerilim Tsur'da sabit tutulur (ZOH): türev sıfır
+ekle(ad, 'nesl_utility/PS-Simulink Converter', 'ps_i', [60 140], 'Unit', 'A');
+% elektrik devresi: kaynak L1 -> akım sensörü -> motor L1, motor R1 -> toprak, kaynak R2 -> toprak
+fb(ad, 'kaynak', 'L1', 'akim', 'L1');   fb(ad, 'akim', 'R2', 'motor', 'L1');
+fb(ad, 'motor', 'R1', 'etoprak', 'L1'); fb(ad, 'kaynak', 'R2', 'etoprak', 'L1');
+fb(ad, 'sps_V', 'R1', 'kaynak', 'R1');  fb(ad, 'akim', 'R1', 'ps_i', 'L1');
+% mekanik: motor rotoru JM düğümüne, gövdesi zemine
+fb(ad, 'motor', 'L2', 'JM', 'L1');      fb(ad, 'motor', 'R2', 'zemin', 'L1');
+% sürücü (Tsur örneklemeli, akım PI integrali Unit Delay'de)
+add_block('simulink/User-Defined Functions/MATLAB Function', [ad '/surucu'], 'Position', [1200 420 1300 500]);
+add_block('simulink/Discrete/Unit Delay', [ad '/durum_i'], 'Position', [1200 540 1240 580], ...
+          'InitialCondition', '0', 'SampleTime', 'Tsur');
+add_block('simulink/Signal Routing/Selector', [ad '/sec_w'], 'Position', [1100 470 1130 490], ...
+          'InputPortWidth', '4', 'Indices', '2');
+kod_yaz([ad '/surucu'], fullfile(kok, 'blok_surucu.m'), 'Tsur');
+add_line(ad, 'kontrolcu/1', 'surucu/1', 'autorouting', 'on');
+add_line(ad, 'kontrolcu/3', 'surucu/2', 'autorouting', 'on');
+% akım ölçümü bir Tsur gecikmeli: ADC örneği -> PI hesabı -> PWM bir sonraki periyotta (gerçek firmware sırası)
+add_block('simulink/Discrete/Unit Delay', [ad '/i_adc'], 'Position', [1100 400 1130 430], ...
+          'InitialCondition', '0', 'SampleTime', 'Tsur');
+add_line(ad, 'ps_i/1', 'i_adc/1', 'autorouting', 'on');
+add_line(ad, 'i_adc/1', 'surucu/3', 'autorouting', 'on');
+add_line(ad, 'mux/1', 'sec_w/1', 'autorouting', 'on');
+add_line(ad, 'sec_w/1', 'surucu/4', 'autorouting', 'on');
+add_line(ad, 'durum_i/1', 'surucu/5', 'autorouting', 'on');
+add_line(ad, 'surucu/2', 'durum_i/1', 'autorouting', 'on');
+add_line(ad, 'surucu/1', 'sps_V/1', 'autorouting', 'on');
+add_block('simulink/Sinks/Out1', [ad '/i_out'], 'Position', [1360 140 1390 160], 'Port', '3');
+add_block('simulink/Sinks/Out1', [ad '/V_out'], 'Position', [1360 440 1390 460], 'Port', '4');
+add_line(ad, 'ps_i/1', 'i_out/1', 'autorouting', 'on');
+add_line(ad, 'surucu/1', 'V_out/1', 'autorouting', 'on');
 end
 
 function ekle(ad, lib, ad_blk, xy, varargin)

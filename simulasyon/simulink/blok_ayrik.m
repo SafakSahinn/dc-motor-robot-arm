@@ -1,4 +1,5 @@
-function [u, st1] = ayrik(x, st, S)
+function [u, st1, v] = ayrik(x, st, S)
+% v: kontrolcünün kullandığı hız (sürücünün zıt EMK kompanzasyonu için dışarı verilir)
 % Sensör + kontrolcü, durumsuz yazım (Simscape modeli için). blok_sensor + blok_kontrolcu ile aynı hesap;
 % durumlar persistent yerine dışarıdaki Unit Delay'de tutulur: st = [tampon(21); vhat; yprev; z].
 % Böylece Simscape ağının (Hard Stop yüzünden) yapısal cebirsel döngüsünü Simulink çözebilir.
