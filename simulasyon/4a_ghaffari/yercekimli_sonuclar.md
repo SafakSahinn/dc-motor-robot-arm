@@ -60,6 +60,11 @@ Kod: [`kok_neden_1.m`](kok_neden_1.m), [`kok_neden_1b.m`](kok_neden_1b.m), [`kok
 - Kontrol: her ikisinde de çevrimli 30 hücrede aynı sarsıntıdan sonra 24'ünde çevrim sürüyor; yöntem çevrimi bozmuyor.
 - Sonuç: bu bölgede DF var olmayan bir çevrim öngörüyor. Sistematik düşüklük bir tanım farkı değil, DF'nin kendi hatası. İki kararlılık gerçek ama DF'nin öngördüğünden dar bir kazanç aralığında (90°, r_gs 0,95'teki doğrulama tork sınırsızdı).
 
+**Parça 2: dişlinin DF tanımı tutuyor mu? Evet.** [`kok_neden_2.m`](kok_neden_2.m): beş uyuşmayan hücrede sarsıntının son üç periyodunda ve iki serbest çevrimde dişli sapması ve dişli torku ölçüldü.
+- Sapma tam sinüs değil (2.–10. harmoniklerin payı %12–29; serbest çevrimde %6–16), ortalama sapma DF'nin DC dengesinden biraz düşük (b 0,19–1,17, DF 0,30–1,33).
+- Ama dişli torkunun birinci harmoniğinden ölçülen etkin sertlik DF'ninkiyle aynı: zorlanmış 0,61–0,64 (DF 0,55–0,62), serbest çevrimde 0,47 / 0,89 (DF 0,48 / 0,88). Temas oranı da yakın (sim/DF 0,63–0,76 / 0,55–0,80). Sönüm bileşeni (sanal kısım 0,05–0,11) DF'nin c_s·h'siyle aynı mertebede.
+- Sonuç: dişli ölü bölgesinin tanımlama fonksiyonu doğru; tek harmonik ve DC dengesi varsayımları sonucu bozmuyor. Hatanın kaynağı döngünün geri kalanında (doğrusal kısım, tork sınırı / anti-windup, yerçekiminin doğrusallaştırılması).
+
 ## Ek: γ_sınır ≈ 3ρ³ yasası (2026-10-18 boyutsuz haritası)
 
 Kod: [`yasa_df.m`](yasa_df.m). Kayıt: [`yasa_df_log.txt`](yasa_df_log.txt). DF'ye PID desteği eklendi (kontrolcü iki polinomla: hız geri beslemesi [K_d 0] ve konum [K_p K_i]; P–PI'de [K_V K_I] ve k_p[K_V K_I]). Boyutsuz haritanın 24 düzeneği (uç kütlesi 0/20/50/100 g × 2r 1,5/3/5° × K_s 10/30; R 0,09–1,38; ideal model, PID) aynı açı ve kazanç ızgarasında DF ile hesaplandı; γ_sınır, 0°'dan başlayan kesintisiz salınım bandının bittiği γ.
