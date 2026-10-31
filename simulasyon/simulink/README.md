@@ -35,4 +35,15 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.
      - Kalan farkın kaynağı sayısal: Simscape sabit adımlı çözücüde temas modunu adım boyunca sabit tutuyor, betikteki RK4 her ara aşamada yeniden değerlendiriyor. İlk adımlarda iki model 8 haneye kadar aynı; fark temas anlarında açılıyor ve adım 4 kat küçülünce yaklaşık 4 kat küçülüyor (hücre 2: 6,6e-4° → 1,7e-4°). Geçiş bölgesini 1e-6'dan 1e-8 rad'a daraltmak sonucu değiştirmiyor.
      - Teknik not: Hard Stop ağda cebirsel denklem bırakıyor. Simulink bu yüzden ağı "girdi çıktıyı anında etkiliyor" sayıyor ve geri besleme döngüsünü cebirsel döngü olarak görüyor. Durum tutan (persistent) MATLAB Function blokları böyle bir döngüde çalışamıyor. Çözüm: sensör ve kontrolcü tek bir durumsuz bloğa toplandı (`blok_ayrik.m`, hesap `blok_sensor` + `blok_kontrolcu` ile aynı), durumlar bir Unit Delay'e taşındı. Döngüyü Simulink çözüyor; gerçek bir anlık bağımlılık olmadığından sonuç değişmiyor.
-   - 5b, motorun elektrik tarafı: R, L, zıt EMK, DRV8874 PWM köprüsü, akım sınırı.
+   - **5b, motorun elektrik tarafı. Bitti.** `sm_model_kur(ad, 'elektrik')` → `sm_motor_model.slx`. Simscape Electrical DC Motor (R, L, zıt EMK; kol tarafına indirgenmiş eşdeğer, `sim_param.m`), DRV8874 ortalama gerilim modeli (±12 V doyum, 2 A akım sınırı → 0,43 N·m), IPROPI akım ölçümü. Firmware'in tork → gerilim çevrimi `blok_surucu.m`: mod 1 gerilim, mod 2 zıt EMK kompanzasyonu, mod 3 akım döngüsü (PI, 10 kHz, ADC → PWM bir örnek gecikme).
+     - Tarama `tarama_5b.m` (3 açı × r_gs 0,70–1,40 × 3 başlangıç sapması, iki sensör düzeyi), sınır analizi `analiz_5b.m` → `tarama_5b_log.txt`. Kritik r_gs (30/60/90°):
+
+       | Model | İdeal sensör | Gerçekçi sensör |
+       |---|---|---|
+       | İdeal tork 0,49 N·m | 0,85 / 1,05 / 1,10 | 0,90 / 1,25 / 1,30 |
+       | İdeal tork 0,43 N·m | 0,90 / 1,10 / 1,10 | 1,00 / 1,35 / >1,40 |
+       | Mod 1, 2, 3 | 0,90 / 1,10 / 1,10 | 1,00 / 1,35 / 1,40 |
+
+     - Sonuç: firmware modu salınım sınırını değiştirmiyor. Sınırı kaydıran tek elektrik etkisi DRV8874'ün tork sınırı (0,49 → 0,43 N·m, sınır +0,05–0,10). Sınırda salınım dişli boşluğu çevrimi; zıt EMK sönümü (~7·b_M) bu çevrimin enerji dengesini fark edilir değiştirmiyor.
+     - Sınır tanımı: sınıf ≥ 3 ve genlik > 0,5°. Gerçekçi sensörde AS5600 nicemleme titreşimi (~0,05°) `A_min` eşiğine takılıp tek tük "düzensiz" sayılıyordu (mod 2 ve 3'te 30°'de sahte 0,75 / 0,70); gerçek çevrimler 1°'nin üstünde.
+     - Firmware kararı: mod 1 (gerilim) varsayılan; en basit, IPROPI gerektirmiyor. Mod 3 sistem tanılama deneyleri için eklenecek (tork akımdan doğrudan bilinir, sargı ısınmasıyla Ra kaymasından etkilenmez). Mod 2 kazanç getirmiyor, hız kestirimine bağımlı; kullanılmayacak.

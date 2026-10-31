@@ -1,0 +1,25 @@
+=== Tarama 5b, ideal sensör (2026-10-31 14:28)
+  ideal     kritik r_gs (30  60  90°): 0.85  1.05  1.10   (190 s)
+  ideal_lim kritik r_gs (30  60  90°): 0.90  1.10  1.10   (160 s)
+  mot1      kritik r_gs (30  60  90°): 0.90  1.10  1.10   (2260 s)
+  mot2      kritik r_gs (30  60  90°): 0.90  1.10  1.10   (2184 s)
+  mot3      kritik r_gs (30  60  90°): 0.90  1.10  1.10   (2151 s)
+=== Tarama 5b, gercekci sensör (2026-10-31 16:24)
+  ideal     kritik r_gs (30  60  90°): 0.90  1.25  1.30   (172 s)
+  ideal_lim kritik r_gs (30  60  90°): 1.00  1.35   NaN   (155 s)
+  mot1      kritik r_gs (30  60  90°): 1.00  1.35  1.40   (1548 s)
+  mot2      kritik r_gs (30  60  90°): 0.75  1.35  1.40   (1414 s)
+  mot3      kritik r_gs (30  60  90°): 0.70  1.35  1.40   (2112 s)
+=== Analiz 5b: kritik r_gs, sınıf >= 3 ve A > 0.5° (2026-10-31 17:55)
+  ideal sensör (30  60  90°)
+    ideal     0.85  1.05  1.10
+    ideal_lim 0.90  1.10  1.10
+    mot1      0.90  1.10  1.10
+    mot2      0.90  1.10  1.10
+    mot3      0.90  1.10  1.10
+  gercekci sensör (30  60  90°)
+    ideal     0.90  1.25  1.30
+    ideal_lim 1.00  1.35   NaN
+    mot1      1.00  1.35  1.40
+    mot2      1.00  1.35  1.40
+    mot3      1.00  1.35  1.40
