@@ -50,6 +50,16 @@ Katkıların ayrışması (D, B1 medyanı): sönümsüz %30 → temas sönümüy
 - **Belirsizlik:** K_s (10) ve c_s (0,02) tahmin; c_s'nin etkisi büyük olduğu için düzenekte tanılanmalı.
 - r_gs ≥ 1,0'da DF tam temasta kararsızlık öngörür; tork sınırıyla bu "S" (doyumla sınırlanan salınım) olarak işaretlenir, benzetimde düzensiz ya da çarpmalı salınım görülür. Bu bölgenin ayrıntısı DF'nin kapsamı dışında.
 
+## Ek: Kritik kazancın sistematik düşüklüğü, kök neden sınaması
+
+Kod: [`kok_neden_1.m`](kok_neden_1.m), [`kok_neden_1b.m`](kok_neden_1b.m), [`kok_neden_1c.m`](kok_neden_1c.m); kayıt: [`kok_neden_log.txt`](kok_neden_log.txt). D düzeneği, 21 kazanç × 37 açı ızgarası.
+
+**Parça 1: tanım farkı mı? Hayır.** Hipotez: DF "çevrim var" derken iki kararlılık bölgesini de sayıyor, benzetim ise yalnız üç başlangıç sapmasıyla salınım başlarsa "var" diyor; fark bu tanım farkından olabilir.
+- DF'nin çevrim dediği 204 hücrenin (0° ve 180° hariç) 112'sinde benzetimde salınım var, 92'sinde yok. Bu 92 hücrenin tamamında DF iki kararlılık öngörüyor (eşik a1 = A/r 0,56–2,05, medyan 1,46; kararlı çevrim a2 medyan 3,01). Yani uyuşmazlık tamamen DF'nin iki kararlılık bölgesinde.
+- Bu hücrelere 1 s boyunca DF çevrim frekansında (6,31 Hz) 0,05 / 0,10 / 0,20 N·m yük torku uygulandı. 0,20 N·m'de dişli sapması her hücrede eşiği, 58 hücrede DF'nin kararlı çevrim genliğini de aştı; sarsıntı kesilince **hiçbirinde** çevrim kalmadı (91 sönümlü, 1 düzensiz).
+- Kontrol: her ikisinde de çevrimli 30 hücrede aynı sarsıntıdan sonra 24'ünde çevrim sürüyor; yöntem çevrimi bozmuyor.
+- Sonuç: bu bölgede DF var olmayan bir çevrim öngörüyor. Sistematik düşüklük bir tanım farkı değil, DF'nin kendi hatası. İki kararlılık gerçek ama DF'nin öngördüğünden dar bir kazanç aralığında (90°, r_gs 0,95'teki doğrulama tork sınırsızdı).
+
 ## Ek: γ_sınır ≈ 3ρ³ yasası (2026-10-18 boyutsuz haritası)
 
 Kod: [`yasa_df.m`](yasa_df.m). Kayıt: [`yasa_df_log.txt`](yasa_df_log.txt). DF'ye PID desteği eklendi (kontrolcü iki polinomla: hız geri beslemesi [K_d 0] ve konum [K_p K_i]; P–PI'de [K_V K_I] ve k_p[K_V K_I]). Boyutsuz haritanın 24 düzeneği (uç kütlesi 0/20/50/100 g × 2r 1,5/3/5° × K_s 10/30; R 0,09–1,38; ideal model, PID) aynı açı ve kazanç ızgarasında DF ile hesaplandı; γ_sınır, 0°'dan başlayan kesintisiz salınım bandının bittiği γ.

@@ -1,0 +1,19 @@
+
+=== Parça 1: tanım farkı (D, 2026-10-31 10:25)
+  hücre (0° ve 180° hariç): DF çevrim 204; bunların benzetimde salınımlı 112, salınımsız 92
+  benzetimde salınım başlangıca bağlı (bazı başlangıçlarda var): 80 hücre; bunların DF'de çevrim 40
+  uyuşmayan hücrelerde DF eşiği a1 = A_eşik/r: sıfır (kendiliğinden başlamalı) 0, > 0 92
+    a1 > 0 olanlarda a1 medyan 1.46 (aralık 0.56-2.05), kararlı çevrim a2 medyan 3.01
+  açı        :      0    15    30    45    60    75    90   105   120   135   150   165   180
+  uyuşmayan  :      0     3     2     4     4     1     0     1     4     4     2     3     0
+  a1 medyan  :    NaN  1.17  1.54  1.54  1.61  1.17   NaN  1.17  1.61  1.54  1.46  1.17   NaN
+
+=== Parça 1b: uyuşmayan hücrelerde sarsıntı (D, 2026-10-31 10:25), 6.31 Hz, t < 1 s
+  dA 0.05 N m: 92 hücre -> denge/sönümlü 91, kalıcı çevrim 0, kararsız 0, düzensiz 1; çevrim frekansı medyan NaN Hz
+  dA 0.10 N m: 92 hücre -> denge/sönümlü 92, kalıcı çevrim 0, kararsız 0, düzensiz 0; çevrim frekansı medyan NaN Hz
+  dA 0.20 N m: 92 hücre -> denge/sönümlü 91, kalıcı çevrim 0, kararsız 0, düzensiz 1; çevrim frekansı medyan NaN Hz
+  dA 0,10'da sönen hücreler (açı/r_gs): 5/0.40 5/0.45 5/0.50 5/0.55 10/0.55 10/0.60 10/0.65 15/0.60 15/0.65 15/0.70 20/0.65 20/0.70 25/0.70 25/0.75 30/0.75 30/0.80 35/0.75 35/0.80 40/0.80 40/0.85 40/0.90 45/0.80 45/0.85 45/0.90 45/0.95 50/0.80 50/0.85 50/0.90 50/0.95 55/0.85 55/0.90 55/0.95 55/1.00 60/0.85 60/0.90 60/0.95 60/1.00 65/0.90 65/0.95 65/1.00 65/1.05 70/1.00 70/1.05 75/1.05 105/1.05 110/0.95 110/1.00 110/1.05 115/0.90 115/0.95 115/1.00 115/1.05 120/0.85 120/0.90 120/0.95 120/1.00 125/0.85 125/0.90 125/0.95 125/1.00 130/0.80 130/0.85 130/0.90 130/0.95 135/0.80 135/0.85 135/0.90 135/0.95 140/0.80 140/0.85 140/0.90 145/0.75 145/0.80 145/0.85 145/0.90 150/0.75 150/0.80 155/0.70 155/0.75 160/0.65 160/0.70 165/0.60 165/0.65 165/0.70 170/0.50 170/0.55 170/0.60 170/0.65 175/0.40 175/0.45 175/0.50 175/0.55
+  kontrol (her ikisinde çevrimli 30 hücre, dA 0,10): kalıcı çevrim 24, diğer 6
+  1c: sarsıntı sırasında (0,5-1 s) dişli sapması genliği A/r ile DF eşikleri
+   dA 0.10: A/r medyan 2.51 (aralık 1.15-3.32); a1'i aşan 79/92, a2'yi aşan 39/92 (a2 medyan 3.01)
+   dA 0.20: A/r medyan 3.47 (aralık 1.79-4.11); a1'i aşan 92/92, a2'yi aşan 58/92 (a2 medyan 3.01)
