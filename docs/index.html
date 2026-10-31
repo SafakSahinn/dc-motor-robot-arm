@@ -837,6 +837,18 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <li><b>Sun 2023 ile tutarlılık.</b> Ağır yüke rağmen γ(90°) ≈ 0,02–0,05; DF'ye göre bu ön yükte bastırma neredeyse yok, sınır Ghaffari'ninkine çok yakın. Yerçekiminin etkisini belirleyen yükün büyüklüğü değil, yük / (boşluk × sertlik) oranı.</li>
     <li><b>γ<sub>sınır</sub> ≈ 3ρ³ ilişkisi.</b> 24 düzeneklik boyutsuz haritada DF bir üs yasası ve düzeneklerin tek eğride toplanmasını veriyor (DF ≈ 5,5ρ<sup>2,5</sup>, benzetim ≈ 3,3ρ<sup>3,0</sup>), ama sınırı 2,6–7,7 kat yüksek öngörüyor. Fark düşük kazançlı çarpma rejiminde en büyük, deney hedef bölgesinde (ρ ≈ 0,3) 2,6 kat ve azalıyor. Bu bölge için çarpmalı modelleme gerekiyor.</li>
   </ul>
+
+  <h3 id="yontem-sonraki">Değerlendirme ve sonraki işler</h3>
+  <p>Simülasyon ve doğrulama aşaması amacına ulaştı: literatürdeki en yakın sonuç yeniden üretildi, önerilen yöntem bu sonucu açıya bağlı sınırı öngörecek biçimde genişletiyor ve kritik kazancı Ghaffari'nin DF'sinden dört kat daha doğru veriyor; kalan hatanın kaynağı da ayrıldı (dişli modeli değil, iki bilinen yaklaşıklık). Önerilen yöntemin bütün karşılaştırmaları bu çalışmanın kendi benzetimine karşı yapıldı (Ghaffari yeniden üretimi makalenin deney verisiyle karşılaştırıldı) ve dişli sertliği ile temas sönümü tahmin değerler. Yöntemin asıl doğrulaması deneydir; aşağıdaki işler bu nedenle deneye göre sıralandı.</p>
+  <div class="tbl"><table>
+    <tr><th>İş</th><th>Ne zaman</th><th>Neden bu sırada</th></tr>
+    <tr class="sec"><td>Sistem tanılama planı ve benzetimde sınanması (dişli sertliği, temas sönümü, rotor eylemsizliği)</td><td>Malzeme beklenirken</td><td>Ölçümün kendisi gerçek düzenek ister. Tanılama yönteminin (serbest salınım, frekans taraması) bu parametreleri geri bulduğu benzetimde şimdiden sınanabilir; deney ilk seferde doğru kurulur.</td></tr>
+    <tr><td>Sistem tanılama (ölçüm)</td><td>Malzeme gelince, deneylerden önce</td><td>DF'nin en duyarlı olduğu iki parametre. Tahmin değerlerle yapılan her iyileştirme ölçümle değişebilir.</td></tr>
+    <tr><td>Açı × kazanç deneyleri: D ve A uçları, iki boşluk ayarı, her noktada küçük ve büyük sarsıntı</td><td>Tanılamadan sonra</td><td>Önerilen yöntemin asıl doğrulaması ve çalışmanın ikinci ayağı.</td></tr>
+    <tr><td>Çok harmonikli denge ve anti-windup'lı doyum modeli</td><td>Deney verisi geldikten sonra, gerekirse</td><td>Şimdi yapılırsa yöntem, tahmini temas sönümüyle kurulmuş benzetime uydurulmuş olur; referans gerçek ölçüm olmalı. Ayrıca kapalı biçim sezgiyi (γ, N<sub>1,min</sub>) azaltır; deney kalan hatanın önemli olduğunu gösterirse yapılır.</td></tr>
+    <tr><td>Düşük kazançlı çarpma rejimi için çarpmalı model</td><td>Ana çalışmadan sonra</td><td>Hata en çok deney hedef bölgesinin (ρ ≈ 0,3) altında. DF'den ayrı, araştırma düzeyinde bir yöntem gerektiriyor.</td></tr>
+    <tr><td>Sun 2023'ün nicel yeniden üretimi</td><td>Katsayılar elde edilirse</td><td>Hız döngüsü katsayıları ve temas sönümü makalede yok. Yazarlardan istenecek ya da düzenekte K<sub>p</sub> = 20 / 50 eşdeğeri bir sınama yapılacak.</td></tr>
+  </table></div>
 </section>
 
 <section id="baslangic">
@@ -1122,7 +1134,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <h2>Sonraki adımlar</h2>
   <ul class="plain">
     <li><b>Görüşülecek konular:</b> başarı ölçütleri, düzenek seçimi (önerilen D: uç kütlesi 0–150 g değiştirilebilir), siparişin EKOM üzerinden üniversite hesabıyla verilmesi.</li>
-    <li><b>Yöntem tarafında (6. bölüm):</b> çok harmonikli denge ve anti-windup'lı doyum modeliyle kalan kritik kazanç hatasının azaltılması; temas sönümünün ve dişli sertliğinin düzenekte tanılanması (DF'nin en duyarlı olduğu iki parametre); düşük kazançlı çarpma rejimi için çarpmalı model; Sun 2023 için hız döngüsü katsayılarının yazarlardan istenmesi ya da düzenekte K<sub>p</sub> = 20 / 50 eşdeğeri bir sınama.</li>
+    <li><b>Yöntem tarafında:</b> malzeme beklenirken sistem tanılama planının benzetimde sınanması. Diğer yöntem işlerinin sırası ve gerekçeleri: <a href="#yontem-sonraki">6. bölüm, Değerlendirme ve sonraki işler</a>.</li>
     <li><b>Deney tasarımına etkisi:</b> her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm (iki kararlılık); zorlama frekansının çevrim frekansının harmoniklerinden uzak seçilmesi.</li>
     <li><b>Aynı anda:</b> sipariş (EKOM + yerli kalemler), firmware iskeleti ve MATLAB kayıt betiği, kaplin ve gövde tasarımı.</li>
     <li><b>Malzeme gelince:</b> kalibrasyon, sistem tanılama, ardından açı × kazanç deneyleri.</li>
