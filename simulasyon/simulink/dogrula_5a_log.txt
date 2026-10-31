@@ -1,0 +1,26 @@
+=== Adım 5a: Simscape mekanik model - kol_benzetim (2026-10-31 14:04), geçiş 1e-06 rad
+-- ideal sensör
+hucre 1 (90°, r_gs 1.20, bas 1.0°): sinif 5/5  A 2.058/2.056°  f 8.04/8.04 Hz  |dtheta| ilk1s 6.89e-03°, tum 2.95e-02°  (12.3 s)
+hucre 2 (60°, r_gs 0.50, bas 1.0°): sinif 0/0  A 0.000/0.000°  f 0.00/0.00 Hz  |dtheta| ilk1s 6.58e-04°, tum 6.58e-04°  (9.0 s)
+hucre 3 (30°, r_gs 0.80, bas 0.2°): sinif 1/1  A 0.001/0.001°  f 4.16/3.76 Hz  |dtheta| ilk1s 4.66e-03°, tum 1.53e+00°  (9.4 s)
+hucre 4 (90°, r_gs 0.95, bas 0.2°): sinif 1/1  A 0.000/0.000°  f 0.00/0.00 Hz  |dtheta| ilk1s 5.95e-04°, tum 5.95e-04°  (8.7 s)
+hucre 5 (90°, r_gs 0.95, bas 5.0°): sinif 3/3  A 8.143/8.135°  f 7.07/7.08 Hz  |dtheta| ilk1s 2.98e-02°, tum 8.86e-01°  (10.8 s)
+-- gercekci sensör
+hucre 1 (90°, r_gs 1.20, bas 1.0°): sinif 1/1  A 0.003/0.008°  f 9.48/7.94 Hz  |dtheta| ilk1s 5.11e-01°, tum 5.11e-01°  (6.8 s)
+hucre 2 (60°, r_gs 0.50, bas 1.0°): sinif 0/0  A 0.035/0.027°  f 0.00/0.00 Hz  |dtheta| ilk1s 1.50e-01°, tum 2.95e-01°  (6.5 s)
+hucre 3 (30°, r_gs 0.80, bas 0.2°): sinif 1/1  A 0.031/0.048°  f 0.00/0.00 Hz  |dtheta| ilk1s 2.96e-02°, tum 2.35e-01°  (6.3 s)
+hucre 4 (90°, r_gs 0.95, bas 0.2°): sinif 1/1  A 0.009/0.009°  f 4.04/4.04 Hz  |dtheta| ilk1s 1.98e-02°, tum 1.98e-02°  (5.9 s)
+hucre 5 (90°, r_gs 0.95, bas 5.0°): sinif 3/3  A 8.209/8.235°  f 6.99/6.99 Hz  |dtheta| ilk1s 1.74e-01°, tum 7.96e-01°  (6.1 s)
+=== Adım 5a: Simscape mekanik model - kol_benzetim (2026-10-31 14:06), geçiş 1e-08 rad
+-- ideal sensör
+hucre 1 (90°, r_gs 1.20, bas 1.0°): sinif 5/5  A 2.056/2.056°  f 8.04/8.04 Hz  |dtheta| ilk1s 6.89e-03°, tum 3.68e-02°  (13.4 s)
+hucre 2 (60°, r_gs 0.50, bas 1.0°): sinif 0/0  A 0.000/0.000°  f 0.00/0.00 Hz  |dtheta| ilk1s 6.58e-04°, tum 6.58e-04°  (10.6 s)
+hucre 3 (30°, r_gs 0.80, bas 0.2°): sinif 1/1  A 0.001/0.001°  f 4.16/3.76 Hz  |dtheta| ilk1s 4.66e-03°, tum 1.53e+00°  (11.0 s)
+hucre 4 (90°, r_gs 0.95, bas 0.2°): sinif 1/1  A 0.000/0.000°  f 0.00/0.00 Hz  |dtheta| ilk1s 5.95e-04°, tum 5.95e-04°  (8.5 s)
+hucre 5 (90°, r_gs 0.95, bas 5.0°): sinif 3/3  A 8.146/8.135°  f 7.08/7.08 Hz  |dtheta| ilk1s 2.98e-02°, tum 4.69e-01°  (11.2 s)
+-- gercekci sensör
+hucre 1 (90°, r_gs 1.20, bas 1.0°): sinif 1/1  A 0.003/0.008°  f 9.48/7.94 Hz  |dtheta| ilk1s 5.11e-01°, tum 5.11e-01°  (6.8 s)
+hucre 2 (60°, r_gs 0.50, bas 1.0°): sinif 0/0  A 0.035/0.027°  f 0.00/0.00 Hz  |dtheta| ilk1s 1.50e-01°, tum 2.95e-01°  (6.4 s)
+hucre 3 (30°, r_gs 0.80, bas 0.2°): sinif 1/1  A 0.031/0.048°  f 0.00/0.00 Hz  |dtheta| ilk1s 2.96e-02°, tum 2.35e-01°  (6.7 s)
+hucre 4 (90°, r_gs 0.95, bas 0.2°): sinif 1/1  A 0.009/0.009°  f 4.04/4.04 Hz  |dtheta| ilk1s 1.98e-02°, tum 1.98e-02°  (6.6 s)
+hucre 5 (90°, r_gs 0.95, bas 5.0°): sinif 3/3  A 8.209/8.235°  f 6.99/6.99 Hz  |dtheta| ilk1s 1.74e-01°, tum 7.96e-01°  (6.8 s)

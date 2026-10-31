@@ -29,4 +29,8 @@ th0 = S.ref - deg2rad(p.adim);
 S.x0 = [th0; 0; th0; 0];
 S.z0 = 0;
 if isfield(p,'x0'), S.x0 = p.x0(:);  S.z0 = p.z0; end
+% blok_ayrik'in Unit Delay başlangıcı: [tampon(21); vhat; yprev; z] (blok_sensor'un ilk çağrısıyla aynı)
+olc = @(x, q) (q > 0)*q*floor(x/max(q,eps)) + (q == 0)*x;
+if S.motorD > 0, yp = olc(S.x0(1), S.qM); else, yp = olc(S.x0(3), S.qL); end
+S.st0 = [olc(S.x0(3), S.qL)*ones(21,1); 0; yp; S.z0];
 end
