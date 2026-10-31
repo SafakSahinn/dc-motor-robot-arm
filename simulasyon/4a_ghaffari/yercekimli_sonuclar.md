@@ -65,6 +65,23 @@ Kod: [`kok_neden_1.m`](kok_neden_1.m), [`kok_neden_1b.m`](kok_neden_1b.m), [`kok
 - Ama dişli torkunun birinci harmoniğinden ölçülen etkin sertlik DF'ninkiyle aynı: zorlanmış 0,61–0,64 (DF 0,55–0,62), serbest çevrimde 0,47 / 0,89 (DF 0,48 / 0,88). Temas oranı da yakın (sim/DF 0,63–0,76 / 0,55–0,80). Sönüm bileşeni (sanal kısım 0,05–0,11) DF'nin c_s·h'siyle aynı mertebede.
 - Sonuç: dişli ölü bölgesinin tanımlama fonksiyonu doğru; tek harmonik ve DC dengesi varsayımları sonucu bozmuyor. Hatanın kaynağı döngünün geri kalanında (doğrusal kısım, tork sınırı / anti-windup, yerçekiminin doğrusallaştırılması).
 
+**Parça 3: hata nerede?** [`kok_neden_3.m`](kok_neden_3.m) (3a, 3b), [`kok_neden_3c.m`](kok_neden_3c.m)–[`kok_neden_3f.m`](kok_neden_3f.m).
+- **3a, doğrusal kısım ve yerçekiminin doğrusallaştırılması: küçük pay.** Benzetimde dişli boşluğu kaldırılıp yerine DF'nin kararlı çevrimdeki eşdeğer yay + sönümleyicisi konunca (tork sınırı yok, denge noktasından küçük sapma) frekans DF ile %0,5 içinde; döngünün sınırda olduğu sertlik DF'ninkinin 0,93–0,98'i (benzetimin doğrusal kısmı biraz daha kararlı). Bu fark kritik kazancı yalnız %1–4 kaydırıyor (3c).
+- **3b, tork sınırı ve anti-windup: uyuşmayan hücrelerin yarısı.** 92 uyuşmayan hücre tork sınırsız benzetimle yeniden sarsıldığında 46'sında salınım sürüyor (37 kalıcı çevrim, 6 kararsız, 3 düzensiz); tork sınırsız DF'de 92'si de çevrim. Bu 46 hücre 65–115° arasında: DF'nin ön yüklü doyum yaklaşıklığı tork sınırının çevrimi söndürmesini bu bölgede tam yakalamıyor (benzetimdeki anti-windup DF'de yok). Sarsıntıyı her hücrenin kendi DF frekansında vermek sonucu değiştirmiyor (3d; 1b'deki tek frekans bir karıştırıcı etken değil).
+- **3e, kısmi temasta sönüm: kalan hücrelerin nedeni.** Tork sınırsızda da salınımsız kalan 46 hücre γ'nın küçük olduğu açılarda (5–60°, 120–175°) ve düşük kazançta (r_gs 0,40–0,85). Üç hücrede küçük genliklerden başlayarak ölçüldü: ortalama sapma ve etkin sertlik her genlikte DF ile birebir (b 1,24 / 1,24; Re N 0,433 / 0,428, 0,623 / 0,624), ama kısmi temasta etkin sönüm (dişli torkunun birinci harmoniğinin sanal kısmı) benzetimde 0,057–0,062, DF'de 0,027–0,051: **1,2–2 kat büyük.** Nedeni: sapma sinüs olmadığı için (%7–14 harmonik) yay teriminin harmonikleri temel bileşene faz kayması katıyor; DF bunu sıfır varsayıyor. Bu fazla sönüm döngüyü kararlılaştırıyor ve çevrimi DF'nin öngördüğünden yüksek kazanca itiyor. Zorlanmış cevapta 0,4–2 arası genlikler hiç görülmüyor (sıçrama): DF'nin kararsız çevrim dalı benzetimde de var.
+- **3f, payın büyüklüğü.** DF'de temas sönümü büyütülünce kritik kazanç hatası (medyan): ×1 %19, ×1,5 %15, ×2 %11, ×3 %10. Benzetimde ölçülen 1,2–2 katlık fark hatanın yaklaşık %4–8 puanını açıklıyor. (Tek katsayıyla büyütmek tam temastaki sönümü de değiştirdiği için kaba bir ölçek.)
+
+**Sonuç (D, kritik kazanç hatası medyan %19, DF temkinli yönde):**
+
+| Kaynak | Pay | Not |
+|---|---|---|
+| Dişlinin etkin sertliği (DF'nin özü) | yok | her genlikte benzetimle birebir |
+| Doğrusal kısım, yerçekiminin doğrusallaştırılması | %1–4 | |
+| Kısmi temasta etkin sönüm (tek harmonik varsayımı) | ≈ %4–8 | γ küçük açılar, düşük kazanç |
+| Tork sınırı / anti-windup (ön yüklü doyum DF'si) | uyuşmayan hücrelerin yarısı | 65–115°, yüksek kazanç |
+
+Paylar toplanabilir değil (aynı hücrelerde üst üste biniyor). Hatayı DF içinde azaltmanın yolu sapmanın harmoniklerini hesaba katan çok harmonikli denge (harmonic balance) ve doyumun anti-windup ile birlikte modellenmesi; ikisi de bu çalışmanın kapsamı dışında bırakıldı. İki kararlılık gerçek ama DF'nin öngördüğünden dar.
+
 ## Ek: γ_sınır ≈ 3ρ³ yasası (2026-10-18 boyutsuz haritası)
 
 Kod: [`yasa_df.m`](yasa_df.m). Kayıt: [`yasa_df_log.txt`](yasa_df_log.txt). DF'ye PID desteği eklendi (kontrolcü iki polinomla: hız geri beslemesi [K_d 0] ve konum [K_p K_i]; P–PI'de [K_V K_I] ve k_p[K_V K_I]). Boyutsuz haritanın 24 düzeneği (uç kütlesi 0/20/50/100 g × 2r 1,5/3/5° × K_s 10/30; R 0,09–1,38; ideal model, PID) aynı açı ve kazanç ızgarasında DF ile hesaplandı; γ_sınır, 0°'dan başlayan kesintisiz salınım bandının bittiği γ.
