@@ -1,0 +1,6 @@
+=== Adım 2: Simulink - kol_benzetim karşılaştırması (2026-10-31 13:35)
+hucre 1 (90°, r_gs 1.20, bas 1.0°): sinif 5/5  A 2.056/2.056°  f 8.04/8.04 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°  (15.5 s)
+hucre 2 (60°, r_gs 0.50, bas 1.0°): sinif 0/0  A 0.000/0.000°  f 0.00/0.00 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°  (0.7 s)
+hucre 3 (30°, r_gs 0.80, bas 0.2°): sinif 1/1  A 0.001/0.001°  f 3.76/3.76 Hz  |dtheta| ilk1s 0.00e+00°, tum 1.65e-10°  (0.5 s)
+hucre 4 (90°, r_gs 0.95, bas 0.2°): sinif 1/1  A 0.000/0.000°  f 0.00/0.00 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°  (0.4 s)
+hucre 5 (90°, r_gs 0.95, bas 5.0°): sinif 3/3  A 8.135/8.135°  f 7.08/7.08 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°  (0.7 s)

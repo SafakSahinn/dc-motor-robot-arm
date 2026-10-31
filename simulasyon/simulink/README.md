@@ -27,6 +27,7 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
 ## Adımlar
 
 1. Referans veri. **Bitti.**
-2. Tesis + P–PI, ideal sensör. 5 hücrede doğrulama. *Simulink kurulumu gerekiyor.*
-3. Sensör katmanı ('gercekci' düzey: AS5600 nicemleme, enkoder, 1 kHz, gecikme). `sensor_7c` sonuçlarıyla doğrulama.
+2. Tesis + P–PI, ideal sensör: `kol_model_kur.m` (bloklar `blok_tesis.m`, `blok_sensor.m`, `blok_kontrolcu.m`; parametreler `sim_param.m`), doğrulama `dogrula_2.m` → `dogrula_2_log.txt`. **Bitti:** 5 hücrenin 5'inde θ(t) betikle bit düzeyinde aynı. Tek fark sarsıntılı hücrede (en çok 1,7e-10°) ve sarsıntının t = 1 s'de kesildiği anın kayan nokta zamanlamasından geliyor. Düzensiz hücre 1 bile 8 s boyunca ayrışmıyor.
+3. Sensör katmanı, gerçekçi düzey (`sensor_7c` ayarı: 1 kHz, AS5600 12 bit + 1 örnek gecikme, 11 darbe/tur enkoder, 50 Hz hız filtresi, Stribeck sürtünmesi, %3 ölü bant): `dogrula_3.m` → `dogrula_3_log.txt`. **Bitti:** 5 hücrede sınıf, genlik ve frekans aynı; θ(t) farkı en çok 1e-12°.
 4. Deney kaynakları: sarsıntı, frekans taraması, serbest salınım. Sistem tanılama planı (K_s, c_s, J_M) bu modelde sınanır.
+5. Simscape (isteğe bağlı): DC motorun elektrik tarafı (R, L, zıt EMK, DRV8874 PWM köprüsü, akım sınırı) ve Simscape'in kendi boşluk bloğuyla bağımsız bir çapraz kontrol.

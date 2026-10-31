@@ -1,0 +1,6 @@
+=== Adım 3: gerçekçi sensör katmanı, Simulink - kol_benzetim (2026-10-31 13:36)
+hucre 1 (90°, r_gs 1.20, bas 1.0°): sinif 1/1  A 0.008/0.008°  f 7.94/7.94 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°
+hucre 2 (60°, r_gs 0.50, bas 1.0°): sinif 0/0  A 0.027/0.027°  f 0.00/0.00 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°
+hucre 3 (30°, r_gs 0.80, bas 0.2°): sinif 1/1  A 0.048/0.048°  f 0.00/0.00 Hz  |dtheta| ilk1s 1.91e-14°, tum 1.06e-12°
+hucre 4 (90°, r_gs 0.95, bas 0.2°): sinif 1/1  A 0.009/0.009°  f 4.04/4.04 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°
+hucre 5 (90°, r_gs 0.95, bas 5.0°): sinif 3/3  A 8.235/8.235°  f 6.99/6.99 Hz  |dtheta| ilk1s 0.00e+00°, tum 0.00e+00°
