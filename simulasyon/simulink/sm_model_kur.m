@@ -93,6 +93,7 @@ add_line(ad, 'yuk/1', 'sps_m/1', 'autorouting', 'on');
 add_line(ad, 'yuk/2', 'sps_L/1', 'autorouting', 'on');
 add_line(ad, 'mux/1', 'kontrolcu/1', 'autorouting', 'on');
 add_line(ad, 'durum/1', 'kontrolcu/2', 'autorouting', 'on');
+add_line(ad, 'saat/1', 'kontrolcu/3', 'autorouting', 'on');     % deney kaynağının zamanı
 add_line(ad, 'kontrolcu/2', 'durum/1', 'autorouting', 'on');
 add_line(ad, 'mux/1', 'x_out/1', 'autorouting', 'on');
 add_line(ad, 'kontrolcu/1', 'u_out/1', 'autorouting', 'on');

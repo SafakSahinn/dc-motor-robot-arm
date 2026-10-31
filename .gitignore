@@ -27,3 +27,6 @@ __pycache__/
 # Simulink derleme artıkları
 slprj/
 *.slxc
+
+# Simulink taramalarının ham konsol çıktısı (özet *_log.txt dosyalarında)
+*_konsol.txt

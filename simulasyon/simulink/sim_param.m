@@ -24,6 +24,22 @@ S.dA = 0;  S.df = 0;  S.dT = Inf;
 if isfield(p,'dA'), S.dA = p.dA;  S.df = p.df; end
 if isfield(p,'dT'), S.dT = p.dT; end
 
+% Deney kaynağı (blok_ayrik; yalnız Simscape modelleri). p.dny yapısı, alanlar (verilmeyen varsayılanda):
+%   yer 'yok' | 'ref' | 'tork' | 'acik'; sekil 'basamak' | 'chirp' | 'logchirp' | 'sinus';
+%   A (rad ya da N m, yere göre), t0, Td [s], f0, f1 [Hz], u0 (açık çevrim sabit tork, N m)
+S.dny_yer = 0;  S.dny_sek = 1;  S.dny_A = 0;  S.dny_t0 = 0;  S.dny_Td = Inf;
+S.dny_f0 = 1;  S.dny_f1 = 1;  S.dny_u0 = 0;
+if isfield(p,'dny')
+    D = p.dny;
+    yerler = {'yok','ref','tork','acik'};  sekiller = {'basamak','chirp','logchirp','sinus'};
+    if isfield(D,'yer'), S.dny_yer = find(strcmp(D.yer, yerler)) - 1; end
+    if isfield(D,'sekil'), S.dny_sek = find(strcmp(D.sekil, sekiller)); end
+    if isempty(S.dny_yer) || isempty(S.dny_sek), error('p.dny: bilinmeyen yer ya da şekil'); end
+    for a = {'A','t0','Td','f0','f1','u0'}
+        if isfield(D, a{1}), S.(['dny_' a{1}]) = D.(a{1}); end
+    end
+end
+
 % Başlangıç durumu: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
 th0 = S.ref - deg2rad(p.adim);
 S.x0 = [th0; 0; th0; 0];
