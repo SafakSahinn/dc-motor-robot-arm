@@ -39,6 +39,24 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
    - Gösterim `deney_4a.m` → `deney_4a_log.txt`: 6 deney × mod 1/3, hepsi çalışıyor. İki gözlem:
      - **Kol aşağıdayken 10° serbest salınım işe yaramıyor.** Yerçekimi torku (0,24·sin 10° = 0,042 N·m) motor yapışma sürtünmesinin (F_s = 0,06 N·m) altında. Motor kıpırdamıyor, kol yalnız boşluk içinde titreşiyor (θ aralığı 4°, φ 2,5°). 30°'de kol motoru da sürükleyerek gerçekten salınıyor (1,2–1,5 Hz).
      - **Gerçekçi sensörde u, kaynak yokken de gürültülü.** 90°, r_gs 0,8, mod 1, kol duruyor: u ortalaması 0,27, standart sapması 0,22 N·m, zamanın %22'sinde tork sınırında. Gerçek hızla (fv = Inf) standart sapma 0,013 N·m. Kaynak: 11 darbe/tur enkoderin nicemleme basamağının (kol tarafında 0,27°) 1 kHz'de türevi ve 50 Hz filtre. Bu durum 5b'de de vardı; tanılamada u'nun ölçülen girdi olarak kullanılmasını ve donanımda sürücü ısınmasını ilgilendiriyor.
+   - **Yan soru: hız kestirimi salınım sınırını kaydırıyor mu?** `blok_ayrik.m`'ye seçmeli kestirici eklendi, ayarı `p.hiz` (yalnız Simscape modelleri):
+     - `fark`: varsayılan, 5b ile aynı. Regresyon bit düzeyinde aynı.
+     - `periyot`: iki enkoder kenarı arasındaki süre. Donanımda GPIO kesmesi + µs zaman damgasıyla ölçülür; burada kenar zamanı aradeğerlemeyle bulunuyor. Yön değişince v = 0, kenar gelmezse v sıfıra doğru sınırlanıyor.
+     - `gozlemci`: ikinci dereceden izleme gözlemcisi, kritik sönümlü, wo = 2π·50 Hz.
+
+     Kol 90°'de dururken (r_gs 0,8, kaynaksız) u standart sapması: fark 0,224, periyot 0,013, gözlemci 0,020 N·m. Kolun kıpırdama aralığı sırasıyla 0,16 / 0,31 / 0,53°.
+
+     Tarama `tarama_hiz.m` → `tarama_hiz_log.txt`: mod 1, gerçekçi sensör, 3 açı × r_gs 0,90–1,45 × 3 başlangıç sapması. Kritik r_gs (30/60/90°):
+
+     | Kestirici | Kritik r_gs |
+     |---|---|
+     | fark | 1,00 / 1,35 / 1,40 |
+     | periyot | 0,95 / 1,10 / 1,15 |
+     | gözlemci | 1,00 / 1,30 / 1,30 |
+
+     - **Sınır kestiriciye bağlı.** 60–90°'de fark ile periyot arasında 0,25 (~%20) fark var. Bu, DF analizinin hata payıyla aynı büyüklükte. Periyot kestiricisi ideal sensör sınırına (5b: 0,90 / 1,10 / 1,10) çok yakın düşüyor.
+     - **Titreşim etkisi (dither) yorumu tek başına yetmiyor.** Gözlemcinin gürültüsü de düşük (0,020 N·m) ama sınırı fark kestiricisine yakın kaldı. Periyot kestiricisini ayıran başka bir doğrusal olmayan özellik olabilir (dönüşte v = 0, yavaşlarken sıfıra inen sınır). Mekanizma henüz ayrıştırılmadı.
+     - Sonuç: donanım deneyinde kullanılacak kestirici ikizde birebir aynı olmalı. Kritik r_gs öngörüsü kestiriciyle birlikte verilmeli.
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.

@@ -13,7 +13,17 @@ function [u, st1, v] = ayrik(x, st, t, S)
 %     S.dny_sek = 1 dikdörtgen (basamak; kısa Td ile darbe), 2 doğrusal chirp f0 -> f1,
 %                 3 logaritmik chirp f0 -> f1, 4 sinüs (sabit f0)
 %   Serbest salınım: dny_yer = 3, dny_A = 0, dny_u0 = 0 ve başlangıç sapması (p.adim / p.x0).
-buf = st(1:21);  vhat = st(22);  yprev = st(23);  z = st(24);
+%
+% Hız kestirimi (S.hiz; fv = Inf ise hepsi yerine gerçek hız):
+%   0 fark      (y_k - y_{k-1})/Ts + birinci dereceden alçak geçiren (kesim fv)        [varsayılan]
+%   1 periyot   son iki enkoder kenarı arasındaki süre: v = n q / (t_kenar - t_önceki_kenar).
+%               Kenar zamanı donanımda GPIO kesmesi + µs sayaçla damgalanır; burada iki örnek arasında
+%               gerçek açının doğrusal aradeğerlemesiyle bulunur. Yön değişince v = 0. Kenar gelmezse
+%               |v| <= q / (t - t_son_kenar) (yavaşlayınca sıfıra iner). Filtre yok.
+%   2 gozlemci  ikinci dereceden izleme gözlemcisi (Euler, Ts): e = y - th_hat,
+%               th_hat += Ts (w_hat + 2 wo e), w_hat += Ts wo^2 e, wo = 2 pi fv (kritik sönümlü)
+% Ek durumlar st(25:28): periyot [phi_önceki (gerçek), t_son_kenar, yön, v]; gozlemci [th_hat, w_hat, 0, 0].
+buf = st(1:21);  vhat = st(22);  yprev = st(23);  z = st(24);  ek = st(25:28);
 vi = 3;  qv = S.qL;
 if S.motorD > 0, vi = 1;  qv = S.qM; end
 % --- sensör ---
@@ -24,6 +34,17 @@ if S.gL > 0
 end
 if S.fv_inf > 0
     v = x(vi + 1);
+elseif S.hiz == 1
+    [v, ek] = periyot(x(vi), t, ek, qv, S.Ts);
+    yprev = olc(x(vi), qv);
+elseif S.hiz == 2
+    yv = olc(x(vi), qv);
+    wo = 2*pi*S.fv;
+    e_o = yv - ek(1);
+    ek(1) = ek(1) + S.Ts*(ek(2) + 2*wo*e_o);
+    ek(2) = ek(2) + S.Ts*wo^2*e_o;
+    v = ek(2);
+    yprev = yv;
 else
     yv = olc(x(vi), qv);
     vhat = vhat + S.aV*((yv - yprev)/S.Ts - vhat);
@@ -51,7 +72,29 @@ u = min(max(u0, -S.Tmax), S.Tmax);
 doy = (u0 > S.Tmax && iz > 0) || (u0 < -S.Tmax && iz < 0);
 if ~doy && ~acik, z = z + iz*S.Ts; end
 if abs(u) < S.olu, u = 0; end
-st1 = [buf; vhat; yprev; z];
+st1 = [buf; vhat; yprev; z; ek];
+end
+
+function [v, ek] = periyot(phi, t, ek, q, Ts)
+% ek = [phi_önceki, t_son_kenar, yön, v]. t_son_kenar < 0: henüz kenar yok.
+phip = ek(1);  tl = ek(2);  yon = ek(3);  v = ek(4);
+n1 = floor(phi/q);  n0 = floor(phip/q);
+if n1 ~= n0
+    d = sign(n1 - n0);
+    if d > 0, sev = n1*q; else, sev = (n1 + 1)*q; end         % son geçilen kenar
+    a = (sev - phip)/(phi - phip);  a = min(max(a, 0), 1);
+    te = t - Ts + a*Ts;                                        % kenar zamanı (aradeğerleme)
+    if d == yon && tl >= 0 && te > tl
+        v = d*abs(n1 - n0)*q/(te - tl);
+    else
+        v = 0;                                                 % ilk kenar ya da yön değişimi
+    end
+    tl = te;  yon = d;
+elseif tl >= 0 && t > tl
+    vs = q/(t - tl);                                           % kenar gelmedikçe hız sınırı düşer
+    if abs(v) > vs, v = sign(v)*vs; end
+end
+ek = [phi; tl; yon; v];
 end
 
 function y = olc(x, q)

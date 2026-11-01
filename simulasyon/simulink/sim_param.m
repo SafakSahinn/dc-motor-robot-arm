@@ -65,5 +65,13 @@ end
 % blok_ayrik'in Unit Delay başlangıcı: [tampon(21); vhat; yprev; z] (blok_sensor'un ilk çağrısıyla aynı)
 olc = @(x, q) (q > 0)*q*floor(x/max(q,eps)) + (q == 0)*x;
 if S.motorD > 0, yp = olc(S.x0(1), S.qM); else, yp = olc(S.x0(3), S.qL); end
-S.st0 = [olc(S.x0(3), S.qL)*ones(21,1); 0; yp; S.z0];
+% Hız kestirimi (blok_ayrik; yalnız Simscape modelleri): p.hiz = 'fark' (varsayılan) | 'periyot' | 'gozlemci'
+S.hiz = 0;  S.fv = 50;  if ~isinf(p.fv), S.fv = p.fv; end
+if isfield(p,'hiz')
+    S.hiz = find(strcmp(p.hiz, {'fark','periyot','gozlemci'})) - 1;
+    if isempty(S.hiz), error('p.hiz: bilinmeyen kestirici %s', p.hiz); end
+end
+if S.motorD > 0, xv = S.x0(1); else, xv = S.x0(3); end
+if S.hiz == 2, ek0 = [yp; 0; 0; 0]; else, ek0 = [xv; -1; 0; 0]; end
+S.st0 = [olc(S.x0(3), S.qL)*ones(21,1); 0; yp; S.z0; ek0];
 end

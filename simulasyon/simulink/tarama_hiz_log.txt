@@ -1,0 +1,4 @@
+=== Hız kestirimi - salınım sınırı, mod 1, gerçekçi sensör (2026-11-01 10:20)
+  fark      kritik r_gs (30  60  90°): 1.00  1.35  1.40   (1412 s)
+  periyot   kritik r_gs (30  60  90°): 0.95  1.10  1.15   (1691 s)
+  gozlemci  kritik r_gs (30  60  90°): 1.00  1.30  1.30   (1470 s)
