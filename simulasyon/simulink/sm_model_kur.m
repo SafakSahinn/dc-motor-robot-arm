@@ -98,7 +98,12 @@ add_line(ad, 'kontrolcu/2', 'durum/1', 'autorouting', 'on');
 add_line(ad, 'mux/1', 'x_out/1', 'autorouting', 'on');
 add_line(ad, 'kontrolcu/1', 'u_out/1', 'autorouting', 'on');
 
-if elk, elektrik_ekle(ad, kok); end
+if elk
+    elektrik_ekle(ad, kok);
+else   % firmware ölçüm kaydı [th_L; phi; v; u] (Ts)
+    add_block('simulink/Sinks/Out1', [ad '/olc_out'], 'Position', [1360 300 1390 320], 'Port', '3');
+    add_line(ad, 'kontrolcu/4', 'olc_out/1', 'autorouting', 'on');
+end
 
 set_param(ad, 'SolverType', 'Fixed-step', 'Solver', 'ode4', 'FixedStep', 'dt', ...
           'StopTime', 'T', 'SaveOutput', 'on', 'OutputSaveName', 'yout', ...
@@ -151,6 +156,24 @@ add_block('simulink/Sinks/Out1', [ad '/i_out'], 'Position', [1360 140 1390 160],
 add_block('simulink/Sinks/Out1', [ad '/V_out'], 'Position', [1360 440 1390 460], 'Port', '4');
 add_line(ad, 'ps_i/1', 'i_out/1', 'autorouting', 'on');
 add_line(ad, 'surucu/1', 'V_out/1', 'autorouting', 'on');
+% firmware ölçüm kaydı (Ts): [th_L; phi; v; u; V; i_olc]. V komut (PWM görev oranından bilinir),
+% i_olc IPROPI -> ESP32 ADC (blok_akim: gürültü + nicemleme). Akım döngüsü (mod 3) i_adc'yi gürültüsüz kullanır.
+add_block('simulink/Discrete/Zero-Order Hold', [ad '/zoh_V'], 'Position', [1420 440 1450 470], 'SampleTime', 'Ts');
+add_block('simulink/Discrete/Zero-Order Hold', [ad '/zoh_i'], 'Position', [1420 520 1450 550], 'SampleTime', 'Ts');
+add_block('simulink/Sources/Random Number', [ad '/gurultu_i'], 'Position', [1420 580 1450 610], ...
+          'Mean', '0', 'Variance', '1', 'Seed', 'S.iSeed', 'SampleTime', 'Ts');
+add_block('simulink/User-Defined Functions/MATLAB Function', [ad '/akim_olc'], 'Position', [1500 520 1580 600]);
+kod_yaz([ad '/akim_olc'], fullfile(kok, 'blok_akim.m'), 'Ts');
+add_block('simulink/Signal Routing/Mux', [ad '/mux_olc'], 'Inputs', '3', 'Position', [1640 300 1645 400]);
+add_block('simulink/Sinks/Out1', [ad '/olc_out'], 'Position', [1700 340 1730 360], 'Port', '5');
+add_line(ad, 'surucu/1', 'zoh_V/1', 'autorouting', 'on');
+add_line(ad, 'i_adc/1', 'zoh_i/1', 'autorouting', 'on');
+add_line(ad, 'zoh_i/1', 'akim_olc/1', 'autorouting', 'on');
+add_line(ad, 'gurultu_i/1', 'akim_olc/2', 'autorouting', 'on');
+add_line(ad, 'kontrolcu/4', 'mux_olc/1', 'autorouting', 'on');
+add_line(ad, 'zoh_V/1', 'mux_olc/2', 'autorouting', 'on');
+add_line(ad, 'akim_olc/1', 'mux_olc/3', 'autorouting', 'on');
+add_line(ad, 'mux_olc/1', 'olc_out/1', 'autorouting', 'on');
 end
 
 function ekle(ad, lib, ad_blk, xy, varargin)

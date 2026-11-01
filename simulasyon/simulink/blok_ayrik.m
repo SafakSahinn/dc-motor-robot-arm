@@ -1,4 +1,5 @@
-function [u, st1, v] = ayrik(x, st, t, S)
+function [u, st1, v, m] = ayrik(x, st, t, S)
+% m: firmware'in Ts'de kaydedeceği ölçümler [th_L (AS5600, gecikmeli); phi (enkoder); v (kestirim); u]
 % v: kontrolcünün kullandığı hız (sürücünün zıt EMK kompanzasyonu için dışarı verilir)
 % Sensör + kontrolcü, durumsuz yazım (Simscape modeli için). blok_sensor + blok_kontrolcu ile aynı hesap;
 % durumlar persistent yerine dışarıdaki Unit Delay'de tutulur: st = [tampon(21); vhat; yprev; z].
@@ -73,6 +74,7 @@ doy = (u0 > S.Tmax && iz > 0) || (u0 < -S.Tmax && iz < 0);
 if ~doy && ~acik, z = z + iz*S.Ts; end
 if abs(u) < S.olu, u = 0; end
 st1 = [buf; vhat; yprev; z; ek];
+m = [thm; olc(x(1), S.qM); v; u];   % firmware kaydı: AS5600 (gecikmeli), enkoder, hız kestirimi, tork komutu
 end
 
 function [v, ek] = periyot(phi, t, ek, q, Ts)

@@ -39,6 +39,22 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
    - Gösterim `deney_4a.m` → `deney_4a_log.txt`: 6 deney × mod 1/3, hepsi çalışıyor. İki gözlem:
      - **Kol aşağıdayken 10° serbest salınım işe yaramıyor.** Yerçekimi torku (0,24·sin 10° = 0,042 N·m) motor yapışma sürtünmesinin (F_s = 0,06 N·m) altında. Motor kıpırdamıyor, kol yalnız boşluk içinde titreşiyor (θ aralığı 4°, φ 2,5°). 30°'de kol motoru da sürükleyerek gerçekten salınıyor (1,2–1,5 Hz).
      - **Gerçekçi sensörde u, kaynak yokken de gürültülü.** 90°, r_gs 0,8, mod 1, kol duruyor: u ortalaması 0,27, standart sapması 0,22 N·m, zamanın %22'sinde tork sınırında. Gerçek hızla (fv = Inf) standart sapma 0,013 N·m. Kaynak: 11 darbe/tur enkoderin nicemleme basamağının (kol tarafında 0,27°) 1 kHz'de türevi ve 50 Hz filtre. Bu durum 5b'de de vardı; tanılamada u'nun ölçülen girdi olarak kullanılmasını ve donanımda sürücü ısınmasını ilgilendiriyor.
+   - **4.2, sanal ölçüm. Bitti.** Firmware'in Ts = 1 ms'de kaydedeceği sinyaller ayrı bir çıkışta: `olc_out`, elektrik modelinde port 5 = [θ_L, φ, v̂, u, V, i], ideal motorda port 3 = ilk dördü. Okuma `olcum_oku.m` → yapı `K` (firmware kaydı + doğrulama için gerçek değerler `K.g`).
+     - θ_L: AS5600, 12 bit, bir örnek gecikmeli (kontrolcünün gördüğü değerin aynısı).
+     - φ: enkoder.
+     - v̂: seçili hız kestirimi.
+     - u: tork komutu.
+     - V: komut gerilimi. PWM görev oranından bilinir.
+     - i: IPROPI → ESP32 ADC, `blok_akim.m`. Gerçekçi ayar: basamak 0,46 mA (A_IPROPI 455 µA/A, R_IPROPI 3,6 kΩ, 12 bit / 3,1 V), gürültü std 1,4 mA (~3 LSB, ortalamasız), sabit tohumlu.
+     - Mod 3'ün akım döngüsü i_adc'yi gürültüsüz kullanıyor (5b ile aynı). Yalnız kayıt gürültülü.
+     - Regresyon: port 1–4 değişiklikten önceki hâliyle bit düzeyinde aynı.
+   - Gösterim `olcum_4b.m` → `olcum_4b_log.txt` (gerçekçi sensör, gözlemci; chirp, darbe, 30° serbest salınım × mod 1/3). Ölçüm − gerçek:
+     - θ_L: rms 0,05°, en çok 0,14–0,20°. Nicemleme (`floor`, −q/2 kayması) + bir örnek gecikme.
+     - φ: en çok bir enkoder sayımı (0,27°).
+     - v̂: rms 0,04–0,11 rad/s.
+     - i: rms 1,4–1,7 mA.
+     - Mod 3'te akımdan bulunan tork K_m·i ile komut u arasındaki fark rms 0,010–0,017 N·m (Tmax'ın %2–3'ü). Tanılamada tork girdisi olarak mod 3'te u ya da K_m·i kullanılabilir. Mod 1'de zıt EMK yüzünden gerçek tork u değil, K_m·i.
+     - Örnek kayıt `olcum_4b_ornek.mat` (chirp, mod 3). 4.3'ün tanılama algoritması bu biçimdeki veriyi okuyacak.
    - **Yan soru: hız kestirimi salınım sınırını kaydırıyor mu?** `blok_ayrik.m`'ye seçmeli kestirici eklendi, ayarı `p.hiz` (yalnız Simscape modelleri):
      - `fark`: varsayılan, 5b ile aynı. Regresyon bit düzeyinde aynı.
      - `periyot`: iki enkoder kenarı arasındaki süre. Donanımda GPIO kesmesi + µs zaman damgasıyla ölçülür; burada kenar zamanı aradeğerlemeyle bulunuyor. Yön değişince v = 0, kenar gelmezse v sıfıra doğru sınırlanıyor.

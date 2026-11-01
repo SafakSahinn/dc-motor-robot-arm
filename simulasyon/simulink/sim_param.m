@@ -65,6 +65,11 @@ end
 % blok_ayrik'in Unit Delay başlangıcı: [tampon(21); vhat; yprev; z] (blok_sensor'un ilk çağrısıyla aynı)
 olc = @(x, q) (q > 0)*q*floor(x/max(q,eps)) + (q == 0)*x;
 if S.motorD > 0, yp = olc(S.x0(1), S.qM); else, yp = olc(S.x0(3), S.qL); end
+% IPROPI akım ölçümü kaydı (blok_akim; elektrik modeli): p.iGur gürültü std [A], p.qI ADC basamağı [A], p.iSeed
+S.iGur = 0;  S.qI = 0;  S.iSeed = 1;
+if isfield(p,'iGur'), S.iGur = p.iGur; end
+if isfield(p,'qI'), S.qI = p.qI; end
+if isfield(p,'iSeed'), S.iSeed = p.iSeed; end
 % Hız kestirimi (blok_ayrik; yalnız Simscape modelleri): p.hiz = 'fark' (varsayılan) | 'periyot' | 'gozlemci'
 S.hiz = 0;  S.fv = 50;  if ~isinf(p.fv), S.fv = p.fv; end
 if isfield(p,'hiz')

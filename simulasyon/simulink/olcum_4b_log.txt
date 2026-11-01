@@ -1,0 +1,8 @@
+=== Adım 4.2 sanal ölçüm, gerçekçi sensör, gözlemci (2026-11-01 13:31)
+deney    mod   thL rms°  thL max°  phi max°     v rms  i rms mA     u-Km i
+chirp      1      0.048     0.140     0.273     0.065      1.53        NaN
+chirp      3      0.049     0.110     0.273     0.065      1.48     0.0101
+darbe      1      0.052     0.140     0.273     0.112      1.73        NaN
+darbe      3      0.050     0.110     0.272     0.114      1.42     0.0167
+serbest30   1      0.058     0.181     0.273     0.040      1.43        NaN
+serbest30   3      0.061     0.201     0.273     0.057      1.47     0.0005
