@@ -49,12 +49,13 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
      - Mod 3'ün akım döngüsü i_adc'yi gürültüsüz kullanıyor (5b ile aynı). Yalnız kayıt gürültülü.
      - Regresyon: port 1–4 değişiklikten önceki hâliyle bit düzeyinde aynı.
    - Gösterim `olcum_4b.m` → `olcum_4b_log.txt` (gerçekçi sensör, gözlemci; chirp, darbe, 30° serbest salınım × mod 1/3). Ölçüm − gerçek:
-     - θ_L: rms 0,05°, en çok 0,14–0,20°. Nicemleme (`floor`, −q/2 kayması) + bir örnek gecikme.
+     - θ_L: rms 0,05–0,06°, en çok 0,14–0,21°. Nicemleme (`floor`, −q/2 kayması) + bir örnek gecikme.
      - φ: en çok bir enkoder sayımı (0,27°).
      - v̂: rms 0,04–0,11 rad/s.
-     - i: rms 1,4–1,7 mA.
-     - Mod 3'te akımdan bulunan tork K_m·i ile komut u arasındaki fark rms 0,010–0,017 N·m (Tmax'ın %2–3'ü). Tanılamada tork girdisi olarak mod 3'te u ya da K_m·i kullanılabilir. Mod 1'de zıt EMK yüzünden gerçek tork u değil, K_m·i.
+     - i: rms 1,4–1,6 mA.
+     - Mod 3'te akımdan bulunan tork K_m·i ile komut u arasındaki fark rms 0,0005–0,021 N·m (Tmax'ın en çok %4'ü). Tanılamada tork girdisi olarak mod 3'te u ya da K_m·i kullanılabilir. Mod 1'de zıt EMK yüzünden gerçek tork u değil, K_m·i.
      - Örnek kayıt `olcum_4b_ornek.mat` (chirp, mod 3). 4.3'ün tanılama algoritması bu biçimdeki veriyi okuyacak.
+     - **Düzeltme (2026-11-01, 4.3 sırasında bulundu):** kayıt ilk sürümde 1 ms değil **5 ms** aralıklıydı. Modelin `Decimation = dec` (= 5) ayarı yalnız sürekli çıkışları değil, Ts örneklemeli `olc_out`'u da seyreltiyordu. Ölçüm ve tanılama betikleri artık `dec = 1` ile koşuyor (`olc_out` gerçekten 1 ms; sürekli çıkışlar dt = 0,1 ms). Yukarıdaki sayılar düzeltilmiş koşudan; 5 ms'lik hâlden farkları küçük, çünkü bunlar örnek başına hata istatistikleri.
    - **Yan soru: hız kestirimi salınım sınırını kaydırıyor mu?** `blok_ayrik.m`'ye seçmeli kestirici eklendi, ayarı `p.hiz` (yalnız Simscape modelleri):
      - `fark`: varsayılan, 5b ile aynı. Regresyon bit düzeyinde aynı.
      - `periyot`: iki enkoder kenarı arasındaki süre. Donanımda GPIO kesmesi + µs zaman damgasıyla ölçülür; burada kenar zamanı aradeğerlemeyle bulunuyor. Yön değişince v = 0, kenar gelmezse v sıfıra doğru sınırlanıyor.
@@ -79,33 +80,39 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
    - **4.3, tanılama.** Girdi yalnız firmware kaydı (`olcum_oku` → `K`); gerçek değerler yalnız karşılaştırma için. Bütün koşular gözlemci kestiriciyle.
      - **Ön adım: K_m ve R_a (zıt EMK). Bitti.** `tani_Km.m` → `tani_Km_log.txt` (kayıtlar `tani_Km_kayit.mat`, `tani_Km(false)` yalnız analizi yeniden yapar). K_m'nin veri sayfası değeri yaklaşık olduğundan ve J_M kestiriminde tork K_m·i olarak girdiğinden ayrı ölçülüyor.
        - Denklem V = R_a·i + L_a·di/dt + K_m·φ̇. Kaba enkoderin türevini almamak için 20–200 ms'lik pencerelerde integrali alınıyor: ∫V dt = K_m·Δφ + R_a·∫i dt + c·Δi. Her pencere bir satır, en küçük kareler. Enkoder hatası böylece pencere uçlarında en çok bir sayım kalıyor, türevle büyümüyor.
-       - **c, L_a değil.** Elektrik zaman sabiti (~0,3 ms) Ts'nin (1 ms) altında, kayıt L_a'yı göremiyor; serbest bırakılınca −12 mH çıkıyor. c, V ile i kayıtları arasındaki bir örnekten kısa zaman kaymasını emiyor (R_a·i(t − τ) ≈ R_a·i − R_a·τ·di/dt). Terim atılırsa ideal veride bile K_m %3–9 sapıyor; V kaydı yapay olarak bir örnek kaydırılınca K_m %8–12 oynuyor. Terim tutulunca ideal veride K_m hatası %0,3'ün altında ve kaymaya duyarsız.
-       - Sonuç (K_m hatası, 100 ms pencere; "EMK payı" = rms(K_m·φ̇) / rms(V)):
+       - **c ≈ L_a + R_a·τ.** Elektrik zaman sabiti (~0,3 ms) Ts'nin (1 ms) altında; c, L_a ile V/i kayıtları arasındaki örnekten kısa zaman kaymasının toplamı (R_a·i(t − τ) ≈ R_a·i − R_a·τ·di/dt). 1 kHz kayıtta 3–5 mH çıkıyor (gerçek L_a 2,5 mH), boşta gerçekçi 8,7 mH. L_a olarak ayrıca yorumlanmıyor. Terim atılırsa K_m ~%1 sapıyor.
+       - Sonuç (K_m hatası; "EMK payı" = rms(K_m·φ̇) / rms(V)):
 
-         | Deney | Mod | EMK payı | İdeal | Gerçekçi |
-         |---|---|---|---|---|
-         | Kol takılı, 0°, P-PI, referansa sinüs 20° 1 Hz / 25° 1,2 Hz | 1 | %8 / %12 | −0,1 / 0,0% | −3,5 / −5,9% |
-         | aynı | 3 | %8 / %12 | −0,1 / +0,1% | +6,9 / +13,3% |
-         | **Kol takılmadan, açık çevrim, gerilim sinüsü 0,25 Hz** | 1 | %83 / %72 | +0,10% | **+0,42%** (pencereye göre +0,2…+0,4) |
+         | Deney | Mod | EMK payı | İdeal | Gerçekçi, 50–200 ms pencere | Gerçekçi, 20 ms |
+         |---|---|---|---|---|---|
+         | Kol takılı, 0°, P-PI, referansa sinüs 20° 1 Hz / 25° 1,2 Hz | 1 | %10 / %13 | ±0,02% | −0,2 … +0,2% | −0,8 / −0,4% |
+         | aynı | 3 | %10 / %13 | ±0,07% | 0,0 … +0,3% | −0,4 / −0,1% |
+         | Kol takılmadan, açık çevrim, gerilim sinüsü 0,25 Hz | 1 | %73 | −0,01% | −0,05 … +0,04% | −0,05% |
 
-         R_a hatası: kol takılı deneyde ±%1–4, boşta −%0,9.
-       - **Kol takılıyken K_m iyi belirlenmiyor.** Kolu taşımak için gereken akım gerilimin büyük kısmını R_a·i'ye harcatıyor; zıt EMK V'nin yalnız %8–12'si. K_m büyük bir sinyalin üstündeki küçük bir bileşenden çıkarılıyor; R_a·i tarafındaki %1'lik hata (nicemleme, zamanlama) K_m'de ~%10 olarak dönüyor. Gerçekçi veride sonuç pencere boyuna göre −%6 ile +%24 arasında dolaşıyor.
-       - **Mod 3'te ek bir sapma (+%7–13) var:** akım döngüsü V'yi 10 kHz'de değiştiriyor, 1 kHz kayıt onun anlık örneği; ∫V dt yanlış hesaplanıyor. Enkoder nicemlemesinin gürültülü u'su akım döngüsünü oynattığında belirginleşiyor (enkoder ideal olunca sapma −%0,9). Firmware mod 3'te V'nin Ts içindeki ortalamasını (PWM görev oranlarının toplamı) kaydetmeli. Mod 1'de V zaten Ts boyunca sabit.
-       - **Karar: K_m deneyi kol takılmadan, mod 1'de yapılacak.** Benzetimde boşluk r = 10⁴ rad yapılarak motor yükten ayrıldı; donanımda kol dişli çıkışından sökülür. Yük yalnız motor sürtünmesi, akım küçük, zıt EMK baskın. Kol takılmadan önce bir kez ölçülür; sonraki adımlarda (J_M, K_s) K_m bilinen sayılır.
-     - **Adım 1: J_M, b_M, F_c (kol takılmadan). Bitti.** `tani_JM.m` → `tani_JM_log.txt` (K_m fonksiyonu ortak dosyada: `km_kestir.m`). Kolun sökülebildiği varsayıldı. Planlanan "kol takılı, boşluk ortasında küçük darbe" yöntemi (3°'lik boşlukta ~11 enkoder sayımı, yerçekimi kolu dişliye yaslıyor, sürtünme darbeyi yutuyor) ancak kol sökülemezse gerekecek.
-       - Düzenek tani_Km ile aynı: r = 10⁴ rad, mod 1, açık çevrim. Tek kayıt K_m, R_a, J_M, b_M ve F_c'yi birlikte veriyor.
-       - Denklem J_M·φ̈ = K_m·i − b_M·φ̇ − F_c·sgn(φ̇), pencere integrali: J_M·Δφ̇ + b_M·Δφ + F_c·sgn(φ̇)·W = K_m·∫i dt. φ̇ yalnız pencere uçlarında gerekiyor; enkoderden çevrim dışı, ±10 örneklik yerel doğru uydurmasının eğimi. Pencere içinde |φ̇| < 2 rad/s olan pencereler atılıyor (yön değişimi ve Stribeck bölgesinde sürtünme sabit değil). K_m aynı kayıttan `km_kestir` ile.
-       - Sonuç (gerçek: J_M 0,0036, b_M 2e-3, F_c 0,04 N·m; 20–100 ms pencere aralığı):
+         R_a hatası her deneyde %0,1'in altında.
+       - Kol takılıyken zıt EMK gerilimin yalnız %10–13'ü (kolu taşımak için gereken akım R_a·i'yi büyütüyor); buna rağmen 1 kHz kayıtla K_m %0,3 içinde. 20 ms'lik pencere biraz kötü (pencere başına Δφ az sayım). **Karar: pencere 100 ms. K_m her iki düzenekte de ölçülebiliyor.** Kol sökülebiliyorsa boşta deney tercih (EMK baskın, sonuç pencereden bağımsız), sökülemiyorsa kol takılı deney yeterli.
+       - **Düzeltme:** bu adımın ilk sürümü (commit 27c1996) 5 ms'lik kayıtla yapılmıştı (bkz. 4.2 düzeltmesi). O hâliyle kol takılı deneyde K_m %4–13 dağınık, c = −12 mH çıkıyordu; "kol takılıyken K_m belirlenmiyor" ve "mod 3'te V'nin Ts ortalaması kaydedilmeli" sonuçlarına varılmıştı. İkisi de seyreltmenin yan etkisiymiş, geri alındı.
+     - **Adım 1: J_M, b_M, F_c. Bitti.** Kolun sökülebildiği varsayıldı (asıl yöntem). Sökülemezse yedek yöntem de hazır (aşağıda).
+       - **Asıl: kol takılmadan.** `tani_JM.m` → `tani_JM_log.txt` (K_m fonksiyonu ortak dosyada: `km_kestir.m`). Düzenek tani_Km ile aynı: r = 10⁴ rad, mod 1, açık çevrim. Tek kayıt K_m, R_a, J_M, b_M ve F_c'yi birlikte veriyor.
+       - Denklem J_M·φ̈ = K_m·i − b_M·φ̇ − F_c·sgn(φ̇), pencere integrali: J_M·Δφ̇ + b_M·Δφ + F_c·sgn(φ̇)·W = K_m·∫i dt. φ̇ yalnız pencere uçlarında gerekiyor; enkoderden çevrim dışı, ±10 örneklik (±10 ms) yerel doğru uydurmasının eğimi. Pencere içinde |φ̇| < 2 rad/s olan pencereler atılıyor (yön değişimi ve Stribeck bölgesinde sürtünme sabit değil). K_m aynı kayıttan `km_kestir` ile.
+       - Sonuç (gerçek: J_M 0,0036, b_M 2e-3, F_c 0,04 N·m):
 
-         | Uyarım | Sensör | J_M | b_M | F_c |
-         |---|---|---|---|---|
-         | **V sinüsü 0,25 Hz** | ideal | +0,10% | +0,22% | 0 (gerçek 0) |
-         | **V sinüsü 0,25 Hz** | gerçekçi | **+0,4…+0,5%** | **+0,6…+1,7%** | **0,0398–0,0402** |
-         | log chirp 0,5→5 Hz | ideal | +1,4…+3,5% | +0,2…+4,2% | ~0 |
-         | log chirp 0,5→5 Hz | gerçekçi | +1,5…+4,2% | −5…−13% | 0,043–0,044 |
+         | Uyarım | Sensör | Pencere | J_M | b_M | F_c |
+         |---|---|---|---|---|---|
+         | **V sinüsü 0,25 Hz** | ideal | 20–100 ms | −0,08% | +0,10% | 0 (gerçek 0) |
+         | **V sinüsü 0,25 Hz** | gerçekçi | 50 / 100 ms | **−0,56 / −0,21%** | **+1,4 / +1,4%** | **0,0397 / 0,0396** |
+         | V sinüsü 0,25 Hz | gerçekçi | 20 ms | −2,3% | −2,9% | 0,0410 |
+         | log chirp 0,5→5 Hz | ideal | 20–100 ms | ±0,1% | −2,9 … −4,4% | ~0,0015 |
+         | log chirp 0,5→5 Hz | gerçekçi | 20–100 ms | −0,04 … −0,63% | −4,9 … +1,9% | 0,040–0,041 |
 
-       - Gerçekçi veride J_M hatasının çoğu K_m'nin +%0,4'lük hatasından geçiyor (gerçek K_m ile J_M hatası %0,1'in altında). Tork K_m·i olarak girdiği için K_m'deki bağıl hata J_M ve b_M'ye aynen yansıyor.
-       - Chirp ideal veride bile daha kötü. Muhtemel neden: ±10 ms'lik eğim uydurması hızlı değişen hızı düzleştiriyor; yüksek frekansta Δφ̇ küçük kalıyor (doğrulanmadı). Yavaş sinüste ivme yeterli, sonuç pencereden bağımsız. **Karar: boşta deney 0,25 Hz gerilim sinüsüyle, tek kayıt.**
+       - J_M her iki uyarımda iyi. b_M chirp'te daha dağınık: chirp'te hız düşük ve sürekli yön değiştiriyor, viskoz terim (b_M·φ̇) küçük kalıyor. 20 ms'lik pencere gerçekçi veride kötü (pencere başına az enkoder sayımı). **Karar: boşta deney 0,25 Hz gerilim sinüsüyle, 100 ms pencere, tek kayıt.**
+       - Düzeltme: ilk sürüm (commit 8ad8a84) 5 ms'lik kayıtla yapılmıştı; o hâliyle chirp'te J_M %1,5–4 sapıyordu ve bunun eğim uydurmasından geldiği tahmin edilmişti. Gerçek neden seyreltmeymiş (±10 örnek o zaman ±50 ms ediyordu).
+       - **Yedek: kol takılı, dişli boşluğunun içinde tork darbesi.** `tani_JM_kol.m` → `tani_JM_kol_log.txt`. Kol aşağıda asılı (0°). Boşluk ortası kullanılamıyor, çünkü r henüz bilinmiyor (Adım 3). Bunun yerine motor önce yavaşça bir yana döndürülür, AS5600 kolun kıpırdadığını görünce durulur: motor dişlinin bir yüzünde, önünde 2r = 3° serbest yol. Mod 3, açık çevrim tork darbesi 0,2 N·m × 20 ms; motor karşı yüze değmeden duruyor (hesap ~0,044 rad < 0,052 rad).
+         - Enkoder bu harekette yalnız 6–9 sayım ilerliyor, hız tahmini anlamsız. Motor durgun başladığından denklem iki kez integralleniyor, hız tamamen düşüyor: J_M·(φ − φ₀) + F_c·d·(t − t₀)²/2 = K_m·∫(t − τ)·i dτ. Hareketin her örneği bir satır; uydurma motor durana ya da kol kıpırdayana kadar. b_M ihmal (60 ms'de etkisi ~%2, ayrılamıyor). K_m gerçek değer.
+         - 10 darbe (5 ileri, 5 geri); her darbede başlangıcın enkoder ızgarasına göre konumu rastgele (gerçekte de öyle).
+         - Sonuç: ideal veride J_M −%3,9 (ihmal edilen b_M ve akımın bir örnek gecikmeli kaydı). Gerçekçi veride tek darbe −%22 ile +%7 arası (std %11), 10 darbe birleşik **J_M −%13,5, F_c 0,050** (gerçek 0,040). Dağınıklığın kaynağı 6–9 sayımlık enkoder nicemlemesi; birleşik sapmanın kaynağı büyük olasılıkla hareketin başında ve sonunda baskın olan Stribeck sürtünmesi (F_s = 0,06), uydurmada sabit F_c varsayılıyor (ayrıca doğrulanmadı).
+         - **Sonuç: yedek yöntem asıl yöntemden ~30 kat kötü (%13 ve %0,5).** Kol sökülemezse J_M bu doğrulukla bilinecek; etkisi 4.4'te kritik r_gs öngörüsüne yansıtılacak.
+       - **Model düzeltmesi (bu adımda bulundu):** Simscape ağı her zaman göreli 0 konumundan başlıyor, ölçüm sensörleri `S.x0`'ı yalnız ofset olarak ekliyor. Hard Stop sınırları ise ağın göreli açısına göre ±r. Başlangıçta dişli boşluğun ortasında değilse (δ₀ = φ₀ − θ₀ ≠ 0), temas noktaları ±r yerine ±r − δ₀'a düşüyordu. Yedek yöntemin ilk koşusunda motor 1,5° sonra kola çarptı. `sm_model_kur.m`'de sınırlar artık `±S.r − (S.x0(1) − S.x0(3))`. Varsayılan başlangıçta δ₀ = 0, dolayısıyla önceki bütün Simscape sonuçları etkilenmemiş (δ₀ ≠ 0 kullanan tek eski betik `kok_neden_3.m`, o da kol_benzetim ile).
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.

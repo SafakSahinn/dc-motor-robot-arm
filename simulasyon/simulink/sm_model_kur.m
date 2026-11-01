@@ -32,8 +32,12 @@ ekle(ad, [fm 'Rotational Elements/Inertia'], 'JM', [260 300], 'inertia', 'S.JM',
 ekle(ad, [fm 'Rotational Elements/Inertia'], 'JL', [620 300], 'inertia', 'S.JL', 'w_specify', 'on', 'w', 'S.x0(4)');
 ekle(ad, [fm 'Rotational Elements/Rotational Damper'], 'bM', [200 420], 'D', 'S.bM');
 ekle(ad, [fm 'Rotational Elements/Rotational Damper'], 'bL', [680 420], 'D', 'S.bL');
+% Simscape ağı göreli 0'dan başlar (sensörler S.x0'ı ofset olarak ekler); Hard Stop sınırları ağın göreli
+% açısına göredir. Başlangıçta dişli boşluğun ortasında değilse (δ0 = phi0 - th0 ≠ 0) sınırlar δ0 kadar
+% kaydırılır, yoksa temas noktaları ±r yerine ±r - δ0'a düşer. δ0 = 0 (varsayılan) için değişiklik yok.
 ekle(ad, [fm 'Rotational Elements/Rotational Hard Stop'], 'dis', [440 300], ...
-     'upper_bnd', 'S.r', 'lower_bnd', '-S.r', 'model', 'simscape.enum.hardstop.smooth', ...
+     'upper_bnd', 'S.r - (S.x0(1) - S.x0(3))', 'lower_bnd', '-S.r - (S.x0(1) - S.x0(3))', ...
+     'model', 'simscape.enum.hardstop.smooth', ...
      'stiff_up', 'S.Ks', 'stiff_low', 'S.Ks', 'D_up', 'S.cs', 'D_low', 'S.cs', 'transition', 'gecis');
 ekle(ad, [fm 'Mechanical Sources/Ideal Torque Source'], 'tork_m', [260 180]);
 ekle(ad, [fm 'Mechanical Sources/Ideal Torque Source'], 'tork_L', [620 180]);

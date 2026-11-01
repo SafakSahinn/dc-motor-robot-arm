@@ -1,8 +1,8 @@
 function th = km_kestir(K, W, tbas)
 % KM_KESTIR  Zıt EMK denkleminden K_m, R_a (tani_Km). th = [Km Ra c].
 %   int V dt = K_m (phi_son - phi_ilk) + R_a int i dt + c (i_son - i_ilk)
-% Pencereler örtüşmesiz, boy W [s]; tbas öncesi atılır. c, V ile i kayıtları arasındaki bir örnekten kısa
-% zaman kaymasını emen rahatsızlık parametresi (L_a değil; bkz. tani_Km).
+% Pencereler örtüşmesiz, boy W [s]; tbas öncesi atılır. c ~ L_a + R_a tau (L_a ile V/i kayıtları arasındaki
+% örnekten kısa zaman kaymasının toplamı; bkz. tani_Km). Kayıt 1 kHz olmalı (dec = 1).
 % V kaydı ZOH: örnek anındaki komut bir Ts boyunca tutuluyor (mod 1'de doğru). i anlık örnek, yamuk kuralı.
 t = K.t;  Ts = t(2) - t(1);  n = round(W/Ts);
 s = find(t >= tbas, 1);

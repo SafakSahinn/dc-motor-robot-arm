@@ -3,17 +3,17 @@ function tani_Km(kosu)
 %   V = R_a i + L_a di/dt + K_m dphi/dt          (kol tarafına indirgenmiş eşdeğer motor, sim_param)
 % Kaba enkoderin (0.27°) türevini almamak için denklem pencereler üzerinde integrallenir:
 %   int V dt = K_m (phi_son - phi_ilk) + R_a int i dt + c (i_son - i_ilk)
-% Her pencere bir satır; en küçük kareler. Üçüncü terim (c) L_a DEĞİL: elektrik zaman sabiti (~0.3 ms)
-% Ts'nin (1 ms) altında, kayıt L_a'yı göremiyor. c, V ile i kayıtları arasındaki bir örnekten kısa
-% zaman kaymasını (R_a i(t - tau) ~ R_a i - R_a tau di/dt) emen bir rahatsızlık parametresi; değeri
-% yorumlanmaz (-12 mH çıkıyor). Atılırsa ideal veride bile K_m %3-9 sapıyor; tutulunca %0.3'ün altında.
+% Her pencere bir satır; en küçük kareler. Üçüncü terim c ~ L_a + R_a tau: L_a ile V/i kayıtları arasındaki
+% örnekten kısa zaman kaymasının toplamı (R_a i(t - tau) ~ R_a i - R_a tau di/dt). 1 kHz kayıtta 3-5 mH
+% çıkıyor (gerçek L_a 2.5 mH); L_a olarak ayrıca yorumlanmaz. Atılırsa K_m ~%1 sapıyor.
+% Kayıt seyreltmesiz (dec = 1): olc_out gerçekten Ts = 1 ms. (Modelin dec = 5 ayarı ayrık çıkışa da
+% uygulanıyordu, kayıt 5 ms'ye düşüyordu; o hâliyle K_m %4-13 dağınık, c = -12 mH çıkıyordu.)
 % Deneyler:
 %   kol    kol takılı, 0°, P-PI r_gs 0.8, referansa sinüs (20° 1 Hz, 25° 1.2 Hz), mod 1 ve 3.
-%          Zıt EMK gerilimin ancak ~%10'u (R_a i baskın): K_m küçük bir bileşenden çıkarılıyor.
+%          Zıt EMK gerilimin ~%10'u (R_a i baskın), yine de 1 kHz kayıtla K_m %0.4 içinde.
 %   bosta  kol takılmadan (benzetimde boşluk r = 1e4 rad: motor kola hiç değmiyor), açık çevrim
 %          mod 1, tork komutuna yavaş sinüs (0.25 Hz). Yük yalnız sürtünme: i küçük, zıt EMK baskın.
-%          Mod 3 yok: akım döngüsünde motor boşta sınırsız hızlanır; ayrıca mod 3'te V 10 kHz'de
-%          değişir, 1 kHz kayıt onun anlık örneği (V'nin Ts ortalaması kaydedilmeli; bkz. README).
+%          Mod 3 yok: akım döngüsünde motor boşta sınırsız hızlanır.
 % Girdi yalnız firmware kaydı (K.V, K.i, K.phi); gerçek değerler yalnız karşılaştırma için.
 % tani_Km()       benzetimleri koşar, kayıtları tani_Km_kayit.mat'a yazar, analiz eder
 % tani_Km(false)  yalnız analiz (kayıtlı veriden)
@@ -73,7 +73,7 @@ for duz = {'ideal', 'gercekci'}
         S = sim_param(q, 0, 0.8^2*q.Ks/q.KV);
         in = Simulink.SimulationInput(mdl);
         in = in.setVariable('S', S).setVariable('Ts', q.Ts).setVariable('dt', q.dt) ...
-               .setVariable('T', q.T).setVariable('dec', q.dec).setVariable('gecis', 1e-6) ...
+               .setVariable('T', q.T).setVariable('dec', 1).setVariable('gecis', 1e-6) ...
                .setVariable('Tsur', S.Tsur);
         K = olcum_oku(sim(in));
         K.g = [];                                      % gerçek durumlar gerekmiyor, dosya küçük kalsın

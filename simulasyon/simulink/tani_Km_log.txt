@@ -30,3 +30,17 @@ kol    gercekci    1 ref25/1.2Hz     12   -3.95  -6.05  -5.93  -3.65  -1.06
 kol    gercekci    3 ref25/1.2Hz     12  +11.58  +9.97 +13.25  +5.25  -4.30
 bosta  gercekci    1 V sin.25Hz     72   +0.20  +0.37  +0.42  +0.27  -0.91
 Gerçek (sim_param): Km 0.3441 V s/rad, Ra 8.427 Ohm
+=== Adım 4.3 ön adım: K_m, R_a zıt EMK denkleminden, 3 terimli uydurma (2026-11-01 15:31)
+İlk 1 s atılır. "EMK payı" = rms(K_m dphi/dt) / rms(V). Hata % Km, pencere boyuna göre; Ra 100 ms
+deney  sensör    mod uyarım      EMK %    20ms   50ms  100ms  200ms  Ra %
+kol    ideal       1 ref20/1Hz       8   -0.01  -0.00  -0.00  +0.02  +0.01
+kol    ideal       3 ref20/1Hz       8   +0.03  +0.00  +0.00  -0.07  -0.02
+kol    ideal       1 ref25/1.2Hz     12   -0.01  -0.00  -0.00  +0.00  +0.00
+kol    ideal       3 ref25/1.2Hz     12   +0.03  +0.01  +0.01  +0.01  -0.04
+bosta  ideal       1 V sin.25Hz     83   -0.01  -0.01  -0.01  -0.01  +0.06
+kol    gercekci    1 ref20/1Hz      10   -0.79  +0.02  +0.10  +0.17  -0.03
+kol    gercekci    3 ref20/1Hz      10   -0.41  +0.06  +0.10  +0.33  +0.04
+kol    gercekci    1 ref25/1.2Hz     13   -0.38  -0.13  -0.14  -0.21  +0.00
+kol    gercekci    3 ref25/1.2Hz     13   -0.09  +0.02  +0.11  +0.23  +0.10
+bosta  gercekci    1 V sin.25Hz     73   -0.05  -0.05  +0.04  -0.05  -0.00
+Gerçek (sim_param): Km 0.3441 V s/rad, Ra 8.427 Ohm
