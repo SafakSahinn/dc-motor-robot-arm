@@ -53,10 +53,13 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
      | fark | 1,00 / 1,35 / 1,40 |
      | periyot | 0,95 / 1,10 / 1,15 |
      | gözlemci | 1,00 / 1,30 / 1,30 |
+     | gerçek hız (çapa: fv = Inf, gerisi gerçekçi) | 1,00 / 1,25 / 1,30 |
 
-     - **Sınır kestiriciye bağlı.** 60–90°'de fark ile periyot arasında 0,25 (~%20) fark var. Bu, DF analizinin hata payıyla aynı büyüklükte. Periyot kestiricisi ideal sensör sınırına (5b: 0,90 / 1,10 / 1,10) çok yakın düşüyor.
-     - **Titreşim etkisi (dither) yorumu tek başına yetmiyor.** Gözlemcinin gürültüsü de düşük (0,020 N·m) ama sınırı fark kestiricisine yakın kaldı. Periyot kestiricisini ayıran başka bir doğrusal olmayan özellik olabilir (dönüşte v = 0, yavaşlarken sıfıra inen sınır). Mekanizma henüz ayrıştırılmadı.
-     - Sonuç: donanım deneyinde kullanılacak kestirici ikizde birebir aynı olmalı. Kritik r_gs öngörüsü kestiriciyle birlikte verilmeli.
+     - **Gözlemci gerçek hız gibi davranıyor:** sınır aynı (90°) ya da 0,05 içinde (60°).
+     - **Fark kestiriminin gürültüsü sınırı 0,05–0,10 yukarı itiyor.** Titreşim etkisi (dither) yönünde, ama küçük.
+     - **Periyot kestiricisi aykırı:** sınırı gerçek hızın 0,15 altına çekiyor, yani salınımı kolaylaştırıyor. Neden: kol dönüş noktasında yön değiştirince v = 0 okunuyor, yavaşlarken de v sıfıra kırpılıyor. Küçük genlikli dişli boşluğu çevriminde sönüm tam gereken anda kayboluyor. Kestiricinin kendi doğrusal olmama özelliği bu.
+     - **Gerçekçi ile ideal sensör farkı hız kestiriminden gelmiyor.** Gerçek hızla bile 60°'de 1,25 (ideal 1,10). Fark nicemleme, gecikme, Ts = 1 ms ve sürtünmeden geliyor. Periyot kestiricisinin ideal sınıra yakın düşmesi rastlantı: iki ayrı etki birbirini götürüyor.
+     - Sonuç: donanım deneyinde kullanılacak kestirici ikizde birebir aynı olmalı. Kritik r_gs öngörüsü kestiriciyle birlikte verilmeli. Firmware için en uygun aday gözlemci: gürültüsü düşük (u std 0,020 N·m, tavana vurma yok), sınırı gerçek hızla aynı, ESP32'de iki satırlık Euler güncellemesi. Periyot yöntemi kullanılmamalı.
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.

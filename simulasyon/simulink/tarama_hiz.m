@@ -1,4 +1,6 @@
-function tarama_hiz()
+function tarama_hiz(hz)
+% hz: kestirici listesi (varsayılan {'fark','periyot','gozlemci'}). 'gercek' = çapa: kontrolcü gerçek
+%     motor hızını kullanır (fv = Inf), geri kalan her şey gerçekçi. Çıktı dosyası tarama_hiz_<ad>.mat.
 % TARAMA_HIZ  Hız kestirimi salınım sınırını kaydırıyor mu? (Adım 4 öncesi yan soru)
 % sm_motor_model, mod 1 (gerilim), D düzeneği, P-PI, gerçekçi sensör (dogrula_3 ayarı).
 % Kestiriciler (blok_ayrik): fark (varsayılan, 5b ile aynı), periyot, gozlemci.
@@ -9,7 +11,8 @@ function tarama_hiz()
 kok = fileparts(mfilename('fullpath'));
 addpath(fileparts(kok), fullfile(fileparts(kok), '4a_ghaffari'));
 warning('off', 'all');
-ac = [30 60 90];  rgs = 0.90:0.05:1.45;  bas = [0.2 1 5];  hz = {'fark', 'periyot', 'gozlemci'};
+if nargin < 1, hz = {'fark', 'periyot', 'gozlemci'}; end
+ac = [30 60 90];  rgs = 0.90:0.05:1.45;  bas = [0.2 1 5];
 ops = struct('A_min',0.05,'A_max',30,'T_at',0.3);
 L = load(fullfile(kok, 'referans.mat'));  p0 = L.R.p;
 mdl = 'sm_motor_model';
@@ -23,8 +26,9 @@ B = struct('ac', ac, 'rgs', rgs, 'bas', bas, 'hz', {hz}, 'C', NaN(numel(hz), num
 for h = 1:numel(hz)
     tic;
     for j = 1:numel(AC)
-        q = p0;  q.adim = BA(j);  q.mot = 1;  q.hiz = hz{h};
+        q = p0;  q.adim = BA(j);  q.mot = 1;
         q.Ts = 1e-3;  q.qL = 2*pi/4096;  q.gL = 1;  q.qM = 2*pi/(11*4*q.N);  q.fv = 50;
+        if strcmp(hz{h}, 'gercek'), q.fv = Inf; else, q.hiz = hz{h}; end
         q.Fc = 0.04;  q.Fs = 0.06;  q.olu = 0.03*q.Tmax;
         S = sim_param(q, AC(j), RG(j)^2*q.Ks/q.KV);
         in = Simulink.SimulationInput(mdl);
@@ -42,7 +46,7 @@ for h = 1:numel(hz)
         r = rejim_sinifla(xs.Time(sec), rad2deg(X(sec,3)) - AC(j), ops);
         B.C(h,j) = r.sinif;  B.A(h,j) = r.A;  B.f(h,j) = r.f;
     end
-    save(fullfile(kok, 'tarama_hiz.mat'), 'B');
+    save(fullfile(kok, sprintf('tarama_hiz_%s.mat', strjoin(hz, '_'))), 'B');
     C = reshape(B.C(h,:), size(AC));  A = reshape(B.A(h,:), size(AC));
     sal = any(C >= 3 & A > 0.5, 3);
     kr = arrayfun(@(i) ilk(rgs, sal(i,:)), 1:numel(ac));
