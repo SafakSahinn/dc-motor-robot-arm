@@ -1,0 +1,34 @@
+=== Adım 4.3 Adım 1 yedek: J_M kol takılı, boşluk içinde tork darbesi, mod 3 (2026-11-01 15:28)
+Darbe 0.20 N m x 20 ms, başlangıç dişli yüzünde; gerçek JM 0.0036, Fc ideal 0 / gerçekçi 0.04; Km gerçek
+sensör      #  yön   yol °  sayım      n   kol°      JM %       Fc
+ideal       1   +1    3.12    NaN     12   5.44    -25.06   0.0247
+ideal       2   -1    3.12    NaN     12   5.44    -25.06   0.0247
+ideal     birleşik (2 darbe): JM -25.06 %, Fc 0.0247; tek darbe JM std 0.0 %, en kötü -25.1 %
+gercekci    1   +1    2.45    9.0     16   0.09    -20.94   0.0491
+gercekci    2   -1    2.45    9.0     15   0.35    -26.14   0.0519
+gercekci    3   +1    2.45    9.0     15   0.18    -30.77   0.0535
+gercekci    4   -1    2.45    9.0     15   0.35    -29.03   0.0526
+gercekci    5   +1    1.64    6.0     10   0.53    -48.69   0.0788
+gercekci    6   -1    2.45    9.0     15   0.26    -30.77   0.0535
+gercekci    7   +1    2.18    8.0     14   0.26     -6.39   0.0440
+gercekci    8   -1    2.45    9.0     17   0.09    -16.94   0.0471
+gercekci    9   +1    2.45    9.0     15   0.09    -29.03   0.0523
+gercekci   10   -1    2.18    8.0     14   0.26     -6.14   0.0443
+gercekci  birleşik (10 darbe): JM -24.48 %, Fc 0.0512; tek darbe JM std 12.7 %, en kötü -48.7 %
+=== Adım 4.3 Adım 1 yedek: J_M kol takılı, boşluk içinde tork darbesi, mod 3 (2026-11-01 15:32)
+Darbe 0.20 N m x 20 ms, başlangıç dişli yüzünde; gerçek JM 0.0036, Fc ideal 0 / gerçekçi 0.04; Km gerçek
+sensör      #  yön   yol °  sayım      n   kol°      JM %       Fc
+ideal       1   +1    3.30    NaN     63   5.44     -3.87   0.0053
+ideal       2   -1    3.30    NaN     63   5.44     -3.87   0.0053
+ideal     birleşik (2 darbe): JM  -3.87 %, Fc 0.0053; tek darbe JM std 0.0 %, en kötü -3.9 %
+gercekci    1   +1    2.45    9.0     78   0.09     -9.46   0.0468
+gercekci    2   -1    2.45    9.0     75   0.35    -14.18   0.0490
+gercekci    3   +1    2.45    9.0     71   0.18    -22.32   0.0533
+gercekci    4   -1    2.45    9.0     74   0.35    -15.99   0.0497
+gercekci    5   +1    1.64    6.0     52   0.53    -21.63   0.0628
+gercekci    6   -1    2.45    9.0     71   0.26    -22.47   0.0534
+gercekci    7   +1    2.18    8.0     70   0.26     +6.92   0.0423
+gercekci    8   -1    2.45    9.0     81   0.09     -4.92   0.0449
+gercekci    9   +1    2.45    9.0     74   0.09    -15.92   0.0496
+gercekci   10   -1    2.18    8.0     70   0.26     +7.09   0.0423
+gercekci  birleşik (10 darbe): JM -13.54 %, Fc 0.0498; tek darbe JM std 11.2 %, en kötü -22.5 %
