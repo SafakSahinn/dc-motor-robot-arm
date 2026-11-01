@@ -1,0 +1,32 @@
+=== Adım 4.3 ön adım: K_m, R_a zıt EMK denkleminden, L_a düşürüldü (2026-11-01 15:04)
+Deney: 0°, P-PI r_gs 0.8, referansa sinüs; ilk 1 s atılır. Hata % (Km / Ra), pencere boyuna göre
+sensör    mod   A°    f      20 ms Km/Ra       50 ms Km/Ra      100 ms Km/Ra      200 ms Km/Ra  
+ideal       1   20  1.0     +7.05   +0.28     +4.74   +0.16     +2.40   +0.26     -4.96   -0.37 
+ideal       3   20  1.0     +9.00   +0.13     +6.09   +0.04     +3.11   +0.28     -9.60   -0.45 
+ideal       1   25  1.2     +4.96   +0.23     +3.91   +0.10     +3.01   -0.08     +1.28   -0.09 
+ideal       3   25  1.2     +6.02   +0.15     +4.64   +0.05     +3.49   +0.01     +0.56   -0.32 
+gercekci    1   20  1.0    +13.96   -0.02     +1.77   +0.97     -2.32   +0.70    +10.73   -5.98 
+gercekci    3   20  1.0    +19.32   -0.60    +11.93   +0.33     +8.52   +0.53    +22.59   -4.97 
+gercekci    1   25  1.2     +1.74   -0.95     -1.57   -0.96     -2.85   -1.45     +3.08   -3.00 
+gercekci    3   25  1.2    +16.61   -1.88    +14.72   -1.66    +16.89   -4.16    +13.43   -4.96 
+enkoder     1   25  1.2     +1.20   -0.17     -0.42   -0.55     -1.91   +1.68     -1.44   +1.04 
+enkoder     3   25  1.2     +3.43   +0.21     +0.58   +0.09     -0.18   +0.45     -1.48   +0.59 
+akim        1   25  1.2     +5.02   +0.23     +3.97   +0.11     +3.06   -0.07     +1.32   -0.10 
+akim        3   25  1.2     +6.11   +0.14     +4.74   +0.05     +3.58   -0.00     +0.65   -0.37 
+ref_yok     1   25  1.2     +3.72   +0.14     +2.53   +0.11     +0.98   +0.29     +2.33   -0.70 
+ref_yok     3   25  1.2     +4.66   +0.01     +3.48   -0.12     +2.67   -0.31     +2.01   -0.86 
+Gerçek (sim_param): Km 0.3441 V s/rad, Ra 8.427 Ohm
+=== Adım 4.3 ön adım: K_m, R_a zıt EMK denkleminden, 3 terimli uydurma (2026-11-01 15:09)
+İlk 1 s atılır. "EMK payı" = rms(K_m dphi/dt) / rms(V). Hata % Km, pencere boyuna göre; Ra 100 ms
+deney  sensör    mod uyarım      EMK %    20ms   50ms  100ms  200ms  Ra %
+kol    ideal       1 ref20/1Hz       8   -0.72  -0.11  -0.11  -0.21  +0.23
+kol    ideal       3 ref20/1Hz       8   -0.54  -0.07  -0.06  -0.30  +0.17
+kol    ideal       1 ref25/1.2Hz     12   -0.27  -0.03  +0.00  -0.08  +0.08
+kol    ideal       3 ref25/1.2Hz     12   -0.14  +0.08  +0.08  +0.06  +0.02
+bosta  ideal       1 V sin.25Hz     83   +0.10  +0.10  +0.10  +0.10  -0.72
+kol    gercekci    1 ref20/1Hz       8   +6.01  -1.37  -3.50 +11.46  +0.75
+kol    gercekci    3 ref20/1Hz       8  +12.35  +7.54  +6.87 +24.41  +0.70
+kol    gercekci    1 ref25/1.2Hz     12   -3.95  -6.05  -5.93  -3.65  -1.06
+kol    gercekci    3 ref25/1.2Hz     12  +11.58  +9.97 +13.25  +5.25  -4.30
+bosta  gercekci    1 V sin.25Hz     72   +0.20  +0.37  +0.42  +0.27  -0.91
+Gerçek (sim_param): Km 0.3441 V s/rad, Ra 8.427 Ohm
