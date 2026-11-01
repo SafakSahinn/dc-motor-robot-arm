@@ -92,6 +92,20 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
        - **Kol takılıyken K_m iyi belirlenmiyor.** Kolu taşımak için gereken akım gerilimin büyük kısmını R_a·i'ye harcatıyor; zıt EMK V'nin yalnız %8–12'si. K_m büyük bir sinyalin üstündeki küçük bir bileşenden çıkarılıyor; R_a·i tarafındaki %1'lik hata (nicemleme, zamanlama) K_m'de ~%10 olarak dönüyor. Gerçekçi veride sonuç pencere boyuna göre −%6 ile +%24 arasında dolaşıyor.
        - **Mod 3'te ek bir sapma (+%7–13) var:** akım döngüsü V'yi 10 kHz'de değiştiriyor, 1 kHz kayıt onun anlık örneği; ∫V dt yanlış hesaplanıyor. Enkoder nicemlemesinin gürültülü u'su akım döngüsünü oynattığında belirginleşiyor (enkoder ideal olunca sapma −%0,9). Firmware mod 3'te V'nin Ts içindeki ortalamasını (PWM görev oranlarının toplamı) kaydetmeli. Mod 1'de V zaten Ts boyunca sabit.
        - **Karar: K_m deneyi kol takılmadan, mod 1'de yapılacak.** Benzetimde boşluk r = 10⁴ rad yapılarak motor yükten ayrıldı; donanımda kol dişli çıkışından sökülür. Yük yalnız motor sürtünmesi, akım küçük, zıt EMK baskın. Kol takılmadan önce bir kez ölçülür; sonraki adımlarda (J_M, K_s) K_m bilinen sayılır.
+     - **Adım 1: J_M, b_M, F_c (kol takılmadan). Bitti.** `tani_JM.m` → `tani_JM_log.txt` (K_m fonksiyonu ortak dosyada: `km_kestir.m`). Kolun sökülebildiği varsayıldı. Planlanan "kol takılı, boşluk ortasında küçük darbe" yöntemi (3°'lik boşlukta ~11 enkoder sayımı, yerçekimi kolu dişliye yaslıyor, sürtünme darbeyi yutuyor) ancak kol sökülemezse gerekecek.
+       - Düzenek tani_Km ile aynı: r = 10⁴ rad, mod 1, açık çevrim. Tek kayıt K_m, R_a, J_M, b_M ve F_c'yi birlikte veriyor.
+       - Denklem J_M·φ̈ = K_m·i − b_M·φ̇ − F_c·sgn(φ̇), pencere integrali: J_M·Δφ̇ + b_M·Δφ + F_c·sgn(φ̇)·W = K_m·∫i dt. φ̇ yalnız pencere uçlarında gerekiyor; enkoderden çevrim dışı, ±10 örneklik yerel doğru uydurmasının eğimi. Pencere içinde |φ̇| < 2 rad/s olan pencereler atılıyor (yön değişimi ve Stribeck bölgesinde sürtünme sabit değil). K_m aynı kayıttan `km_kestir` ile.
+       - Sonuç (gerçek: J_M 0,0036, b_M 2e-3, F_c 0,04 N·m; 20–100 ms pencere aralığı):
+
+         | Uyarım | Sensör | J_M | b_M | F_c |
+         |---|---|---|---|---|
+         | **V sinüsü 0,25 Hz** | ideal | +0,10% | +0,22% | 0 (gerçek 0) |
+         | **V sinüsü 0,25 Hz** | gerçekçi | **+0,4…+0,5%** | **+0,6…+1,7%** | **0,0398–0,0402** |
+         | log chirp 0,5→5 Hz | ideal | +1,4…+3,5% | +0,2…+4,2% | ~0 |
+         | log chirp 0,5→5 Hz | gerçekçi | +1,5…+4,2% | −5…−13% | 0,043–0,044 |
+
+       - Gerçekçi veride J_M hatasının çoğu K_m'nin +%0,4'lük hatasından geçiyor (gerçek K_m ile J_M hatası %0,1'in altında). Tork K_m·i olarak girdiği için K_m'deki bağıl hata J_M ve b_M'ye aynen yansıyor.
+       - Chirp ideal veride bile daha kötü. Muhtemel neden: ±10 ms'lik eğim uydurması hızlı değişen hızı düzleştiriyor; yüksek frekansta Δφ̇ küçük kalıyor (doğrulanmadı). Yavaş sinüste ivme yeterli, sonuç pencereden bağımsız. **Karar: boşta deney 0,25 Hz gerilim sinüsüyle, tek kayıt.**
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.

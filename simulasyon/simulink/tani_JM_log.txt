@@ -1,0 +1,16 @@
+=== Adım 4.3 Adım 1: J_M, b_M, F_c, kol takılmadan, mod 1 açık çevrim (2026-11-01 15:14)
+Hız: ±10 örnekli yerel doğru eğimi; |w| < 2 rad/s içeren pencereler atılır; ilk 1 s atılır
+Gerçek: JM 0.0036, bM 0.002, Fc ideal 0 / gerçekçi 0.04 N m, Km 0.3441
+sensör    uyarım      W ms   Km %   n      JM %     bM %       Fc  | gerçek Km ile:     JM %     bM %
+ideal     V sin.25Hz    20  +0.10 373     +0.10    +0.22  -0.0000  |                   -0.01    +0.11
+ideal     V sin.25Hz    50  +0.10 147     +0.10    +0.22  -0.0000  |                   -0.01    +0.11
+ideal     V sin.25Hz   100  +0.10  71     +0.10    +0.22  -0.0000  |                   -0.01    +0.11
+ideal     chirp.5-5     20  +0.11 355     +3.49    +4.18  -0.0001  |                   +3.37    +4.06
+ideal     chirp.5-5     50  +0.11 118     +2.28    +0.55   0.0007  |                   +2.17    +0.43
+ideal     chirp.5-5    100  +0.11  40     +1.44    +0.18   0.0008  |                   +1.33    +0.07
+gercekci  V sin.25Hz    20  +0.41 361     +0.43    +0.63   0.0402  |                   +0.03    +0.22
+gercekci  V sin.25Hz    50  +0.41 139     +0.39    +0.72   0.0401  |                   -0.02    +0.31
+gercekci  V sin.25Hz   100  +0.41  67     +0.52    +1.65   0.0398  |                   +0.11    +1.24
+gercekci  chirp.5-5     20  +0.23 351     +4.21    -5.15   0.0429  |                   +3.97    -5.36
+gercekci  chirp.5-5     50  +0.23 116     +2.80    -8.41   0.0435  |                   +2.57    -8.62
+gercekci  chirp.5-5    100  +0.23  42     +1.48   -12.70   0.0444  |                   +1.26   -12.90
