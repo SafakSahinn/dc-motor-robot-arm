@@ -145,6 +145,24 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
        - Fiziksel yorum: c_s dişli çevriminde (limit cycle) dişler çarpışırken her temasta enerji yutuyor. Sönüm azaldıkça çevrim daha düşük kazançta kendini sürdürebiliyor.
        - İdeal sensörde de aynı eğim (c_s'nin her 0,02'si ~0,10), yani etki nicemlemeden değil modelin kendisinden geliyor.
        - **Karar bekliyor:** c_s ya ayrı bir deneyle ölçülecek ya da öngörü bant olarak verilecek (README 4.4'e taşınacak). Seçenekler sohbette tartışılıyor.
+     - **Adım 3: dişli boşluğu r. Bitti.** `tani_r.m` → `tani_r_log.txt`.
+       - **Yöntem: sıfırın iki yanına yarı statik tarama** (Yamada 2016'nın yön değişimi sıçramasının yarı statik hâli). P-PI kapalı çevrim, mod 3, referansa yavaş sinüs 0° ± 60° (0,05 Hz, 20 s). Yerçekimi torku mgl·sinθ 0°'da işaret değiştiriyor: kol θ > 0'da dişliyi + yüze, θ < 0'da − yüze yaslıyor. Ölçülen sapma δ_m = φ_enkoder − θ_AS5600 = δ + o (o: iki sensörün bağımsız sıfırları ve nicemleme yuvarlaması). Temas varken τ_g = K_s(δ − s·r), s = işaret(θ). Pencere ortalamasıyla (Adım 2'deki gibi, 100 ms):
+         - A) K_s, r, o birlikte: ort(τ_g) = K_s·ort(δ_m) − K_s·r·s − K_s·o
+         - B) K_s Adım 2'den sabit: ort(δ_m) − ort(τ_g)/K_s = r·s + o
+       - İki yüzün kümeleri arasındaki fark 2r; o iki kümede aynı olduğundan sadeleşiyor. Adım 2'deki kesişim sorunu (yuvarlama, bağımsız sıfırlar) burada yok. Yöntemin ofsete duyarsız olduğunu göstermek için analizde AS5600 okumasına keyfi 7,3° ofset eklendi. Yüz geçişi dinamik (kol boşluktan düşüyor); |θ| < 10° olan pencereler atılıyor. Tork motor tarafından, Adım 1'in kestirimleriyle.
+       - Sonuç (gerçek r 1,500°; gerçekçi düzeyde 5 koşu, ortalama ± std):
+
+         | Uydurma | İdeal | Gerçekçi |
+         |---|---|---|
+         | A) K_s serbest, bütün pencereler | 0,00% | −0,41 ± 0,18% |
+         | A) (yukarı + aşağı)/2 | 0,00% | −0,05 ± 0,12% |
+         | **B) K_s Adım 2'den, bütün pencereler** | 0,00% | **−0,11 ± 0,04%** |
+         | B) (yukarı + aşağı)/2 | 0,00% | −0,12 ± 0,04% |
+         | (A'nın K_s'si) | 0,00% | −1,0 ± 0,5% |
+         | ofset o | 7,300° | 7,208° (7,3° − yuvarlama, r'ye sızmıyor) |
+
+       - **Karar: B uydurması (K_s Adım 2'den), r ~%0,2 içinde.** Bu deneyde K_s'yi ayrıca uydurmak gereksiz ve daha kötü: tork aralığı (0–0,21 N·m) Adım 2'den dar. Yön ayrımı B'de gerekmiyor.
+       - **Önemli yan bulgu: deney kazancı düşük olmalı.** İlk koşu Adım 2'nin kazancıyla (r_gs 0,8) yapıldı. Küçük açılarda (|θ| ≈ 10–30°) yerçekimi ön yükü az, dişli boşluğu çevrimi başlıyor. Dişli |θ| > 10° iken bile zamanın ~%7'sinde ters yüzdeydi (her yarım salınımın başında, kol 0°'dan uzaklaşırken), r hatası −1,4 ± 0,7% (B) ve −4,8 ± 2,8% (A) çıktı. r_gs 0,5 ile temas her koşuda en az 0,21° payla doğru yüzde. Bu, kritik r_gs'nin küçük açılarda 0,8'in altında olduğunu da gösteriyor (30°'de 1,00). Donanımda bu deney r_gs ≤ 0,5 ile yapılmalı, temas da "δ_m kümeleri iki ayrı düz çizgi mi" diye kayıttan kontrol edilmeli.
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.
