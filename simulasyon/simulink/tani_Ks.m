@@ -1,4 +1,4 @@
-function tani_Ks(kosu)
+function tani_Ks(kosu, mot)
 % TANI_KS  Adım 4.3, Adım 2: dişli sertliği K_s, yarı statik taramayla (kol takılı).
 % Neden rezonans değil: kol 90°'de, kapalı çevrimde torka chirp (2-30 Hz) denendi. Gerçekçi düzeyde motorun
 % statik sürtünmesi (F_s = 0.06 N m) küçük uyarımı yutuyor, motor kıpırdamıyor. Dişlinin temasta kalması için
@@ -19,13 +19,15 @@ function tani_Ks(kosu)
 % tani_Ks()       benzetimleri koşar, kayıtları tani_Ks_kayit.mat'a yazar, analiz eder
 % tani_Ks(false)  yalnız analiz
 if nargin < 1, kosu = true; end
+if nargin < 2, mot = 3; end                            % sürücü modu (1 gerilim, 3 akım döngüsü)
+ekm = '';  if mot ~= 3, ekm = sprintf('_mod%d', mot); end
 kok = fileparts(mfilename('fullpath'));
-dosya = fullfile(kok, 'tani_Ks_kayit.mat');
-if kosu, R = benzet(kok); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
+dosya = fullfile(kok, ['tani_Ks' ekm '_kayit.mat']);
+if kosu, R = benzet(kok, mot); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
 fid = fopen(fullfile(kok, 'tani_Ks_log.txt'), 'a', 'n', 'UTF-8');
 yaz = @(varargin) [fprintf(varargin{:}), fprintf(fid, varargin{:})];
 W = 0.1;  m = 10;  vmin = 0.1;  tbas = 1.0;
-yaz('=== Adım 4.3 Adım 2: K_s yarı statik tarama, kol 90° +- 70°, 0.05 Hz, P-PI, mod 3 (%s)\n', datestr(now, 'yyyy-mm-dd HH:MM'));
+yaz('=== Adım 4.3 Adım 2: K_s yarı statik tarama, kol 90° +- 70°, 0.05 Hz, P-PI, mod %d (%s)\n', mot, datestr(now, 'yyyy-mm-dd HH:MM'));
 yaz('Pencere %.0f ms, hız ±%d örnek eğim, |w| < %.2f rad/s atılır, ilk %.0f s atılır. Gerçek Ks %.3g, r %.3f°, cs %.3g\n', ...
     1e3*W, m, vmin, tbas, R(1).S.Ks, rad2deg(R(1).S.r), R(1).S.cs);
 yaz('Ks hatası %%. tümü = bütün pencereler; y/a = yalnız yukarı/aşağı; ort = (y + a)/2. r_k = kesişim, r_k* = (qM - qL)/2 eklenmiş\n');
@@ -83,7 +85,7 @@ A = A(ok, :);  b = b(ok);  nP = numel(b);
 if csli, th = A\b; else, th = [A(:, 1:2)\b; NaN]; end
 end
 
-function R = benzet(kok)
+function R = benzet(kok, mot)
 addpath(fileparts(kok), fullfile(fileparts(kok), '4a_ghaffari'));
 warning('off', 'all');
 L = load(fullfile(kok, 'referans.mat'));  p0 = L.R.p;
@@ -94,7 +96,7 @@ R = struct('duz', {}, 'K', {}, 'S', {});
 for duz = {'ideal', 'gercekci'}
     nTek = 5;  if strcmp(duz{1}, 'ideal'), nTek = 1; end
     for n = 1:nTek
-        q = p0;  q.adim = 0;  q.T = 21;  q.Tan = q.T;  q.mot = 3;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
+        q = p0;  q.adim = 0;  q.T = 21;  q.Tan = q.T;  q.mot = mot;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
         q.dny = struct('yer','ref','sekil','sinus','A',deg2rad(70),'t0',1,'Td',20,'f0',0.05);
         if strcmp(duz{1}, 'ideal')
             q.qL = 0;  q.gL = 0;  q.qM = 0;  q.qI = 0;  q.iGur = 0;  ofs = 0;

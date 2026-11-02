@@ -1,4 +1,4 @@
-function tani_r(kosu, rg)
+function tani_r(kosu, rg, mot)
 % TANI_R  Adım 4.3, Adım 3: dişli boşluğu r (yarı genişlik), kol takılı, yarı statik tarama.
 % Fikir (Yamada 2016'nın yön değişimi sıçraması, yarı statik hâli): kol 0° +- 60° taranır. Yerçekimi torku
 % mgl sin(th) 0°'da işaret değiştirir; kol th > 0'da dişliyi + yüze, th < 0'da - yüze yaslar. Ölçülen sapma
@@ -15,15 +15,17 @@ function tani_r(kosu, rg)
 % tani_r()       benzetimleri koşar, kayıtları tani_r_kayit.mat'a yazar, analiz eder
 % tani_r(false)  yalnız analiz
 if nargin < 1, kosu = true; end
-if nargin < 2, rg = 0.5; end                           % r_gs; 0.8 küçük açıda salınıyordu (bkz. README)
+if nargin < 3, mot = 3; end                            % sürücü modu (1 gerilim, 3 akım döngüsü)
+ekm = '';  if mot ~= 3, ekm = sprintf('_mod%d', mot); end
+if nargin < 2 || isempty(rg), rg = 0.5; end                           % r_gs; 0.8 küçük açıda salınıyordu (bkz. README)
 kok = fileparts(mfilename('fullpath'));
-dosya = fullfile(kok, 'tani_r_kayit.mat');
-if kosu, R = benzet(kok, rg); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
+dosya = fullfile(kok, ['tani_r' ekm '_kayit.mat']);
+if kosu, R = benzet(kok, rg, mot); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
 fid = fopen(fullfile(kok, 'tani_r_log.txt'), 'a', 'n', 'UTF-8');
 yaz = @(varargin) [fprintf(varargin{:}), fprintf(fid, varargin{:})];
 W = 0.1;  m = 10;  vmin = 0.1;  tbas = 1.0;  thmin = deg2rad(10);  ofsL = deg2rad(7.3);
-yaz('=== Adım 4.3 Adım 3: boşluk r, yarı statik tarama, kol 0° +- 60°, 0.05 Hz, P-PI r_gs %.2f, mod 3 (%s)\n', ...
-    sqrt(R(1).S.kp*R(1).S.KV/R(1).S.Ks), datestr(now, 'yyyy-mm-dd HH:MM'));
+yaz('=== Adım 4.3 Adım 3: boşluk r, yarı statik tarama, kol 0° +- 60°, 0.05 Hz, P-PI r_gs %.2f, mod %d (%s)\n', ...
+    sqrt(R(1).S.kp*R(1).S.KV/R(1).S.Ks), mot, datestr(now, 'yyyy-mm-dd HH:MM'));
 yaz('Pencere %.0f ms, |th| < %.0f° atılır, AS5600 ofseti %.1f° eklendi. Gerçek r %.3f°, Ks %.3g\n', ...
     1e3*W, rad2deg(thmin), rad2deg(ofsL), rad2deg(R(1).S.r), R(1).S.Ks);
 yaz('r hatası %% (r_A: Ks serbest, r_B: Ks Adım 2). y/a = yalnız yukarı/aşağı, ort = (y + a)/2. Ks_A hatası %%, o_A° (ofset, gerçek %.1f° + yuvarlama)\n', rad2deg(ofsL));
@@ -89,7 +91,7 @@ else
 end
 end
 
-function R = benzet(kok, rg)
+function R = benzet(kok, rg, mot)
 addpath(fileparts(kok), fullfile(fileparts(kok), '4a_ghaffari'));
 warning('off', 'all');
 L = load(fullfile(kok, 'referans.mat'));  p0 = L.R.p;
@@ -100,7 +102,7 @@ R = struct('duz', {}, 'K', {}, 'S', {});
 for duz = {'ideal', 'gercekci'}
     nTek = 5;  if strcmp(duz{1}, 'ideal'), nTek = 1; end
     for n = 1:nTek
-        q = p0;  q.adim = 0;  q.T = 21;  q.Tan = q.T;  q.mot = 3;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
+        q = p0;  q.adim = 0;  q.T = 21;  q.Tan = q.T;  q.mot = mot;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
         q.dny = struct('yer','ref','sekil','sinus','A',deg2rad(60),'t0',1,'Td',20,'f0',0.05);
         if strcmp(duz{1}, 'ideal')
             q.qL = 0;  q.gL = 0;  q.qM = 0;  q.qI = 0;  q.iGur = 0;  ofs = 0;

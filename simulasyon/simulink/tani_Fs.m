@@ -1,4 +1,4 @@
-function tani_Fs(kosu)
+function tani_Fs(kosu, mot)
 % TANI_FS  Adım 4.3, Adım 4c: motorun statik sürtünmesi F_s, kopma torku deneyiyle (kol sökülü).
 % Neden: 4b'de ölçülmeyen tek parametre F_s, kritik r_gs öngörüsünü 60-90°'de bir tarama adımı (0.05) kaydırıyor.
 % Deney: Adım 1'in boşta düzeneği (kol yok, r = 1e4 rad), mod 3 (akım döngüsü), açık çevrim. Torka çok yavaş
@@ -10,14 +10,17 @@ function tani_Fs(kosu)
 % Rampa gecikmesi: kopmadan ilk sayıma kadar geçen süre (~30-50 ms) x rampa eğimi (~%1) kadar fazla okur.
 % Varyantlar: gerçek F_s 0.06 (varsayılan) ve 0.09 (yöntem F_s'yi izliyor mu).
 % tani_Fs()      benzetimleri koşar (tani_Fs_kayit.mat), analiz eder;  tani_Fs(false) yalnız analiz
+% tani_Fs(kosu, 1)  mod 1 (gerilim; V = R_a u / K_m, durgunken tork = u) ile, kayıt tani_Fs_mod1_kayit.mat
 if nargin < 1, kosu = true; end
+if nargin < 2, mot = 3; end                            % sürücü modu (1 gerilim, 3 akım döngüsü)
+ekm = '';  if mot ~= 3, ekm = sprintf('_mod%d', mot); end
 kok = fileparts(mfilename('fullpath'));
-dosya = fullfile(kok, 'tani_Fs_kayit.mat');
-if kosu, R = benzet(kok); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
+dosya = fullfile(kok, ['tani_Fs' ekm '_kayit.mat']);
+if kosu, R = benzet(kok, mot); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
 fid = fopen(fullfile(kok, 'tani_Fs_log.txt'), 'a', 'n', 'UTF-8');
 yaz = @(varargin) [fprintf(varargin{:}), fprintf(fid, varargin{:})];
 Wb = 0.05;  Wi = 0.02;
-yaz('=== Adım 4.3 Adım 4c: F_s kopma torku, boşta, mod 3, tork sinüsü 0.1 N m 0.02 Hz (%s)\n', datestr(now, 'yyyy-mm-dd HH:MM'));
+yaz('=== Adım 4.3 Adım 4c: F_s kopma torku, boşta, mod %d, tork sinüsü 0.1 N m 0.02 Hz (%s)\n', mot, datestr(now, 'yyyy-mm-dd HH:MM'));
 yaz('Kopma: aralarında <= %.0f ms olan iki sayımın ilki; tork = K_m i, önceki %.0f ms ortalaması\n', 1e3*Wb, 1e3*Wi);
 yaz('%-9s %5s %2s | %8s %8s | %7s %7s | %s\n', 'sensör', 'F_s', '#', 'F_s+ ', 'F_s- ', 'hata+%', 'hata-%', 'sürünme sayımı (+/-)');
 T = struct();
@@ -53,7 +56,7 @@ for j = 1:numel(ix) - 1
 end
 end
 
-function R = benzet(kok)
+function R = benzet(kok, mot)
 addpath(fileparts(kok), fullfile(fileparts(kok), '4a_ghaffari'));
 warning('off', 'all');
 L = load(fullfile(kok, 'referans.mat'));  p0 = L.R.p;
@@ -65,7 +68,7 @@ V = {'ideal', 0.06, 1;  'gercekci', 0.06, 4;  'gercekci', 0.09, 2};
 for v = 1:size(V, 1)
     [duz, Fs, nTek] = V{v, :};
     for n = 1:nTek
-        q = p0;  q.adim = 0;  q.T = 36;  q.Tan = q.T;  q.mot = 3;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
+        q = p0;  q.adim = 0;  q.T = 36;  q.Tan = q.T;  q.mot = mot;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
         q.r = 1e4;                                          % kol yok
         q.dny = struct('yer','acik','sekil','sinus','A',0.1,'t0',0.5,'Td',Inf,'f0',0.02,'u0',0);
         q.Fc = 0.04;  q.Fs = Fs;

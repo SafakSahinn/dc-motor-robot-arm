@@ -228,6 +228,18 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
          - Pozitif yanlılık rampa gecikmesinden (kopmadan algılamaya ~30–50 ms × rampa eğimi). Yöntem F_s'yi izliyor (0,09'da da %1 içinde).
          - **Karar: F_s boşta deneyde, Adım 1'in kaydından sonra aynı düzenekte ~36 s'lik ek bir kayıtla, %1 içinde.** 4b'de F_s'nin tamamen yanlış varsayılması sınırı bir adım kaydırıyordu; %1'lik hatanın etkisi ihmal edilebilir. Tanılanan takımın öngörüsü böylece 4b'deki "F_s = 0,06" satırı: 0,95 / 1,30 / 1,30 (gerçek 1,00 / 1,30 / 1,30).
        - **4d: J_L, kilitli darbe testinin frekansından. Bitti (yeni benzetim yok).** Kilitli motorda kol dişli yayı üzerinde tek kütle: ω_n² = K_s/J_L, ω_n = √(σ² + ω_d²) (Adım 2b'nin sönümlü sinüs uydurmasından). `tani_cs_log.txt`'nin "kilit" bloğundaki 23 koşudan (c_s 0–0,04, F_s, kazanç, darbe, J_L ×1,05 varyantları; gerçek K_s ile): **J_L hatası −0,25 … +0,13%**. Logdaki frekans iki basamaklı yuvarlandığından bu aralığın bir kısmı yuvarlama. K_s'nin hatası (Adım 2, −0,24%) J_L'ye birebir geçer. Donanımda ölçülen sertlik kilit pimi ve milin esnekliğini de içerir; D3'teki K_s ile karşılaştırılarak denetlenir (`calisma_notu/deney_protokolu.md`).
+       - **4e: aynı deneyler mod 1'de (akım döngüsü olmadan). Bitti: mod 3 gerekmiyor.** Donanım planında akım I²C'den (INA228) okunuyor, benzetimdeki 10 kHz'lik akım döngüsünün (mod 3) karşılığı yok. Adım 2, 2b (kilit), 3 ve 4c mod 1 ile yeniden koşuldu (`tani_Ks(true,1)`, `tani_cs(true,'kilit',1)`, `tani_r(true,[],1)`, `tani_Fs(true,1)`; kayıtlar `*_mod1_kayit.mat`, sonuçlar aynı log dosyalarında "mod 1" başlığıyla). Denklemler ölçülen akımı (K_m·i) kullandığından sürücünün nasıl çalıştığı kestirime girmiyor.
+
+         | Parametre (gerçekçi, ortalama ± std) | Mod 3 | Mod 1 |
+         |---|---|---|
+         | K_s, (yukarı + aşağı)/2 | −0,24 ± 0,18% | −0,28 ± 0,39% |
+         | r, K_s Adım 2'den | −0,11 ± 0,04% | −0,15 ± 0,03% |
+         | c_s, motor kilitli (c_s = 0,02) | −0,0005 | −0,0005 (aynı; motor kilitli, sürücü etkisiz) |
+         | F_s = 0,06 | +0,71 ± 0,21% | −1,04 ± 0,68% |
+         | F_s = 0,09 | −0,80 ± 0,30% | −2,40 ± 1,32% |
+
+         - F_s mod 1'de biraz daha kötü ve aşağı yanlı: kopmaya yakın sürünmede zıt EMK akımı düşürüyor. %2–3'lük F_s hatasının kritik r_gs'ye etkisi ~0,002 (4b'de F_s'nin tamamen yanlış olması 0,05 ediyordu). K_s'nin dağınıklığı iki katına çıkıyor ama %0,5–1 içinde.
+         - **Karar: bütün tanılama deneyleri mod 1'de yapılabilir; firmware'e hızlı akım döngüsü gerekmiyor.** Akım yalnız kayıt için ölçülüyor (1 kHz'te INA228 yeterli; benzetimdeki IPROPI → ADC varsayımı daha gürültülü, yani karamsar). Asıl deney (D6) zaten mod 1.
        - **4.3 özeti:** bütün parametreler firmware kaydından, gerçekçi sensörlerle: K_m %0,3, J_M %0,5, b_M %1,4, F_c %1, F_s %1, K_s %0,5, c_s %3,5 ve J_L %0,5 (motor kilitli darbe), r %0,2, mgl %0,1, AS5600 sıfırı 0,05°. Öngörülen kritik r_gs en çok bir tarama adımı (0,05) şaşıyor.
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).

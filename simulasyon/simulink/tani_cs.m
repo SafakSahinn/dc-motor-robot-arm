@@ -1,4 +1,4 @@
-function tani_cs(kosu, mod)
+function tani_cs(kosu, mod, mot)
 % TANI_CS  Adım 4.3, c_s denemesi: kol tarafına darbe (çekiç testi), sönüm AS5600'den.
 % Neden: c_s yarı statik taramadan ölçülemiyor (Adım 2), ama kritik r_gs öngörüsü ona duyarlı
 % (tarama_cs: her 0.02 N m s/rad ~0.10 r_gs). Adım 2'deki chirp'te sapma enkoderin bir sayımının altında
@@ -16,14 +16,16 @@ function tani_cs(kosu, mod)
 % tani_cs(true|false, mod)  true: benzetimleri koşar (kayıt tani_cs[_dayan]_kayit.mat), false: yalnız analiz
 if nargin < 1, kosu = true; end
 if nargin < 2, mod = 'cs'; end
+if nargin < 3, mot = 3; end                            % sürücü modu (1 gerilim, 3 akım döngüsü)
 kok = fileparts(mfilename('fullpath'));
 ek = '';  if ~strcmp(mod, 'cs'), ek = ['_' mod]; end
+if mot ~= 3, ek = sprintf('%s_mod%d', ek, mot); end
 dosya = fullfile(kok, ['tani_cs' ek '_kayit.mat']);
-if kosu, R = benzet(kok, varyantlar(mod)); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
+if kosu, R = benzet(kok, varyantlar(mod), mot); save(dosya, 'R'); else, L = load(dosya); R = L.R; end
 fid = fopen(fullfile(kok, 'tani_cs_log.txt'), 'a', 'n', 'UTF-8');
 yaz = @(varargin) [fprintf(varargin{:}), fprintf(fid, varargin{:})];
 Tu = 0.6;                                               % uydurma penceresi: darbe sonu + Tu s
-yaz('=== Adım 4.3 c_s denemesi (%s): kola darbe, kol 90°, mod 3 (%s)\n', mod, datestr(now, 'yyyy-mm-dd HH:MM'));
+yaz('=== Adım 4.3 c_s denemesi (%s): kola darbe, kol 90°, mod %d (%s)\n', mod, mot, datestr(now, 'yyyy-mm-dd HH:MM'));
 yaz('Varsayılan: darbe -0.42 N m × 10 ms yarım sinüs, P-PI r_gs 0.5; uydurma %.1f s. AS5600 sayımı %.3f°\n', Tu, rad2deg(2*pi/4096));
 yaz('%-14s %5s %2s | %8s %8s %7s | %7s %7s | %6s %6s\n', 'varyant', 'c_s', '#', 'temas°', 'θ_L pp', 'φ say', ...
     'f Hz', 'ζ_göz', 'σ 1/s', 'rms°');
@@ -115,7 +117,7 @@ g = find(diff(sign(y)) ~= 0);
 if numel(g) < 3, f = 10; else, f = (numel(g) - 1)/(2*(t(g(end)) - t(g(1)))); end
 end
 
-function R = benzet(kok, V)
+function R = benzet(kok, V, mot)
 addpath(fileparts(kok), fullfile(fileparts(kok), '4a_ghaffari'));
 warning('off', 'all');
 L = load(fullfile(kok, 'referans.mat'));  p0 = L.R.p;
@@ -130,7 +132,7 @@ for v = 1:size(V, 1)
         for n = 1:nTek
             o = struct('rg', 0.5, 'd0', 1, 'Td', 0.01, 'dA', -0.42, 'Fs', 0.06, 'Fc', 0.04, 'JLx', 1, 'bLx', 1, 'JMx', 1);
             for a = 1:2:numel(ayar), o.(ayar{a}) = ayar{a+1}; end
-            q = p0;  q.adim = 0;  q.T = 2;  q.Tan = q.T;  q.mot = 3;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
+            q = p0;  q.adim = 0;  q.T = 2;  q.Tan = q.T;  q.mot = mot;  q.Ts = 1e-3;  q.hiz = 'gozlemci';  q.fv = 50;
             q.cs = c;  q.dA = o.dA;  q.df = 1/(2*o.Td);  q.d0 = o.d0;  q.dT = o.d0 + o.Td;
             q.JL = q.JL*o.JLx;  q.bL = q.bL*o.bLx;  q.JM = q.JM*o.JMx;
             if strcmp(duz, 'ideal')

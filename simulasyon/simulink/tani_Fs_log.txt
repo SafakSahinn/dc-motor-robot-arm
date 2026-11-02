@@ -11,3 +11,16 @@ gercekci  0.090  2 |   0.0889   0.0893 |   -1.24   -0.76 | 2 / 3
   ideal_060      hata +0.70 ± 0.02 % (2 kopma)
   gercekci_060   hata +0.71 ± 0.21 % (8 kopma)
   gercekci_090   hata -0.80 ± 0.30 % (4 kopma)
+=== Adım 4.3 Adım 4c: F_s kopma torku, boşta, mod 1, tork sinüsü 0.1 N m 0.02 Hz (2026-11-02 21:29)
+Kopma: aralarında <= 50 ms olan iki sayımın ilki; tork = K_m i, önceki 20 ms ortalaması
+sensör      F_s  # |    F_s+     F_s-  |  hata+%  hata-% | sürünme sayımı (+/-)
+ideal     0.060  1 |   0.0596   0.0591 |   -0.63   -1.54 | 1 / 2
+gercekci  0.060  1 |   0.0596   0.0591 |   -0.59   -1.49 | 1 / 2
+gercekci  0.060  2 |   0.0591   0.0597 |   -1.50   -0.53 | 2 / 1
+gercekci  0.060  3 |   0.0599   0.0588 |   -0.17   -1.99 | 1 / 2
+gercekci  0.060  4 |   0.0597   0.0590 |   -0.47   -1.62 | 1 / 2
+gercekci  0.090  1 |   0.0872   0.0885 |   -3.14   -1.72 | 3 / 3
+gercekci  0.090  2 |   0.0866   0.0892 |   -3.82   -0.93 | 3 / 3
+  ideal_060      hata -1.08 ± 0.64 % (2 kopma)
+  gercekci_060   hata -1.04 ± 0.68 % (8 kopma)
+  gercekci_090   hata -2.40 ± 1.32 % (4 kopma)
