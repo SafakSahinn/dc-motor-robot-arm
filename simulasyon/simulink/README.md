@@ -131,6 +131,20 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
        - Kol sürekli döndüğünden φ ve θ_L her pencerede birçok sayım geçiyor; sayımın altındaki sapma bu yüzden ortalamada ölçülebiliyor.
        - **Kesişim r'yi vermez.** Benzetimde kesişim 1,397° (gerçek r 1,500°). Fark nicemlemenin aşağı yuvarlamasından: her sensör ortalamada yarım basamak eksik okuyor; (q_M − q_L)/2 eklenince 1,489°. Gerçek donanımda ayrıca enkoder ve AS5600'ün sıfırları bağımsız, kesişime bilinmeyen bir ofset ekleniyor. r Adım 3'te.
        - **c_s bu deneyden çıkmıyor:** 0,021–0,048 arası dağınık (gerçek 0,02; ideal veride bile 0,017). Yarı statik harekette δ̇ ≈ 0. Rezonans yoluyla da ölçülemediğinden c_s bir varsayım olarak kalacak; 4.4'ten önce kritik r_gs öngörüsünün c_s'ye duyarlılığına bakılacak.
+     - **c_s duyarlılığı. Sonuç: öngörü c_s'ye duyarlı.** `tarama_cs.m` → `tarama_cs_log.txt`. Kurulum `tarama_hiz.m` ile aynı (mod 1, P-PI, 3 açı × 3 başlangıç sapması, sınır = sınıf ≥ 3 ve A > 0,5°). Yalnız c_s değişiyor. Süreyi kısaltmak için r_gs aşağıdan yukarı taranıyor ve ilk salınan değerde duruluyor (`ilk` tanımıyla aynı sonuç; c_s = 0,02 satırı tarama_hiz'in gözlemci satırını birebir verdi). Sönüm oranı ζ_s = c_s / (2√(K_s·J_eş)), J_eş = J_M·J_L/(J_M + J_L) = 0,0018.
+
+       | c_s [N·m·s/rad] | ζ_s | Gerçekçi, gözlemci (30 / 60 / 90°) | İdeal (30 / 60 / 90°) |
+       |---|---|---|---|
+       | 0 | 0 | ≤0,80 / 1,05 / 1,05 | 0,80 / 1,00 / 1,00 |
+       | 0,01 | 0,037 | 0,90 / 1,20 / 1,20 | — |
+       | **0,02 (varsayılan)** | **0,075** | **1,00 / 1,30 / 1,30** | **0,90 / 1,10 / 1,10** |
+       | 0,04 | 0,149 | 1,10 / 1,35 / 1,40 | 1,00 / 1,20 / 1,20 |
+
+       (≤0,80: taramanın alt ucu zaten salınıyor, gerçek sınır daha aşağıda.)
+       - Etki büyük: c_s'nin 2 kat belirsizliği (0,01–0,04) sınırı 60–90°'de 1,20–1,40, 30°'de 0,90–1,10 aralığına yayıyor, yani ±0,10. Bu, K_s'nin (%0,5) ve J_M'nin (asıl yöntemde %0,5) belirsizliğinden çok büyük. Tarama adımı 0,05 olduğundan sayılar ±0,05 içinde.
+       - Fiziksel yorum: c_s dişli çevriminde (limit cycle) dişler çarpışırken her temasta enerji yutuyor. Sönüm azaldıkça çevrim daha düşük kazançta kendini sürdürebiliyor.
+       - İdeal sensörde de aynı eğim (c_s'nin her 0,02'si ~0,10), yani etki nicemlemeden değil modelin kendisinden geliyor.
+       - **Karar bekliyor:** c_s ya ayrı bir deneyle ölçülecek ya da öngörü bant olarak verilecek (README 4.4'e taşınacak). Seçenekler sohbette tartışılıyor.
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.
