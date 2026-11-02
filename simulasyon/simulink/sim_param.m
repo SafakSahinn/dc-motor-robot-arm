@@ -23,6 +23,7 @@ if S.ppi, S.KV = p.KV;  S.KI = p.KI; end
 S.dA = 0;  S.df = 0;  S.dT = Inf;
 if isfield(p,'dA'), S.dA = p.dA;  S.df = p.df; end
 if isfield(p,'dT'), S.dT = p.dT; end
+S.d0 = 0;  if isfield(p,'d0'), S.d0 = p.d0; end           % bozucunun başlangıcı (darbe deneyi)
 
 % Deney kaynağı (blok_ayrik; yalnız Simscape modelleri). p.dny yapısı, alanlar (verilmeyen varsayılanda):
 %   yer 'yok' | 'ref' | 'tork' | 'acik'; sekil 'basamak' | 'chirp' | 'logchirp' | 'sinus';

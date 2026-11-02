@@ -13,8 +13,8 @@ if S.Fc > 0                                    % yumuşatılmış Stribeck sürt
     tf = (S.Fc + (S.Fs - S.Fc)*exp(-(dphi/S.vs)^2)) * tanh(dphi/S.veps);
 end
 bz = 0;
-if t < S.dT
-    bz = S.dA*sin(2*pi*S.df*t);                % yük bozucusu
+if t >= S.d0 && t < S.dT
+    bz = S.dA*sin(2*pi*S.df*(t - S.d0));                % yük bozucusu
 end
 dx = [dphi;
       (u - S.bM*dphi - tf - ts)/S.JM;

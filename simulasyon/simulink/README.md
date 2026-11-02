@@ -144,7 +144,35 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
        - Etki büyük: c_s'nin 2 kat belirsizliği (0,01–0,04) sınırı 60–90°'de 1,20–1,40, 30°'de 0,90–1,10 aralığına yayıyor, yani ±0,10. Bu, K_s'nin (%0,5) ve J_M'nin (asıl yöntemde %0,5) belirsizliğinden çok büyük. Tarama adımı 0,05 olduğundan sayılar ±0,05 içinde.
        - Fiziksel yorum: c_s dişli çevriminde (limit cycle) dişler çarpışırken her temasta enerji yutuyor. Sönüm azaldıkça çevrim daha düşük kazançta kendini sürdürebiliyor.
        - İdeal sensörde de aynı eğim (c_s'nin her 0,02'si ~0,10), yani etki nicemlemeden değil modelin kendisinden geliyor.
-       - **Karar bekliyor:** c_s ya ayrı bir deneyle ölçülecek ya da öngörü bant olarak verilecek (README 4.4'e taşınacak). Seçenekler sohbette tartışılıyor.
+       - Bu yüzden c_s için ayrı bir deney arandı (aşağıda, Adım 2b).
+     - **Adım 2b: dişli sönümü c_s, kola darbe (çekiç testi). Bitti: motor mili kilitliyken ölçülebiliyor.** `tani_cs.m` → `tani_cs_log.txt`.
+       - **Fikir:** Adım 2'deki chirp'te sorun, dinamik sapmanın motor enkoderinin bir sayımının altında kalmasıydı. Kola dışarıdan darbe verip yalnız kolun açısına bakılırsa (AS5600, enkoderden 3 kat ince) sorun ortadan kalkıyor. Kol 90°'de, yerçekimi dişliyi yaslıyor. t = 1 s'de kola 10 ms'lik yarım sinüs tork darbesi veriliyor (−0,42 N·m, aşağı, dişliyi daha çok sıkıştıran yönde). Darbe sonrası 0,6 s'lik θ_L kaydına sönümlü sinüs uyduruluyor: θ = c₀ + c₁t + e^(−σt)(a·cos ωt + b·sin ωt), ζ_göz = σ/√(σ² + ω²). Dişli her koşuda temasta kalıyor (pay ≥ 0,44°). Modelde yük bozucusuna başlangıç zamanı eklendi (`p.d0`, varsayılan 0; eski koşular değişmiyor).
+       - **a) Motor kontrolcüyle tutuluyor** (P-PI r_gs 0,5, mod 3). Motor statik sürtünmeyle neredeyse kilitli (en çok 1 enkoder sayımı), f = 8,4 Hz = √(K_s/J_L)/2π. Gerçekçi düzeyde (3 koşu):
+
+         | c_s | 0 | 0,01 | 0,02 | 0,04 |
+         |---|---|---|---|---|
+         | ζ_göz | 0,023 ± 0,004 | 0,037 ± 0,001 | 0,063 ± 0,002 | 0,115 ± 0,003 |
+
+         c_s'ler net ayrışıyor, ama c_s = 0'da da 0,023'lük sönüm var: motorun mikro kayması ve kontrolcü enerji yutuyor. Eğri benzetimden kurulmak zorunda (eğim dζ/dc_s ≈ 2,6) ve sağlamlık denemesinde (c_s = 0,02'de bir bilinmeyen değiştirilerek) c_s kestirimi kayıyor:
+
+         | Değişen | F_s 0,04 / 0,09 | F_c 0,03 / 0,05 | darbe −0,21 / −0,63 | r_gs 0,4 / 0,6 | J_L ×1,05 | b_L ×10 |
+         |---|---|---|---|---|---|---|
+         | c_s hatası | +0,006 / −0,005 | +0,003 / −0,002 | −0,002 / **+0,026** | +0,003 / −0,004 | −0,001 | 0,000 |
+
+         r_gs ve darbe genliği deneyde bilinir (benzetim aynısıyla kurulur); F_c Adım 1'den %1 içinde. Asıl belirsizlik **F_s** (Adım 1'de ölçülmüyor): ±0,005, yani ~%25. Büyük darbe (−0,63) motoru kaydırıyor, uydurma bozuluyor.
+       - **b) Motor mili mekanik olarak kilitli** (benzetimde J_M ×10⁴). Kol dişli yayı üzerinde tek kütle; kontrolcü ve motor sürtünmesi denklemden çıkıyor, eğriye gerek kalmıyor: ζ = (c_s + b_L)/(2√(K_s·J_L)) → c_s = 2√(K_s·J_L)·ζ_göz − b_L (K_s Adım 2'den, J_L geometriden). Gerçekçi düzey, 2 koşu:
+
+         | Durum | Gerçek c_s | Formülle c_s |
+         |---|---|---|
+         | taban | 0 / 0,01 / 0,02 / 0,04 | 0,0000 / 0,0100 / 0,0195 / 0,0403 |
+         | F_s 0,04 / 0,09 | 0,02 | 0,0204 / 0,0200 |
+         | r_gs 0,6 | 0,02 | 0,0196 |
+         | darbe −0,21 / −0,63 | 0,02 | 0,0207 / 0,0199 |
+         | J_L ×1,05 (formülde nominal J_L) | 0,02 | 0,0198 |
+
+         Hata her durumda ≤ 0,0007 (~%3,5); kritik r_gs'ye etkisi ~0,004, tarama adımının çok altında.
+       - **Karar: c_s motor mili kilitlenip kola darbe verilerek ölçülür (b).** Donanım için: motor tarafındaki dişli (ya da mil) bir pim/kelepçeyle gövdeye sabitlenir, kol 90°'de dişliye yaslı bırakılır, kola elle hafif vurulur. Darbe genliği önemli değil, yeter ki dişli temastan ayrılmasın: θ_L tepeden tepeye ≲ 25 AS5600 sayımı (±mgl/K_s = ±1,4° sınırı). Kilitlenemezse (a) yolu kullanılır; o zaman F_s ayrıca ölçülmeli ya da c_s ±%25 belirsizlikle verilmeli.
+       - **Not (ayrılamayan terim):** kilitli deney c_s + b_L'yi birlikte ölçüyor; kol yatağının sönümü dişlininkinden ayrılamıyor. Modelde b_L = 1e-4 (c_s'nin %0,5'i), önemsiz. Ama gerçek yatakta Coulomb sürtünmesi varsa sönüm üstel değil doğrusal azalır; kayıtta zarfın biçimine bakılmalı (benzetimde yatak sürtünmesi yok, sınanmadı).
      - **Adım 3: dişli boşluğu r. Bitti.** `tani_r.m` → `tani_r_log.txt`.
        - **Yöntem: sıfırın iki yanına yarı statik tarama** (Yamada 2016'nın yön değişimi sıçramasının yarı statik hâli). P-PI kapalı çevrim, mod 3, referansa yavaş sinüs 0° ± 60° (0,05 Hz, 20 s). Yerçekimi torku mgl·sinθ 0°'da işaret değiştiriyor: kol θ > 0'da dişliyi + yüze, θ < 0'da − yüze yaslıyor. Ölçülen sapma δ_m = φ_enkoder − θ_AS5600 = δ + o (o: iki sensörün bağımsız sıfırları ve nicemleme yuvarlaması). Temas varken τ_g = K_s(δ − s·r), s = işaret(θ). Pencere ortalamasıyla (Adım 2'deki gibi, 100 ms):
          - A) K_s, r, o birlikte: ort(τ_g) = K_s·ort(δ_m) − K_s·r·s − K_s·o

@@ -10,8 +10,8 @@ if S.Fc > 0
 end
 tm = u - tf;
 bz = 0;
-if t < S.dT
-    bz = S.dA*sin(2*pi*S.df*t);
+if t >= S.d0 && t < S.dT
+    bz = S.dA*sin(2*pi*S.df*(t - S.d0));
 end
 ta = -S.mgl*sin(th) + bz;
 end
