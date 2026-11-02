@@ -204,6 +204,18 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
 
          - Gerçekçi veride θ₀'da kalan −0,045° iki kayıtta da aynı; AS5600'ün yarım sayımı (0,044°, `floor` yuvarlaması). Kontrolcü de aynı sensörü okuduğu için zararsız.
          - **Karar: mgl Adım 2'nin kaydından (90° ± 70°, tork aralığı geniş), J_L terimiyle, %0,1 içinde. Aynı uydurma AS5600'ün sıfırını (kolun düşey konumunu) da veriyor; ayrı kalibrasyon gerekmiyor.**
+       - **4b: tanılanan takımla öngörü. Bitti.** `tani_dogrula.m` → `tani_dogrula_log.txt`. Tanılanan takım: adımların gerçekçi koşu ortalamaları (J_M −0,21%, b_M +1,35%, F_c 0,0396, K_s −0,24%, c_s 0,0195, r −0,11%, mgl +0,01%); J_L ve b_L nominal (geometri). F_s ölçülmediğinden iki varsayım: F_s = F_c (Stribeck tepesi yok) ve F_s = 0,06 (doğru değer). Sensör, kontrolcü ve gözlemci üç takımda aynı. Tarama `tarama_cs` ile aynı (mod 1, 3 başlangıç sapması, ilk salınan r_gs).
+
+         | Takım | Kritik r_gs (30 / 60 / 90°) | 90°, r_gs 1,45: sınıf, A, f | 90°, r_gs 1,60: sınıf, A, f |
+         |---|---|---|---|
+         | gerçek | 1,00 / 1,30 / 1,30 | 3, 1,25°, 8,12 Hz | 5, 1,77°, 8,19 Hz |
+         | tanılanan, F_s = 0,06 | 0,95 / 1,30 / 1,30 | 3, 1,50°, 8,15 Hz | 5, 1,78°, 8,16 Hz |
+         | tanılanan, F_s = F_c | 0,95 / 1,25 / 1,25 | 1 (sönüyor), — | 5, 1,79°, 8,20 Hz |
+
+         - Tanılanan takım sınırı en çok bir tarama adımı (0,05) içinde öngörüyor; sınırın iyice üstünde (1,60) genlik %1, frekans %0,5 içinde.
+         - Sınıra yakın (1,45) genlik %20 farklı. Bu bölgede sonuç başlangıç koşuluna ve küçük parametre farklarına duyarlı (F_s = F_c takımında 1° başlangıç sapması sönüyor, oysa sınır 1,25; başka bir başlangıç sapması salınıyor). Sınır yakınında tek koşunun genliği sağlam bir doğrulama ölçütü değil.
+         - **Ölçülmeyen F_s öngörüyü 60–90°'de 0,05 aşağı çekiyor** (bir tarama adımı). Kalan parametrelerin hatalarının toplam etkisi bir adımın altında (30°'deki 0,05 farkı tek adım; sınırın tam üstünde).
+         - **Sonuç: tanılama zinciri öngörüyü ±0,05 içinde veriyor. Kalan en büyük belirsizlik F_s; ölçmek kolay (4c).**
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.

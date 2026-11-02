@@ -1,0 +1,13 @@
+=== Adım 4.3 Adım 4b: tanılanan takımla öngörü, mod 1, gerçekçi sensör, gözlemci (2026-11-02 20:15)
+  gercek       kritik r_gs (30  60  90°): 1.00  1.30  1.30
+  gercek       90°, r_gs 1.45: sınıf 3, A 1.251°, f 8.12 Hz
+  gercek       90°, r_gs 1.60: sınıf 5, A 1.766°, f 8.19 Hz
+  gercek       (523 s)
+  tanili_FsFc  kritik r_gs (30  60  90°): 0.95  1.25  1.25
+  tanili_FsFc  90°, r_gs 1.45: sınıf 1, A 0.001°, f 6.36 Hz
+  tanili_FsFc  90°, r_gs 1.60: sınıf 5, A 1.785°, f 8.20 Hz
+  tanili_FsFc  (440 s)
+  tanili_Fs06  kritik r_gs (30  60  90°): 0.95  1.30  1.30
+  tanili_Fs06  90°, r_gs 1.45: sınıf 3, A 1.502°, f 8.15 Hz
+  tanili_Fs06  90°, r_gs 1.60: sınıf 5, A 1.782°, f 8.16 Hz
+  tanili_Fs06  (503 s)
