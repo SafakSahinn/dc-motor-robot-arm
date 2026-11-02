@@ -117,6 +117,8 @@ Bilgisayar tarafı MATLAB'da yazılır (`serialport` ile seri haberleşme). Sim�
 
 ## 5. Kalibrasyon ve alt sistem testleri (5c aşamasının özeti)
 
+> **Güncelleme (2026-11-02):** 4–7. maddelerin (boşluk, sürtünme, J_M ve b, K_s) yerine dijital ikizde sınanmış tarifler geçti: `deney_protokolu.md` (D1–D5, ayrıca c_s, F_s, mgl ve J_L). Hız kestirimi için §4.1'deki iki yöntem yerine gözlemci seçildi (`simulasyon/simulink/README.md`, hız kestirimi yan sorusu). Aşağıdaki liste kalibrasyon maddeleri (1–3, 8–11) için geçerli.
+
 1. Enkoder yönü ve sayım/tur doğrulaması (kol tarafında 1320).
 2. AS5600 yapılandırması (SF = 11, FTH kapalı) okunarak doğrulanır; sıfırı ve doğrusallığı dişli bir yöne bastırılı tutularak motor enkoderine göre birkaç açıda.
 3. INA228 kalibrasyonu: bilinen dirençle; DRV8874 CS çıkışıyla çapraz kontrol.
