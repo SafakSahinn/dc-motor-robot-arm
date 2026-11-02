@@ -216,6 +216,18 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
          - Sınıra yakın (1,45) genlik %20 farklı. Bu bölgede sonuç başlangıç koşuluna ve küçük parametre farklarına duyarlı (F_s = F_c takımında 1° başlangıç sapması sönüyor, oysa sınır 1,25; başka bir başlangıç sapması salınıyor). Sınır yakınında tek koşunun genliği sağlam bir doğrulama ölçütü değil.
          - **Ölçülmeyen F_s öngörüyü 60–90°'de 0,05 aşağı çekiyor** (bir tarama adımı). Kalan parametrelerin hatalarının toplam etkisi bir adımın altında (30°'deki 0,05 farkı tek adım; sınırın tam üstünde).
          - **Sonuç: tanılama zinciri öngörüyü ±0,05 içinde veriyor. Kalan en büyük belirsizlik F_s; ölçmek kolay (4c).**
+       - **4c: motorun statik sürtünmesi F_s, kopma torku. Bitti.** `tani_Fs.m` → `tani_Fs_log.txt`. Adım 1'in boşta düzeneği (kol sökülü), mod 3, açık çevrim. Torka çok yavaş sinüs (0,1 N·m, 0,02 Hz; sıfır geçişinde ~0,013 N·m/s rampa), her yarım periyotta bir kopma. Kopma anı: aynı yönde, aralarında ≤ 50 ms olan iki enkoder sayımının ilki. F_s = o andan önceki 20 ms'nin K_m·i ortalaması.
+         - Tek sayım yetmiyor: modeldeki Stribeck sürtünmesi tanh(φ̇/v_ε) ile yumuşatılmış, kopmadan önce de çok yavaş sürünmeye izin veriyor (koşu başına 1–3 tek başına sayım). Gerçek dişli yapışır; donanımda algılama daha temiz olmalı.
+
+         | Gerçek F_s | Düzey | Kestirim hatası (her iki yön) |
+         |---|---|---|
+         | 0,06 | ideal akım | +0,70 ± 0,02% |
+         | 0,06 | gerçekçi (4 koşu, 8 kopma) | **+0,71 ± 0,21%** |
+         | 0,09 | gerçekçi (2 koşu, 4 kopma) | −0,80 ± 0,30% |
+
+         - Pozitif yanlılık rampa gecikmesinden (kopmadan algılamaya ~30–50 ms × rampa eğimi). Yöntem F_s'yi izliyor (0,09'da da %1 içinde).
+         - **Karar: F_s boşta deneyde, Adım 1'in kaydından sonra aynı düzenekte ~36 s'lik ek bir kayıtla, %1 içinde.** 4b'de F_s'nin tamamen yanlış varsayılması sınırı bir adım kaydırıyordu; %1'lik hatanın etkisi ihmal edilebilir. Tanılanan takımın öngörüsü böylece 4b'deki "F_s = 0,06" satırı: 0,95 / 1,30 / 1,30 (gerçek 1,00 / 1,30 / 1,30).
+       - **4.3 özeti:** ölçülemeyen tek parametre J_L (geometriden). Kalan hepsi firmware kaydından, gerçekçi sensörlerle: K_m %0,3, J_M %0,5, b_M %1,4, F_c %1, F_s %1, K_s %0,5, c_s %3,5 (motor kilitli), r %0,2, mgl %0,1, AS5600 sıfırı 0,05°. Öngörülen kritik r_gs en çok bir tarama adımı (0,05) şaşıyor.
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.

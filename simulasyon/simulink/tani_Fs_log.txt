@@ -1,0 +1,13 @@
+=== Adım 4.3 Adım 4c: F_s kopma torku, boşta, mod 3, tork sinüsü 0.1 N m 0.02 Hz (2026-11-02 21:10)
+Kopma: aralarında <= 50 ms olan iki sayımın ilki; tork = K_m i, önceki 20 ms ortalaması
+sensör      F_s  # |    F_s+     F_s-  |  hata+%  hata-% | sürünme sayımı (+/-)
+ideal     0.060  1 |   0.0604   0.0604 |   +0.68   +0.71 | 1 / 2
+gercekci  0.060  1 |   0.0603   0.0604 |   +0.57   +0.74 | 1 / 2
+gercekci  0.060  2 |   0.0605   0.0603 |   +0.86   +0.46 | 2 / 1
+gercekci  0.060  3 |   0.0604   0.0603 |   +0.65   +0.45 | 1 / 2
+gercekci  0.060  4 |   0.0605   0.0606 |   +0.91   +1.01 | 1 / 2
+gercekci  0.090  1 |   0.0894   0.0895 |   -0.63   -0.57 | 3 / 3
+gercekci  0.090  2 |   0.0889   0.0893 |   -1.24   -0.76 | 2 / 3
+  ideal_060      hata +0.70 ± 0.02 % (2 kopma)
+  gercekci_060   hata +0.71 ± 0.21 % (8 kopma)
+  gercekci_090   hata -0.80 ± 0.30 % (4 kopma)
