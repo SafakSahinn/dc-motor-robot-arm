@@ -191,6 +191,19 @@ D düzeneği, P–PI, ideal sensör, sürekli kontrol (Ts = dt), T = 8 s.
 
        - **Karar: B uydurması (K_s Adım 2'den), r ~%0,2 içinde.** Bu deneyde K_s'yi ayrıca uydurmak gereksiz ve daha kötü: tork aralığı (0–0,21 N·m) Adım 2'den dar. Yön ayrımı B'de gerekmiyor.
        - **Önemli yan bulgu: deney kazancı düşük olmalı.** İlk koşu Adım 2'nin kazancıyla (r_gs 0,8) yapıldı. Küçük açılarda (|θ| ≈ 10–30°) yerçekimi ön yükü az, dişli boşluğu çevrimi başlıyor. Dişli |θ| > 10° iken bile zamanın ~%7'sinde ters yüzdeydi (her yarım salınımın başında, kol 0°'dan uzaklaşırken), r hatası −1,4 ± 0,7% (B) ve −4,8 ± 2,8% (A) çıktı. r_gs 0,5 ile temas her koşuda en az 0,21° payla doğru yüzde. Bu, kritik r_gs'nin küçük açılarda 0,8'in altında olduğunu da gösteriyor (30°'de 1,00). Donanımda bu deney r_gs ≤ 0,5 ile yapılmalı, temas da "δ_m kümeleri iki ayrı düz çizgi mi" diye kayıttan kontrol edilmeli.
+     - **Adım 4: kalan parametreler ve doğrulama.** 4.3'te henüz ölçülmeyenler: J_L, mgl, b_L, motorun statik sürtünmesi F_s. Plan: 4a mgl (eldeki kayıtlardan), 4b tanılanan takımla tanılamada kullanılmamış bir deneyin (dişli boşluğu salınımı dahil) benzetilip ölçümle karşılaştırılması, 4c gerekirse F_s.
+       - **4a: mgl ve AS5600 sıfırı. Bitti.** `tani_mgl.m` → `tani_mgl_log.txt`. Yeni benzetim yok, Adım 2 (90° ± 70°) ve Adım 3 (0° ± 60°) kayıtları yeniden kullanılıyor. Kol denklemi τ_g = J_L·θ̈ + b_L·θ̇ + mgl·sinθ. AS5600'ün sıfırı bilinmediği için θ = θ_m − θ₀, mgl·sin(θ_m − θ₀) = a·sinθ_m + b·cosθ_m. Bu doğrusal; mgl = √(a² + b²), θ₀ = atan2(−b, a). Pencere ortalaması ve yukarı/aşağı ortalama Adım 2 ile aynı, AS5600'e keyfi 7,3° ofset eklendi.
+         - **J_L terimi küçük ama sistematik:** sinüs taramada θ̈ = −ω²(θ − merkez), sinθ ya da cosθ terimiyle örtüşüyor. J_L ihmal edilince ideal veride bile mgl −0,17% (0° taraması) ve θ₀ −0,10° (90° taraması) sapıyor (J_L·ω²/mgl ≈ %0,15). J_L bu deneyden çıkmıyor, geometriden alınıp terim çıkarılıyor; J_L %5 yanlış olsa bile etkisi ≤ 0,01%.
+
+         | Kayıt | mgl hatası, J_L ihmal / J_L ile | θ₀ hatası, J_L ihmal / J_L ile |
+         |---|---|---|
+         | 90° ± 70°, ideal | 0,00 / 0,00% | −0,099 / 0,000° |
+         | 90° ± 70°, gerçekçi (5 koşu) | +0,01 / +0,01 ± 0,01% | −0,132 / −0,043 ± 0,007° |
+         | 0° ± 60°, ideal | −0,17 / 0,00% | −0,027 / 0,000° |
+         | 0° ± 60°, gerçekçi (5 koşu) | −0,12 / +0,06 ± 0,03% | −0,044 / −0,046 ± 0,004° |
+
+         - Gerçekçi veride θ₀'da kalan −0,045° iki kayıtta da aynı; AS5600'ün yarım sayımı (0,044°, `floor` yuvarlaması). Kontrolcü de aynı sensörü okuduğu için zararsız.
+         - **Karar: mgl Adım 2'nin kaydından (90° ± 70°, tork aralığı geniş), J_L terimiyle, %0,1 içinde. Aynı uydurma AS5600'ün sıfırını (kolun düşey konumunu) da veriyor; ayrı kalibrasyon gerekmiyor.**
 5. Simscape.
    - **5a, mekanik çapraz kontrol. Bitti.** `sm_model_kur.m` → `sm_kol_model.slx`, doğrulama `dogrula_5a.m` → `dogrula_5a_log.txt`. Kol ve motor Simscape fiziksel bloklarıyla kuruldu: Inertia, Rotational Damper, dişli teması için Rotational Hard Stop (`smooth` model; geçiş bölgesi sıfıra giderken temas yasası betikteki `max(K_s(δ−r)+c_s δ̇, 0)` ile aynı), Ideal Torque Source ve Ideal Rotational Motion Sensor. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp tork olarak veriliyor (`blok_yuk.m`).
      - Sonuç: 10 koşunun (5 hücre × 2 sensör düzeyi) 10'unda rejim sınıfı aynı. İdeal düzeyde genlik ve frekans farkı %0,3'ün altında. Gerçekçi düzeyde salınan hücrede (5) genlik farkı %0,3; öteki hücrelerde genlik AS5600 çözünürlüğünün altında kaldığından frekans anlamsız.
