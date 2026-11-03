@@ -1,0 +1,1284 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>4. Adım Raporu</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--ink:#18231f; --muted:#5b6a64; --line:#d8e1dd; --accent:#2d6a5a; --soft:#e2efea; --warn:#9a5b12; --wsoft:#f8eddc; --bg:#f4f6f5;
+  --display:"Bricolage Grotesque","Segoe UI",sans-serif; --body:"Source Sans 3","Segoe UI",sans-serif; --mono:"JetBrains Mono",Consolas,monospace}
+@page{size:A4; margin:14mm 13mm 15mm}
+@page yatay{size:A4 landscape; margin:10mm}
+html{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+*{box-sizing:border-box}
+body{margin:0; background:#fff; color:var(--ink); font:10.5pt/1.45 var(--body)}
+h1{font:700 26pt/1.1 var(--display); margin:0 0 8px}
+h2{font:700 17pt/1.2 var(--display); margin:0 0 6px; padding-top:2px}
+h3{font:600 10pt var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:14px 0 4px; break-after:avoid}
+p{margin:6px 0 0}
+ul{margin:6px 0 0; padding-left:1.2em}
+li{margin:2px 0}
+code{font:.86em var(--mono)}
+.kicker{font:500 9pt var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+section{break-before:page}
+section.devam{break-before:auto; margin-top:18px}
+.lead{font-size:12pt; color:var(--muted); max-width:62ch}
+table{border-collapse:collapse; width:100%; font-size:9.2pt; margin-top:6px}
+th,td{text-align:left; vertical-align:top; padding:4px 6px; border-bottom:1px solid var(--line)}
+th{font:500 8pt var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+td.n{font-family:var(--mono); white-space:nowrap}
+tr.vurgu td{background:var(--soft)}
+tr{break-inside:avoid}
+.stats{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+.stat{border:1px solid var(--line); border-radius:8px; padding:8px 12px; min-width:140px}
+.stat b{display:block; font:700 18pt/1.1 var(--display); color:var(--accent)}
+.stat span{font-size:9pt; color:var(--muted)}
+.note{margin-top:10px; background:var(--wsoft); border-radius:8px; padding:8px 12px; break-inside:avoid}
+.note b.t{display:block; font:500 8.5pt var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--warn)}
+.note.ok{background:var(--soft)} .note.ok b.t{color:var(--accent)}
+figure{margin:10px 0 0; break-inside:avoid}
+figure img{width:100%; border:1px solid var(--line); border-radius:6px}
+figcaption{font-size:9pt; color:var(--muted); margin-top:3px}
+.dosya{margin-top:8px; font-size:8.6pt; color:var(--muted); border-top:1px dashed var(--line); padding-top:4px}
+.dosya code{color:var(--ink)}
+.adim{border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin-top:12px}
+.adim > h3:first-child{margin-top:0}
+.adim .bas{font:600 12.5pt var(--body); margin:0}
+.yatay{page:yatay; break-before:page; break-after:page}
+.yatay img{width:100%; max-height:160mm; object-fit:contain}
+.meta td:first-child{font-weight:600; width:150px}
+.qa p{margin-top:8px}
+.toc ol{columns:2; margin:6px 0 0; padding-left:1.4em; font-size:10.5pt}
+.kodkutu{margin-top:10px; border:1px solid var(--line); border-radius:6px; break-inside:auto}
+.kodbas{font:600 8.6pt var(--mono); color:var(--accent); background:var(--soft); padding:4px 8px; border-radius:6px 6px 0 0}
+.kodbas span{color:var(--muted); font-weight:400}
+pre.kod{margin:0; padding:5px 8px; font:7pt/1.28 var(--mono); white-space:pre-wrap; word-break:break-word; color:var(--ink)}
+table.ek{font-size:8.3pt} table.ek td,table.ek th{padding:3px 5px} table.ek td:first-child{width:24%}
+.hm-izgara{display:flex; flex-wrap:wrap; gap:10px 14px; margin-top:8px; break-inside:avoid} .hm{break-inside:avoid}
+.hm{border-collapse:collapse; font:7.6pt var(--mono); width:auto; margin-top:0}
+.hm caption{font:500 8pt var(--mono); color:var(--muted); text-align:left; padding-bottom:3px; caption-side:top}
+.hm th{font:400 7.4pt var(--mono); letter-spacing:0; text-transform:none; color:var(--muted); padding:1px 3px; border:none; text-align:center}
+.hm td{width:19px; height:15px; text-align:center; padding:0; border:1px solid #fff}
+.h0{background:#eef1f0; color:var(--muted)} .h1{background:var(--soft); color:var(--accent)} .h2{background:#f8eddc; color:#9a5b12}
+.h3{background:#c9632b; color:#fff; font-weight:500} .h4{background:#b03a2e; color:#fff; font-weight:500} .h5{background:#f8eddc; color:#9a5b12}
+.hm-anahtar{display:flex; flex-wrap:wrap; gap:4px 14px; margin-top:8px; font:8pt var(--mono); color:var(--muted)}
+.hm-anahtar span{display:inline-flex; align-items:center; gap:5px}
+.hm-anahtar i{display:inline-block; width:11px; height:11px; border-radius:2px}
+.toc ol{font-size:9.4pt} .lead{font-size:10.5pt} h1{font-size:22pt} .stat b{font-size:15pt}
+.ikili img{max-height:60mm; object-fit:contain}
+</style>
+
+</head>
+<body>
+<div>
+  <div class="kicker">Ara rapor · 4. adım: Simülasyon ve doğrulama</div>
+  <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı: simülasyon ve doğrulama</h1>
+  <p class="lead">Bu rapor çalışma planının 4. adımında yapılan bütün işi bir arada veriyor. İlk benzetimlerle hipotez sınandı. En yakın literatür sonucu (Ghaffari ve Mohammadiasl 2013) yeniden üretildi. Önerilen yerçekimli tanımlama fonksiyonu (DF) bu sonuçla karşılaştırıldı. Kaynakların oranları projenin tanımlarına eşlendi ve rejimler ortak bir sınıflandırıcıyla ayrıldı. Bulgulara göre düzenek seçildi. Düzeneğin Simulink/Simscape dijital ikizi kuruldu. Donanımda kullanılacak sistem tanılama yöntemleri ve deney protokolü bu ikizde sınandı.</p>
+  <div class="stats">
+    <div class="stat"><b>%20,2 / %22,1</b><span>yeniden üretilen DF'nin deneye uyum hatası (makalede %19,6 / %21,4)</span></div>
+    <div class="stat"><b>%19 ← %81</b><span>kritik kazanç hatası: yerçekimli DF ← Ghaffari DF (D, medyan)</span></div>
+    <div class="stat"><b>%0,1–3,5</b><span>dijital ikizde tanılanan parametrelerin hatası</span></div>
+    <div class="stat"><b>±0,05</b><span>tanılanan ikizin kritik r<sub>gs</sub> öngörüsü (bir tarama adımı)</span></div>
+  </div>
+  <table class="meta" style="margin-top:16px">
+    <tr><td>Hazırlayan</td><td>Şafak Şahin</td></tr>
+    <tr><td>Depo (GitHub)</td><td><code>https://github.com/SafakSahinn/dc-motor-robot-arm</code></td></tr>
+    <tr><td>Kod ve sonuçlar</td><td><code>simulasyon/</code> (ilk benzetimler) · <code>simulasyon/4a_ghaffari/</code> (yeniden üretim, yerçekimli DF, eşleme, rejim, düzenek seçenekleri) · <code>simulasyon/simulink/</code> (dijital ikiz, tanılama)</td></tr>
+    <tr><td>Araştırma sitesi</td><td><code>https://safaksahinn.github.io/dc-motor-robot-arm/</code> · "Düzenek seçenekleri", "Literatür sonucunun yeniden üretimi ve önerilen yöntem", "Dijital ikiz ve sistem tanılama", "Simülasyon"</td></tr>
+  </table>
+  <div class="note" style="margin-top:14px"><b class="t">Çalışma planındaki 4. adım</b>"Önce yakın bir literatür sonucunu uygun model ve parametrelerle yeniden üret. Ardından önerdiğin katkının etkisini karşılaştırmalı olarak incele. Kaynaklardaki boyutsuz oranları ve kontrolcü parametrelerini projedeki tanımlarla eşleştir; sönümlü titreşim, zorlanmış cevap, kalıcı çevrim ve kararsızlığı ayır."</div>
+  <div class="toc"><h3>İçindekiler</h3><ol>
+    <li>Özet</li>
+    <li>Model, düzenekler ve kontrolcü</li>
+    <li>İlk benzetimler ve boyutsuz harita</li>
+    <li>Literatür sonucunun yeniden üretimi</li>
+    <li>Önerilen katkı: yerçekimli iki girişli DF</li>
+    <li>Boyutsuz oran ve kontrolcü eşlemesi</li>
+    <li>Rejim ayrımı</li>
+    <li>Düzenek seçenekleri ve sensör etkileri</li>
+    <li>Dijital ikiz: Simulink ve Simscape</li>
+    <li>Dijital ikizde sistem tanılama</li>
+    <li>Donanım deney protokolü</li>
+    <li>Eksik kalanlar</li>
+    <li>Olmayanlar ve kök neden sınaması</li>
+    <li>Değerlendirme ve sonraki adımlar</li>
+    <li>Gelebilecek sorular</li>
+    <li>Kaynaklar ve dosya dizini</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek A: Simulink tasarım ayrıntıları ve gömülü model dosyaları</li>
+  </ol></div>
+</div>
+
+
+<section>
+  <div class="kicker">1</div>
+  <h2>Özet</h2>
+  <table>
+    <tr><th>İş</th><th>Yapılan</th><th>Sonuç</th><th>Bölüm</th></tr>
+    <tr><td>Hipotezin benzetimde sınanması</td><td>İki kütleli model; açı × kazanç haritası; sürtünme ve sensörlü gerçekçi model; parametre duyarlılığı; 24 düzenekle boyutsuz harita</td><td>Etki var ve küçük bir düzenekte ölçülebilir; sınır iki boyutsuz sayıyla toplanıyor (γ<sub>sınır</sub> ≈ 3ρ³)</td><td>3</td></tr>
+    <tr><td>Yakın bir literatür sonucunu yeniden üret</td><td>Ghaffari 2013: Şekil 7–8, döner tabla deneyi (Şekil 11, Tablo I), tam DF</td><td>DF hatası %20,2 / %22,1 (makalede %19,6 / %21,4); DF frekansları noktası noktasına aynı</td><td>4</td></tr>
+    <tr class="vurgu"><td>Önerilen katkıyı karşılaştırmalı incele</td><td>Yerçekimli iki girişli DF; açı × kazanç taraması; Ghaffari DF'siyle karşılaştırma</td><td>D'de kritik kazanç hatası medyan %19 (Ghaffari %81, 4,3 kat iyi); A'da %27</td><td>5</td></tr>
+    <tr><td>Oranları ve kontrolcü parametrelerini eşle</td><td>Tek tanım takımı; P–PI ↔ PID; 5 kaynak tek tabloda</td><td>r<sub>gs</sub> = ρ(1 + R)/√R; K<sub>V</sub> ≈ K<sub>d</sub>, k<sub>p</sub> ≈ K<sub>p</sub>/K<sub>d</sub></td><td>6</td></tr>
+    <tr><td>Rejimleri ayır</td><td>Benzetim ve deney verisine aynı uygulanan sınıflandırıcı</td><td>Doğrulama 7/7; zorlanmış cevap ve iki kararlılık gösterildi</td><td>7</td></tr>
+    <tr><td>Bulgularla düzenek seçimi</td><td>5 düzenek; ideal, sensörlü ve sürtünmeli açı × kazanç haritaları</td><td>D (ağır uç, R ≈ 1) önerildi; C elendi; hız kestirimi belirleyici</td><td>8</td></tr>
+    <tr><td>Dijital ikiz</td><td>Simulink tesisi + P–PI; Simscape mekanik ve elektrik modeli; sensör katmanı, deney kaynakları, sanal firmware kaydı</td><td>Simulink betikle bit düzeyinde aynı; Simscape rejim sınıfı 10/10 aynı, genlik farkı ≤ %0,3; firmware modu sınırı değiştirmiyor</td><td>9</td></tr>
+    <tr class="vurgu"><td>Tanılama yöntemlerinin ikizde sınanması</td><td>Her parametre için ayrı deney, yalnız sanal firmware kaydından kestirim</td><td>Bütün parametreler %0,1–3,5 içinde; tanılanan ikiz kritik r<sub>gs</sub>'yi en çok 0,05 şaşırıyor</td><td>10</td></tr>
+    <tr><td>Donanım deney protokolü</td><td>D0–D6: sıra, ayar, süre, geçerlilik ölçütü</td><td>Tanılama kayıtları ≈ 30 dakika; hızlı akım döngüsü gerekmiyor</td><td>11</td></tr>
+  </table>
+  <div class="note ok"><b class="t">Tek cümleyle</b>En yakın makale makalenin kendi hatasına çok yakın bir hatayla yeniden üretildi. Yerçekimini ortalama dişli sapması olarak ekleyen yöntem kritik kazancı 4 kat daha doğru öngörüyor ve kalan hatanın kaynağı parça parça ayrıldı. Donanımda gerekecek her parametrenin hangi deneyle, hangi doğrulukla ölçüleceği dijital ikizde gösterildi.</div>
+  <div class="note"><b class="t">Bu sonuçların sınırı</b>Önerilen yöntem şimdiye kadar bu çalışmanın kendi benzetimine karşı sınandı (Ghaffari'nin yeniden üretimi makalenin deney verisiyle karşılaştırıldı). Dişli sertliği K<sub>s</sub>, temas sönümü c<sub>s</sub> ve rotor eylemsizliği tahmin. Tanılama yöntemleri ikizin kendi verisinde sınandı: gerçek değeri bilinen bir ortamda yöntemin parametreyi kayıttan geri bulup bulamadığı görüldü. Modelin gerçek düzeneğe ne kadar benzediği donanım deneyiyle anlaşılacak.</div>
+  <div class="note ok"><b class="t">İki araç, tek model</b>Açı × kazanç taramaları binlerce koşu gerektirdiği için vektörize MATLAB betikleriyle yapıldı (<code>kol_benzetim.m</code>, <code>ghaffari2013.m</code>, <code>yercekimli_df.m</code>). Aynı model Simulink'te bir kez daha, Simscape'te fiziksel bloklarla bir kez daha kuruldu. Simulink/Simscape modelleri betiğin bağımsız sağlaması oldu; tek koşu, deney tasarımı ve sistem tanılama ise bu modellerde yapıldı.</div>
+</section>
+
+
+<!-- 2 -->
+<section>
+  <div class="kicker">2</div>
+  <h2>Model, düzenekler ve kontrolcü</h2>
+  <h3>İki kütleli model ve dişli teması</h3>
+  <p>Motor (φ, J<sub>M</sub>) ile kol (θ, J<sub>L</sub>) arasında boşluklu bir dişli var. Bütün büyüklükler kol tarafına indirgenmiş. Dişli sapması δ = φ − θ, boşluğun yarı genişliği r:</p>
+  <ul>
+    <li><b>Temas torku:</b> |δ| ≤ r iken τ<sub>s</sub> = 0 (boşlukta, dişler değmiyor). δ &gt; r iken τ<sub>s</sub> = max(K<sub>s</sub>(δ − r) + c<sub>s</sub>δ̇, 0); δ &lt; −r iken simetriği. Temas yalnız iter, çekmez.</li>
+    <li><b>Motor:</b> J<sub>M</sub>φ̈ = u − b<sub>M</sub>φ̇ − τ<sub>f</sub> − τ<sub>s</sub> (τ<sub>f</sub>: Stribeck sürtünmesi, yalnız gerçekçi koşularda).</li>
+    <li><b>Kol:</b> J<sub>L</sub>θ̈ = τ<sub>s</sub> − b<sub>L</sub>θ̇ − mgℓ sin θ + bozucu.</li>
+  </ul>
+  <p><b>Benzetme:</b> boşluk bir elektronik ölü bölgeye (dead zone) benziyor; giriş ±r içindeyken çıkış sıfır, dışında doğrusal. Yerçekimi bu ölü bölgenin girişine bir DC ön gerilim ekliyor (Bölüm 4).</p>
+  <h3>Kontrolcü</h3>
+  <p>Ghaffari 2013 ile aynı P–PI kaskat: dışta konum P (k<sub>p</sub>), içte hız PI (k<sub>v</sub>, T<sub>i</sub>), hız motor enkoderinden. Tork sınırı ±T<sub>max</sub> ve anti-windup (doyumda integral durur). PID ile eşlemesi Bölüm 5'te.</p>
+  <h3>Düzenekler</h3>
+  <table>
+    <tr><th>Düzenek</th><th>Tanım</th><th>R = J<sub>L</sub>/J<sub>M</sub></th><th>f<sub>a</sub></th><th>γ(90°)</th><th>ζ<sub>c</sub></th><th>μ = mgℓ/T<sub>max</sub></th></tr>
+    <tr class="vurgu"><td>D (önerilen)</td><td>JGB37-520 1:30 + ağır uç kütlesi (≈ 153 g)</td><td class="n">≈ 1,0</td><td class="n">8,4 Hz</td><td class="n">0,92</td><td class="n">0,075</td><td class="n">0,49</td></tr>
+    <tr><td>A (dengeli liste)</td><td>Aynı motor, hafif kol</td><td class="n">0,17</td><td class="n">20,5 Hz</td><td class="n">0,17</td><td class="n">0,14</td><td class="n">0,09</td></tr>
+  </table>
+  <p>D'nin benzetim değerleri: J<sub>M</sub> = J<sub>L</sub> = 0,0036 kg·m², K<sub>s</sub> = 10 N·m/rad (tahmin), 2r = 3°, mgℓ = 0,24 N·m, c<sub>s</sub> = 0,02 N·m·s/rad (tahmin). Uç kütlesi 0–150 g değiştirilebilir; böylece A ve D aynı düzeneğin iki ucu olur.</p>
+  <div class="dosya">Model: <code>simulasyon/kol_benzetim.m</code> (RK4, adım 1e-4 s) · Ghaffari modeli: <code>simulasyon/4a_ghaffari/ghaffari2013.m</code>, <code>ghaffari_param.m</code> · parametre gerekçeleri: <code>simulasyon/4a_ghaffari/parametreler.md</code></div>
+</section>
+
+
+<section>
+  <div class="kicker">3</div>
+  <h2>İlk benzetimler ve boyutsuz harita</h2>
+  <p>Malzeme almadan önce iki soru: etki gerçekten var mı, ve küçük bir laboratuvar düzeneğinde ölçülebilir mi? Bu aşamada model iki kütleli, kontrolcü PID'di (konum ve integral kol açısından, türev motor hızından; K<sub>p</sub> = Jω<sub>c</sub>², K<sub>d</sub> = 1,4Jω<sub>c</sub>, K<sub>i</sub> = K<sub>p</sub>ω<sub>c</sub>/4). Parametreler tahmin: JGA25-370 sınıfı motor, 15 cm kol + 50 g uç kütlesi, K<sub>s</sub> = 10 N·m/rad, toplam boşluk 1,5°. Üç model düzeyi: ideal; + Coulomb ve yapışma sürtünmesi; + 12 bit açı sensörü, enkoder nicemlemesi, 1 kHz kontrol, 50 Hz hız filtresi ve sürücü ölü bandı.</p>
+  <h3>Bulgular</h3>
+  <ul>
+    <li><b>Tasarım kuralı:</b> türev kol hızından alınınca boşluk olmasa bile döngü ω<sub>c</sub> ≥ 20 rad/s'de kararsız (dişli rezonansı ≈ 18,7 Hz). Motor hızından alınınca 60 rad/s'ye kadar kararlı. Sönüm motor enkoderinden, konum kol sensöründen alınmalı.</li>
+    <li><b>Hipotez görülüyor:</b> ω<sub>c</sub> = 20'de 0° ve 180°'de 1,1–1,2°'lik sürekli salınım, dişli zamanın %76–81'ini boşlukta geçiriyor; 45°, 90° ve 135°'de salınım yok, dişli hep bastırılı.</li>
+    <li><b>Açı × kazanç haritası:</b> salınımsız bölge 90° etrafında bir "dil", kazanç arttıkça daralıyor. Sınırda başlangıç koşuluna bağlı bir şerit var. 180° tarafı daha erken salınıyor (dikte yerçekimi kararsızlaştırıcı, aşağıda dengeleyici yay gibi).</li>
+    <li><b>Basit eşik yanlış:</b> "yerçekimi torku salınım torkunu aşınca salınım biter" öngörüsü sınırı yanlış veriyor. Yerçekiminin salınımın kendisini de değiştirdiğini hesaba katan bir analiz gerekiyor: yerçekimli DF'nin (Bölüm 5) gerekçesi.</li>
+    <li><b>Gerçekçi model:</b> sürtünme her açıda ±0,5°'lik yavaş bir yapış-kay salınımı yaratıyor, ama dişli bastırılı kalıyor. Kol açısının genliği tek başına ayırt edici değil; θ<sub>d</sub> = motor açısı/N − kol açısı gerekli. İki açı sensörü bu yüzden zorunlu.</li>
+  </ul>
+  <div class="ikili" style="display:flex; gap:10px">
+    <figure style="flex:1"><img src="img/sim_tek_deneme.png" alt="Tek deneme"><figcaption>ω<sub>c</sub> = 20: üstte ideal, ortada sürtünmeli, altta gerçekçi model. Sağ sütun dişlinin boşluk içindeki konumu (kesikli çizgiler temas sınırları).</figcaption></figure>
+    <figure style="flex:1"><img src="img/sim_harita.png" alt="Açı-kazanç haritası"><figcaption>Açı × kapalı çevrim hızı haritası, üç model düzeyi. Kırmızı: iki kenarlı boşluk salınımı; mavi: dişli bastırılı (sürtünme/nicemleme) salınım.</figcaption></figure>
+  </div>
+  <div class="dosya">Kod: <code>simulasyon/kol_benzetim.m</code>, <code>parametreler.m</code>, <code>kararlilik_kontrol.m</code>, <code>tek_deneme.m</code>, <code>harita.m</code>, <code>ic_kontrol.m</code> · sonuç: <code>simulasyon/sonuclar_2026-10-18.md</code></div>
+</section>
+<section class="devam">
+  <h3>Parametre duyarlılığı (gerçekçi model)</h3>
+  <p>Ölçüt: boşluk salınımının görüldüğü en uzak açı, 0° tarafında ve 180° tarafında.</p>
+  <table>
+    <tr><th>Değişken</th><th>Değer</th><th>ω<sub>c</sub> = 20</th><th>ω<sub>c</sub> = 35</th><th>ω<sub>c</sub> = 45</th></tr>
+    <tr><td rowspan="4">Toplam boşluk</td><td>0,5°</td><td class="n">0 / 6</td><td class="n">0 / 6</td><td class="n">7 / 6</td></tr>
+    <tr><td><b>1,5° (temel)</b></td><td class="n">0 / 0</td><td class="n">6 / 1</td><td class="n">13 / 14</td></tr>
+    <tr><td>3°</td><td class="n">2 / 5</td><td class="n">9 / 9</td><td class="n">≥40 / ≥40</td></tr>
+    <tr><td>5°</td><td class="n">2 / 6</td><td class="n">22 / 22</td><td class="n">≥40 / ≥40</td></tr>
+    <tr><td rowspan="2">Dişli sertliği</td><td>3 N·m/rad</td><td class="n">4 / 3</td><td class="n">≥40 / ≥40</td><td>döngü kararsız</td></tr>
+    <tr><td>30 N·m/rad</td><td class="n">2 / 3</td><td class="n">1 / 6</td><td class="n">7 / 12</td></tr>
+    <tr><td rowspan="3">Uç kütlesi</td><td>0 g</td><td class="n">5 / 6</td><td class="n">8 / 8</td><td class="n">8 / 6</td></tr>
+    <tr><td>20 g</td><td class="n">3 / 3</td><td class="n">0 / 1</td><td class="n">12 / 13</td></tr>
+    <tr><td>100 g</td><td class="n">0 / 3</td><td class="n">3 / 4</td><td class="n">≥40 / ≥40</td></tr>
+  </table>
+  <ul>
+    <li><b>En güçlü düğme boşluk genişliği</b> (monoton ve güçlü) → deneyde ayarlanabilir boşluklu kaplin.</li>
+    <li><b>Uç kütlesinin etkisi tek yönlü değil:</b> hafif kol yerçekimini azaltıyor ama dişli rezonansını yükseltiyor. Bandı iki boyutsuz sayı birlikte belirliyor: γ = mgℓ sinθ<sub>0</sub>/(K<sub>s</sub>r) ve ρ = ω<sub>c</sub>/ω<sub>rez</sub>.</li>
+    <li><b>Motor yeterliliği:</b> JGA25-370 1:34 ile 50 g uç, 3° boşluk, ω<sub>c</sub> = 45'te RMS tork 0,22 N·m (motor doyumda, ısınır); 20 g uçta RMS 0,12. Seçilen JGB37-520 1:30 (durma 0,49 N·m) rotoru daha büyük olduğundan ω<sub>c</sub> ≈ 35 rad/s ile çalışılmalı.</li>
+  </ul>
+  <h3>Boyutsuz harita</h3>
+  <p>24 düzenek (uç kütlesi 0/20/50/100 g × toplam boşluk 1,5/3/5° × K<sub>s</sub> 10/30) γ–ρ düzlemine işlendi. Sınır noktaları dar bir şeritte toplanıyor: düzenekler arası 2–3 kat, γ ekseninde 100 katlık aralığa karşı. Ölçekleme yasası (ideal model): <b>γ<sub>sınır</sub> ≈ 3ρ³</b>.</p>
+  <table>
+    <tr><th>ρ</th><th>0,13</th><th>0,18</th><th>0,23</th><th>0,28</th><th>0,33</th><th>0,38</th></tr>
+    <tr><td>γ<sub>sınır</sub> medyan, ideal</td><td class="n">0,006</td><td class="n">0,017</td><td class="n">0,035</td><td class="n">0,066</td><td class="n">0,14</td><td class="n">0,28</td></tr>
+    <tr><td>3ρ³</td><td class="n">0,0066</td><td class="n">0,0175</td><td class="n">0,036</td><td class="n">0,066</td><td class="n">0,108</td><td>—</td></tr>
+    <tr><td>γ<sub>sınır</sub> medyan, gerçekçi</td><td class="n">0,006</td><td class="n">0,012</td><td class="n">0,022</td><td class="n">0,054</td><td class="n">0,12</td><td class="n">0,20</td></tr>
+  </table>
+  <div class="ikili" style="display:flex; gap:10px">
+    <figure style="flex:1"><img src="img/sim_boyutsuz_sinir_ideal.png" alt="Boyutsuz sınır ideal"><figcaption>İdeal model: 24 düzeneğin sınır eğrileri. Dikey çizgiler sınıra ulaşmayan düzenekler.</figcaption></figure>
+    <figure style="flex:1"><img src="img/sim_boyutsuz_sinir_gercekci.png" alt="Boyutsuz sınır gerçekçi"><figcaption>Gerçekçi model: orta–yüksek ρ'da aynı şerit; düşük ρ'da sürtünme kaynaklı dağılım.</figcaption></figure>
+  </div>
+  <div class="note ok"><b class="t">Bu bölümün sonucu</b>Etki var ve küçük bir düzenekte ölçülebilir. Deney hedef bölgesi: toplam boşluk ≈ 3°, ρ ≈ 0,25–0,40 (yasa orada sağlam, sürtünme gürültüsü az), iki açı sensörü. Gerçekçi modelde ρ ≤ 0,18'de sürtünme baskın; üçüncü bir boyutsuz sayı φ = F<sub>C</sub>/(K<sub>s</sub>r) gerekiyor.</div>
+  <div class="dosya">Kod: <code>simulasyon/duyarlilik.m</code>, <code>ince_tarama.m</code>, <code>motor_kontrol.m</code>, <code>motor_jgb37.m</code>, <code>boyutsuz_harita.m</code>, <code>boyutsuz_sinir.m</code> · kayıtlar: <code>duyarlilik_log.txt</code>, <code>boyutsuz_*_log.txt</code></div>
+</section>
+
+
+
+<section>
+  <div class="kicker">4 · Literatür sonucunun yeniden üretimi</div>
+  <h2>Literatür sonucunun yeniden üretimi: Ghaffari ve Mohammadiasl 2013</h2>
+  <h3>Neden bu makale</h3>
+  <p>En yakın çalışma: iki kütleli model, dişli boşluğu, P–PI kaskat kontrol ve tanımlama fonksiyonuyla (DF) kalıcı çevrim öngörüsü; deneyle doğrulanmış. Tek eksiği bu çalışmanın katkısının tam yeri: eksen yatay, yerçekimi yok.</p>
+  <figure><img src="img/sekil04_blok_diyagram.png" alt="Ghaffari Şekil 4" style="width:48%"><figcaption>Ghaffari 2013, Şekil 4: modelin blok diyagramı. <i>Makaleden, © IEEE.</i></figcaption></figure>
+  <h3>Şekil 7 ve 8: iki rejimin benzetimi</h3>
+  <p>Kalibre edilmiş tek parametre kümesiyle (viskoz sürtünme 0, temas sönümü ξ = 0,0135, k<sub>p</sub> = 11,67, k<sub>v</sub> = 20) iki rejim de yeniden üretildi.</p>
+  <table>
+    <tr><th></th><th>Makale (şekilden)</th><th>Bu model</th><th>Fark</th></tr>
+    <tr><td>Şekil 7 (rezonans çevrimi), frekans</td><td class="n">≈ 10,3 Hz</td><td class="n">10,10 Hz</td><td class="n">−%2</td></tr>
+    <tr><td>Şekil 7, θ<sub>d</sub> genliği</td><td class="n">≈ 1,05°</td><td class="n">1,08°</td><td class="n">+%3</td></tr>
+    <tr><td>Şekil 7, burulma genliği</td><td class="n">≈ 1,0°</td><td class="n">0,96°</td><td class="n">−%4</td></tr>
+    <tr><td>Şekil 8 (çarpma çevrimi), frekans</td><td class="n">≈ 2,4 Hz</td><td class="n">2,61 Hz</td><td class="n">+%9</td></tr>
+    <tr><td>Şekil 8, θ<sub>d</sub></td><td>±0,10°'de düzleşiyor</td><td>±0,12°'de (= δ) düzleşiyor</td><td>—</td></tr>
+    <tr><td>Şekil 8, hızlar</td><td>±0,2 rpm testere dişi</td><td>aynı biçim, ±0,22 rpm</td><td>—</td></tr>
+  </table>
+  <figure><img src="img/sekil78_kalibre.png" alt="Şekil 7-8 yeniden üretimi" style="width:80%"><figcaption>Bu çalışmanın koduyla Şekil 7 (solda, r<sub>gs</sub> = 0,99) ve Şekil 8 (sağda, r<sub>gs</sub> = 0,11): dişli sapması, burulma, hızlar.</figcaption></figure>
+</section>
+<section class="devam">
+  <div style="display:flex; gap:10px">
+    <figure style="flex:1"><img src="img/sekil07_rezonans_sim.png" alt="Makale Şekil 7"><figcaption>Ghaffari 2013, Şekil 7. <i>Makaleden, © IEEE.</i></figcaption></figure>
+    <figure style="flex:1"><img src="img/sekil08_carpma_sim.png" alt="Makale Şekil 8"><figcaption>Ghaffari 2013, Şekil 8. <i>Makaleden, © IEEE.</i></figcaption></figure>
+  </div>
+  <div class="note"><b class="t">Makalede bulunan tutarsızlık</b>Şekil 7/8 başlıklarındaki r<sub>gs</sub> değerleri (0,9 / 0,17) makalenin kendi eğrilerini üretmiyor: başlık değeriyle Şekil 8'de frekans 2,4 yerine 5,5–6,1 Hz çıkıyor. Makalenin parametrelerinden hesaplanan 0,99 / 0,11 eğrileri üretiyor. Şekiller k<sub>p</sub> = 11,67, k<sub>v</sub> = 20 ile çizilmiş; başlıklardaki değerler hatalı.</div>
+  <h3>Duyarlılıktan çıkanlar</h3>
+  <ul>
+    <li><b>Makalenin benzetimi viskoz sürtünmesiz.</b> Döner tablanın sürtünme değerleriyle Şekil 7 tutmuyor (−%14 frekans, −%59 genlik); sürtünme sıfır ve küçük bir temas sönümüyle (ξ ≈ 0,013–0,015) tutuyor.</li>
+    <li><b>r<sub>gs</sub> ≈ 1 yakınında genlik sönüme çok duyarlı</b> (sönümsüz 5,3°, ξ = 0,01'de 1,4°), frekans ise 10,0–10,7 Hz'de kalıyor. Sınıflandırma ve sınır öngörüsünde frekans genlikten daha sağlam bir ölçüt.</li>
+    <li><b>Çarpma rejiminde sonuç başlangıç koşuluna bağlı:</b> kalıcı çevrim ile boşluk içi denge aynı parametrelerde birlikte var. Bu yüzden her nokta birden fazla başlangıç sapmasıyla koşuldu.</li>
+  </ul>
+  <div class="dosya">Kod: <code>ghaffari2013.m</code>, <code>ghaffari_param.m</code>, <code>ghaffari_duyarlilik.m</code>, <code>sonum_tarama.m</code>, <code>ghaffari_sekil78.m</code> · sonuç: <code>sekil78_sonuclar.md</code> (hepsi <code>simulasyon/4a_ghaffari/</code>)</div>
+</section>
+
+<section>
+  <div class="kicker">4 · devam</div>
+  <h2>Döner tabla deneyi: Şekil 11 ve Tablo I</h2>
+  <p>Makalenin deney düzeneğinin (döner tabla) parametreleriyle k<sub>p</sub> taraması (k<sub>v</sub> = 20) ve k<sub>v</sub> taraması (k<sub>p</sub> = 11,6) yapıldı. Her kazanç üç başlangıç sapmasıyla (0,05°, 1°, 3°) koşuldu. Tam DF'de çevrim frekansı G(jω)H(jω)'nin −180° faz geçişinden, gereken DF kazancı n = −1/Re{GH}'den bulundu.</p>
+  <table>
+    <tr><th>Karşılaştırma</th><th>Bu çalışma (11a / 11b)</th><th>Makale, Tablo I</th><th>Durum</th></tr>
+    <tr class="vurgu"><td>Tam DF − deney, ortalama mutlak hata</td><td class="n">%20,2 / %22,1</td><td class="n">%19,6 / %21,4</td><td><b>üretildi</b></td></tr>
+    <tr><td>Sürtünmesiz benzetim − makalenin sürtünmesiz benzetimi</td><td>k<sub>p</sub> 6,7–18,3: ≤ 0,2 Hz</td><td>—</td><td><b>üretildi</b></td></tr>
+    <tr><td>Sürtünmeli benzetim − deney</td><td class="n">%18,3 / %19,5</td><td class="n">%2,4 / %3,3</td><td>üretilemedi (aşağıda)</td></tr>
+    <tr><td>Aynısı, motor tork sınırı 360 N·m ile</td><td class="n">%3,9 / %3,9</td><td class="n">%2,4 / %3,3</td><td>ayarlanmış, öngörü değil</td></tr>
+  </table>
+  <p>DF frekansları noktası noktasına aynı: k<sub>p</sub> = 6,7 / 8,3 / 10 / 11,7 / 13,3 için 6,03 / 8,99 / 11,31 / 13,23 / 14,81 Hz (makale 6,0 / 9,0 / 11,3 / 13,1 / 14,8).</p>
+  <figure><img src="img/tabla_karsilastirma.png" alt="Döner tabla karşılaştırma" style="width:92%"><figcaption>Döner tabla: deney ve makalenin benzetimi/DF'si (siyah, gri; makalenin Şekil 11'inden okundu) ile bu çalışmanın benzetimi ve tam DF'si (renkli).</figcaption></figure>
+  <figure><img src="img/sekil11_frekans_kazanc.png" alt="Makale Şekil 11" style="width:50%"><figcaption>Ghaffari 2013, Şekil 11 (karşılaştırmanın kaynağı). <i>Makaleden, © IEEE.</i></figcaption></figure>
+</section>
+
+<section class="devam">
+  <div class="kicker">4 · devam</div>
+  <h2>Sürtünmeli uyum ve köprü</h2>
+  <h3>Sürtünmeli benzetim neden doğrudan tutmadı</h3>
+  <ul>
+    <li><b>Salınımın başladığı kazanç tutuyor</b> (model k<sub>p</sub> = 10, deney 10,2–11,7 arası).</li>
+    <li><b>Yüksek kazançta doyma tutmuyor:</b> deney ≈ 13 Hz'de kararlı bir çevrimde kalıyor, model karşı-rezonansa (15,3 Hz) gidip büyüyor. Nedeni yapısal: k<sub>p</sub> ≥ 15'te doğrusal kısım kararsız; Coulomb sürtünmesi sabit bir tork olduğundan üstel büyümeyi sınırlayamaz. Makale genliği sınırlayan unsuru vermiyor ("sürtünmeler deneysel izlere göre optimize edildi").</li>
+    <li><b>Ek deneme, motor tork sınırı:</b> T<sub>max</sub> = 360 N·m'de hata %3,9'a iniyor. Bu değer aynı deney verisine ayarlanmış tek bir parametre; öngörü değil, makaledeki motorun gerçek tepe torkuyla uyumu doğrulanmadı. Bu çalışmanın düzeneğinde aynı rolü DRV8874'ün akım sınırı oynayacak; bu yüzden kalibrasyona akım/tork sınırı ölçümü eklendi.</li>
+  </ul>
+  <h3>Köprü: bu çalışmanın kol modeli Ghaffari'nin modeliyle aynı sonucu veriyor</h3>
+  <p>Kendi kol modelimiz (<code>kol_benzetim.m</code>) yerçekimi kapatılıp aynı P–PI ile koşuldu:</p>
+  <table>
+    <tr><th>Durum</th><th>ghaffari2013.m: f / θ<sub>d</sub> genliği</th><th>kol_benzetim.m (g = 0)</th></tr>
+    <tr><td>Şekil 7 (kalibre), r<sub>gs</sub> 0,99</td><td class="n">10,10 Hz / 1,077°</td><td class="n">10,10 Hz / 1,078°</td></tr>
+    <tr><td>Şekil 8 (kalibre), r<sub>gs</sub> 0,11</td><td class="n">2,61 Hz / 0,123°</td><td class="n">2,60 Hz / 0,123°</td></tr>
+    <tr><td>Tabla, sürtünmesiz, k<sub>p</sub> 8,3</td><td class="n">7,88 Hz / 0,067°</td><td class="n">7,87 Hz / 0,067°</td></tr>
+    <tr><td>Tabla, sürtünmesiz, k<sub>p</sub> 11,7</td><td class="n">13,09 Hz / 0,194°</td><td class="n">13,09 Hz / 0,194°</td></tr>
+  </table>
+  <p>Fark ≤ 0,01 Hz. Böylece bu çalışmanın modeli, yerçekimsiz limitte, deneyle doğrulanmış bir makaleye karşı doğrulanmış oldu.</p>
+  <h3>Kendi düzeneğimiz Ghaffari çerçevesine düşüyor mu?</h3>
+  <p>Hafif kolda (A, R = 0,17) DF frekansı benzetimden 2–5 kat yüksek çıktı: dişliler zamanın yalnız %7–47'sinde temas ediyor, iletilen tork kısa darbelerden oluşuyor ve DF'nin "doğrusal kısım üst harmonikleri süzer" varsayımı bozuluyor. R büyütülünce (J<sub>L</sub> = 2J<sub>M</sub>) benzetim/DF frekans oranı 0,76–0,94'e çıkıyor. Önerilen D düzeneğinin R ≈ 1 seçilmesinin nedeni bu.</p>
+  <div class="dosya">Kod: <code>ghaffari_tabla.m</code>, <code>ghaffari_df.m</code>, <code>tork_siniri.m</code>, <code>kopru_7a.m</code>, <code>kopru_7b.m</code> · sonuçlar: <code>tabla_sonuclar.md</code>, <code>kopru_7a_log.txt</code>, <code>kopru_7b_sonuclar.md</code></div>
+</section>
+
+
+
+<section>
+  <div class="kicker">5 · Önerilen katkı</div>
+  <h2>Önerilen katkı: yerçekimli iki girişli DF</h2>
+  <h3>Fikir</h3>
+  <p>Ghaffari dişlideki sapmayı sıfır ortalamalı bir sinüs sayıyor. Yerçekimi dişliyi bir yüze bastırdığı için sapmanın ortalaması sıfır değil: δ = B + A sin ωt. İki koşul birlikte çözülür:</p>
+  <ol>
+    <li><b>DC dengesi:</b> dişlinin ilettiği ortalama tork yükü taşır, n<sub>0</sub>(a, b) = γ. Her genlik için ön sapma b = B/r buradan bulunur.</li>
+    <li><b>Birinci harmonik:</b> n<sub>1</sub>(a, b(a)) · L(jω) = −1. L(s) yerçekimsizken Ghaffari'nin G·H'siyle aynı.</li>
+  </ol>
+  <p>Tek açı parametresi <b>γ = mgℓ sin θ<sub>0</sub> / (K<sub>s</sub> r)</b>: yük torku / boşluğu kapatan yay torku. Yerçekimi sıfırsa Ghaffari'nin DF'si birebir geri gelir.</p>
+  <div class="note ok"><b class="t">Sezgi: AB sınıfı kuvvetlendirici</b>Yerçekimi, push-pull kuvvetlendiricideki ön gerilim gibi dişliyi bir yüze bastırır. Etkin kazanç n<sub>1</sub> artık sıfıra inemez; en küçük değeri n<sub>1,min</sub>(γ) olur (γ = 0,1 → 0,16; 0,5 → 0,44; 0,92 → 0,59). Çevrim ancak döngünün istediği kazanç bu alt sınırın üstündeyse oluşur. γ &gt; 0 iken model iki kararlılık da öngörür: denge küçük sarsıntıya karşı kararlı, büyük sarsıntı çevrimi başlatabilir.</div>
+  <h3>Ekler ve sağlamalar</h3>
+  <ul>
+    <li><b>Temas sönümü:</b> c<sub>s</sub>δ̇ yalnız temasta etkili; birinci harmoniğe kosinüs bileşeni olarak girer. Dişli eşdeğer yay + sönümleyici olur: k<sub>e</sub> = K<sub>s</sub>n<sub>1</sub>, c<sub>e</sub> = c<sub>s</sub>h.</li>
+    <li><b>Ön yüklü tork sınırı:</b> doyum, aynı ölü bölge araçlarıyla ön yük u<sub>0</sub> = mgℓ sin θ<sub>0</sub> etrafında bir doyum kazancı olarak modellenir.</li>
+    <li><b>Kararlılık</b> her adımda kapalı çevrim kökleriyle denetlenir; yerçekimi doğrusallaştırılınca sarkaç modu da −180°'yi kestiği için tek faz geçişine bakmak yetmez.</li>
+    <li><b>Sağlamalar 7/7:</b> kapalı biçim n<sub>0</sub>, n<sub>1</sub>, h sayısal integralle aynı (7·10⁻¹⁰, 2·10⁻⁵); temas kopmuyorsa n<sub>1</sub> = 1; b = 0'da Ghaffari'nin denklem 10'u; yerçekimsiz ve sönümsüz durumda <code>ghaffari_df.m</code> ile 4 basamak aynı; c<sub>s</sub> → 0 ve T<sub>max</sub> → ∞ limitleri.</li>
+  </ul>
+  <div class="dosya">Kod: <code>yercekimli_df.m</code>, <code>yercekimli_df_testleri.m</code>, <code>yercekimli_karsilastirma.m</code> · kayıt: <code>yercekimli_log.txt</code> · sonuç: <code>yercekimli_sonuclar.md</code></div>
+</section>
+
+<section>
+  <div class="kicker">5 · devam</div>
+  <h2>Karşılaştırma: açı × kazanç düzleminde</h2>
+  <p>Benzetim: açı 0–180° (5° adım) × r<sub>gs</sub> 0,3–1,3 (0,05 adım), her nokta üç başlangıç sapmasıyla. <b>Kritik r<sub>gs</sub></b>: salınımın başladığı ve daha büyük kazançlarda süren en küçük kazanç. 0° ve 180°'de γ = 0 olduğundan DF kritik kazancı tanımsız; medyanların dışında.</p>
+  <figure><img src="img/kritik_kazanc.png" alt="Kritik kazanç - açı"><figcaption>Kritik r<sub>gs</sub>'nin kol açısına göre değişimi. Ghaffari DF'si açıya bakmadığı için her açıda her kazançta çevrim öngörüyor (gri bant). Veri: <code>yercekimli_kritik_D.csv</code>, <code>yercekimli_kritik_A.csv</code>.</figcaption></figure>
+  <table>
+    <tr><th>Ölçüt</th><th>Hedef</th><th>D</th><th>A</th><th>Ghaffari DF (D / A)</th></tr>
+    <tr class="vurgu"><td>B1: kritik kazanç hatası, medyan (en çok)</td><td>≤ %20, Ghaffari'den ≥ 2× iyi</td><td class="n"><b>%19</b> (%42)</td><td class="n">%27 (%58)</td><td class="n">%81 / %79</td></tr>
+    <tr><td>B2: açı yönünde sınır hatası, medyan</td><td>≤ 5°</td><td class="n">15°</td><td class="n">20°</td><td>tanımsız</td></tr>
+    <tr><td>B3: çevrim frekansı, benzetim/DF medyan</td><td>sapma ≤ %15</td><td class="n">0,89</td><td class="n">0,94</td><td></td></tr>
+  </table>
+  <p><b>Katkıların ayrışması (D, B1 medyanı):</b> sönümsüz DF %30 → temas sönümüyle %24 → tork sınırıyla %19. A'da tork sınırı etkisiz (μ = 0,09), temas sönümü hatayı %55'ten %27'ye indiriyor.</p>
+  <ul>
+    <li><b>Hedeflenen iyileşme sağlandı:</b> D'de B1 tutuyor, Ghaffari'den 4,3 kat iyi. Yerçekimli DF bastırma bölgesinin biçimini ve 90° etrafındaki simetrisini doğru veriyor.</li>
+    <li><b>Hata sistematik ve temkinli yönde:</b> DF çevrimi benzetimden daha düşük kazançta öngörüyor (en büyük fark 15–45°'de). Yani güvenli tarafta.</li>
+    <li><b>A düzeneği:</b> DF sınırın biçimini burada da veriyor, ama kritik kazancı her açıda düşük öngörüyor (medyan %27). Olası neden kısmi temastaki sönüm (A'nın temas sönüm oranı D'ninkinin iki katı); A için ayrıca sınanmadı.</li>
+  </ul>
+</section>
+
+
+
+<section>
+  <div class="kicker">6 · Eşleme</div>
+  <h2>Boyutsuz oran ve kontrolcü eşlemesi</h2>
+  <p>Kaynaklarda aynı sembol farklı büyüklükleri gösterebildiği için tek bir tanım takımı kullanıldı ve her kaynağın değerleri bu tanımlara çevrildi.</p>
+  <table>
+    <tr><th>Sembol</th><th>Tanım</th><th>Anlamı</th></tr>
+    <tr><td class="n">R</td><td>J<sub>L</sub> / J<sub>M</sub></td><td>Eylemsizlik oranı (Ghaffari'nin R'si)</td></tr>
+    <tr><td class="n">r<sub>gs</sub></td><td>√(k<sub>p</sub>k<sub>v</sub> / K<sub>s</sub>)</td><td>Sertlik oranı (Ghaffari); C. Wang 2017'nin r<sub>s</sub>'si aynı</td></tr>
+    <tr><td class="n">ρ</td><td>ω<sub>c</sub> / ω<sub>rez</sub>, ω<sub>rez</sub> = √(K<sub>s</sub>/J<sub>eff</sub>)</td><td>Bu çalışmanın ilk simülasyonlarındaki oran</td></tr>
+    <tr class="vurgu"><td class="n">γ</td><td>mgℓ sin θ<sub>0</sub> / (K<sub>s</sub> r)</td><td>Yerçekimi ön yükü / boşluğu kapatan temas torku (yeni)</td></tr>
+    <tr><td class="n">φ</td><td>F<sub>C</sub> / (K<sub>s</sub> r)</td><td>Coulomb sürtünmesi / temas torku</td></tr>
+    <tr><td class="n">ζ<sub>c</sub></td><td>c<sub>s</sub> / (2√(K<sub>s</sub>J<sub>eff</sub>))</td><td>Temas modunun sönüm oranı</td></tr>
+    <tr><td class="n">μ</td><td>mgℓ / T<sub>max</sub></td><td>Yerçekiminin motor torkundan aldığı pay</td></tr>
+  </table>
+  <p><b>Dönüşüm:</b> r<sub>gs</sub> = ρ(J<sub>M</sub> + J<sub>L</sub>)/√(J<sub>M</sub>J<sub>L</sub>) = ρ(1 + R)/√R. R = 1'de r<sub>gs</sub> = 2ρ; R = 0,17'de 2,86ρ.</p>
+  <h3>P–PI (Ghaffari, C. Wang, Sun) ↔ PID (bu çalışma)</h3>
+  <p>u = K<sub>V</sub>(k<sub>p</sub>e − v) + K<sub>I</sub>∫(k<sub>p</sub>e − v)dt = (K<sub>V</sub>k<sub>p</sub>)e + (K<sub>I</sub>k<sub>p</sub>)∫e dt − K<sub>V</sub>v − K<sub>I</sub>(θ<sub>M</sub> − θ<sub>M,0</sub>)</p>
+  <table>
+    <tr><th>PID</th><th>P–PI karşılığı</th><th>Not</th></tr>
+    <tr><td>K<sub>p</sub></td><td>K<sub>V</sub>k<sub>p</sub></td><td>r<sub>gs</sub> = √(K<sub>p</sub>/K<sub>s</sub>) her iki yapıda</td></tr>
+    <tr><td>K<sub>d</sub> (motor hızından)</td><td>K<sub>V</sub></td><td>Ghaffari'nin k<sub>v</sub>'si</td></tr>
+    <tr><td>K<sub>i</sub></td><td>K<sub>I</sub>k<sub>p</sub></td><td>K<sub>I</sub> = 1/T<sub>i</sub></td></tr>
+    <tr><td>—</td><td>−K<sub>I</sub>(θ<sub>M</sub> − θ<sub>M,0</sub>)</td><td>P–PI'nin fazlası: motor açısına zayıf bir "yay"; bu çalışmanın ayarında etkisi küçük</td></tr>
+  </table>
+  <p>Kısaca K<sub>V</sub> ≈ K<sub>d</sub>, k<sub>p</sub> ≈ K<sub>p</sub>/K<sub>d</sub>. Hafif kolda (A) PID'nin K<sub>d</sub>'si hız döngüsü bant genişliğini de belirlediği için bu eşleme yalnız kaba bir yön gösterir.</p>
+  <div class="dosya">Kaynak: <code>simulasyon/4a_ghaffari/esleme_tablosu.md</code></div>
+</section>
+
+<section>
+  <div class="kicker">6 · devam</div>
+  <h2>Kaynakların değerleri tek tabloda</h2>
+  <p>Makalede verilenler düz, bu çalışmada hesaplananlar <i>italik</i>.</p>
+  <table style="font-size:8.4pt">
+    <tr><th>Kaynak</th><th>R</th><th>f<sub>a</sub></th><th>r<sub>gs</sub></th><th>ρ</th><th>γ(90°)</th><th>ζ<sub>c</sub></th><th>μ</th><th>Gözlenen</th></tr>
+    <tr><td>Ghaffari 2013, Şekil 7</td><td class="n">2,12</td><td class="n">11 Hz</td><td class="n"><i>0,99</i></td><td class="n"><i>0,46</i></td><td class="n">0</td><td class="n"><i>0,024</i>¹</td><td>—</td><td>10,3 Hz çevrim</td></tr>
+    <tr><td>Ghaffari 2013, döner tabla</td><td class="n">0,79</td><td class="n">15,3 Hz</td><td class="n">1,17 / 1,33</td><td class="n"><i>0,58 / 0,66</i></td><td class="n">0</td><td>—</td><td>—</td><td>15,3 Hz (rezonans)</td></tr>
+    <tr><td>C. Wang 2017, k<sub>p</sub> 50</td><td class="n">24</td><td class="n"><i>15,8 Hz</i></td><td class="n">0,66</td><td class="n"><i>0,13</i></td><td class="n">0</td><td>—</td><td class="n">0</td><td>10,2 Hz çevrim</td></tr>
+    <tr><td>C. Wang 2017, k<sub>p</sub> 150</td><td class="n">24</td><td></td><td class="n">1,15</td><td class="n"><i>0,23</i></td><td class="n">0</td><td>—</td><td class="n">0</td><td>15,6 Hz</td></tr>
+    <tr><td>Sun 2023, K<sub>p</sub> 20</td><td class="n"><i>0,70</i></td><td class="n"><i>38,9 Hz</i></td><td class="n"><i>≈ 0,15</i>²</td><td class="n"><i>≈ 0,07</i></td><td class="n"><i>0,024</i></td><td>—</td><td class="n"><i>0,04</i></td><td>salınım yok</td></tr>
+    <tr><td>Sun 2023, K<sub>p</sub> 50</td><td class="n"><i>0,70</i></td><td></td><td class="n"><i>≈ 0,23</i>²</td><td class="n"><i>≈ 0,11</i></td><td class="n"><i>0,024</i></td><td>—</td><td class="n"><i>0,04</i></td><td>90°'de ≈ 5°, 9 Hz</td></tr>
+    <tr><td>Bu çalışma, A</td><td class="n">0,17</td><td class="n">20,5 Hz</td><td class="n">0,5–0,9</td><td class="n">0,18–0,32</td><td class="n">0,17</td><td class="n">0,14</td><td class="n">0,09</td><td>Bölüm 5</td></tr>
+    <tr class="vurgu"><td>Bu çalışma, D</td><td class="n">1,0</td><td class="n">8,4 Hz</td><td class="n">0,5–0,9</td><td class="n">0,25–0,45</td><td class="n">0,92</td><td class="n">0,075</td><td class="n">0,49</td><td>Bölüm 5</td></tr>
+  </table>
+  <p style="font-size:8.6pt; color:var(--muted)">¹ Makalede yok; Şekil 7'nin yeniden üretiminde kalibre edildi. ² Sun 2023 hız döngüsünün PI katsayılarını vermiyor; k<sub>v</sub> gözlenen 9 Hz'den Ghaffari'nin denklem 12'siyle geri çıkarıldı, yalnız büyüklük mertebesi.</p>
+  <h3>Gözlemler</h3>
+  <ul>
+    <li><b>γ'nın tek yönlü, açıya bağlı karşılığı literatürde yok.</b> Ghaffari'nin ön yükü yaylı anti-boşluk mekanizmasından gelen simetrik bir iç gerilim; C. Wang 2017'de yük torku sıfır.</li>
+    <li><b>Sun 2023 ile tutarlılık:</b> ağır yüke rağmen γ(90°) ≈ 0,02–0,05; yerçekimli DF bu ön yükte bastırmanın neredeyse olmadığını söylüyor. 90°'de bile salınım görmeleri bununla tutarlı. Yerçekiminin etkisini belirleyen yükün büyüklüğü değil, yük / (boşluk × sertlik) oranı.</li>
+    <li><b>Ölçek:</b> bu çalışmanın düzenekleri γ ekseninde Sun 2023'ün 7–40 katı.</li>
+    <li><b>Temas sönümünü hiçbir kaynak raporlamıyor;</b> düzenekte tanılanması gerekiyor.</li>
+  </ul>
+</section>
+
+
+
+<section>
+  <div class="kicker">7 · Rejim ayrımı</div>
+  <h2>Rejim ayrımı</h2>
+  <p>Benzetimde ve deneyde aynı zaman serisine (kol açısının hedeften sapması; deneyde AS5600'ün ölçtüğü büyüklük) aynı ölçütlerle uygulanan bir sınıflandırıcı yazıldı. Sinyal, ortalamanın iki yanındaki ardışık geçişlerle yarım periyotlara bölünür; her birinden bir genlik ve bir süre alınır.</p>
+  <table>
+    <tr><th>Sınıf</th><th>Koşul (karar sırasıyla)</th></tr>
+    <tr><td>4 kararsız</td><td>Genlik A &gt; A<sub>max</sub>, ya da zarf &gt; %5 büyüyor ve büyüme yavaşlamıyor</td></tr>
+    <tr><td>0 denge</td><td>A &lt; A<sub>min</sub> ve başlangıçta A<sub>min</sub>'i aşan yarım periyot sayısı &lt; 2</td></tr>
+    <tr><td>1 sönümlü titreşim</td><td>A &lt; A<sub>min</sub> ama başlangıçta ≥ 2 yarım periyot eşiğin üstünde; ya da zarf &lt; −%5</td></tr>
+    <tr><td>2 zorlanmış cevap</td><td>Zorlama var ve gücün ≥ %80'i zorlama frekansı ve harmoniklerinde (Hann pencereli FFT)</td></tr>
+    <tr><td>3 kalıcı çevrim</td><td>Zarf sabit (ya da yavaşlayarak büyüyor), periyot ve genlik değişim katsayıları &lt; 0,1</td></tr>
+    <tr><td>5 düzensiz</td><td>Salınım sürüyor, zarf sabit, periyodik değil</td></tr>
+  </table>
+  <p>A<sub>min</sub> ölçüm eşiği: benzetimde boşluğun %10'u, deneyde AS5600 çözünürlüğüne göre. Eşiğin altındaki titreşim "yok" sayılır, çünkü deneyde de görülemez. Her nokta birden fazla başlangıç sapmasıyla koşulur; sınıflar farklı çıkarsa nokta "başlangıç koşuluna bağlı" işaretlenir.</p>
+  <h3>Doğrulama (7/7)</h3>
+  <table>
+    <tr><th>Durum</th><th>Beklenen</th><th>Sonuç (0,05° / 0,5° / 2°)</th></tr>
+    <tr><td>Döner tabla, k<sub>p</sub> = 3,8</td><td>denge</td><td>denge × 3</td></tr>
+    <tr><td>Boşluksuz, k<sub>p</sub> = 8,3</td><td>sönümlü titreşim</td><td>denge¹ / sönümlü / sönümlü</td></tr>
+    <tr><td>Boşluksuz + 3 Hz yük bozucusu</td><td>zorlanmış cevap</td><td>zorlanmış (3 Hz) × 3</td></tr>
+    <tr><td>Şekil 7 (kalibre)</td><td>kalıcı çevrim</td><td>kalıcı çevrim (10,1 Hz) × 3</td></tr>
+    <tr><td>Döner tabla, k<sub>p</sub> = 15, T<sub>max</sub> 360</td><td>kalıcı çevrim</td><td>kalıcı çevrim (12,6 Hz) × 3</td></tr>
+    <tr><td>Döner tabla, sürtünmesiz, k<sub>p</sub> = 18,3</td><td>kararsız</td><td>kararsız × 3</td></tr>
+    <tr><td>Şekil 8 (kalibre)</td><td>kalıcı çevrim</td><td>çevrim / çevrim / denge²</td></tr>
+  </table>
+  <p style="font-size:8.6pt; color:var(--muted)">¹ İlk aşma eşiğin altında: titreşim ölçülebilir değil, "denge" doğru. ² Gerçek birlikte var olma: büyük başlangıçta sistem boşluğun içinde duruyor.</p>
+  <div class="dosya">Kod: <code>rejim_sinifla.m</code>, <code>rejim_testleri.m</code>, <code>zorlanmis_cevap.m</code> · sonuç: <code>rejim_siniflandirma.md</code></div>
+</section>
+
+<section>
+  <div class="kicker">7 · devam</div>
+  <h2>Yerçekimli düzenekte zorlanmış cevap ve iki kararlılık</h2>
+  <p>D düzeneği, P–PI, kola sinüs yük bozucusu.</p>
+  <table>
+    <tr><th>Durum</th><th>r<sub>gs</sub></th><th>Bozucu</th><th>Sınıf</th><th>Genlik</th><th>f</th></tr>
+    <tr><td>90°, küçük bozucu</td><td class="n">0,6</td><td>0,03 N·m, 3 Hz</td><td>zorlanmış cevap</td><td class="n">0,35°</td><td class="n">3,00 Hz</td></tr>
+    <tr><td>90°, ön yükü aşan bozucu</td><td class="n">0,6</td><td>0,30 N·m, 3 Hz</td><td>zorlanmış cevap</td><td class="n">8,3°</td><td class="n">3,00 Hz</td></tr>
+    <tr><td>0°, bozucusuz</td><td class="n">0,6</td><td>yok</td><td>sönümlü titreşim</td><td class="n">0,18°</td><td class="n">1,30 Hz</td></tr>
+    <tr><td>0°, güçlü çevrim + bozucu</td><td class="n">0,9</td><td>0,03 N·m, 4,5 Hz</td><td>kalıcı çevrim</td><td class="n">5,2°</td><td class="n">6,43 Hz</td></tr>
+  </table>
+  <p>90°'de yerçekimi ön yükü küçük bozucuda temasın kopmasını önlüyor: cevap doğrusal ve yalnız zorlama frekansında. 0°'de kol, küçük sapmada boşluğun içinde sarkaç gibi asılı kalıyor. Zorlama frekansı çevrimin harmoniklerinden uzak seçilmeli; yoksa zorlanmış cevap ile çevrim ayrılamıyor (6,43 Hz'lik çevrim, 3 Hz bozucunun 2. harmoniğine yakın olduğunda "zorlanmış" sayıldı).</p>
+  <h3>İki kararlılık (yerçekimli DF'nin öngörüsü)</h3>
+  <p>90°, tork sınırsız; bozucu DF'nin çevrim frekansında 3 s uygulanıp kesiliyor.</p>
+  <table>
+    <tr><th>r<sub>gs</sub></th><th>DF</th><th>Bozucu 0 / 0,02 / 0,05 / 0,10 / 0,20 / 0,40 N·m</th></tr>
+    <tr><td class="n">0,88</td><td>çevrim, 6,60 Hz</td><td>hepsi sönüyor (DF'nin kazanç hatası)</td></tr>
+    <tr class="vurgu"><td class="n">0,95</td><td>çevrim, 7,12 Hz</td><td>sönüyor × 3 / <b>çevrim 7,08 Hz</b> / çevrim / çevrim</td></tr>
+    <tr><td class="n">1,00</td><td>çevrim, 7,48 Hz</td><td>çevrim / sönüyor / çevrim / çevrim / çevrim / çevrim</td></tr>
+  </table>
+  <p>r<sub>gs</sub> 0,95'te denge küçük sarsıntıya karşı kararlı, 0,10 N·m'lik sarsıntı kalıcı çevrimi başlatıyor; frekans DF'ninkiyle %0,6 farklı. Olgu gerçek, ama DF'nin öngördüğünden dar bir bölgede.</p>
+  <div class="note ok"><b class="t">Deney tasarımına etkisi</b>Her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm yapılacak; sınır "kendiliğinden başlar" ve "başlatılabilir" diye iki eğri olarak raporlanacak.</div>
+</section>
+
+
+<section>
+  <div class="kicker">8</div>
+  <h2>Düzenek seçenekleri ve sensör etkileri</h2>
+  <p>Köprü deneyi (Bölüm 4) ilk düzeneğin (A) kolunun motora göre çok hafif olduğunu gösterdi: R = J<sub>L</sub>/J<sub>M</sub> = 0,17, Ghaffari'nin düzeneklerinde 0,8–2,1. Beş düzenek aynı ölçütlerle karşılaştırıldı. Ortak ayar: P–PI, 2r = 3°, K<sub>s</sub> = 10 N·m/rad (tahmin), gerçek tork sınırı, her nokta üç başlangıç sapmasıyla.</p>
+  <table>
+    <tr><th></th><th>Düzenek</th><th>R</th><th>f<sub>a</sub></th><th>mgℓ</th><th>mgℓ/T<sub>max</sub></th><th>Ghaffari DF: benzetim/DF frekansı (r<sub>gs</sub> 0,5 / 0,7 / 0,9)</th></tr>
+    <tr><td>A</td><td>JGB37-520 1:30, 20 g çubuk + 20 g uç</td><td class="n">0,17</td><td class="n">20,5 Hz</td><td class="n">0,044</td><td class="n">0,09</td><td class="n">0,37 / 0,46 / 0,52¹</td></tr>
+    <tr><td>B1</td><td>A + dengelenmiş ek eylemsizlik, J<sub>L</sub> = J<sub>M</sub></td><td class="n">1,0</td><td class="n">8,4 Hz</td><td class="n">0,044</td><td class="n">0,09</td><td class="n">0,72 / 0,85 / 0,90</td></tr>
+    <tr><td>B2</td><td>A + dengelenmiş ek eylemsizlik, J<sub>L</sub> = 2J<sub>M</sub></td><td class="n">2,0</td><td class="n">5,9 Hz</td><td class="n">0,044</td><td class="n">0,09</td><td class="n">0,76 / 0,89 / 0,94</td></tr>
+    <tr><td>C</td><td>JGB37-520 1:10, aynı kol</td><td class="n">1,5</td><td class="n">20,5 Hz</td><td class="n">0,044</td><td class="n">0,27</td><td class="n">0,63 / 0,76 / 0,83</td></tr>
+    <tr class="vurgu"><td>D</td><td>A + ağır uç kütlesi (≈ 153 g), J<sub>L</sub> = J<sub>M</sub></td><td class="n">1,0</td><td class="n">8,4 Hz</td><td class="n">0,240</td><td class="n">0,49</td><td class="n">0,72 / 0,90 (B1 ile aynı)</td></tr>
+  </table>
+  <p style="font-size:8.6pt; color:var(--muted)">¹ Temas sönümsüz DF ile. Temas sönümü eklenince A'nın oranı 0,94'e çıkıyor (Bölüm 5); bozulmanın büyük kısmı R'den değil eksik temas sönümünden.</p>
+  <h3>Açı × kazanç haritaları (ideal sensör, sürekli kontrol)</h3>
+  <p>Açı: 0° sarkık, 90° yatay, 180° dik. * sonucun başlangıç koşuluna bağlı olduğunu gösterir.</p>
+  <div class="hm-izgara">
+<table class="hm"><caption>A · R 0,17</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>B1 · R 1, dengeli ek</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>B2 · R 2, dengeli ek</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim">s</td></tr>
+<tr><th>0,5</th><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>C · 1:10 dişli</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h1" title="sönümlü titreşim">s</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>D · R 1, ağır uç</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz">?</td><td class="h1" title="sönümlü titreşim">s</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h4" title="kararsız (başlangıç koşuluna bağlı)">X*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+</div>
+  <div class="hm-anahtar"><span><i class="h0"></i>· denge</span><span><i class="h1"></i>s · sönümlü titreşim</span><span><i class="h3"></i>C · kalıcı çevrim</span><span><i class="h4"></i>X · kararsız</span><span><i class="h5"></i>? · düzensiz</span></div>
+</section>
+<section class="devam">
+  <h3>Sensör ve sürtünme eklenince</h3>
+  <p>1 kHz kontrol, AS5600 12 bit + 1 örnek gecikme, enkoder kenar zamanlaması, Coulomb ve yapışma sürtünmesi, sürücü ölü bandı.</p>
+  <div class="hm-izgara">
+<table class="hm"><caption>A · R 0,17 · sensör + sürtünme</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+<table class="hm"><caption>D · R 1, ağır uç · sensör + sürtünme</caption>
+<tr><th>r<sub>gs</sub> \ açı</th><th>0°</th><th>10°</th><th>20°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th><th>135°</th><th>180°</th></tr>
+<tr><th>0,3</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td></tr>
+<tr><th>0,5</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td></tr>
+<tr><th>0,7</th><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h0" title="denge">·</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>0,9</th><td class="h4" title="kararsız (başlangıç koşuluna bağlı)">X*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h3" title="kalıcı çevrim (başlangıç koşuluna bağlı)">C*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim (başlangıç koşuluna bağlı)">s*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h1" title="sönümlü titreşim">s</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,1</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h1" title="sönümlü titreşim">s</td><td class="h0" title="denge">·</td><td class="h5" title="düzensiz">?</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+<tr><th>1,3</th><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h5" title="düzensiz">?</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td><td class="h5" title="düzensiz (başlangıç koşuluna bağlı)">?*</td><td class="h3" title="kalıcı çevrim">C</td></tr>
+</table>
+</div>
+  <table>
+    <tr><th>Düzenek</th><th>İdeal: çevrimli nokta, doyum</th><th>Sensör (ardışık fark hızı)</th><th>Sensör + sürtünme</th><th>Kenar zamanlaması</th><th>Kenar + sürtünme</th></tr>
+    <tr><td>A</td><td class="n">26/54, %7</td><td class="n">25/54, %24</td><td class="n">20/54, %20</td><td class="n">26/54, %7</td><td class="n">23/54, %6</td></tr>
+    <tr><td>B1</td><td class="n">41/54, %24</td><td class="n">40/54, %29</td><td class="n">33/54, %26</td><td>—</td><td>—</td></tr>
+    <tr><td>B2</td><td class="n">39/54, %21</td><td class="n">38/54, %25</td><td class="n">34/54, %24</td><td>—</td><td>—</td></tr>
+    <tr><td>C</td><td class="n">25/54, %22</td><td class="n">17/54, %64</td><td class="n">17/54, %71</td><td>—</td><td>—</td></tr>
+    <tr class="vurgu"><td>D</td><td class="n">20/54, %16</td><td class="n">18/54, %25</td><td class="n">20/54, %17</td><td class="n">19/54, %17</td><td class="n">19/54, %14</td></tr>
+  </table>
+  <h3>Değerlendirme</h3>
+  <ul>
+    <li><b>Hipotez beş düzenekte de görülüyor:</b> 0° ve 180°'de salınım, ara açılarda kazanç arttıkça daralan bir bastırma bölgesi. Ne kadar geniş bir kazanç aralığında görüldüğü düzeneğe bağlı.</li>
+    <li><b>B1, B2:</b> DF geçerli, ama bastırma yalnız r<sub>gs</sub> ≤ 0,5'te; dengelenmiş eylemsizlik salınımın dinamik torkunu büyütüyor, mgℓ aynı kalıyor. Hipotezi sınamak için en zayıf seçenekler.</li>
+    <li><b>C elendi:</b> sensörlerle haritada düzensiz ve kararsız noktalar yayılıyor, doyum %64–71 (1:10'da enkoderin kol tarafı çözünürlüğü 3 kat kaba, tork payı dar).</li>
+    <li><b>D:</b> yerçekimsiz davranışı B1 ile aynı (DF geçerli), yerçekimli haritası A'ya benziyor (bastırma r<sub>gs</sub> 0,5–1,1 boyunca). Bedeli tork payı: 90°'de yerçekimi motor torkunun yarısını alıyor.</li>
+    <li><b>Asıl bozulma hız kestiriminden:</b> ardışık farkta bir enkoder sayımı 1 kHz'te 4,7 rad/s'lik bir hız basamağı; doyum A'da %7'den %24'e çıkıyor. Kenar zamanlamasıyla haritalar ideal duruma yaklaşıyor. (Dijital ikizde bu soru gözlemciyle yeniden ele alındı, Bölüm 9.)</li>
+  </ul>
+  <div class="note ok"><b class="t">Öneri</b>D düzeneği, uç kütlesi 0–150 g arasında değiştirilebilir. Böylece A ve D aynı düzeneğin iki ucu olur ve deney R'yi bir değişken olarak tarar. Yerçekimli DF D tarafında doğrulanır; A tarafında DF'nin zorlandığı yer de bir sonuç olarak raporlanır.</div>
+  <div class="dosya">Kod: <code>4a_ghaffari/secenekler.m</code>, <code>secenek_duzenek.m</code>, <code>sensor_7c.m</code>, <code>harita_html.py</code> · sonuçlar: <code>secenekler_sonuclar.md</code>, <code>sensor_7c_sonuclar.md</code>, <code>secenekler_log.txt</code>, <code>sensor_7c_log.txt</code></div>
+</section>
+
+
+
+<section>
+  <div class="kicker">9</div>
+  <h2>Dijital ikiz: Simulink ve Simscape</h2>
+  <p>Aynı model üç kez kuruldu: vektörize betik (taramalar), Simulink (betiğin birebir karşılığı) ve Simscape (fiziksel bloklarla, denklemler elle yazılmadan). Simulink/Simscape modelleri betiğin bağımsız sağlaması oldu; deney kaynakları, sanal firmware kaydı ve sistem tanılama bu modellerde yapıldı.</p>
+  <table style="margin-top:10px">
+    <tr><th>Model</th><th>Ne</th><th>Rolü</th></tr>
+    <tr><td><code>kol_model.slx</code></td><td>Simulink: tesis (MATLAB Function) + sensör + P–PI</td><td><code>kol_benzetim.m</code> ile bit düzeyinde aynı (5/5 referans hücre). Referans hücreler D düzeneği ve P–PI.</td></tr>
+    <tr><td><code>sm_kol_model.slx</code></td><td>Simscape mekanik: eylemsizlikler, sönümleyiciler, dişli teması Rotational Hard Stop ile</td><td>Rejim sınıfı 10/10 aynı, genlik farkı ≤ %0,3: betiğin modelini farklı bir modelleme yoluyla doğruluyor.</td></tr>
+    <tr><td><code>sm_motor_model.slx</code></td><td>+ motorun elektrik tarafı, DRV8874 sürücüsü, firmware modları</td><td>Sistem tanılama ve deney tasarımı bu modelde; salınım sınırı taraması aynı açı × r<sub>gs</sub> çerçevesinde.</td></tr>
+  </table>
+  <h3>Neden önce Simulink, sonra Simscape</h3>
+  <p>Simulink'in hazır Backlash bloğu sertliği olmayan kinematik bir boşluk; dişli teması (ölü bölge + K<sub>s</sub> yayı + c<sub>s</sub> sönümü, çekme yok) onunla kurulamıyor. Bu yüzden <code>kol_model</code>'de tesis, betikteki denklemlerle aynı bir MATLAB Function bloğu. Simscape modelinde ise temas hazır fiziksel bloklarla (Hard Stop) kuruldu; bu, denklemleri bir kez daha elle yazmadan bağımsız bir sağlama sağlıyor.</p>
+  <h3>Referans hücreler (D düzeneği, P–PI, ideal sensör, T = 8 s)</h3>
+  <table>
+    <tr><th>#</th><th>Açı</th><th>r<sub>gs</sub></th><th>Başlangıç</th><th>Ek koşul</th><th>Betik sonucu</th></tr>
+    <tr><td>1</td><td>90°</td><td class="n">1,20</td><td>1°</td><td></td><td>düzensiz salınım, A 2,06°, 8,0 Hz</td></tr>
+    <tr><td>2</td><td>60°</td><td class="n">0,50</td><td>1°</td><td></td><td>denge</td></tr>
+    <tr><td>3</td><td>30°</td><td class="n">0,80</td><td>0,2°</td><td>6,31 Hz sarsıntı, 0,10 N·m, t &lt; 1 s</td><td>sönüyor</td></tr>
+    <tr><td>4</td><td>90°</td><td class="n">0,95</td><td>0,2°</td><td>tork sınırsız</td><td>denge</td></tr>
+    <tr><td>5</td><td>90°</td><td class="n">0,95</td><td>5°</td><td>tork sınırsız</td><td>kalıcı çevrim, A 8,14°, 7,1 Hz</td></tr>
+  </table>
+  <p>Hücre 4 ve 5, Bölüm 7'daki iki kararlılığın aynı hücredeki iki yüzü.</p>
+  <p><b>Tasarım ayrıntıları</b> (blok ve parametre tabloları, çözücü ayarları, MATLAB Function bloklarının tam kodu) <b>Ek A</b>'da; <code>.slx</code> dosyaları ve kuran betikler bu PDF'e gömülü.</p>
+  <div class="dosya">Kuran betikler: <code>kol_model_kur.m</code>, <code>sm_model_kur.m</code> (<code>.slx</code> bunlardan üretilir) · bloklar: <code>blok_tesis.m</code>, <code>blok_sensor.m</code>, <code>blok_kontrolcu.m</code>, <code>blok_ayrik.m</code>, <code>blok_yuk.m</code> · referans: <code>referans_uret.m</code> → <code>referans.mat</code> (hepsi <code>simulasyon/simulink/</code>)</div>
+</section>
+<div class="yatay"><figure><img src="img/kol_model__ust.png" alt="kol_model üst düzey diyagram"><figcaption><b>kol_model.slx</b>, üst düzey diyagram. <i>tesis</i>: iki kütle + dişli teması (betikteki f(x) ile aynı denklemler); integratör 1/s durumu taşır (sabit adımlı ode4, 1e-4 s, betikle aynı yöntem). <i>sensor</i>: ölçüm katmanı (ideal ya da nicemleme + gecikme + hız filtresi). <i>kontrolcu</i>: P–PI, tork sınırı, anti-windup. Çıkışlar: durum x, dişli torku τ<sub>s</sub>, tork komutu u.</figcaption></figure></div>
+<div class="yatay"><figure><img src="img/sm_kol_model__ust.png" alt="sm_kol_model üst düzey diyagram"><figcaption><b>sm_kol_model.slx</b>, üst düzey diyagram. Solda Simscape mekanik ağı: J<sub>M</sub> ve J<sub>L</sub> (Inertia), b<sub>M</sub> ve b<sub>L</sub> (Rotational Damper), dişli teması <i>dis</i> (Rotational Hard Stop, smooth model; geçiş bölgesi sıfıra giderken temas yasası betikteki max(K<sub>s</sub>(δ−r)+c<sub>s</sub>δ̇, 0) ile aynı), tork kaynakları ve açı/hız sensörleri. Sağda <i>yuk</i>: yerçekimi, bozucu ve Stribeck sürtünmesi (tork olarak ağa veriliyor); <i>kontrolcu/ayrik</i>: sensör + P–PI tek durumsuz blokta, durumlar Unit Delay'de (Hard Stop'un bıraktığı cebirsel döngü yüzünden).</figcaption></figure></div>
+<div class="yatay"><figure><img src="img/sm_motor_model__ust.png" alt="sm_motor_model üst düzey diyagram"><figcaption><b>sm_motor_model.slx</b>, üst düzey diyagram. sm_kol_model'e ek olarak solda Simscape Electrical DC motor (R, L, zıt EMK), gerilim kaynağı ve akım ölçümü; sağda <i>surucu</i> (firmware'in tork → gerilim çevrimi: mod 1 gerilim, mod 2 EMK kompanzasyonu, mod 3 akım döngüsü), DRV8874 doyumu ve <i>akim_olc</i> (IPROPI → ESP32 ADC, gürültülü). Port 5 (olc_out) firmware'in kaydedeceği sinyaller.</figcaption></figure></div>
+
+<section>
+  <div class="kicker">9 · devam</div>
+  <h2>Çapraz doğrulama sonuçları</h2>
+  <figure><img src="img/ust_uste.png" alt="Betik, Simulink, Simscape üst üste" style="width:86%"><figcaption>İki referans hücrede kol açısı: betik, Simulink ve Simscape üst üste (ilk 2 s). Alt panel Simscape − betik farkı (log ölçek). Simulink − betik farkı 8 s boyunca tam sıfır olduğu için çizilmedi. Sayılar <code>dogrula_2_log.txt</code> ve <code>dogrula_5a_log.txt</code> ile aynı.</figcaption></figure>
+  <h3>Simulink (kol_model) − betik</h3>
+  <table>
+    <tr><th>Hücre</th><th>Sınıf (slx / betik)</th><th>Genlik</th><th>Frekans</th><th>En büyük |Δθ|</th></tr>
+    <tr><td>1 (90°, 1,20)</td><td>düzensiz / düzensiz</td><td class="n">2,056° / 2,056°</td><td class="n">8,04 / 8,04 Hz</td><td class="n">0</td></tr>
+    <tr><td>2 (60°, 0,50)</td><td>denge / denge</td><td class="n">—</td><td class="n">—</td><td class="n">0</td></tr>
+    <tr><td>3 (30°, 0,80)</td><td>sönümlü / sönümlü</td><td class="n">0,001°</td><td class="n">3,76 / 3,76 Hz</td><td class="n">1,7·10⁻¹⁰°</td></tr>
+    <tr><td>4 (90°, 0,95, 0,2°)</td><td>sönümlü / sönümlü</td><td class="n">—</td><td class="n">—</td><td class="n">0</td></tr>
+    <tr><td>5 (90°, 0,95, 5°)</td><td>çevrim / çevrim</td><td class="n">8,135° / 8,135°</td><td class="n">7,08 / 7,08 Hz</td><td class="n">0</td></tr>
+  </table>
+  <p>Tek fark sarsıntılı hücrede; sarsıntının t = 1 s'de kesildiği anın kayan nokta zamanlamasından geliyor. Gerçekçi sensör katmanıyla (1 kHz, AS5600 12 bit + gecikme, enkoder, hız filtresi, Stribeck, ölü bant) da 5 hücrede sınıf, genlik ve frekans aynı; θ(t) farkı en çok 1e-12°.</p>
+  <h3>Simscape (sm_kol_model) − betik</h3>
+  <table>
+    <tr><th>Hücre</th><th>Sınıf, ideal</th><th>Genlik, ideal</th><th>Frekans, ideal</th><th>Sınıf, gerçekçi</th></tr>
+    <tr><td>1</td><td>aynı (düzensiz)</td><td class="n">2,058° / 2,056°</td><td class="n">8,04 / 8,04 Hz</td><td>aynı</td></tr>
+    <tr><td>2</td><td>aynı (denge)</td><td>—</td><td>—</td><td>aynı</td></tr>
+    <tr><td>3</td><td>aynı (sönümlü)</td><td class="n">0,001°</td><td class="n">4,16 / 3,76 Hz³</td><td>aynı</td></tr>
+    <tr><td>4</td><td>aynı (sönümlü)</td><td>—</td><td>—</td><td>aynı</td></tr>
+    <tr><td>5</td><td>aynı (çevrim)</td><td class="n">8,143° / 8,135°</td><td class="n">7,07 / 7,08 Hz</td><td>aynı (8,209° / 8,235°)</td></tr>
+  </table>
+  <p style="font-size:8.6pt; color:var(--muted)">³ Genliği 0,001° olan, sönmüş bir sinyalin frekansı; anlamlı değil.</p>
+  <p>Rejim sınıfı 10/10 aynı; salınan hücrelerde genlik ve frekans farkı %0,3'ün altında. Kalan fark sayısal: Simscape sabit adımlı çözücüde temas modunu adım boyunca sabit tutuyor, betikteki RK4 her ara aşamada yeniden değerlendiriyor. Fark temas anlarında açılıyor ve adım 4 kat küçülünce yaklaşık 4 kat küçülüyor (hücre 2: 6,6e-4° → 1,7e-4°).</p>
+  <div class="dosya">Doğrulama: <code>dogrula_2.m</code> → <code>dogrula_2_log.txt</code>, <code>dogrula_3.m</code> → <code>dogrula_3_log.txt</code>, <code>dogrula_5a.m</code> → <code>dogrula_5a_log.txt</code></div>
+</section>
+
+<section>
+  <div class="kicker">9 · devam</div>
+  <h2>Elektrik modeliyle salınım sınırı</h2>
+  <p><code>sm_motor_model.slx</code> ile aynı açı × r<sub>gs</sub> çerçevesinde tarama: 3 açı × r<sub>gs</sub> 0,70–1,40 × 3 başlangıç sapması, iki sensör düzeyi. Sınır tanımı: sınıf ≥ 3 ve genlik &gt; 0,5°. Kritik r<sub>gs</sub> (30° / 60° / 90°):</p>
+  <table>
+    <tr><th>Model</th><th>İdeal sensör</th><th>Gerçekçi sensör</th></tr>
+    <tr><td>İdeal tork kaynağı, sınır 0,49 N·m</td><td class="n">0,85 / 1,05 / 1,10</td><td class="n">0,90 / 1,25 / 1,30</td></tr>
+    <tr><td>İdeal tork kaynağı, sınır 0,43 N·m</td><td class="n">0,90 / 1,10 / 1,10</td><td class="n">1,00 / 1,35 / &gt;1,40</td></tr>
+    <tr class="vurgu"><td>Elektrik modeli, firmware modu 1, 2, 3</td><td class="n">0,90 / 1,10 / 1,10</td><td class="n">1,00 / 1,35 / 1,40</td></tr>
+  </table>
+  <ul>
+    <li><b>Firmware modu salınım sınırını değiştirmiyor.</b> Sınırı kaydıran tek elektrik etkisi DRV8874'ün akım sınırı (0,49 → 0,43 N·m, sınır +0,05–0,10). Bu, yerçekimli DF karşılaştırmasında bulunan "tork sınırı çevrimi söndürüyor" sonucunun (Bölüm 5, 9) elektrik modelindeki karşılığı.</li>
+    <li>İdeal sensörlü sütun Bölüm 5'teki benzetim eğrisiyle aynı bölgede (D, 90°'de 1,10).</li>
+    <li>Gerçekçi sensör sınırı 0,1–0,25 yukarı itiyor (nicemleme, gecikme, 1 ms örnekleme, sürtünme). Deneydeki ölçümün bu sütunla karşılaştırılması gerekiyor; Bölüm 10'daki öngörü doğrulaması bunu yapıyor.</li>
+  </ul>
+  <div class="dosya">Kod: <code>tarama_5b.m</code>, <code>analiz_5b.m</code> → <code>tarama_5b_log.txt</code> · ayrıntı: <code>simulasyon/simulink/README.md</code>, adım 5b</div>
+</section>
+
+
+<section>
+  <div class="kicker">9 · devam</div>
+  <h2>Deney kaynakları, sanal firmware kaydı ve hız kestirimi</h2>
+  <h3>Deney kaynakları</h3>
+  <p>Firmware'in üreteceği uyarım sinyali kontrolcü bloğunun içinde, Ts örneklemeli. Yer: referansa eklenir, tork komutuna eklenir ya da açık çevrim (kontrolcü kapalı, integral donuk). Şekil: basamak/darbe, doğrusal chirp, logaritmik chirp, sinüs. Serbest salınım: açık çevrim, sıfır uyarım ve başlangıç sapması. Kaynak kapalıyken model değişiklikten önceki hâliyle bit düzeyinde aynı.</p>
+  <ul>
+    <li><b>Kol aşağıdayken 10°'lik serbest salınım işe yaramıyor:</b> yerçekimi torku (0,042 N·m) motorun yapışma sürtünmesinin (0,06 N·m) altında; motor kıpırdamıyor, kol yalnız boşluk içinde titreşiyor. 30°'de kol motoru da sürükleyerek gerçekten salınıyor.</li>
+  </ul>
+  <h3>Sanal firmware kaydı</h3>
+  <p>Firmware'in 1 kHz'te kaydedeceği sinyaller ayrı bir çıkışta: θ<sub>L</sub> (AS5600, 12 bit, bir örnek gecikmeli), φ (enkoder), v̂ (hız kestirimi), u (tork komutu), V (komut gerilimi), i (IPROPI → ESP32 ADC; basamak 0,46 mA, gürültü std 1,4 mA). Ölçüm − gerçek: θ<sub>L</sub> rms 0,05–0,06°, φ en çok bir enkoder sayımı (0,27°), v̂ rms 0,04–0,11 rad/s, i rms 1,4–1,6 mA. Tanılama betikleri yalnız bu kaydı okuyor.</p>
+  <h3>Hız kestirimi salınım sınırını kaydırıyor mu?</h3>
+  <p>Kol 90°'de dururken (r<sub>gs</sub> 0,8) tork komutunun standart sapması: ardışık fark 0,224, kenar periyodu 0,013, gözlemci 0,020 N·m. Kritik r<sub>gs</sub> (mod 1, gerçekçi sensör, 3 başlangıç sapması):</p>
+  <table>
+    <tr><th>Kestirici</th><th>Kritik r<sub>gs</sub> (30° / 60° / 90°)</th></tr>
+    <tr><td>Ardışık fark</td><td class="n">1,00 / 1,35 / 1,40</td></tr>
+    <tr><td>Kenar periyodu</td><td class="n">0,95 / 1,10 / 1,15</td></tr>
+    <tr class="vurgu"><td>Gözlemci (ikinci dereceden, kritik sönümlü, 50 Hz)</td><td class="n">1,00 / 1,30 / 1,30</td></tr>
+    <tr><td>Gerçek hız (çapa)</td><td class="n">1,00 / 1,25 / 1,30</td></tr>
+  </table>
+  <ul>
+    <li><b>Gözlemci gerçek hız gibi davranıyor</b> (sınır aynı ya da 0,05 içinde) ve gürültüsü düşük; ESP32'de iki satırlık Euler güncellemesi. Firmware için seçildi.</li>
+    <li><b>Kenar periyodu aykırı:</b> kol yön değiştirirken hızı sıfır okuyor, sönüm tam gereken anda kayboluyor ve sınır 0,15 aşağı iniyor. Kullanılmayacak.</li>
+    <li>Gerçekçi ile ideal sensör farkı hız kestiriminden değil; nicemleme, gecikme, 1 ms örnekleme ve sürtünmeden geliyor.</li>
+    <li><b>Sonuç:</b> donanımda kullanılacak kestirici ikizde birebir aynı olmalı; kritik r<sub>gs</sub> öngörüsü kestiriciyle birlikte verilmeli.</li>
+  </ul>
+  <div class="dosya">Kod: <code>simulink/blok_ayrik.m</code>, <code>blok_akim.m</code>, <code>olcum_oku.m</code>, <code>deney_4a.m</code>, <code>olcum_4b.m</code>, <code>tarama_hiz.m</code> · kayıtlar: <code>deney_4a_log.txt</code>, <code>olcum_4b_log.txt</code>, <code>tarama_hiz_log.txt</code></div>
+</section>
+
+
+<section>
+  <div class="kicker">10</div>
+  <h2>Dijital ikizde sistem tanılama</h2>
+  <p>Bölüm 5'in sonucu, öngörünün K<sub>s</sub> ve c<sub>s</sub> gibi tahmin edilmiş parametrelere dayandığıydı. Bu bölüm, bu parametrelerin donanımda nasıl ölçüleceğini dijital ikizde (<code>sm_motor_model.slx</code>, D düzeneği) sınıyor. <b>Kural:</b> tanılama betikleri yalnız sanal firmware kaydını görür; modelin gerçek değerleri yalnız karşılaştırma için kullanılır. Her deney ideal ve gerçekçi sensörle, 3–5 kez (farklı gürültü tohumu ve başlangıç konumuyla) tekrarlandı; hız kestirimi gözlemciyle.</p>
+  <table>
+    <tr><th>Parametre</th><th>Deney</th><th>Düzenek</th><th>Hata (gerçekçi)</th></tr>
+    <tr><td>K<sub>m</sub>, R<sub>a</sub></td><td>Gerilim sinüsü, gerilim denkleminin pencere integrali</td><td>D1, kol sökülü</td><td class="n">%0,05 / %0,1</td></tr>
+    <tr><td>J<sub>M</sub>, b<sub>M</sub>, F<sub>c</sub></td><td>Aynı kayıt, hareket denkleminin pencere integrali</td><td>D1</td><td class="n">%0,5 / %1,4 / %1</td></tr>
+    <tr><td>F<sub>s</sub></td><td>Yavaş tork rampası, kopma anı</td><td>D2, kol sökülü</td><td class="n">%1–2,5</td></tr>
+    <tr><td>K<sub>s</sub></td><td>Kol 90° ± 70° yavaş tarama</td><td>D3, kol takılı</td><td class="n">%0,5–1</td></tr>
+    <tr><td>mgℓ, AS5600 sıfırı</td><td>Aynı kayıt, a·sinθ + b·cosθ uydurması</td><td>D3</td><td class="n">%0,1 / 0,05°</td></tr>
+    <tr><td>r</td><td>Kol 0° ± 60° tarama (iki dişli yüzünün farkı)</td><td>D4, düşük kazanç</td><td class="n">%0,2</td></tr>
+    <tr><td>c<sub>s</sub>, J<sub>L</sub></td><td>Motor dişlisi kilitli, kola vuruş, sönümlü sinüs</td><td>D5</td><td class="n">%3,5 / %0,5</td></tr>
+  </table>
+  <h3>K<sub>m</sub> ve R<sub>a</sub> (zıt EMK)</h3>
+  <p>Denklem V = R<sub>a</sub>i + L<sub>a</sub>di/dt + K<sub>m</sub>φ̇. Kaba enkoderin türevini almamak için 20–200 ms'lik pencerelerde integrali alınıyor: ∫V dt = K<sub>m</sub>Δφ + R<sub>a</sub>∫i dt + cΔi; her pencere bir satır, en küçük kareler. Enkoder hatası pencere uçlarında en çok bir sayım kalıyor, türevle büyümüyor.</p>
+  <table>
+    <tr><th>Deney</th><th>Zıt EMK payı</th><th>K<sub>m</sub> hatası, ideal</th><th>Gerçekçi, 50–200 ms pencere</th></tr>
+    <tr><td>Kol takılı, 0°, P–PI, referansa sinüs</td><td class="n">%10–13</td><td class="n">±%0,02–0,07</td><td class="n">−0,2 … +0,3%</td></tr>
+    <tr class="vurgu"><td>Kol sökülü, açık çevrim, gerilim sinüsü 0,25 Hz</td><td class="n">%73</td><td class="n">−%0,01</td><td class="n">−0,05 … +0,04%</td></tr>
+  </table>
+  <p>R<sub>a</sub> hatası her deneyde %0,1'in altında. <b>Karar:</b> pencere 100 ms; kol sökülebiliyorsa boşta deney.</p>
+  <h3>J<sub>M</sub>, b<sub>M</sub>, F<sub>c</sub></h3>
+  <p>Aynı boşta kayıttan: J<sub>M</sub>Δφ̇ + b<sub>M</sub>Δφ + F<sub>c</sub>sgn(φ̇)W = K<sub>m</sub>∫i dt. φ̇ yalnız pencere uçlarında, ±10 örneklik yerel doğru uydurmasından; |φ̇| &lt; 2 rad/s olan pencereler atılıyor.</p>
+  <table>
+    <tr><th>Uyarım</th><th>Sensör</th><th>J<sub>M</sub></th><th>b<sub>M</sub></th><th>F<sub>c</sub> (gerçek 0,04)</th></tr>
+    <tr class="vurgu"><td>Gerilim sinüsü 0,25 Hz, 100 ms</td><td>gerçekçi</td><td class="n">−0,21%</td><td class="n">+1,4%</td><td class="n">0,0396</td></tr>
+    <tr><td>Log chirp 0,5 → 5 Hz</td><td>gerçekçi</td><td class="n">−0,04 … −0,63%</td><td class="n">−4,9 … +1,9%</td><td class="n">0,040–0,041</td></tr>
+    <tr><td>Yedek: kol takılı, boşluk içinde tork darbesi</td><td>gerçekçi, 10 darbe</td><td class="n">−13,5%</td><td>ihmal</td><td class="n">0,050</td></tr>
+  </table>
+  <p>Kol sökülemezse yedek yöntem hazır ama yaklaşık 30 kat kötü (enkoder bu harekette yalnız 6–9 sayım ilerliyor). Bu adımda bir model hatası da bulundu ve düzeltildi: Simscape ağı her zaman göreli sıfırdan başladığı için başlangıçta dişli boşluğun ortasında değilse temas noktaları kayıyordu; Hard Stop sınırları başlangıç sapmasıyla düzeltildi (Ek A.4).</p>
+  <div class="dosya">Kod: <code>simulink/tani_Km.m</code>, <code>km_kestir.m</code>, <code>tani_JM.m</code>, <code>tani_JM_kol.m</code> · kayıtlar: <code>tani_Km_log.txt</code>, <code>tani_JM_log.txt</code>, <code>tani_JM_kol_log.txt</code></div>
+</section>
+
+
+<section>
+  <div class="kicker">10 · devam</div>
+  <h2>Dişli sertliği K<sub>s</sub></h2>
+  <h3>Önce rezonans denendi, çalışmadı</h3>
+  <p>Kol 90°'de, kapalı çevrimde torka 2→30 Hz chirp (0,03 / 0,06 / 0,1 N·m) verildi. Dişlinin dinamik sapması δ = φ − θ<sub>L</sub> ideal sensörle bile std 0,09–0,30°, yani motor enkoderinin bir sayımının (0,27°) altında. Gerçekçi düzeyde küçük uyarımları yapışma sürtünmesi yuttu (motor hiç kıpırdamadı). Üst sınır fiziksel: dişli temasta kalsın diye dinamik tork yerçekimi ön yükünü aşamaz, sapma ±mgℓ/K<sub>s</sub> = ±1,4° ile sınırlı. <b>Sonuç: rezonans frekansı ve sönümü bu sensörlerle görülemiyor.</b></p>
+  <h3>Yöntem: yarı statik tarama</h3>
+  <p>Referansa yavaş sinüs: 90° ± 70°, 0,05 Hz, 20 s. Kol 20°–160° arasında dönerken yerçekimi dişliyi hep aynı yüze yaslıyor; dişli torku mgℓ·sinθ ile 0,08–0,24 N·m arasında değişiyor, sapma da onunla. Dişli torku motor tarafından hesaplanıyor (K<sub>m</sub>, J<sub>M</sub>, b<sub>M</sub>, F<sub>c</sub> deneyinin sonuçlarıyla):</p>
+  <p style="text-align:center; font-family:var(--mono); font-size:9.5pt">τ<sub>g</sub> = K<sub>m</sub>i − J<sub>M</sub>φ̈ − b<sub>M</sub>φ̇ − F<sub>c</sub>sgn(φ̇) &nbsp;=&nbsp; K<sub>s</sub>(δ − r) + c<sub>s</sub>δ̇</p>
+  <p>100 ms'lik pencere ortalamalarına doğru uyduruluyor. Kol sürekli döndüğü için her pencerede birçok enkoder sayımı geçiyor; sayımın altındaki sapma ortalamada ölçülebiliyor.</p>
+  <figure><img src="img/D3_Ks.png" alt="D3 kaydı" style="width:86%"><figcaption>Gerçekçi sensörlü bir D3 kaydı: kol açısı, ölçülen sapma δ<sub>m</sub> ve sapmanın ham akım torkuna karşı dağılımı (eylemsizlik ve sürtünme düzeltmesi yapılmadan; uydurma düzeltilmiş tork ve pencere ortalamalarıyla yapılıyor).</figcaption></figure>
+  <h3>Sonuç (gerçek K<sub>s</sub> = 10; gerçekçi düzeyde 5 koşu)</h3>
+  <table>
+    <tr><th>Uydurma</th><th>İdeal</th><th>Gerçekçi, ortalama ± std</th></tr>
+    <tr><td>Bütün pencereler, c<sub>s</sub>'li</td><td class="n">0,00%</td><td class="n">−0,79 ± 0,17%</td></tr>
+    <tr><td>Bütün pencereler, c<sub>s</sub>'siz</td><td class="n">0,00%</td><td class="n">−0,91 ± 0,27%</td></tr>
+    <tr><td>Yalnız yukarı / yalnız aşağı</td><td class="n">0,00 / 0,00%</td><td class="n">−1,21 / +0,73%</td></tr>
+    <tr class="vurgu"><td>(yukarı + aşağı)/2</td><td class="n">0,00%</td><td class="n">−0,24 ± 0,18%</td></tr>
+    <tr><td>(yukarı + aşağı)/2, önceki kestirimlerle</td><td class="n">+0,02%</td><td class="n">−0,22 ± 0,18%</td></tr>
+  </table>
+  <ul>
+    <li><b>Karar:</b> yukarı ve aşağı tarama ayrı uydurulup ortalanır (yöne bağlı hata zıt işaretli, birbirini götürüyor), K<sub>s</sub> ~%0,5 içinde. Önceki adımların hataları K<sub>s</sub>'ye yansımıyor.</li>
+    <li><b>Kesişim r'yi vermiyor</b> (1,397°, gerçek 1,500°): nicemleme aşağı yuvarlıyor, gerçekte iki sensörün sıfırı da bağımsız. r ayrı bir deneyle ölçülmeli (aşağıda, boşluk r).</li>
+    <li><b>c<sub>s</sub> bu deneyden çıkmıyor</b> (0,021–0,048 dağınık): yarı statik harekette δ̇ ≈ 0.</li>
+  </ul>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tani_Ks.m</code>, <code>tani_Ks_log.txt</code> · kayıt <code>tani_Ks_kayit.mat</code> (depoda yok, yerel)</div>
+</section>
+
+
+<section>
+  <div class="kicker">10 · devam</div>
+  <h2>Öngörünün temas sönümüne duyarlılığı</h2>
+  <p>c<sub>s</sub> ölçülemeyince soru şu oldu: bilinmemesi ne kadar önemli? Sınır taraması (mod 1, P–PI, 3 açı × 3 başlangıç sapması; sınır = sınıf ≥ 3 ve genlik > 0,5°) yalnız c<sub>s</sub> değiştirilerek tekrarlandı. Sönüm oranı ζ<sub>s</sub> = c<sub>s</sub>/(2√(K<sub>s</sub>J<sub>eş</sub>)), J<sub>eş</sub> = 0,0018 kg·m².</p>
+  <table>
+    <tr><th>c<sub>s</sub> [N·m·s/rad]</th><th>ζ<sub>s</sub></th><th>Gerçekçi, gözlemci (30° / 60° / 90°)</th><th>İdeal (30° / 60° / 90°)</th></tr>
+    <tr><td>0</td><td class="n">0</td><td class="n">≤0,80 / 1,05 / 1,05</td><td class="n">0,80 / 1,00 / 1,00</td></tr>
+    <tr><td>0,01</td><td class="n">0,037</td><td class="n">0,90 / 1,20 / 1,20</td><td class="n">—</td></tr>
+    <tr class="vurgu"><td>0,02 (varsayılan)</td><td class="n">0,075</td><td class="n">1,00 / 1,30 / 1,30</td><td class="n">0,90 / 1,10 / 1,10</td></tr>
+    <tr><td>0,04</td><td class="n">0,149</td><td class="n">1,10 / 1,35 / 1,40</td><td class="n">1,00 / 1,20 / 1,20</td></tr>
+  </table>
+  <figure><img src="img/cs_duyarlilik.png" alt="cs duyarlılığı" style="width:72%"><figcaption>Tablonun gerçekçi sütunu. Tarama adımı 0,05.</figcaption></figure>
+  <ul>
+    <li><b>Etki büyük:</b> c<sub>s</sub>'nin 2 kat belirsizliği sınırı ±0,10 oynatıyor; bu, K<sub>s</sub>'nin (%0,5) ve J<sub>M</sub>'nin (%0,5) etkisinden çok büyük.</li>
+    <li><b>Fiziksel yorum:</b> c<sub>s</sub> dişler her çarpıştığında enerji yutuyor; sönüm azaldıkça çevrim daha düşük kazançta kendini sürdürebiliyor.</li>
+    <li>İdeal sensörde de aynı eğim var, yani etki nicemlemeden değil modelin kendisinden geliyor.</li>
+    <li><b>Sonuç:</b> c<sub>s</sub> için ayrı bir deney gerekiyor (aşağıda, vuruş testi).</li>
+  </ul>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tarama_cs.m</code>, <code>tarama_cs_log.txt</code></div>
+</section>
+
+
+<section>
+  <div class="kicker">10 · devam</div>
+  <h2>Boşluk r</h2>
+  <h3>Yöntem: sıfırın iki yanına yarı statik tarama</h3>
+  <p>Referansa yavaş sinüs: 0° ± 60°, 0,05 Hz. Yerçekimi torku 0°'da işaret değiştiriyor: kol θ &gt; 0'da dişliyi + yüze, θ &lt; 0'da − yüze yaslıyor. Ölçülen sapma δ<sub>m</sub> = δ + o; o, iki sensörün bağımsız sıfırları ve nicemleme yuvarlaması. İki yüzün kümeleri arasındaki fark 2r, ve o iki kümede aynı olduğu için sadeleşiyor. Yöntemin ofsete duyarsız olduğunu göstermek için analizde AS5600 okumasına keyfi 7,3° ofset eklendi. Yüz geçişi dinamik olduğundan |θ| &lt; 10° olan pencereler atılıyor.</p>
+  <figure><img src="img/D4_r.png" alt="D4 kaydı"><figcaption>Gerçekçi bir D4 kaydı. Sağda sapmadan yaklaşık yay sıkışması (K<sub>m</sub>i/K<sub>s</sub>) çıkarılınca iki dişli yüzü iki ayrı küme olarak görülüyor; kesikli çizgiler gerçek ±r. Uydurma pencere ortalamaları ve düzeltilmiş torkla yapılıyor.</figcaption></figure>
+  <h3>Sonuç (gerçek r = 1,500°; gerçekçi düzeyde 5 koşu)</h3>
+  <table>
+    <tr><th>Uydurma</th><th>İdeal</th><th>Gerçekçi</th></tr>
+    <tr><td>A) K<sub>s</sub> serbest, bütün pencereler</td><td class="n">0,00%</td><td class="n">−0,41 ± 0,18%</td></tr>
+    <tr><td>A) (yukarı + aşağı)/2</td><td class="n">0,00%</td><td class="n">−0,05 ± 0,12%</td></tr>
+    <tr class="vurgu"><td>B) K<sub>s</sub> K<sub>s</sub> deneyinden, bütün pencereler</td><td class="n">0,00%</td><td class="n">−0,11 ± 0,04%</td></tr>
+    <tr><td>Ofset o (gerçek 7,3° + yuvarlama)</td><td class="n">7,300°</td><td class="n">7,208° (r'ye sızmıyor)</td></tr>
+  </table>
+  <div class="note"><b class="t">Önemli yan bulgu: deney kazancı düşük olmalı</b>İlk koşu K<sub>s</sub> deneyinin kazancıyla (r<sub>gs</sub> 0,8) yapıldı. Küçük açılarda yerçekimi ön yükü az, dişli iki yüz arasında takırdadı (|θ| &gt; 10° iken bile zamanın ~%7'sinde ters yüzde), r hatası %1,4–4,8 çıktı. r<sub>gs</sub> 0,5 ile temas her koşuda doğru yüzde, hata %0,2. Bu, kritik r<sub>gs</sub>'nin küçük açılarda 0,8'in altında olduğunu da gösteriyor. Donanımda bu deney r<sub>gs</sub> ≤ 0,5 ile yapılacak ve kayıtta "δ<sub>m</sub> kümeleri iki ayrı düz çizgi mi" diye kontrol edilecek.</div>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tani_r.m</code>, <code>tani_r_log.txt</code> · kayıt <code>tani_r_kayit.mat</code> (yerel)</div>
+</section>
+
+
+<section>
+  <div class="kicker">10 · devam</div>
+  <h2>Temas sönümü c<sub>s</sub>: vuruş testi</h2>
+  <p><b>Fikir:</b> chirp'teki sorun, dinamik sapmanın motor enkoderinin bir sayımının altında kalmasıydı. Kola dışarıdan darbe verip yalnız kol açısına (AS5600, enkoderden 3 kat ince) bakılırsa sorun ortadan kalkıyor. Kol 90°'de, yerçekimi dişliyi yaslıyor. Kola 10 ms'lik tork darbesi verilip sonraki 0,6 s'lik θ<sub>L</sub> kaydına sönümlü sinüs uyduruluyor: ζ = σ/√(σ² + ω²).</p>
+  <h3>a) Motor kontrolcüyle tutuluyor: sağlam değil</h3>
+  <table>
+    <tr><th>c<sub>s</sub></th><th>0</th><th>0,01</th><th>0,02</th><th>0,04</th></tr>
+    <tr><td>Gözlenen ζ</td><td class="n">0,023 ± 0,004</td><td class="n">0,037 ± 0,001</td><td class="n">0,063 ± 0,002</td><td class="n">0,115 ± 0,003</td></tr>
+  </table>
+  <p>c<sub>s</sub>'ler ayrışıyor ama c<sub>s</sub> = 0'da da sönüm var (motorun mikro kayması ve kontrolcü enerji yutuyor). Eğri benzetimden kurulmak zorunda ve bilinmeyen yapışma sürtünmesine bağlı: F<sub>s</sub> belirsizliği c<sub>s</sub>'de ≈ %25 hata.</p>
+  <h3>b) Motor mili mekanik olarak kilitli: temiz</h3>
+  <p>Kol dişli yayı üzerinde tek kütle; kontrolcü ve motor sürtünmesi denklemden çıkıyor: c<sub>s</sub> = 2√(K<sub>s</sub>J<sub>L</sub>)·ζ − b<sub>L</sub>.</p>
+  <figure><img src="img/D5_cs.png" alt="D5 kaydı"><figcaption>Motor kilitli, kol 90°: dört farklı c<sub>s</sub> için vuruş sonrası AS5600 kaydı (basamaklar 12 bit nicemleme). Sönüm farkı ham kayıtta açıkça görülüyor; frekans ≈ 8,4 Hz = √(K<sub>s</sub>/J<sub>L</sub>)/2π.</figcaption></figure>
+  <table>
+    <tr><th>Durum</th><th>Gerçek c<sub>s</sub></th><th>Formülle c<sub>s</sub></th></tr>
+    <tr><td>Taban</td><td class="n">0 / 0,01 / 0,02 / 0,04</td><td class="n">0,0000 / 0,0100 / 0,0195 / 0,0403</td></tr>
+    <tr><td>F<sub>s</sub> 0,04 / 0,09</td><td class="n">0,02</td><td class="n">0,0204 / 0,0200</td></tr>
+    <tr><td>r<sub>gs</sub> 0,6</td><td class="n">0,02</td><td class="n">0,0196</td></tr>
+    <tr><td>Darbe −0,21 / −0,63 N·m</td><td class="n">0,02</td><td class="n">0,0207 / 0,0199</td></tr>
+    <tr><td>J<sub>L</sub> ×1,05 (formülde nominal)</td><td class="n">0,02</td><td class="n">0,0198</td></tr>
+  </table>
+  <ul>
+    <li>Hata her durumda ≤ 0,0007 (~%3,5); kritik r<sub>gs</sub>'ye etkisi ~0,004, tarama adımının çok altında.</li>
+    <li><b>Karar:</b> c<sub>s</sub> motor dişlisi kilitlenip kola hafif vurularak ölçülür. Darbe genliği önemli değil, yeter ki dişli temastan ayrılmasın (θ<sub>L</sub> tepeden tepeye ≲ 25 AS5600 sayımı).</li>
+    <li><b>Ayrılamayan terim:</b> deney c<sub>s</sub> + b<sub>L</sub>'yi birlikte ölçüyor. Kol yatağında Coulomb sürtünmesi varsa zarf üstel değil doğrusal azalır; kayıtta zarfın biçimine bakılacak (benzetimde sınanmadı).</li>
+  </ul>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tani_cs.m</code>, <code>tani_cs_log.txt</code> · model değişikliği <code>blok_yuk.m</code>, <code>blok_tesis.m</code>, <code>sim_param.m</code> (<code>p.d0</code>) · kayıtlar <code>tani_cs_kayit.mat</code>, <code>tani_cs_kilit_kayit.mat</code> (yerel)</div>
+</section>
+
+
+<section>
+  <div class="kicker">10 · devam</div>
+  <h2>mgℓ ve AS5600 sıfırı</h2>
+  <p>Yeni benzetim yok; K<sub>s</sub> (90° ± 70°) ve r (0° ± 60°) kayıtları yeniden kullanıldı. Kol denklemi τ<sub>g</sub> = J<sub>L</sub>θ̈ + b<sub>L</sub>θ̇ + mgℓ·sinθ. AS5600'ün sıfırı bilinmediği için θ = θ<sub>m</sub> − θ<sub>0</sub>, ve mgℓ·sin(θ<sub>m</sub> − θ<sub>0</sub>) = a·sinθ<sub>m</sub> + b·cosθ<sub>m</sub> doğrusal: mgℓ = √(a² + b²), θ<sub>0</sub> = atan2(−b, a).</p>
+  <table>
+    <tr><th>Kayıt</th><th>mgℓ hatası: J<sub>L</sub> ihmal / J<sub>L</sub> ile</th><th>θ<sub>0</sub> hatası: J<sub>L</sub> ihmal / J<sub>L</sub> ile</th></tr>
+    <tr><td>90° ± 70°, ideal</td><td class="n">0,00 / 0,00%</td><td class="n">−0,099 / 0,000°</td></tr>
+    <tr class="vurgu"><td>90° ± 70°, gerçekçi (5 koşu)</td><td class="n">+0,01 / +0,01 ± 0,01%</td><td class="n">−0,132 / −0,043 ± 0,007°</td></tr>
+    <tr><td>0° ± 60°, ideal</td><td class="n">−0,17 / 0,00%</td><td class="n">−0,027 / 0,000°</td></tr>
+    <tr><td>0° ± 60°, gerçekçi (5 koşu)</td><td class="n">−0,12 / +0,06 ± 0,03%</td><td class="n">−0,044 / −0,046 ± 0,004°</td></tr>
+  </table>
+  <ul>
+    <li>J<sub>L</sub> terimi küçük ama sistematik (sinüs taramada θ̈ sinθ/cosθ ile örtüşüyor); geometriden alınıp çıkarılıyor. J<sub>L</sub> %5 yanlış olsa bile etkisi ≤ %0,01.</li>
+    <li>Kalan −0,045° AS5600'ün yarım sayımı; kontrolcü de aynı sensörü okuduğu için zararsız.</li>
+    <li><b>Karar:</b> mgℓ ve AS5600 sıfırı D3 kaydından, %0,1 / 0,05° içinde. Ayrı kalibrasyon gerekmiyor.</li>
+  </ul>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tani_mgl.m</code>, <code>tani_mgl_log.txt</code></div>
+
+  <section>
+  <div class="kicker">10 · devam</div>
+  <h2>Öngörünün doğrulanması</h2>
+  <p>Asıl soru: tanılanan değerlerle kurulan ikiz, gerçek tesisin salınım sınırını öngörüyor mu? Tanılanan takım her adımın gerçekçi koşu ortalaması (J<sub>M</sub> −0,21%, b<sub>M</sub> +1,35%, F<sub>c</sub> 0,0396, K<sub>s</sub> −0,24%, c<sub>s</sub> 0,0195, r −0,11%, mgℓ +0,01%); J<sub>L</sub> ve b<sub>L</sub> geometriden. Sensör, kontrolcü ve gözlemci üç takımda aynı.</p>
+  <table>
+    <tr><th>Takım</th><th>Kritik r<sub>gs</sub> (30° / 60° / 90°)</th><th>90°, r<sub>gs</sub> 1,45</th><th>90°, r<sub>gs</sub> 1,60</th></tr>
+    <tr><td>Gerçek tesis</td><td class="n">1,00 / 1,30 / 1,30</td><td class="n">1,25°, 8,12 Hz</td><td class="n">1,77°, 8,19 Hz</td></tr>
+    <tr class="vurgu"><td>Tanılanan, F<sub>s</sub> ölçülmüş</td><td class="n">0,95 / 1,30 / 1,30</td><td class="n">1,50°, 8,15 Hz</td><td class="n">1,78°, 8,16 Hz</td></tr>
+    <tr><td>Tanılanan, F<sub>s</sub> = F<sub>c</sub> (bilinmeden)</td><td class="n">0,95 / 1,25 / 1,25</td><td class="n">sönüyor</td><td class="n">1,79°, 8,20 Hz</td></tr>
+  </table>
+  <figure><img src="img/ongoru.png" alt="Öngörü" style="width:68%"><figcaption>Kritik r<sub>gs</sub>: gerçek tesis ile tanılanan ikiz.</figcaption></figure>
+  <ul>
+    <li>Sınır en çok bir tarama adımı (0,05) içinde; sınırın iyice üstünde (1,60) genlik %1, frekans %0,5 içinde.</li>
+    <li>Sınıra yakın (1,45) genlik %20 farklı; bu bölge başlangıç koşuluna duyarlı. <b>Sınır yakınında tek koşu güvenilir bir ölçüt değil</b>, deneyde her nokta üç başlangıç sapmasıyla.</li>
+    <li>Ölçülmeyen F<sub>s</sub> öngörüyü 60–90°'de 0,05 aşağı çekiyor; kalan en büyük belirsizlik buydu ve ölçmesi kolay (aşağıda, F<sub>s</sub>).</li>
+  </ul>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tani_dogrula.m</code>, <code>tani_dogrula_log.txt</code></div>
+  </section>
+</section>
+
+
+<section>
+  <div class="kicker">10 · devam</div>
+  <h2>Yapışma sürtünmesi F<sub>s</sub></h2>
+  <p>Kol sökülü, açık çevrim, torka çok yavaş sinüs (0,1 N·m, 0,02 Hz; sıfır geçişinde ~0,013 N·m/s rampa); her yarım periyotta bir kopma. Kopma anı: aynı yönde, aralarında ≤ 50 ms olan iki enkoder sayımının ilki. F<sub>s</sub> = o andan önceki 20 ms'nin K<sub>m</sub>·i ortalaması. (Modeldeki Stribeck tanh ile yumuşatılmış ve kopmadan önce yavaş sürünmeye izin veriyor, bu yüzden tek sayım yetmiyor.)</p>
+  <figure><img src="img/D2_Fs.png" alt="D2 kaydı"><figcaption>Gerçekçi bir D2 kaydı: akımdan tork ve kopma anının yakın planı (enkoder sayımı tork F<sub>s</sub>'ye ulaşınca artmaya başlıyor).</figcaption></figure>
+  <table>
+    <tr><th>Gerçek F<sub>s</sub></th><th>Düzey</th><th>Kestirim hatası (her iki yön)</th></tr>
+    <tr><td>0,06</td><td>İdeal akım</td><td class="n">+0,70 ± 0,02%</td></tr>
+    <tr class="vurgu"><td>0,06</td><td>Gerçekçi (4 koşu, 8 kopma)</td><td class="n">+0,71 ± 0,21%</td></tr>
+    <tr><td>0,09</td><td>Gerçekçi (2 koşu, 4 kopma)</td><td class="n">−0,80 ± 0,30%</td></tr>
+  </table>
+  <p><b>Karar:</b> F<sub>s</sub>, D1'in düzeneğinde ~36 s'lik ek kayıtla, %1 içinde. Öngörü doğrulamasındaki "F<sub>s</sub> ölçülmüş" satırı böylece geçerli öngörü oluyor.</p>
+  <div class="dosya">Dosyalar: <code>simulasyon/simulink/tani_Fs.m</code>, <code>tani_Fs_log.txt</code> · kayıt <code>tani_Fs_kayit.mat</code> (yerel)</div>
+
+  <section class="devam">
+  <div class="kicker">10 · devam</div>
+  <h2>Kol eylemsizliği J<sub>L</sub></h2>
+  <p>Yeni benzetim yok. Kilitli motorda kol dişli yayı üzerinde tek kütle: ω<sub>n</sub>² = K<sub>s</sub>/J<sub>L</sub>, ω<sub>n</sub> vuruş testinin sönümlü sinüs uydurmasından. 23 koşudan <b>J<sub>L</sub> hatası −0,25 … +0,13%</b>. K<sub>s</sub>'nin hatası J<sub>L</sub>'ye birebir geçer. Donanımda ölçülen sertlik kilit pimi ve milin esnekliğini de içerir; bu yüzden J<sub>L</sub> tartı + CAD tahminiyle karşılaştırılacak, fark %5'i aşarsa geometriden alınacak.</p>
+  <div class="dosya">Dosya: <code>simulasyon/simulink/tani_cs_log.txt</code> ("kilit" bloğu)</div>
+  </section>
+
+  <section>
+  <div class="kicker">10 · devam</div>
+  <h2>Gerilim modunda tekrar: akım döngüsü gerekmiyor</h2>
+  <p>Benzetimdeki deneylerin bir kısmı 10 kHz'lik akım döngüsüyle (mod 3) yapılmıştı. Donanımda akım I²C'den (INA228) okunacağı için bunun karşılığı yok. D2–D5 gerilim modunda (mod 1) yeniden koşuldu. Denklemler ölçülen akımı kullandığından sürücünün nasıl çalıştığı kestirime girmiyor.</p>
+  <table>
+    <tr><th>Parametre (gerçekçi)</th><th>Mod 3</th><th>Mod 1</th></tr>
+    <tr><td>K<sub>s</sub>, (yukarı + aşağı)/2</td><td class="n">−0,24 ± 0,18%</td><td class="n">−0,28 ± 0,39%</td></tr>
+    <tr><td>r</td><td class="n">−0,11 ± 0,04%</td><td class="n">−0,15 ± 0,03%</td></tr>
+    <tr><td>c<sub>s</sub>, motor kilitli</td><td class="n">−0,0005</td><td class="n">−0,0005</td></tr>
+    <tr><td>F<sub>s</sub> = 0,06</td><td class="n">+0,71 ± 0,21%</td><td class="n">−1,04 ± 0,68%</td></tr>
+    <tr><td>F<sub>s</sub> = 0,09</td><td class="n">−0,80 ± 0,30%</td><td class="n">−2,40 ± 1,32%</td></tr>
+  </table>
+  <p><b>Karar:</b> bütün tanılama deneyleri gerilim modunda yapılabilir; firmware'e hızlı akım döngüsü gerekmiyor. Akım yalnız kayıt için ölçülüyor (1 kHz'te INA228 yeterli). F<sub>s</sub>'nin %2–3'lük hatasının kritik r<sub>gs</sub>'ye etkisi ~0,002.</p>
+  <div class="dosya">Dosyalar: aynı <code>tani_*.m</code> betikleri mod argümanıyla; sonuçlar aynı log dosyalarında "mod 1" başlığıyla · kayıtlar <code>*_mod1_kayit.mat</code> (yerel)</div>
+  </section>
+</section>
+
+
+
+<section>
+  <div class="kicker">11</div>
+  <h2>Donanım deney protokolü D0–D6</h2>
+  <p>Dijital ikizde sınanan yöntemler donanımda uygulanacak sıralı bir listeye çevrildi. Her deney öncekilerin sonucunu kullanıyor. Ortak ayarlar: 1 kHz seyreltmesiz kayıt, gözlemci hız kestirimi, gerilim modu, meta veri (firmware sürümü, kazançlar, sıcaklıklar, uç kütlesi). Analiz betikleri benzetimdekilerle aynı; yalnız girdi firmware kaydı olacak.</p>
+  <table>
+    <tr><th>#</th><th>Düzenek</th><th>Ne yapılır</th><th>Süre × tekrar</th><th>Çıkan</th><th>Benzetimde doğruluk</th></tr>
+    <tr><td>D0</td><td>Kalibrasyon</td><td>Enkoder yönü, AS5600 ayarı, akım ölçümü, döngü zamanlaması, akım sınırı</td><td>—</td><td>Ölçekler, tork sınırı</td><td>—</td></tr>
+    <tr><td>D1</td><td>Kol sökülü</td><td>Gerilim sinüsü 0,25 Hz</td><td class="n">9 s × 3</td><td>K<sub>m</sub>, R<sub>a</sub>, J<sub>M</sub>, b<sub>M</sub>, F<sub>c</sub></td><td>%0,05–1,4</td></tr>
+    <tr><td>D2</td><td>Kol sökülü</td><td>Tork sinüsü 0,1 N·m, 0,02 Hz</td><td class="n">36 s × 3</td><td>F<sub>s</sub></td><td>%1–2,5</td></tr>
+    <tr><td>D3</td><td>Kol takılı</td><td>90° ± 70°, r<sub>gs</sub> 0,8</td><td class="n">21 s × 5</td><td>K<sub>s</sub>, mgℓ, AS5600 sıfırı</td><td>%0,5–1 / %0,1 / 0,05°</td></tr>
+    <tr><td>D4</td><td>Kol takılı</td><td>0° ± 60°, <b>r<sub>gs</sub> 0,5</b></td><td class="n">21 s × 5</td><td>r</td><td>%0,2</td></tr>
+    <tr><td>D5</td><td>Motor dişlisi kilitli</td><td>Kol 90°'de, hafif vuruş</td><td class="n">10 vuruş</td><td>c<sub>s</sub>, J<sub>L</sub></td><td>%3,5 / %0,5</td></tr>
+    <tr class="vurgu"><td>D6</td><td>Asıl deney</td><td>Açı × r<sub>gs</sub>, öngörülen sınırın ±0,15 çevresinde 0,05 adımla, her noktada 3 başlangıç sapması</td><td>—</td><td>Ölçülen sınır</td><td>Öngörü ±0,05</td></tr>
+  </table>
+  <p>Tanılama toplamı (D1–D5) kurulum hariç ≈ 30 dakika kayıt.</p>
+  <h3>Kaydın geçerlilik ölçütleri (sağlanmazsa kayıt atılır)</h3>
+  <ul>
+    <li><b>D1:</b> |φ̇| &gt; 2 rad/s olan en az 50 pencere; tekrarlar arası J<sub>M</sub> farkı ≤ %2.</li>
+    <li><b>D2:</b> her yönde en az bir kopma; tekrarlar arası F<sub>s</sub> farkı ≤ %3.</li>
+    <li><b>D3:</b> dişli tarama boyunca tek yüzde: δ<sub>m</sub>–τ<sub>g</sub> tek bir düz çizgi.</li>
+    <li><b>D4:</b> |θ| &gt; 10° iken iki ayrı yatay küme; arada örnek varsa dişli takırdıyor, r<sub>gs</sub> düşürülür.</li>
+    <li><b>D5:</b> θ<sub>L</sub> tepeden tepeye ≤ 25 AS5600 sayımı; zarf üstel olmalı; J<sub>L</sub> geometriyle %5 içinde (kilit rijit mi?).</li>
+    <li><b>D6:</b> sınır tanımı benzetimle aynı (sınıf ≥ 3 ve genlik &gt; 0,5°, herhangi bir başlangıç sapmasında).</li>
+  </ul>
+  <h3>Karşılaştırma</h3>
+  <p>D1–D5 sonuçlarıyla ikiz kurulur, D6'nın her açısında kritik r<sub>gs</sub>'yi öngörür. Ölçüt: öngörülen − ölçülen sınır farkı. Aynı veri üzerinde yerçekimsiz Ghaffari öngörüsü ve önerilen yerçekimli DF öngörüsü de karşılaştırılır.</p>
+  <div class="dosya">Ayrıntı: <code>calisma_notu/deney_protokolu.md</code>. Protokol 5. adımda (donanım hazırlığı) uygulanacak.</div>
+
+  </section>
+
+<section>
+  <div class="kicker">12</div>
+  <h2>Eksik kalanlar</h2>
+  <div class="adim"><p class="bas">Açı yönündeki sınır hatası 15° (hedef 5°)</p>
+  <p>Ayrı bir hata değil. Kritik kazanç eğrisi açıya göre çok yatık (30–55° arasında 1° başına 0,004–0,006 r<sub>gs</sub>); kazançtaki %15–20'lik fark açıda 20–50° kaymaya dönüşüyor. DF tek bir sabitle (1,22) ölçeklenince açı hatası medyan 5°'ye iniyor: DF sınırın <i>biçimini</i> doğru veriyor. Sabit aynı veriden uyduruldu, öngörü değil; yalnız hatanın kaynağını gösteriyor. Bu eğimde 5° hedefi kazançta %3–5 doğruluk demek.</p></div>
+  <div class="adim"><p class="bas">Dişli sertliği K<sub>s</sub>, temas sönümü c<sub>s</sub> ve rotor eylemsizliği tahmin</p>
+  <p>K<sub>s</sub> ve c<sub>s</sub>, DF'nin en duyarlı olduğu iki parametre; kaynakların hiçbiri c<sub>s</sub>'yi raporlamıyor. Düzenek gelince sistem tanılamada ölçülecek.</p></div>
+  <div class="adim"><p class="bas">Düşük kazançlı çarpma rejimi</p>
+  <p>γ<sub>sınır</sub> ≈ 3ρ³ ilişkisinde DF üs yasasının biçimini veriyor (DF ≈ 5,5ρ<sup>2,5</sup>, benzetim ≈ 3,3ρ<sup>3,0</sup>) ama sınırı 2,6–7,7 kat yüksek öngörüyor; deney hedef bölgesinde (ρ ≈ 0,3) 2,6 kat. Bu bölge için çarpmalı model gerekiyor.</p></div>
+  <div class="adim"><p class="bas">A düzeneğinde kritik kazanç hatası %27</p>
+  <p>Olası neden kısmi temastaki sönüm; A için kök neden sınaması yapılmadı.</p></div>
+</section>
+
+
+
+<section>
+  <div class="kicker">13</div>
+  <h2>Olmayanlar ve kök neden sınaması</h2>
+  <div class="adim"><p class="bas">Sun 2023 sayısal olarak yeniden üretilemedi</p>
+  <p>Makale hız döngüsünün PI katsayılarını ve temas sönümünü vermiyor. Oranlar gözlenen salınım frekansından tahminle eşlendi (Bölüm 6). Seçenek: yazarlardan katsayıları istemek ya da düzenekte K<sub>p</sub> = 20 / 50 eşdeğeri bir sınama.</p></div>
+  <div class="adim"><p class="bas">Ghaffari'nin sürtünmeli deney uyumu yalnız ayarlanmış bir tork sınırıyla</p>
+  <p>Makalede verilmeyen ≈ 360 N·m'lik bir tork sınırıyla yakalandı (%3,9; makalede %2,4 / %3,3). Değer aynı veriye ayarlandı, öngörü değil.</p></div>
+  <h3>Kalan %19'luk kazanç hatası: kök neden parça parça sınandı</h3>
+  <table>
+    <tr><th>Kaynak</th><th>Katkı</th><th>Nasıl sınandı</th></tr>
+    <tr><td>Dişlinin etkin sertliği (DF'nin özü)</td><td>yok</td><td>Benzetimde ölçülen etkin sertlik her genlikte DF ile aynı (0,433 / 0,428; 0,623 / 0,624)</td></tr>
+    <tr><td>Doğrusal kısım, yerçekiminin doğrusallaştırılması</td><td class="n">%1–4</td><td>Dişli yerine DF'nin eşdeğer yayı konunca frekans %0,5 içinde</td></tr>
+    <tr><td>Kısmi temasta etkin sönüm</td><td class="n">≈ %4–8</td><td>Sapma sinüs olmadığı için etkin sönüm benzetimde 1,2–2 kat; DF'de sönüm 2 katına çıkınca hata %19 → %11</td></tr>
+    <tr><td>Tork sınırı ve anti-windup</td><td>uyuşmayan hücrelerin yarısı</td><td>Tork sınırı kaldırılınca bu hücreler salınıyor; DF anti-windup'ı içermiyor</td></tr>
+  </table>
+  <p>Paylar toplanabilir değil (aynı hücrelerde üst üste biniyor). Ayrıca sınandı ve elendi: fark iki tarafın "çevrim var" tanımından gelmiyor (büyük sarsıntıda, her hücrenin kendi frekansında da çevrim başlamadı).</p>
+  <div class="note ok"><b class="t">Sonuç</b>Kalan hata çalışmanın asıl katkısı olan dişli modelinden değil, iki bilinen yaklaşıklıktan geliyor: tek harmonik varsayımı ve tork sınırının basitleştirilmesi. Düzeltme yolu belli: çok harmonikli denge (harmonic balance) ve anti-windup'lı doyum modeli. Bu adımın kapsamı dışında bırakıldı.</div>
+  <div class="dosya">Kod: <code>kok_neden_1.m</code> … <code>kok_neden_3f.m</code>, <code>aci_hatasi.py</code>, <code>yasa_df.m</code> · kayıt: <code>kok_neden_log.txt</code>, <code>aci_hatasi_log.txt</code>, <code>yasa_df_log.txt</code></div>
+</section>
+
+
+
+<section>
+  <div class="kicker">14</div>
+  <h2>Değerlendirme ve sonraki adımlar</h2>
+  <p><b>İlerleyiş doğru mu?</b> Evet. Sıra "önce benzetimle yöntemi kur ve doğrula, sonra deney" idi; benzetim aşaması amacına ulaştı: literatür sonucu yeniden üretildi, yöntem 4 kat daha doğru, hatanın kaynağı ayrıldı. Asıl doğrulama deney olduğu için işler deneye göre sıralandı.</p>
+  <table>
+    <tr><th>İş</th><th>Ne zaman</th><th>Neden bu sırada</th></tr>
+    <tr><td>Sistem tanılama yöntemlerinin benzetimde sınanması</td><td><b>Yapıldı</b> (Bölüm 10)</td><td>Bütün parametreler %0,1–3,5 içinde; deney ilk seferde doğru kurulabilir.</td></tr>
+    <tr><td>Sistem tanılama (ölçüm), protokol D0–D5</td><td>Malzeme gelince (5. adım)</td><td>DF'nin en duyarlı olduğu iki parametre; tahmin değerlerle yapılan her iyileştirme ölçümle değişebilir.</td></tr>
+    <tr class="vurgu"><td>Açı × kazanç deneyleri (D ve A uçları, iki boşluk ayarı, küçük ve büyük sarsıntı)</td><td>Tanılamadan sonra (6. adım, D6)</td><td>Önerilen yöntemin asıl doğrulaması.</td></tr>
+    <tr><td>Çok harmonikli denge ve anti-windup'lı doyum modeli</td><td>Deney verisinden sonra, gerekirse</td><td>Şimdi yapılırsa yöntem tahmini c<sub>s</sub>'li benzetime uydurulmuş olur.</td></tr>
+    <tr><td>Düşük kazançlı çarpma rejimi için çarpmalı model</td><td>Ana çalışmadan sonra</td><td>Hata en çok deney hedef bölgesinin altında; ayrı, araştırma düzeyinde bir yöntem.</td></tr>
+    <tr><td>Sun 2023'ün nicel yeniden üretimi</td><td>Katsayılar elde edilirse</td><td>Hız döngüsü katsayıları ve temas sönümü makalede yok.</td></tr>
+  </table>
+  <p><b>Görüşülecek:</b> başarı ölçütleri (özellikle açı hedefi), düzenek seçimi (önerilen D; kabul edilirse malzeme listesine 150 g'a kadar uç kütlesi eklenecek), siparişin EKOM üzerinden verilmesi.</p>
+</section>
+
+
+
+<section class="qa">
+  <div class="kicker">15</div>
+  <h2>Gelebilecek sorular</h2>
+  <p><b>Neden tanımlama fonksiyonu? Daha kesin bir yöntem yok mu?</b><br>Ghaffari çerçevesi DF ile kurulmuş ve deneyle doğrulanmış; katkıyı aynı çerçevenin genişletmesi olarak koymak karşılaştırmayı adil kılıyor. DF kapalı biçim sezgi veriyor (γ, n<sub>1,min</sub>). Kesinlik için benzetim haritası her adımda referans olarak kullanıldı.</p>
+  <p><b>Yerçekimli iki girişli DF literatürde yok mu?</b><br>Kaymalı (iki girişli) DF aracı yeni değil (Gelb–Vander Velde). Yeni olan, Ghaffari'nin kazanca bağlı salınım çerçevesine yerçekimi ön yükünü eklemek ve açı × kazanç düzleminde doğrulamak.</p>
+  <p><b>%19 hata kabul edilebilir mi?</b><br>Hedef ≤ %20 ve Ghaffari'den ≥ 2 kat iyi idi; ikisi de tutuyor (4 kat). Hata sistematik ve temkinli yönde: DF çevrimi biraz erken (düşük kazançta) öngörüyor.</p>
+  <p><b>Açı hedefi neden tutmuyor, ölçütü mü değiştiriyorsun?</b><br>Ölçüt değişmiyor; eğri yatık olduğu için açıdaki hata kazanç hatasının büyütülmüş hâli. Tek sabitle ölçeklenince 5°'ye iniyor. Deneyde tanılanmış K<sub>s</sub> ve c<sub>s</sub>'yle yeniden değerlendirilecek.</p>
+  <p><b>Neden hem betik hem Simulink/Simscape?</b><br>Taramalar binlerce koşu gerektirdiği için vektörize betikte. Simulink betikle bit düzeyinde aynı sonucu, Simscape farklı bir modelleme yoluyla aynı rejimleri veriyor: sonuçların kodlama hatasından gelmediğinin bağımsız sağlaması. Firmware'e yakın ayrıntılar (sensör, sürücü, deney kaynağı, kayıt) ve sistem tanılama Simulink/Simscape ikizinde.</p>
+  <p><b>Neden D düzeneği, A neden yetmiyor?</b><br>A'da kolun eylemsizliği motorunkinin yalnız 0,17'si; dişli çoğu zaman temas etmiyor, DF zorlanıyor. D'de R ≈ 1, DF geçerli ve yerçekimi torku büyük (90°'de motor torkunun yarısı). Uç kütlesi değiştirilebilir olunca A ve D aynı düzenekte iki uç olur.</p>
+  <p><b>K<sub>s</sub> ve c<sub>s</sub> tahminse sonuçlara ne kadar güvenilir?</b><br>Karşılaştırma (Ghaffari'ye göre iyileşme, açı örüntüsü) bu değerlerden bağımsız olarak tutuyor. Mutlak sınır ve frekans bu değerlere bağlı; en duyarlı olan c<sub>s</sub>. İkisi de sistem tanılamada ölçülecek.</p>
+</section>
+
+
+
+<section>
+  <div class="kicker">16</div>
+  <h2>Kaynaklar ve dosya dizini</h2>
+  <h3>Kaynaklar</h3>
+  <ul>
+    <li>Ghaffari, Mohammadiasl 2013, IEEE/ASME Transactions on Mechatronics. doi:10.1109/TMECH.2012.2195670</li>
+    <li>Wang ve ark. 2017, IEEE Transactions on Industrial Electronics. doi:10.1109/TIE.2017.2711564</li>
+    <li>Sun ve ark. 2023, IEEE Transactions on Industrial Electronics. doi:10.1109/TIE.2022.3156154</li>
+    <li>Esbrook, Tan, Khalil 2014, IEEE Transactions on Automatic Control. doi:10.1109/TAC.2013.2281859</li>
+  </ul>
+  <p style="font-size:9pt; color:var(--muted)">"Makaleden" etiketli şekiller Ghaffari 2013'ten kırpılmıştır, telif hakkı yayıncıya (IEEE) aittir; yalnız karşılaştırma amacıyla gösterilmiştir.</p>
+  <h3>Dosya dizini (depo içinde)</h3>
+  <table style="font-size:8.6pt">
+    <tr><th>Bölüm</th><th>Kod</th><th>Sonuç / kayıt</th></tr>
+    <tr><td>3, ilk benzetimler</td><td><code>kol_benzetim.m</code>, <code>harita.m</code>, <code>duyarlilik.m</code>, <code>boyutsuz_harita.m</code>, <code>boyutsuz_sinir.m</code>, <code>motor_*.m</code></td><td><code>sonuclar_2026-10-18.md</code>, <code>*_log.txt</code>, <code>*.png</code></td></tr>
+    <tr><td>4, yeniden üretim</td><td><code>4a_ghaffari/ghaffari2013.m</code>, <code>ghaffari_param.m</code>, <code>ghaffari_df.m</code>, <code>ghaffari_tabla.m</code>, <code>ghaffari_sekil78.m</code>, <code>tork_siniri.m</code></td><td><code>sekil78_sonuclar.md</code>, <code>tabla_sonuclar.md</code>, <code>sekil78_kalibre.png</code>, <code>tabla_karsilastirma.png</code></td></tr>
+    <tr><td>4, köprü</td><td><code>kopru_7a.m</code>, <code>kopru_7b.m</code>, <code>kopru_7b_R.m</code></td><td><code>kopru_7a_log.txt</code>, <code>kopru_7b_sonuclar.md</code></td></tr>
+    <tr><td>5, yerçekimli DF</td><td><code>yercekimli_df.m</code>, <code>yercekimli_df_testleri.m</code>, <code>yercekimli_karsilastirma.m</code></td><td><code>yercekimli_sonuclar.md</code>, <code>yercekimli_log.txt</code>, <code>yercekimli_kritik_D.csv</code>, <code>_A.csv</code></td></tr>
+    <tr><td>6, eşleme</td><td>—</td><td><code>esleme_tablosu.md</code>, <code>parametreler.md</code></td></tr>
+    <tr><td>7, rejim</td><td><code>rejim_sinifla.m</code>, <code>rejim_testleri.m</code>, <code>zorlanmis_cevap.m</code></td><td><code>rejim_siniflandirma.md</code>, <code>rejim_testleri_log.txt</code>, <code>zorlanmis_cevap_log.txt</code></td></tr>
+    <tr><td>8, düzenek seçenekleri</td><td><code>4a_ghaffari/secenekler.m</code>, <code>sensor_7c.m</code>, <code>harita_html.py</code></td><td><code>secenekler_sonuclar.md</code>, <code>sensor_7c_sonuclar.md</code></td></tr>
+    <tr><td>9, dijital ikiz</td><td><code>simulink/kol_model_kur.m</code>, <code>sm_model_kur.m</code>, <code>blok_*.m</code>, <code>dogrula_2.m</code>, <code>dogrula_5a.m</code>, <code>tarama_5b.m</code></td><td><code>dogrula_2_log.txt</code>, <code>dogrula_3_log.txt</code>, <code>dogrula_5a_log.txt</code>, <code>tarama_5b_log.txt</code>, <code>README.md</code></td></tr>
+    <tr><td>10, tanılama</td><td><code>simulink/tani_*.m</code>, <code>km_kestir.m</code>, <code>tarama_cs.m</code>, <code>tani_dogrula.m</code></td><td><code>tani_*_log.txt</code>, <code>tarama_cs_log.txt</code>, <code>tani_dogrula_log.txt</code>, <code>README.md</code> (4.3)</td></tr>
+    <tr><td>11, protokol</td><td>—</td><td><code>calisma_notu/deney_protokolu.md</code></td></tr>
+    <tr><td>13, kök neden</td><td><code>kok_neden_*.m</code>, <code>aci_hatasi.py</code>, <code>yasa_df.m</code></td><td><code>kok_neden_log.txt</code>, <code>aci_hatasi_log.txt</code>, <code>yasa_df_log.txt</code></td></tr>
+  </table>
+  <p style="font-size:8.6pt; color:var(--muted)">Yollar <code>simulasyon/</code> klasörüne göre. Bölüm 5 ve 7'deki iki grafik bu rapor için çizildi; veriler depodaki CSV'lerden ve modellerin yeniden koşusundan.</p>
+</section>
+
+<section>
+  <div class="kicker">Ek A</div>
+  <h2>Simulink tasarım ayrıntıları</h2>
+  <p>Bu ek, Bölüm 9'daki üç modelin içini gösteriyor: hangi bloklardan oluştukları, blok parametreleri, çözücü ayarları ve MATLAB Function bloklarının kodu. Model dosyalarının kendisi (<code>.slx</code>) ve onları kuran betikler bu PDF'e <b>ek dosya</b> olarak gömülü (Ek A.6).</p>
+  <h3>A.1 Ortak tasarım kararları</h3>
+  <ul>
+    <li><b>Modeller elle çizilmedi, betikle kuruluyor:</b> <code>kol_model_kur.m</code> ve <code>sm_model_kur.m</code> blokları yerleştirip bağlıyor, MATLAB Function bloklarının kodunu <code>blok_*.m</code> dosyalarından okuyup bloğa yazıyor. <code>.slx</code> ikili bir dosya; kaynak betik. Bu yüzden modeldeki kod ile betiklerdeki kod tek bir kaynaktan geliyor.</li>
+    <li><b>Parametreler tek bir yapıda:</b> <code>sim_param.m</code>, <code>kol_benzetim.m</code>'nin parametre yapısını sayısal bir <code>S</code> yapısına çeviriyor. Bloklar parametreyi <code>S.Ks</code>, <code>S.JM</code> gibi okuyor; koşu <code>Simulink.SimulationInput</code> ile <code>S</code>, <code>Ts</code>, <code>dt</code>, <code>T</code>, <code>dec</code> değişkenleri verilerek başlatılıyor. Aynı modelle bir açı × kazanç taraması yalnız <code>S</code> değiştirilerek yapılıyor.</li>
+    <li><b>Kontrolcü ayrık, tesis sürekli:</b> kontrolcü ve sensör <code>Ts</code> örneklemeli (sıfırıncı derece tutucu), tesis sürekli zamanda. Bu, ESP32 firmware'inin göreceği yapıyla aynı.</li>
+  </ul>
+
+<table class="ek"><tr><th>Ayar</th><th>Değer</th><th>Not</th></tr><tr><td>Çözücü</td><td>ode4 (sabit adımlı Runge–Kutta 4)</td><td>Betikle aynı yöntem; sonuçlar bu yüzden bit düzeyinde örtüşüyor</td></tr><tr><td>Adım</td><td><code>dt</code> = 1e-4 s</td><td>Betikle aynı</td></tr><tr><td>Bitiş</td><td><code>T</code> (referans hücrelerde 8 s)</td><td></td></tr><tr><td>Kayıt seyreltme</td><td><code>dec</code></td><td>Ölçüm/tanılama koşularında 1 (bkz. README 4.2 düzeltmesi)</td></tr><tr><td>Kontrolcü örneklemesi</td><td><code>Ts</code> (ideal: = dt; gerçekçi: 1 ms)</td><td></td></tr><tr><td>Simscape Solver Configuration</td><td>Yerel çözücü kapalı, DerivativeReplacement, kalan toleransı 1e-9</td><td>Simscape ağı da genel ode4 adımıyla çözülüyor</td></tr><tr><td>Hard Stop geçiş bölgesi</td><td><code>gecis</code> = 1e-6 rad</td><td>1e-8 ile aynı sonuç (Bölüm 9)</td></tr></table>
+  <h3>A.2 Parametre değerleri (D düzeneği, kol tarafına indirgenmiş)</h3>
+<table class="ek"><tr><th>Büyüklük</th><th>Değer</th><th>Not</th></tr><tr><td>J<sub>M</sub>, J<sub>L</sub></td><td>0,0036 kg·m² (ikisi de)</td><td>J<sub>M</sub> rotor eylemsizliği tahminden</td></tr><tr><td>K<sub>s</sub></td><td>10 N·m/rad</td><td>tahmin</td></tr><tr><td>c<sub>s</sub></td><td>0,02 N·m·s/rad</td><td>tahmin</td></tr><tr><td>2r</td><td>3°</td><td></td></tr><tr><td>mgℓ</td><td>0,24 N·m</td><td></td></tr><tr><td>T<sub>max</sub></td><td>0,49 N·m (ideal tork kaynağında)</td><td>JGB37-520 durma torku</td></tr><tr><td>Elektrik modeli: V<sub>s</sub></td><td>12 V</td><td></td></tr><tr><td>K<sub>m</sub> = V<sub>s</sub>/ω<sub>0</sub></td><td>0,344 V·s/rad</td><td>ω<sub>0</sub> = 333 rpm (çıkışta boşta hız)</td></tr><tr><td>R<sub>a</sub> = K<sub>m</sub>V<sub>s</sub>/T<sub>durma</sub></td><td>8,43 Ω</td><td>eşdeğer; durma torku, boşta hız ve zıt EMK sönümü veri sayfasıyla aynı</td></tr><tr><td>L<sub>a</sub></td><td>2,5 mH</td><td>tahmin (elektrik zaman sabiti ≈ 0,3 ms)</td></tr><tr><td>I<sub>lim</sub></td><td>1,24 A (eşdeğer)</td><td>DRV8874'ün 2 A sınırı → tork sınırı 0,43 N·m</td></tr><tr><td>Akım PI</td><td>K<sub>pi</sub> = L<sub>a</sub>ω<sub>i</sub>, K<sub>ii</sub> = R<sub>a</sub>ω<sub>i</sub>, ω<sub>i</sub> = 2π·500</td><td>kutup-sıfır sadeleştirme, örnekleme 10 kHz</td></tr></table>
+<div class="dosya">Kaynak: <code>simulasyon/simulink/sim_param.m</code>, <code>simulasyon/kol_benzetim.m</code> (D düzeneği ayarı)</div></section>
+<section>
+  <div class="kicker">Ek A · devam</div>
+  <h2>A.3 kol_model.slx (Simulink)</h2>
+  <p>Diyagram Bölüm 9'da. Tesisin MATLAB Function olarak yazılmasının nedeni: Simulink'in hazır Backlash bloğu sertliği olmayan kinematik bir boşluk; dişli teması (ölü bölge + yay + sönüm, yalnız itme) onunla kurulamıyor.</p>
+<table class="ek"><tr><th>Blok</th><th>Tip</th><th>Görevi</th></tr><tr><td>saat</td><td>Clock</td><td>Zaman (bozucunun kesilmesi için)</td></tr><tr><td>tesis</td><td>MATLAB Function</td><td>ẋ = f(x, u, t): iki kütle + dişli teması + Stribeck + yerçekimi + bozucu; ayrıca dişli torku τ<sub>s</sub></td></tr><tr><td>x</td><td>Integrator (başlangıç <code>S.x0</code>)</td><td>Durum x = [φ, φ̇, θ, θ̇]</td></tr><tr><td>sensor</td><td>MATLAB Function (ayrık, Ts)</td><td>AS5600 nicemleme + gecikme tamponu, hız kestirimi</td></tr><tr><td>kontrolcu</td><td>MATLAB Function (ayrık, Ts)</td><td>P–PI ya da PID, tork sınırı, anti-windup, sürücü ölü bandı</td></tr><tr><td>x_out, tau_s, u_out</td><td>Outport 1–3</td><td>Durum, dişli torku, tork komutu</td></tr></table>
+<div class="kodkutu"><div class="kodbas">tesis (blok_tesis.m) <span>(23 satır)</span></div><pre class="kod">function [dx, ts] = tesis(x, u, t, S)
+% İki kütle + dişli teması (kol tarafına indirgenmiş). kol_benzetim.m / f(x) ile aynı.
+phi = x(1);  dphi = x(2);  th = x(3);  dth = x(4);
+d = phi - th;  dd = dphi - dth;
+ts = 0;
+if d &gt; S.r
+    ts = max(S.Ks*(d - S.r) + S.cs*dd, 0);     % temas yalnız iter, çekmez
+elseif d &lt; -S.r
+    ts = min(S.Ks*(d + S.r) + S.cs*dd, 0);
+end
+tf = 0;
+if S.Fc &gt; 0                                    % yumuşatılmış Stribeck sürtünmesi
+    tf = (S.Fc + (S.Fs - S.Fc)*exp(-(dphi/S.vs)^2)) * tanh(dphi/S.veps);
+end
+bz = 0;
+if t &lt; S.dT
+    bz = S.dA*sin(2*pi*S.df*t);                % yük bozucusu
+end
+dx = [dphi;
+      (u - S.bM*dphi - tf - ts)/S.JM;
+      dth;
+      (ts - S.bL*dth - S.mgl*sin(th) + bz)/S.JL];
+end</pre></div>
+<div class="kodkutu"><div class="kodbas">sensor (blok_sensor.m) <span>(30 satır)</span></div><pre class="kod">function [thm, v] = sensor(x, S)
+% Kol açısı ölçümü (nicemleme + gL örnek gecikme) ve hız (gerçek ya da kestirilmiş).
+% kol_benzetim.m&#x27;deki kontrolcü örneğinin ölçüm kısmı ile aynı sıra.
+persistent buf vhat yprev
+vi = 3;  qv = S.qL;
+if S.motorD &gt; 0, vi = 1;  qv = S.qM; end
+if isempty(buf)
+    buf = olc(x(3), S.qL)*ones(21,1);
+    yprev = olc(x(vi), qv);
+    vhat = 0;
+end
+thm = olc(x(3), S.qL);
+if S.gL &gt; 0
+    buf = [buf(2:end); thm];
+    thm = buf(21 - S.gL);
+end
+if S.fv_inf &gt; 0
+    v = x(vi + 1);
+else
+    yv = olc(x(vi), qv);
+    vhat = vhat + S.aV*((yv - yprev)/S.Ts - vhat);
+    yprev = yv;
+    v = vhat;
+end
+end
+
+function y = olc(x, q)
+y = x;
+if q &gt; 0, y = q*floor(x/q); end
+end</pre></div>
+<div class="kodkutu"><div class="kodbas">kontrolcu (blok_kontrolcu.m) <span>(18 satır)</span></div><pre class="kod">function u = kontrolcu(thm, v, S)
+% PID ya da P-PI kaskat + tork sınırı + basit anti-windup + sürücü ölü bandı.
+persistent z
+if isempty(z), z = S.z0; end
+e = S.ref - thm;
+if S.ppi &gt; 0
+    ev = S.kp*e - v;                 % hız hatası (kol tarafı)
+    u0 = S.KV*ev + S.KI*z;
+    iz = ev;
+else
+    u0 = S.Kp*e + S.Ki*z - S.Kd*v;
+    iz = e;
+end
+u = min(max(u0, -S.Tmax), S.Tmax);
+doy = (u0 &gt; S.Tmax &amp;&amp; iz &gt; 0) || (u0 &lt; -S.Tmax &amp;&amp; iz &lt; 0);
+if ~doy, z = z + iz*S.Ts; end
+if abs(u) &lt; S.olu, u = 0; end
+end</pre></div>
+</section>
+<section>
+  <div class="kicker">Ek A · devam</div>
+  <h2>A.4 sm_kol_model.slx (Simscape mekanik)</h2>
+  <p>Mekanik kısım Simscape fiziksel bloklarıyla, yani denklem yazılmadan kuruldu. Yerçekimi, bozucu ve Stribeck sürtünmesi Simulink'te hesaplanıp ağa tork olarak veriliyor.</p>
+<table class="ek"><tr><th>Blok</th><th>Simscape/Simulink bloğu</th><th>Parametreler / görevi</th></tr><tr><td>JM, JL</td><td>Inertia</td><td>inertia = <code>S.JM</code> / <code>S.JL</code>; başlangıç hızı <code>S.x0(2)</code> / <code>S.x0(4)</code></td></tr><tr><td>bM, bL</td><td>Rotational Damper</td><td>D = <code>S.bM</code> / <code>S.bL</code></td></tr><tr><td><b>dis</b> (dişli)</td><td><b>Rotational Hard Stop</b></td><td>model = smooth; üst/alt sınır = ±<code>S.r</code> − (<code>S.x0(1)</code> − <code>S.x0(3)</code>); sertlik = <code>S.Ks</code>; sönüm = <code>S.cs</code>; geçiş = <code>gecis</code></td></tr><tr><td>tork_m, tork_L</td><td>Ideal Torque Source</td><td>Simulink'ten gelen motor torku ve kola etkiyen dış tork</td></tr><tr><td>olc_m, olc_L</td><td>Ideal Rotational Motion Sensor</td><td>açı + hız; ofset <code>S.x0(1)</code> / <code>S.x0(3)</code></td></tr><tr><td>zemin</td><td>Mechanical Rotational Reference</td><td></td></tr><tr><td>cozucu</td><td>Solver Configuration</td><td>A.1</td></tr><tr><td>sps_m, sps_L / ps_*</td><td>Simulink-PS / PS-Simulink Converter</td><td>birim dönüşümü (N·m, rad, rad/s)</td></tr><tr><td>yuk</td><td>MATLAB Function</td><td>t<sub>m</sub> = u − Stribeck; t<sub>a</sub> = −mgℓ sin θ + bozucu</td></tr><tr><td>kontrolcu (ayrik)</td><td>MATLAB Function (ayrık, Ts)</td><td>sensör + kontrolcü + hız kestirici + deney kaynağı, durumsuz yazım</td></tr><tr><td>durum</td><td>Unit Delay (başlangıç <code>S.st0</code>, Ts)</td><td>kontrolcünün 28 elemanlı durumu: gecikme tamponu, hız kestirimi, integral, kestirici durumları</td></tr><tr><td>mux, x_out, u_out, olc_out</td><td>Mux, Outport</td><td>durum, tork komutu, firmware kaydı</td></tr></table>
+  <div class="note ok"><b class="t">İki tasarım ayrıntısı</b><b>Hard Stop sınırları:</b> Simscape ağı her zaman göreli 0 konumundan başlıyor; başlangıçta dişli boşluğun ortasında değilse temas noktaları kayıyordu. Sınırlar bu yüzden başlangıç sapmasıyla düzeltildi (±r − δ<sub>0</sub>).<br><b>Cebirsel döngü:</b> Hard Stop ağda cebirsel denklem bıraktığı için Simulink geri besleme döngüsünü cebirsel döngü sayıyor ve durum tutan (persistent) MATLAB Function blokları böyle bir döngüde çalışamıyor. Çözüm: sensör ve kontrolcü tek bir durumsuz blokta (<code>ayrik</code>), durumlar dışarıdaki Unit Delay'de.</div>
+<div class="kodkutu"><div class="kodbas">yuk (blok_yuk.m) <span>(17 satır)</span></div><pre class="kod">function [tm, ta] = yuk(x, u, t, S)
+% Simscape modelinde fiziksel ağa verilen torklar (Simulink tarafında hesaplanır):
+%   tm: motor eylemsizliğine etkiyen net tork = kontrolcü torku - Stribeck sürtünmesi
+%   ta: kola etkiyen dış tork = yerçekimi + yük bozucusu
+% Viskoz sürtünmeler (bM, bL) ve dişli teması Simscape bloklarındadır.
+dphi = x(2);  th = x(3);
+tf = 0;
+if S.Fc &gt; 0
+    tf = (S.Fc + (S.Fs - S.Fc)*exp(-(dphi/S.vs)^2)) * tanh(dphi/S.veps);
+end
+tm = u - tf;
+bz = 0;
+if t &gt;= S.d0 &amp;&amp; t &lt; S.dT
+    bz = S.dA*sin(2*pi*S.df*(t - S.d0));
+end
+ta = -S.mgl*sin(th) + bz;
+end</pre></div>
+</section>
+<section class="devam"><div class="kodkutu"><div class="kodbas">kontrolcu / ayrik (blok_ayrik.m; iki Simscape modelinde aynı) <span>(123 satır)</span></div><pre class="kod">function [u, st1, v, m] = ayrik(x, st, t, S)
+% m: firmware&#x27;in Ts&#x27;de kaydedeceği ölçümler [th_L (AS5600, gecikmeli); phi (enkoder); v (kestirim); u]
+% v: kontrolcünün kullandığı hız (sürücünün zıt EMK kompanzasyonu için dışarı verilir)
+% Sensör + kontrolcü, durumsuz yazım (Simscape modeli için). blok_sensor + blok_kontrolcu ile aynı hesap;
+% durumlar persistent yerine dışarıdaki Unit Delay&#x27;de tutulur: st = [tampon(21); vhat; yprev; z].
+% Böylece Simscape ağının (Hard Stop yüzünden) yapısal cebirsel döngüsünü Simulink çözebilir.
+%
+% Deney kaynağı (firmware&#x27;in üreteceği sinyal, Ts örneklemeli; sim_param&#x27;daki S.dny_*):
+%   S.dny_yer = 0  yok (kontrolcü olduğu gibi)
+%               1  referansa eklenir:      e = ref + d - thm          (kapalı çevrim konum uyarımı)
+%               2  tork komutuna eklenir:  u0 = kontrolcü + d          (kapalı çevrim tork enjeksiyonu)
+%               3  açık çevrim:            u0 = dny_u0 + d, kontrolcü kapalı, integral donuk
+%   d = dny_A * şekil(t - dny_t0), yalnız dny_t0 &lt;= t &lt; dny_t0 + dny_Td:
+%     S.dny_sek = 1 dikdörtgen (basamak; kısa Td ile darbe), 2 doğrusal chirp f0 -&gt; f1,
+%                 3 logaritmik chirp f0 -&gt; f1, 4 sinüs (sabit f0)
+%   Serbest salınım: dny_yer = 3, dny_A = 0, dny_u0 = 0 ve başlangıç sapması (p.adim / p.x0).
+%
+% Hız kestirimi (S.hiz; fv = Inf ise hepsi yerine gerçek hız):
+%   0 fark      (y_k - y_{k-1})/Ts + birinci dereceden alçak geçiren (kesim fv)        [varsayılan]
+%   1 periyot   son iki enkoder kenarı arasındaki süre: v = n q / (t_kenar - t_önceki_kenar).
+%               Kenar zamanı donanımda GPIO kesmesi + µs sayaçla damgalanır; burada iki örnek arasında
+%               gerçek açının doğrusal aradeğerlemesiyle bulunur. Yön değişince v = 0. Kenar gelmezse
+%               |v| &lt;= q / (t - t_son_kenar) (yavaşlayınca sıfıra iner). Filtre yok.
+%   2 gozlemci  ikinci dereceden izleme gözlemcisi (Euler, Ts): e = y - th_hat,
+%               th_hat += Ts (w_hat + 2 wo e), w_hat += Ts wo^2 e, wo = 2 pi fv (kritik sönümlü)
+% Ek durumlar st(25:28): periyot [phi_önceki (gerçek), t_son_kenar, yön, v]; gozlemci [th_hat, w_hat, 0, 0].
+buf = st(1:21);  vhat = st(22);  yprev = st(23);  z = st(24);  ek = st(25:28);
+vi = 3;  qv = S.qL;
+if S.motorD &gt; 0, vi = 1;  qv = S.qM; end
+% --- sensör ---
+thm = olc(x(3), S.qL);
+if S.gL &gt; 0
+    buf = [buf(2:end); thm];
+    thm = buf(21 - S.gL);
+end
+if S.fv_inf &gt; 0
+    v = x(vi + 1);
+elseif S.hiz == 1
+    [v, ek] = periyot(x(vi), t, ek, qv, S.Ts);
+    yprev = olc(x(vi), qv);
+elseif S.hiz == 2
+    yv = olc(x(vi), qv);
+    wo = 2*pi*S.fv;
+    e_o = yv - ek(1);
+    ek(1) = ek(1) + S.Ts*(ek(2) + 2*wo*e_o);
+    ek(2) = ek(2) + S.Ts*wo^2*e_o;
+    v = ek(2);
+    yprev = yv;
+else
+    yv = olc(x(vi), qv);
+    vhat = vhat + S.aV*((yv - yprev)/S.Ts - vhat);
+    yprev = yv;
+    v = vhat;
+end
+% --- deney kaynağı ---
+d = 0;
+if S.dny_yer &gt; 0, d = kaynak(t, S); end
+% --- kontrolcü ---
+e = S.ref - thm;
+if S.dny_yer == 1, e = e + d; end
+if S.ppi &gt; 0
+    ev = S.kp*e - v;
+    u0 = S.KV*ev + S.KI*z;
+    iz = ev;
+else
+    u0 = S.Kp*e + S.Ki*z - S.Kd*v;
+    iz = e;
+end
+if S.dny_yer == 2, u0 = u0 + d; end
+acik = S.dny_yer == 3;
+if acik, u0 = S.dny_u0 + d; end
+u = min(max(u0, -S.Tmax), S.Tmax);
+doy = (u0 &gt; S.Tmax &amp;&amp; iz &gt; 0) || (u0 &lt; -S.Tmax &amp;&amp; iz &lt; 0);
+if ~doy &amp;&amp; ~acik, z = z + iz*S.Ts; end
+if abs(u) &lt; S.olu, u = 0; end
+st1 = [buf; vhat; yprev; z; ek];
+m = [thm; olc(x(1), S.qM); v; u];   % firmware kaydı: AS5600 (gecikmeli), enkoder, hız kestirimi, tork komutu
+end
+
+function [v, ek] = periyot(phi, t, ek, q, Ts)
+% ek = [phi_önceki, t_son_kenar, yön, v]. t_son_kenar &lt; 0: henüz kenar yok.
+phip = ek(1);  tl = ek(2);  yon = ek(3);  v = ek(4);
+n1 = floor(phi/q);  n0 = floor(phip/q);
+if n1 ~= n0
+    d = sign(n1 - n0);
+    if d &gt; 0, sev = n1*q; else, sev = (n1 + 1)*q; end         % son geçilen kenar
+    a = (sev - phip)/(phi - phip);  a = min(max(a, 0), 1);
+    te = t - Ts + a*Ts;                                        % kenar zamanı (aradeğerleme)
+    if d == yon &amp;&amp; tl &gt;= 0 &amp;&amp; te &gt; tl
+        v = d*abs(n1 - n0)*q/(te - tl);
+    else
+        v = 0;                                                 % ilk kenar ya da yön değişimi
+    end
+    tl = te;  yon = d;
+elseif tl &gt;= 0 &amp;&amp; t &gt; tl
+    vs = q/(t - tl);                                           % kenar gelmedikçe hız sınırı düşer
+    if abs(v) &gt; vs, v = sign(v)*vs; end
+end
+ek = [phi; tl; yon; v];
+end
+
+function y = olc(x, q)
+y = x;
+if q &gt; 0, y = q*floor(x/q); end
+end
+
+function d = kaynak(t, S)
+d = 0;
+tau = t - S.dny_t0;
+if tau &lt; 0 || tau &gt;= S.dny_Td, return; end
+switch S.dny_sek
+    case 1
+        s = 1;
+    case 2      % anlık frekans f0 + (f1 - f0) tau / Td
+        s = sin(2*pi*(S.dny_f0*tau + (S.dny_f1 - S.dny_f0)*tau^2/(2*S.dny_Td)));
+    case 3      % anlık frekans f0 (f1/f0)^(tau/Td)
+        k = log(S.dny_f1/S.dny_f0)/S.dny_Td;
+        s = sin(2*pi*S.dny_f0*(exp(k*tau) - 1)/k);
+    otherwise
+        s = sin(2*pi*S.dny_f0*tau);
+end
+d = S.dny_A*s;
+end</pre></div></section>
+<section>
+  <div class="kicker">Ek A · devam</div>
+  <h2>A.5 sm_motor_model.slx (Simscape + elektrik)</h2>
+  <p>sm_kol_model'in bütün blokları aynen var; motorun torku ideal kaynaktan değil, elektrik devresinden geliyor. Eklenen bloklar:</p>
+<table class="ek"><tr><th>Blok</th><th>Blok tipi</th><th>Parametreler / görevi</th></tr><tr><td>motor</td><td>Simscape Electrical DC Motor</td><td>kalıcı mıknatıs; R<sub>a</sub> = <code>S.Ra</code>, L<sub>a</sub> = <code>S.La</code>, K = <code>S.Km</code>; rotor eylemsizliği 0 (J<sub>M</sub> ayrı blokta)</td></tr><tr><td>kaynak</td><td>Controlled Voltage Source</td><td>sürücünün çıkış gerilimi</td></tr><tr><td>akim</td><td>Current Sensor</td><td>motor akımı</td></tr><tr><td>etoprak</td><td>Electrical Reference</td><td></td></tr><tr><td>surucu</td><td>MATLAB Function (Tsur = 0,1 ms)</td><td>firmware'in tork → gerilim çevrimi (mod 1 gerilim, 2 zıt EMK kompanzasyonu, 3 akım PI) + DRV8874 doyumu ve akım sınırı</td></tr><tr><td>durum_i</td><td>Unit Delay (Tsur)</td><td>akım PI integrali</td></tr><tr><td>i_adc</td><td>Unit Delay (Tsur)</td><td>ADC → hesap → PWM gecikmesi</td></tr><tr><td>sec_w</td><td>Selector</td><td>motor hızı (akım sınırı hesabı için)</td></tr><tr><td>gurultu_i</td><td>Random Number (Ts, tohum <code>S.iSeed</code>)</td><td>IPROPI ölçüm gürültüsü</td></tr><tr><td>akim_olc</td><td>MATLAB Function (Ts)</td><td>IPROPI → ESP32 ADC: gürültü + nicemleme</td></tr><tr><td>zoh_V, zoh_i</td><td>Zero-Order Hold (Ts)</td><td>firmware'in 1 kHz kaydı</td></tr><tr><td>mux_olc, olc_out, i_out, V_out</td><td>Mux, Outport</td><td>port 5 = firmware kaydı [θ<sub>L</sub>, φ, v̂, u, V, i]</td></tr></table>
+<div class="kodkutu"><div class="kodbas">surucu (blok_surucu.m) <span>(28 satır)</span></div><pre class="kod">function [V, zi1] = surucu(u, v, i, w, zi, S)
+% Firmware&#x27;in tork komutunu (u) motor gerilimine çevirmesi + DRV8874 (ortalama model, PWM anahtarlaması yok).
+% Örnekleme Tsur (akım döngüsü / PWM güncelleme hızı). Durumsuz yazım: akım PI integrali zi dışarıda (Unit Delay).
+%   S.mot = 1  gerilim modu:            V = Ra u / Km               (zıt EMK sönümü devrede)
+%   S.mot = 2  zıt EMK kompanzasyonu:   V = Ra u / Km + Km v        (v: kontrolcünün kullandığı motor hızı)
+%   S.mot = 3  akım döngüsü:            i_ref = u / Km (sınırlı), PI (IPROPI ölçümü, Tsur hızında)
+%              i girişi bir Tsur gecikmeli gelir (ADC örneği -&gt; hesap -&gt; PWM; sm_model_kur&#x27;daki i_adc)
+% Donanım: besleme +-Vs ile doyum; DRV8874 akım sınırı Ilim (kıyıcı akımı Ilim&#x27;de tutar; ortalama
+% modelde gerilim, kararlı akımı Ilim&#x27;i aşmayacak şekilde sınırlanır: |V - Km w| &lt;= Ra Ilim).
+% Km, Ra, Ilim kol tarafına indirgenmiş eşdeğer motor büyüklükleridir (sim_param).
+zi1 = zi;  e = 0;
+if S.mot == 3
+    iref = min(max(u/S.Km, -S.Ilim), S.Ilim);
+    e = iref - i;
+    Vc = S.Kpi*e + zi;
+elseif S.mot == 2
+    Vc = S.Ra*u/S.Km + S.Km*v;
+else
+    Vc = S.Ra*u/S.Km;
+end
+V = min(max(Vc, S.Km*w - S.Ra*S.Ilim), S.Km*w + S.Ra*S.Ilim);   % akım sınırı
+V = min(max(V, -S.Vs), S.Vs);                                    % besleme
+if S.mot == 3
+    if V == Vc || (V &lt; Vc &amp;&amp; e &lt; 0) || (V &gt; Vc &amp;&amp; e &gt; 0)         % anti-windup
+        zi1 = zi + S.Kii*S.Tsur*e;
+    end
+end
+end</pre></div>
+<div class="kodkutu"><div class="kodbas">akim_olc (blok_akim.m) <span>(7 satır)</span></div><pre class="kod">function y = akim(i, n, S)
+% IPROPI akım ölçümü, firmware kaydı (Ts örneklemeli): ADC gürültüsü + nicemleme.
+%   i: ADC&#x27;nin gördüğü akım (i_adc, bir Tsur gecikmeli), n: birim varyanslı gürültü (Random Number bloğu)
+%   S.iGur: gürültü std [A], S.qI: ADC basamağı akım cinsinden [A] (0 = ideal)
+y = i + S.iGur*n;
+if S.qI &gt; 0, y = S.qI*round(y/S.qI); end
+end</pre></div>
+</section>
+<section>
+  <div class="kicker">Ek A · devam</div>
+  <h2>A.6 PDF'e gömülü dosyalar</h2>
+  <p>Aşağıdaki dosyalar bu PDF'in içine ek dosya olarak gömüldü. Adobe Acrobat / Reader'da sol paneldeki ataş (Ekler) simgesinden açılır; Chrome ve Edge'in PDF görüntüleyicisi ekleri göstermez.</p>
+<table class="ek"><tr><th>Dosya</th><th>İçerik</th></tr><tr><td><code>kol_model.slx</code></td><td>Simulink modeli</td></tr><tr><td><code>sm_kol_model.slx</code>, <code>sm_motor_model.slx</code></td><td>Simscape modelleri (mekanik; mekanik + elektrik)</td></tr><tr><td><code>kol_model_kur.m</code>, <code>sm_model_kur.m</code></td><td>Modelleri kuran betikler (asıl kaynak)</td></tr><tr><td><code>blok_tesis.m</code>, <code>blok_sensor.m</code>, <code>blok_kontrolcu.m</code>, <code>blok_ayrik.m</code>, <code>blok_yuk.m</code>, <code>blok_surucu.m</code>, <code>blok_akim.m</code></td><td>MATLAB Function bloklarının kodu</td></tr><tr><td><code>sim_param.m</code></td><td>Parametre yapısı</td></tr><tr><td><code>referans_uret.m</code>, <code>dogrula_2.m</code>, <code>dogrula_5a.m</code></td><td>Referans hücreler ve çapraz doğrulama</td></tr><tr><td><code>README.md</code></td><td>Simulink klasörünün kararlar ve adımlar kaydı</td></tr></table>
+  <div class="note"><b class="t">Çalıştırmak için</b>Modeller <code>sim_param.m</code> ve <code>kol_benzetim.m</code>'nin parametre yapısını kullanıyor; tek başına açılır ve diyagramı görülür, ama koşmak için depo (<code>https://github.com/SafakSahinn/dc-motor-robot-arm</code>) MATLAB yoluna eklenmeli. <code>sm_motor_model</code> ayrıca <code>Tsur</code> değişkenini ister (<code>S.Tsur</code>). Örnek: <code>dogrula_2</code> komutu beş referans hücreyi koşup betikle karşılaştırır.</div>
+</section>
+</body>
+</html>
