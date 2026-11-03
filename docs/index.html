@@ -166,6 +166,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#malzeme">4 · Malzeme listeleri</a>
   <a href="#duzenek">5 · Düzenek seçenekleri</a>
   <a href="#yontem">6 · Yeniden üretim ve yöntem</a>
+  <a href="#tanilama">7 · Dijital ikiz ve tanılama</a>
   <div class="lbl" style="margin-top:14px">Dayanaklar</div>
   <a href="#baslangic">Başlangıç noktası</a>
   <a href="#tarama">Literatür taraması</a>
@@ -183,7 +184,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <header>
   <div class="kicker">Çalışma notu</div>
   <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı</h1>
-  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem.</p>
+  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem, dijital ikiz üzerinde sınanmış sistem tanılama ve deney protokolü.</p>
   <div class="meta"><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
 </header>
 
@@ -423,7 +424,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <figure><img src="img/mimari_yazilim.svg" alt="Yazılım şeması: ESP32 firmware zinciri, bilgisayarda tarama, kayıt, sınıflama ve harita, modeller sütununda tanılama, benzetim, simetrik DF ve iki girişli DF; hepsi karşılaştırmaya bağlanıyor" style="width:100%"><figcaption>Firmware (1 kHz) · bilgisayar tarafı (MATLAB, deney) · modeller (MATLAB) → başarı ölçütleriyle karşılaştırma.</figcaption></figure>
   <ul class="plain">
     <li><b>Firmware:</b> 1 kHz donanım zamanlayıcısı, kontrol bir çekirdekte, Wi-Fi kapalı; döngü süresi her pakete yazılır. Kontrolcü PID (konum kol açısından, türev motor enkoderinden, anti-windup) ya da Ghaffari'nin P–PI yapısı. Sürücü ölü bandı telafi edilmez, modele girer.</li>
-    <li><b>Hız kestirimi:</b> bir enkoder sayımı/ms ≈ 4,7 rad/s; salınım hızları ≈ 1 rad/s. Ardışık fark + 50 Hz filtre ya da kenar zamanlaması; seçilen yöntem sabit tutulur ve modele aynen girer.</li>
+    <li><b>Hız kestirimi:</b> bir enkoder sayımı/ms ≈ 4,7 rad/s; salınım hızları ≈ 1 rad/s. Seçilen yöntem gözlemci (<a href="#tanilama">7. bölüm</a>); sabit tutulur ve modele aynen girer.</li>
     <li><b>Veri toplama:</b> MATLAB tarama betiği her (kurulum, \(\theta_0\), kazanç, tekrar) için adım verir, 10 s kaydeder, motor soğuyunca devam eder (≈ 1080 deney ≈ 5–9 saat). Her dosyada kurulum, kazançlar, sıcaklık, firmware sürümü.</li>
     <li><b>Sınıflama:</b> son 5 s'den sönümlü / tek kenarlı salınım / iki kenarlı salınım / kararsız; ölçütler kol genliği, \(\theta_d\)'nin boşluk kenarlarına değmesi, baskın frekans, akım doyumu.</li>
     <li><b>Modeller:</b> sistem tanılama (R, k<sub>t</sub>, J<sub>M</sub>, b, F<sub>C</sub>, K<sub>s</sub>, 2r, ölü bant) → sayısal benzetim (sensör gecikmesi dahil), simetrik DF (referans), iki girişli DF (önerilen), gerekirse kesin çözüm.</li>
@@ -624,7 +625,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <li><b>Düşük dişli oranı (C)</b> sensörlerle eleniyor: motor enkoderinin kol tarafı çözünürlüğü 3 kat kaba (sayım başına 0,82°), tork payı dar.</li>
     <li><b>Hız kestirimi belirleyici:</b> motor hızı enkoderin ardışık farkından alındığında (1 sayım = 4,7 rad/s basamak) doyum A'da %7'den %24'e çıkıyor ve düşük kazançta düzensiz noktalar beliriyor; kenar zamanlamasıyla haritalar ideal duruma yaklaşıyor.</li>
   </ul>
-  <div class="note ok"><b>Önerilen düzenek</b>D: JGB37-520 1:30 ve uç kütlesi 0–150 g arasında değiştirilebilen kol. A ile D aynı düzeneğin iki ucu olur ve eylemsizlik oranı deneyde bir değişken olarak taranır: DF'ye dayalı öngörü D tarafında doğrulanır, A tarafında DF'nin bozulduğu bölge de ayrı bir sonuç olarak raporlanır. Motor hızı ESP32'nin MCPWM yakalama birimiyle enkoder kenar zamanlamasından ölçülür; motor ısınması (90°'de sürekli ≈ 0,24 N·m) TMP117 ile izlenir.</div>
+  <div class="note ok"><b>Önerilen düzenek</b>D: JGB37-520 1:30 ve uç kütlesi 0–150 g arasında değiştirilebilen kol. A ile D aynı düzeneğin iki ucu olur ve eylemsizlik oranı deneyde bir değişken olarak taranır: DF'ye dayalı öngörü D tarafında doğrulanır, A tarafında DF'nin bozulduğu bölge de ayrı bir sonuç olarak raporlanır. Motor hızı enkoderden bir gözlemciyle kestirilir (kenar zamanlaması dijital ikizde sınırı kaydırdığı için seçilmedi, bkz. <a href="#tanilama">7. bölüm</a>); motor ısınması (90°'de sürekli ≈ 0,24 N·m) TMP117 ile izlenir.</div>
   <p>Rotor eylemsizliği ve dişli teması sertliği tahmin değerlerdir; eylemsizlik oranı ve frekanslar bu değerlere bağlıdır ve sistem tanılamada ölçülecektir. Ayrıntılı notlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/secenekler_sonuclar.md"><code>secenekler_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/sensor_7c_sonuclar.md"><code>sensor_7c_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/kopru_7b_sonuclar.md"><code>kopru_7b_sonuclar.md</code></a>.</p>
 </section>
 
@@ -842,13 +843,73 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <p>Simülasyon ve doğrulama aşaması amacına ulaştı: literatürdeki en yakın sonuç yeniden üretildi, önerilen yöntem bu sonucu açıya bağlı sınırı öngörecek biçimde genişletiyor ve kritik kazancı Ghaffari'nin DF'sinden dört kat daha doğru veriyor; kalan hatanın kaynağı da ayrıldı (dişli modeli değil, iki bilinen yaklaşıklık). Önerilen yöntemin bütün karşılaştırmaları bu çalışmanın kendi benzetimine karşı yapıldı (Ghaffari yeniden üretimi makalenin deney verisiyle karşılaştırıldı) ve dişli sertliği ile temas sönümü tahmin değerler. Yöntemin asıl doğrulaması deneydir; aşağıdaki işler bu nedenle deneye göre sıralandı.</p>
   <div class="tbl"><table>
     <tr><th>İş</th><th>Ne zaman</th><th>Neden bu sırada</th></tr>
-    <tr class="sec"><td>Sistem tanılama planı ve benzetimde sınanması (dişli sertliği, temas sönümü, rotor eylemsizliği)</td><td>Malzeme beklenirken</td><td>Ölçümün kendisi gerçek düzenek ister. Tanılama yönteminin (serbest salınım, frekans taraması) bu parametreleri geri bulduğu benzetimde şimdiden sınanabilir; deney ilk seferde doğru kurulur.</td></tr>
+    <tr class="sec"><td>Sistem tanılama planı ve benzetimde sınanması (dişli sertliği, temas sönümü, rotor eylemsizliği)</td><td><b>Yapıldı</b></td><td>Bütün parametreler dijital ikizde, gerçekçi sensörlerle sınandı; öngörü bir tarama adımı içinde. Bkz. <a href="#tanilama">7. bölüm</a>.</td></tr>
     <tr><td>Sistem tanılama (ölçüm)</td><td>Malzeme gelince, deneylerden önce</td><td>DF'nin en duyarlı olduğu iki parametre. Tahmin değerlerle yapılan her iyileştirme ölçümle değişebilir.</td></tr>
     <tr><td>Açı × kazanç deneyleri: D ve A uçları, iki boşluk ayarı, her noktada küçük ve büyük sarsıntı</td><td>Tanılamadan sonra</td><td>Önerilen yöntemin asıl doğrulaması ve çalışmanın ikinci ayağı.</td></tr>
     <tr><td>Çok harmonikli denge ve anti-windup'lı doyum modeli</td><td>Deney verisi geldikten sonra, gerekirse</td><td>Şimdi yapılırsa yöntem, tahmini temas sönümüyle kurulmuş benzetime uydurulmuş olur; referans gerçek ölçüm olmalı. Ayrıca kapalı biçim sezgiyi (γ, N<sub>1,min</sub>) azaltır; deney kalan hatanın önemli olduğunu gösterirse yapılır.</td></tr>
     <tr><td>Düşük kazançlı çarpma rejimi için çarpmalı model</td><td>Ana çalışmadan sonra</td><td>Hata en çok deney hedef bölgesinin (ρ ≈ 0,3) altında. DF'den ayrı, araştırma düzeyinde bir yöntem gerektiriyor.</td></tr>
     <tr><td>Sun 2023'ün nicel yeniden üretimi</td><td>Katsayılar elde edilirse</td><td>Hız döngüsü katsayıları ve temas sönümü makalede yok. Yazarlardan istenecek ya da düzenekte K<sub>p</sub> = 20 / 50 eşdeğeri bir sınama yapılacak.</td></tr>
   </table></div>
+</section>
+
+<section id="tanilama">
+  <div class="top"><div class="kicker">Çalışma notu · 7</div></div>
+  <h2>Dijital ikiz ve sistem tanılama</h2>
+  <p>6. bölümün sonucu, öngörünün dişli sertliği ve temas sönümü gibi tahmin edilmiş parametrelere dayandığıydı. Bu bölüm, malzeme beklenirken bu parametrelerin donanımda nasıl ölçüleceğini sınar. Düzeneğin Simulink/Simscape modeli, firmware'in göreceği sinyalleri birebir üretir: 1 kHz örnekleme, AS5600'ün 12 bitlik nicemlemesi ve bir örnek gecikmesi, 11 darbe/tur enkoder, akım ölçümünün gürültüsü, Stribeck sürtünmesi, sürücü ölü bandı ve akım sınırı. Her tanılama yöntemi yalnız bu kayıttan parametreyi bulmaya çalışır; gerçek değer yalnız karşılaştırma için kullanılır. Kod ve bütün tablolar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/simulink/README.md"><code>simulasyon/simulink/README.md</code></a> (madde 4.3).</p>
+
+  <div class="tbl"><table>
+    <tr><th>Madde</th><th>Yapılan</th><th>Sonuç</th><th>Açık kalan ve nedeni</th></tr>
+    <tr><td>Dijital ikiz</td><td>Tesis ve P–PI Simulink'te; mekanik Simscape fiziksel bloklarıyla ve motorun elektrik tarafıyla ikinci kez kuruldu; gerçekçi sensör katmanı ve firmware kaydı</td><td>Simulink tesisi betikle bit düzeyinde aynı; Simscape ile rejim sınıfı 10/10 aynı, genlik farkı %0,3</td><td>Gerçek motorun ve dişlinin modelle ne kadar örtüştüğü ancak deneyle görülecek.</td></tr>
+    <tr><td>Sistem tanılama</td><td>Her parametre için ayrı deney, firmware kaydından kestirim; ideal ve gerçekçi sensörle, 3–5 tekrar</td><td>Bütün parametreler %0,1–3,5 içinde (aşağıdaki tablo)</td><td>Yöntemler modelin kendi verisinde sınandı; donanımda tekrar edilebilirlik ayrıca ölçülecek.</td></tr>
+    <tr><td>Öngörünün doğrulanması</td><td>Tanılanan değerlerle kurulan ikiz, gerçek tesisin salınım sınırını öngörüyor mu</td><td>Kritik r<sub>gs</sub> en çok bir tarama adımı (0,05) şaşıyor</td><td>Sınırın hemen üstünde tek koşu güvenilir değil; deneyde her nokta üç başlangıç sapmasıyla.</td></tr>
+    <tr><td>Deney protokolü</td><td>D0–D6: sıra, ayarlar, süre, kaydın geçerlilik ölçütü</td><td>Tanılama kayıtları kurulum hariç ≈ 30 dakika; hızlı akım döngüsü gerekmiyor</td><td>Gözlemci firmware'e yazılacak; motor dişlisi için kilit parçası gerekiyor.</td></tr>
+  </table></div>
+
+  <h3>Parametreler ve doğrulukları</h3>
+  <p>Gerçekçi sensörlü dijital ikizde, tekrarların ortalama hatası. "Düzenek" sütunu deney protokolündeki sırayı verir.</p>
+  <div class="tbl"><table>
+    <tr><th>Parametre</th><th>Deney</th><th>Düzenek</th><th>Hata</th></tr>
+    <tr><td>Motor sabiti K<sub>m</sub>, sargı direnci R<sub>a</sub></td><td>Gerilim sinüsü, gerilim denkleminin pencere integrali</td><td>D1, kol sökülü</td><td class="num">%0,05 / %0,1</td></tr>
+    <tr><td>Rotor eylemsizliği J<sub>M</sub>, viskoz sürtünme b<sub>M</sub>, Coulomb sürtünmesi F<sub>c</sub></td><td>Aynı kayıt, hareket denkleminin pencere integrali</td><td>D1</td><td class="num">%0,5 / %1,4 / %1</td></tr>
+    <tr><td>Yapışma sürtünmesi F<sub>s</sub></td><td>Yavaş tork rampası, kopma anı (50 ms içinde iki enkoder sayımı)</td><td>D2, kol sökülü</td><td class="num">%1–2,5</td></tr>
+    <tr><td>Dişli sertliği K<sub>s</sub></td><td>Kol 90° ± 70° yavaş tarama; yerçekimi dişliyi tek yüze yaslı tutar</td><td>D3, kol takılı</td><td class="num">%0,5–1</td></tr>
+    <tr><td>Yerçekimi torku mgℓ, AS5600 sıfırı</td><td>Aynı kayıt, a·sinθ + b·cosθ uydurması</td><td>D3</td><td class="num">%0,1 / 0,05°</td></tr>
+    <tr><td>Boşluk r</td><td>Kol 0° ± 60° tarama; yerçekimi 0°'da yüz değiştirir, iki yüzün farkı 2r (sensör ofsetinden bağımsız)</td><td>D4, kol takılı, düşük kazanç</td><td class="num">%0,2</td></tr>
+    <tr><td>Temas sönümü c<sub>s</sub>, kol eylemsizliği J<sub>L</sub></td><td>Motor dişlisi kilitli, kola vuruş; AS5600'den sönümlü sinüs: c<sub>s</sub> = 2σJ<sub>L</sub>, J<sub>L</sub> = K<sub>s</sub>/ω<sub>n</sub>²</td><td>D5, motor kilitli</td><td class="num">%3,5 / %0,5</td></tr>
+  </table></div>
+
+  <h3>Öngörünün doğrulanması</h3>
+  <p>Tanılanan değerlerle kurulan ikiz ile gerçek tesis aynı sensör, kontrolcü ve kestiriciyle karşılaştırıldı (mod 1, salınımın başladığı en küçük r<sub>gs</sub>, üç başlangıç sapması):</p>
+  <div class="tbl"><table>
+    <tr><th>Takım</th><th>Kritik r<sub>gs</sub>: 30° / 60° / 90°</th><th>90°, r<sub>gs</sub> 1,60: genlik, frekans</th></tr>
+    <tr><td>Gerçek tesis</td><td class="num">1,00 / 1,30 / 1,30</td><td class="num">1,77°, 8,19 Hz</td></tr>
+    <tr class="sec"><td>Tanılanan değerler</td><td class="num">0,95 / 1,30 / 1,30</td><td class="num">1,78°, 8,16 Hz</td></tr>
+    <tr><td>Tanılanan, yapışma sürtünmesi bilinmeden (F<sub>s</sub> = F<sub>c</sub>)</td><td class="num">0,95 / 1,25 / 1,25</td><td class="num">1,79°, 8,20 Hz</td></tr>
+  </table></div>
+
+  <h3>Bulgular</h3>
+  <ul class="plain">
+    <li><b>Rezonansla tanılama bu sensörlerle çalışmıyor.</b> Dişli sertliği önce frekans taramasıyla denendi. Dinamik dişli sapması motor enkoderinin bir sayımının (0,27°) altında kaldı; küçük uyarımı da yapışma sürtünmesi yuttu. Yerine yavaş tarama kullanıldı: kol sürekli döndüğü için her pencerede birçok sayım geçiyor ve sayımın altındaki sapma ortalamada ölçülebiliyor.</li>
+    <li><b>Öngörü temas sönümüne duyarlı.</b> c<sub>s</sub>'nin her 0,02 N·m·s/rad'lik değişimi kritik r<sub>gs</sub>'yi ≈ 0,10 kaydırıyor; 2 kat belirsizlik sınırı ±0,10 oynatıyor. Bu, öteki parametrelerin belirsizliğinden çok büyük. Bu yüzden ayrı bir deney arandı.</li>
+    <li><b>Motor kilitliyken temas sönümü temiz ölçülüyor.</b> Motor kontrolcüyle tutulurken de vuruş testi c<sub>s</sub>'leri ayırıyor, ama motorun mikro kayması da enerji yuttuğu için sonuç yapışma sürtünmesine bağlı (≈ %25). Motor dişlisi mekanik olarak kilitlenince kol, dişli yayı üzerinde tek başına titreşen bir kütle oluyor; sürtünme, kontrolcü ve vuruş şiddeti sonucu değiştirmiyor (hata ≤ 0,0007 N·m·s/rad). Aynı kayıttaki frekans kol eylemsizliğini de veriyor.</li>
+    <li><b>Boşluk deneyi düşük kazanç ister.</b> İlk denemede (r<sub>gs</sub> 0,8) küçük açılarda dişli iki yüz arasında takırdadı ve boşluk %1,5–5 hatalı çıktı; r<sub>gs</sub> 0,5 ile hata %0,2. Bu, kritik kazancın küçük açılarda 0,8'in altında olduğunu da gösteriyor.</li>
+    <li><b>Hız kestirimi sınırı kaydırıyor.</b> Aynı tesiste kritik r<sub>gs</sub> (30° / 60° / 90°) gerçek hızla 1,00 / 1,25 / 1,30; ardışık farkla 1,00 / 1,35 / 1,40; kenar zamanlamasıyla 0,95 / 1,10 / 1,15; gözlemciyle 1,00 / 1,30 / 1,30. Kenar zamanlaması kol yön değiştirirken hızı sıfır okuyup sönümü tam gereken anda kaldırıyor. Gözlemci gerçek hız gibi davranıyor ve gürültüsü en düşük; firmware için o seçildi. Deneyde kullanılan kestirici ikizde birebir aynı olmalı.</li>
+    <li><b>Hızlı akım döngüsü gerekmiyor.</b> Bütün tanılama denklemleri ölçülen akımı kullandığı için deneyler gerilim modunda da aynı doğrulukla çalışıyor. Akım yalnız kayıt için ölçülüyor; 1 kHz'te INA228 yeterli.</li>
+  </ul>
+
+  <h3>Deney protokolü</h3>
+  <p>Her deney öncekilerin sonucunu kullanır; bütün deneyler gerilim modunda, 1 kHz seyreltmesiz kayıtla. Ayarlar ve geçerlilik ölçütleri: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/deney_protokolu.md"><code>deney_protokolu.md</code></a>.</p>
+  <div class="tbl"><table>
+    <tr><th>#</th><th>Düzenek</th><th>Ne yapılır</th><th>Çıkan</th></tr>
+    <tr><td>D0</td><td>Kalibrasyon</td><td>Sensör yönü ve ölçekleri, akım ölçümü, döngü zamanlaması, akım sınırı</td><td>Ölçekler, tork sınırı</td></tr>
+    <tr><td>D1</td><td>Kol sökülü</td><td>Gerilim sinüsü 0,25 Hz, 9 s × 3</td><td>K<sub>m</sub>, R<sub>a</sub>, J<sub>M</sub>, b<sub>M</sub>, F<sub>c</sub></td></tr>
+    <tr><td>D2</td><td>Kol sökülü</td><td>Yavaş tork rampası 0,02 Hz, 36 s × 3</td><td>F<sub>s</sub></td></tr>
+    <tr><td>D3</td><td>Kol takılı</td><td>90° ± 70° tarama, r<sub>gs</sub> 0,8, 21 s × 5</td><td>K<sub>s</sub>, mgℓ, AS5600 sıfırı</td></tr>
+    <tr><td>D4</td><td>Kol takılı</td><td>0° ± 60° tarama, r<sub>gs</sub> 0,5, 21 s × 5</td><td>r</td></tr>
+    <tr><td>D5</td><td>Motor dişlisi kilitli</td><td>Kol 90°'de, hafif vuruş × 10</td><td>c<sub>s</sub>, J<sub>L</sub></td></tr>
+    <tr><td>D6</td><td>Asıl deney</td><td>Açı × r<sub>gs</sub> taraması, öngörülen sınırın ±0,15 çevresinde 0,05 adımla, her noktada üç başlangıç sapması</td><td>Ölçülen sınır, öngörüyle karşılaştırma</td></tr>
+  </table></div>
+  <div class="note"><b>Açık kalan</b>Gözlemcinin firmware'e yazılması; D5 için motor dişlisini gövdeye sabitleyen pim ya da kelepçe; kol yatağında Coulomb sürtünmesi varsa vuruş testinin zarfı üstel olmaz (benzetimde yatak sürtünmesi yok, sınanmadı); benzetim akım ölçümünü INA228'den daha gürültülü varsaydı (karamsar taraf, ayrıca sınanmadı).</div>
 </section>
 
 <section id="baslangic">
@@ -1134,7 +1195,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <h2>Sonraki adımlar</h2>
   <ul class="plain">
     <li><b>Görüşülecek konular:</b> başarı ölçütleri, düzenek seçimi (önerilen D: uç kütlesi 0–150 g değiştirilebilir), siparişin EKOM üzerinden üniversite hesabıyla verilmesi.</li>
-    <li><b>Yöntem tarafında:</b> malzeme beklenirken sistem tanılama planının benzetimde sınanması. Diğer yöntem işlerinin sırası ve gerekçeleri: <a href="#yontem-sonraki">6. bölüm, Değerlendirme ve sonraki işler</a>.</li>
+    <li><b>Yöntem tarafında:</b> sistem tanılama planı dijital ikizde sınandı ve deney protokolü yazıldı (<a href="#tanilama">7. bölüm</a>). Donanımdan önce kalan: gözlemcinin firmware'e yazılması, motor dişlisi için kilit parçası. Diğer yöntem işlerinin sırası ve gerekçeleri: <a href="#yontem-sonraki">6. bölüm, Değerlendirme ve sonraki işler</a>.</li>
     <li><b>Deney tasarımına etkisi:</b> her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm (iki kararlılık); zorlama frekansının çevrim frekansının harmoniklerinden uzak seçilmesi.</li>
     <li><b>Aynı anda:</b> sipariş (EKOM + yerli kalemler), firmware iskeleti ve MATLAB kayıt betiği, kaplin ve gövde tasarımı.</li>
     <li><b>Malzeme gelince:</b> kalibrasyon, sistem tanılama, ardından açı × kazanç deneyleri.</li>
