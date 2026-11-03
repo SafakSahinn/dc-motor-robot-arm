@@ -36,6 +36,8 @@
 # 1) veriler ve görseller (MATLAB R2026b, Simscape, Simscape Electrical)
 matlab -batch "addpath('rapor/betikler'); ust_uste('<çıkış>'); slx_detay('<çıkış>')"
 python rapor/betikler/grafik.py <çıkış>          # matplotlib
+# Ek B (Simscape Multibody): 3B model kareleri -> rapor/img/mb_3b_gorunum.png, mb_kareler.png
+matlab -batch "addpath('simulasyon/simulink'); mb_kareler(5)"
 # 2) HTML -> PDF (Chrome)
 chrome --headless=new --no-pdf-header-footer --print-to-pdf=ham.pdf rapor/rapor.html
 # 3) model dosyalarını göm (pymupdf)

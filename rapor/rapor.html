@@ -105,6 +105,7 @@ table.ek{font-size:8.3pt} table.ek td,table.ek th{padding:3px 5px} table.ek td:f
     <li>Gelebilecek sorular</li>
     <li>Kaynaklar ve dosya dizini</li>
     <li style="list-style:none; margin-left:-1.4em">Ek A: Simulink tasarım ayrıntıları ve gömülü model dosyaları</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek B: Simscape Multibody 3B modeli</li>
   </ol></div>
 </div>
 
@@ -601,6 +602,7 @@ table.ek{font-size:8.3pt} table.ek td,table.ek th{padding:3px 5px} table.ek td:f
   </table>
   <p style="font-size:8.6pt; color:var(--muted)">³ Genliği 0,001° olan, sönmüş bir sinyalin frekansı; anlamlı değil.</p>
   <p>Rejim sınıfı 10/10 aynı; salınan hücrelerde genlik ve frekans farkı %0,3'ün altında. Kalan fark sayısal: Simscape sabit adımlı çözücüde temas modunu adım boyunca sabit tutuyor, betikteki RK4 her ara aşamada yeniden değerlendiriyor. Fark temas anlarında açılıyor ve adım 4 kat küçülünce yaklaşık 4 kat küçülüyor (hücre 2: 6,6e-4° → 1,7e-4°).</p>
+  <p>Aynı kolun Simscape Multibody ile kurulmuş 3B modeli ve onun bu 5 hücredeki çapraz doğrulaması <b>Ek B</b>'de.</p>
   <div class="dosya">Doğrulama: <code>dogrula_2.m</code> → <code>dogrula_2_log.txt</code>, <code>dogrula_3.m</code> → <code>dogrula_3_log.txt</code>, <code>dogrula_5a.m</code> → <code>dogrula_5a_log.txt</code></div>
 </section>
 
@@ -986,6 +988,7 @@ table.ek{font-size:8.3pt} table.ek td,table.ek th{padding:3px 5px} table.ek td:f
     <tr><td>7, rejim</td><td><code>rejim_sinifla.m</code>, <code>rejim_testleri.m</code>, <code>zorlanmis_cevap.m</code></td><td><code>rejim_siniflandirma.md</code>, <code>rejim_testleri_log.txt</code>, <code>zorlanmis_cevap_log.txt</code></td></tr>
     <tr><td>8, düzenek seçenekleri</td><td><code>4a_ghaffari/secenekler.m</code>, <code>sensor_7c.m</code>, <code>harita_html.py</code></td><td><code>secenekler_sonuclar.md</code>, <code>sensor_7c_sonuclar.md</code></td></tr>
     <tr><td>9, dijital ikiz</td><td><code>simulink/kol_model_kur.m</code>, <code>sm_model_kur.m</code>, <code>blok_*.m</code>, <code>dogrula_2.m</code>, <code>dogrula_5a.m</code>, <code>tarama_5b.m</code></td><td><code>dogrula_2_log.txt</code>, <code>dogrula_3_log.txt</code>, <code>dogrula_5a_log.txt</code>, <code>tarama_5b_log.txt</code>, <code>README.md</code></td></tr>
+    <tr><td>Ek B, Multibody 3B</td><td><code>simulink/mb_model_kur.m</code>, <code>mb_param.m</code>, <code>dogrula_mb.m</code>, <code>mb_kareler.m</code></td><td><code>dogrula_mb_log.txt</code>, <code>dogrula_mb_izler.mat</code>, <code>rapor/img/mb_*.png</code></td></tr>
     <tr><td>10, tanılama</td><td><code>simulink/tani_*.m</code>, <code>km_kestir.m</code>, <code>tarama_cs.m</code>, <code>tani_dogrula.m</code></td><td><code>tani_*_log.txt</code>, <code>tarama_cs_log.txt</code>, <code>tani_dogrula_log.txt</code>, <code>README.md</code> (4.3)</td></tr>
     <tr><td>11, protokol</td><td>—</td><td><code>calisma_notu/deney_protokolu.md</code></td></tr>
     <tr><td>13, kök neden</td><td><code>kok_neden_*.m</code>, <code>aci_hatasi.py</code>, <code>yasa_df.m</code></td><td><code>kok_neden_log.txt</code>, <code>aci_hatasi_log.txt</code>, <code>yasa_df_log.txt</code></td></tr>
@@ -1277,8 +1280,74 @@ end</pre></div>
   <div class="kicker">Ek A · devam</div>
   <h2>A.6 PDF'e gömülü dosyalar</h2>
   <p>Aşağıdaki dosyalar bu PDF'in içine ek dosya olarak gömüldü. Adobe Acrobat / Reader'da sol paneldeki ataş (Ekler) simgesinden açılır; Chrome ve Edge'in PDF görüntüleyicisi ekleri göstermez.</p>
-<table class="ek"><tr><th>Dosya</th><th>İçerik</th></tr><tr><td><code>kol_model.slx</code></td><td>Simulink modeli</td></tr><tr><td><code>sm_kol_model.slx</code>, <code>sm_motor_model.slx</code></td><td>Simscape modelleri (mekanik; mekanik + elektrik)</td></tr><tr><td><code>kol_model_kur.m</code>, <code>sm_model_kur.m</code></td><td>Modelleri kuran betikler (asıl kaynak)</td></tr><tr><td><code>blok_tesis.m</code>, <code>blok_sensor.m</code>, <code>blok_kontrolcu.m</code>, <code>blok_ayrik.m</code>, <code>blok_yuk.m</code>, <code>blok_surucu.m</code>, <code>blok_akim.m</code></td><td>MATLAB Function bloklarının kodu</td></tr><tr><td><code>sim_param.m</code></td><td>Parametre yapısı</td></tr><tr><td><code>referans_uret.m</code>, <code>dogrula_2.m</code>, <code>dogrula_5a.m</code></td><td>Referans hücreler ve çapraz doğrulama</td></tr><tr><td><code>README.md</code></td><td>Simulink klasörünün kararlar ve adımlar kaydı</td></tr></table>
+<table class="ek"><tr><th>Dosya</th><th>İçerik</th></tr><tr><td><code>kol_model.slx</code></td><td>Simulink modeli</td></tr><tr><td><code>sm_kol_model.slx</code>, <code>sm_motor_model.slx</code></td><td>Simscape modelleri (mekanik; mekanik + elektrik)</td></tr><tr><td><code>kol_model_kur.m</code>, <code>sm_model_kur.m</code></td><td>Modelleri kuran betikler (asıl kaynak)</td></tr><tr><td><code>blok_tesis.m</code>, <code>blok_sensor.m</code>, <code>blok_kontrolcu.m</code>, <code>blok_ayrik.m</code>, <code>blok_yuk.m</code>, <code>blok_surucu.m</code>, <code>blok_akim.m</code></td><td>MATLAB Function bloklarının kodu</td></tr><tr><td><code>sim_param.m</code></td><td>Parametre yapısı</td></tr><tr><td><code>referans_uret.m</code>, <code>dogrula_2.m</code>, <code>dogrula_5a.m</code></td><td>Referans hücreler ve çapraz doğrulama</td></tr><tr><td><code>mb_kol_model.slx</code>, <code>mb_model_kur.m</code>, <code>mb_param.m</code>, <code>dogrula_mb.m</code>, <code>mb_kareler.m</code></td><td>Simscape Multibody 3B modeli, kurucu betiği, geometri/kütleler, çapraz doğrulama ve görüntü (Ek B)</td></tr><tr><td><code>README.md</code></td><td>Simulink klasörünün kararlar ve adımlar kaydı</td></tr></table>
   <div class="note"><b class="t">Çalıştırmak için</b>Modeller <code>sim_param.m</code> ve <code>kol_benzetim.m</code>'nin parametre yapısını kullanıyor; tek başına açılır ve diyagramı görülür, ama koşmak için depo (<code>https://github.com/SafakSahinn/dc-motor-robot-arm</code>) MATLAB yoluna eklenmeli. <code>sm_motor_model</code> ayrıca <code>Tsur</code> değişkenini ister (<code>S.Tsur</code>). Örnek: <code>dogrula_2</code> komutu beş referans hücreyi koşup betikle karşılaştırır.</div>
+</section>
+
+<section>
+  <div class="kicker">Ek B</div>
+  <h2>Simscape Multibody 3B modeli</h2>
+  <p>Bölüm 9'daki modellerin hepsi 1B dönel mekanik: eylemsizlikler ve torklar var, geometri yok. Bu ekteki model aynı kolu Simscape Multibody ile 3B gövdelerden kuruyor. Kütle, kütle merkezi ve yerçekimi 3B geometriden hesaplanıyor. Amaç iki yönlü: (1) 1B modeldeki topaklanmış J<sub>L</sub> ve mgℓ'nin gerçek bir kol geometrisiyle tutarlı olduğunu göstermek, (2) ileride kaplin ve gövde tasarımında (CAD) kullanılacak bir 3B iskelet hazırlamak. Model de Ek A'dakiler gibi betikle kuruluyor: <code>mb_model_kur.m</code> → <code>mb_kol_model.slx</code>.</p>
+  <figure><img src="img/mb_3b_gorunum.png" alt="mb_kol_model 3B görünüm" style="width:50%"><figcaption><b>mb_kol_model</b>, hücre 5'teki kalıcı çevrimin en yüksek noktası (θ = 98,0°, φ = 92,0°). Kol düzlemi XY, yerçekimi −Y yönünde; rotor eşdeğer diski (turuncu) kolun 40 mm arkasında aynı eksende, üstündeki siyah çizgi φ'yi gösteriyor; gövde dünyaya sabit. Kesik çizgiler 0° (sarkık) ve 90° (yatay) yönleri.</figcaption></figure>
+  <h3>Yapı</h3>
+  <table class="ek"><tr><th>Blok</th><th>Multibody / Simscape bloğu</th><th>Parametreler / görevi</th></tr>
+    <tr><td>dunya, mekanizma</td><td>World Frame, Mechanism Configuration</td><td>yerçekimi [0 −g 0], g = 9,81 m/s²</td></tr>
+    <tr><td>eklem_m, eklem_L</td><td>Revolute Joint (Z ekseni, ikisi aynı eksende)</td><td>tork girişi arayüzden; açı ve hız algılama; başlangıç <code>S.x0(1)</code>, <code>S.x0(3)</code> (yüksek öncelikli hedef)</td></tr>
+    <tr><td>rotor</td><td>Cylindrical Solid, Custom eylemsizlik</td><td>kol tarafına indirgenmiş eşdeğer disk: I<sub>zz</sub> = J<sub>M</sub> = 0,0036 kg·m²; kütle merkezi eksende (yerçekimi torku yok)</td></tr>
+    <tr><td>cubuk</td><td>Brick Solid, Custom</td><td>150 × 20 × 5 mm, 20 g, merkezi eksenden 75 mm</td></tr>
+    <tr><td>uc</td><td>Cylindrical Solid, Custom</td><td>r = 12 mm, h = 30 mm; m<sub>u</sub> ve d iki koşuldan çözülüyor (aşağıda)</td></tr>
+    <tr><td>govde</td><td>Brick Solid</td><td>dünyaya sabit motor kutusu, yalnız görüntü</td></tr>
+    <tr><td>ara_m, ara_L</td><td>Rotational Multibody Interface</td><td>eklemi 1B mekanik ağa bağlıyor: eklem hızı → ağ düğümü, ağın torku → eklem</td></tr>
+    <tr><td>dis, bM, bL, tork_m, tork_L</td><td>Rotational Hard Stop, Rotational Damper, Ideal Torque Source</td><td>A.4 ile aynı (dişli teması, viskoz sürtünme, motor ve bozucu torku)</td></tr>
+    <tr><td>yuk, kontrolcu, durum</td><td>MATLAB Function, Unit Delay</td><td>A.4 ile aynı kod (<code>blok_yuk.m</code>, <code>blok_ayrik.m</code>)</td></tr>
+    <tr><td>cozucu</td><td>Solver Configuration</td><td>yerel Backward Euler, adım dt (aşağıda); global çözücü ode4, dt = 1e-4 s</td></tr>
+  </table>
+  <p><b>Dişli boşluğu neden 1B ağda?</b> Multibody'nin Revolute Joint'inde boşluk yok. Bu yüzden rotor ve kol iki ayrı eklem; aralarındaki temas A.4'teki Rotational Hard Stop ile aynı. 3B taraf geometri, kütle ve yerçekimini, 1B ağ dişli temasını taşıyor. Yazılım benzetmesiyle: 3B taraf bir fizik motoru, 1B ağ ona arayüz (adaptör) üzerinden takılmış bir eklenti.</p>
+  <p><b>Yerçekimi çift sayılmıyor.</b> A.4'te yerçekimi <code>blok_yuk</code>'ta −mgℓ sin θ torku olarak veriliyordu. Burada yerçekimi Multibody'den geldiği için model <code>S.mgl = 0</code> ile koşuluyor; gerçek mgℓ <code>M</code> yapısıyla (<code>mb_param.m</code>) geometriye giriyor.</p>
+</section>
+
+<section>
+  <div class="kicker">Ek B · devam</div>
+  <h2>B.1 Geometrinin 1B modelle tutarlılığı</h2>
+  <p>Çapraz doğrulamanın anlamlı olması için 3B gövdelerin eksene göre eylemsizliği ve yerçekimi momenti <code>sim_param</code>'daki değerlerle birebir aynı olmalı. Katılar "Custom" eylemsizlikle, iki koşuldan türetilerek veriliyor:</p>
+  <table>
+    <tr><th>Koşul</th><th>Denklem</th><th>Hedef</th></tr>
+    <tr><td>yerçekimi momenti</td><td>g (m<sub>r</sub> L/2 + m<sub>u</sub> d) = mgℓ</td><td class="n">0,2403 N·m</td></tr>
+    <tr><td>eksene göre eylemsizlik</td><td>I<sub>zz,çubuk</sub> + m<sub>r</sub>(L/2)² + I<sub>zz,uç</sub> + m<sub>u</sub> d² = J<sub>L</sub></td><td class="n">0,0036 kg·m²</td></tr>
+  </table>
+  <p>Uç kütlesi tam çubuğun ucuna (d = L = 150 mm) konunca iki koşul birlikte sağlanamıyor: uç kütlesinin kendi eylemsizliği −6,7·10⁻⁷ kg·m² çıkıyor, yani fiziksel değil. Bu yüzden uç kütlesi m<sub>u</sub> ve eksene uzaklığı d birlikte çözüldü: <b>m<sub>u</sub> = 153,9 g, d = 149,5 mm</b>. Fark yarım milimetre; 1B modeldeki "20 g çubuk + ≈153 g uç kütlesi, 150 mm" düzeneğiyle tutarlı. Kontrolcü kapalıyken serbest bırakılan kolda iki model ilk 0,1 s boyunca aynı açıyı veriyor (90°'den bırakışta 0,01 s'de 89,8088° / 89,8088°). Bu, eylemsizliğin ve yerçekimi momentinin eşleştiğini gösteriyor.</p>
+  <h2>B.2 Çözücü bulgusu: açık ode4 bu ağda yanlış</h2>
+  <p>İlk koşuda 3B model 1B modelden belirgin şekilde ayrıştı: hücre 5'te genlik 11,4° (1B: 8,1°), hücre 3 ve 4'te rejim sınıfı farklı. Adımı 4 kat küçültmek sonucu değiştirmedi. Kaynağı ayırmak için iki deney yapıldı:</p>
+  <ul>
+    <li><b>Sönümsüz dişli salınımı:</b> kontrolcü kapalı, bütün sönümler (c<sub>s</sub>, b<sub>M</sub>, b<sub>L</sub>) sıfır. 1B modelde dişli salınımının tepeleri sabit kaldı (3,164° → 3,075°, kolun dönüşüyle yavaş kayma); 3B modelde her çevrimde büyüdü (3,181° → 3,337°). Yani açık çözücü sisteme sayısal enerji katıyor. Salınım frekansı ise iki modelde aynı (periyot 0,084 s).</li>
+    <li><b>Örtük çözücü:</b> aynı hücre 5, değişken adımlı <code>ode23t</code> ve <code>ode15s</code> ile koşulunca iki model aynı sonucu verdi: 8,126° / 8,126°, 7,07 Hz.</li>
+  </ul>
+  <p>Nedeni: Multibody eklemleri ve arayüzler ağda cebirsel denklem bırakıyor (arayüz düğümünün eylemsizliği yok, düğüm torkları anında dengelenmeli). MATLAB de koşuda "örtük çözücü önerilir" uyarısı veriyor. Çözüm: fiziksel ağa <b>yerel Backward Euler</b> çözücüsü (Solver Configuration, adım dt). Global çözücü ve kontrolcü ode4'te kalıyor, yani kontrolcü ve sensör katmanı öteki modellerle aynı. Yerel trapez ve bölümleme çözücüleri dt = 1e-4'te hücre 5 genliğinde %1,3 ve %2,8 saptı; Backward Euler %0,2'nin altında kaldı.</p>
+</section>
+
+<section>
+  <div class="kicker">Ek B · devam</div>
+  <h2>B.3 Çapraz doğrulama: 3B − 1B</h2>
+  <p>Aynı 5 referans hücre, iki sensör düzeyi (A.4 ve <code>dogrula_5a</code> ile aynı ayar). Ölçüt: rejim sınıfı aynı; salınan hücrelerde (genlik ≥ 0,05°, <code>rejim_sinifla</code>'nın kendi eşiği) genlik ve frekans farkı %1'in altında. Genliği 0,05°'nin altında kalan, sönmüş sinyallerin frekansı gürültüden ibaret olduğundan bu hücrelerde yalnız sınıf ve θ(t) farkı verildi. Sütunlar: 3B (Multibody) / 1B (Simscape) / betik.</p>
+  <table>
+    <tr><th>Hücre</th><th>Sınıf</th><th>Genlik</th><th>Frekans</th><th>3B − 1B fark</th><th>En büyük |Δθ|</th></tr>
+    <tr><td colspan="6"><b>İdeal sensör</b></td></tr>
+    <tr><td>1 (90°, 1,20, 1°)</td><td>düzensiz ×3</td><td class="n">2,055 / 2,058 / 2,056°</td><td class="n">8,04 / 8,04 / 8,04 Hz</td><td class="n">%0,16 · %0,01</td><td class="n">0,10°</td></tr>
+    <tr><td>2 (60°, 0,50, 1°)</td><td>denge ×3</td><td>—</td><td>—</td><td>—</td><td class="n">9,0·10⁻⁴°</td></tr>
+    <tr><td>3 (30°, 0,80, 0,2°)</td><td>sönümlü ×3</td><td class="n">≤ 0,001°</td><td>—</td><td>—</td><td class="n">3,0°⁴</td></tr>
+    <tr><td>4 (90°, 0,95, 0,2°)</td><td>sönümlü ×3</td><td>—</td><td>—</td><td>—</td><td class="n">6,2·10⁻³°</td></tr>
+    <tr><td>5 (90°, 0,95, 5°)</td><td>çevrim ×3</td><td class="n">8,130 / 8,143 / 8,135°</td><td class="n">7,08 / 7,07 / 7,08 Hz</td><td class="n">%0,17 · %0,08</td><td class="n">0,89°</td></tr>
+    <tr><td colspan="6"><b>Gerçekçi sensör</b> (1 kHz, AS5600 12 bit + gecikme, enkoder, hız filtresi, Stribeck, ölü bant)</td></tr>
+    <tr><td>1</td><td>sönümlü ×3</td><td class="n">0,011 / 0,003 / 0,008°</td><td>—</td><td>—</td><td class="n">0,52°</td></tr>
+    <tr><td>2</td><td>denge ×3</td><td class="n">0,024 / 0,035 / 0,027°</td><td>—</td><td>—</td><td class="n">0,28°</td></tr>
+    <tr><td>3</td><td>sönümlü ×3</td><td class="n">0,034 / 0,031 / 0,048°</td><td>—</td><td>—</td><td class="n">1,78°⁴</td></tr>
+    <tr><td>4</td><td>sönümlü ×3</td><td class="n">0,011 / 0,009 / 0,009°</td><td>—</td><td>—</td><td class="n">0,04°</td></tr>
+    <tr><td>5</td><td>çevrim ×3</td><td class="n">8,183 / 8,209 / 8,235°</td><td class="n">6,99 / 6,99 / 6,99 Hz</td><td class="n">%0,31 · %0</td><td class="n">1,19°</td></tr>
+  </table>
+  <p style="font-size:8.6pt; color:var(--muted)">⁴ Sarsıntılı hücre: 6,31 Hz bozucu t &lt; 1 s boyunca kolu sallıyor; θ(t) farkı bu geçici bölümde açılıyor. 1B Simscape ile betik arasında da aynı hücrede 1,53° fark vardı (Bölüm 9); sınıf üç modelde aynı.</p>
+  <p><b>Sonuç:</b> 10 koşunun 10'unda rejim sınıfı üç modelde aynı; salınan hücrelerde 3B ile 1B arasındaki genlik farkı en çok %0,31, frekans farkı en çok %0,08. Ölçütü bütün hücreler sağladı. Kalıcı çevrimde θ(t) farkının 1° mertebesine çıkması genlik ya da frekans farkı değil, faz kayması: 8 s boyunca biriken 0,89°'lik fark, 8,13° genlik ve 7,08 Hz'te yaklaşık 2,5 ms'lik kaymaya karşılık geliyor (0,89° / (8,13° · 2π · 7,08 Hz)).</p>
+  <figure><img src="img/mb_kareler.png" alt="Bir çevrim boyunca altı kare" style="width:100%"><figcaption>Hücre 5'teki kalıcı çevrimin bir periyodu (141 ms), 3B modelin kendi koşusundan altı kare. φ − θ işaret değiştiriyor: dişli bir kenardan öbürüne geçiyor (boşluk 2r = 3°; dişli yayının sıkışmasıyla karelerde −5,3° ile +8,5° arası). Kareler <code>mb_kareler.m</code> ile çizildi: model koşuluyor, φ(t) ve θ(t) ile aynı geometri (<code>mb_param</code>) MATLAB figüründe çiziliyor. Mechanics Explorer'ın video aracı (<code>smwritevideo</code>) bu kurulumda komut satırından video üretmedi.</figcaption></figure>
+  <div class="dosya">Kuran betik: <code>mb_model_kur.m</code> · geometri ve kütleler: <code>mb_param.m</code> · doğrulama: <code>dogrula_mb.m</code> → <code>dogrula_mb_log.txt</code>, θ(t) izleri <code>dogrula_mb_izler.mat</code> · görüntü: <code>mb_kareler.m</code> (hepsi <code>simulasyon/simulink/</code>)</div>
 </section>
 </body>
 </html>
