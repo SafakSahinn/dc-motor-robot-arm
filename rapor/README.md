@@ -38,6 +38,8 @@ matlab -batch "addpath('rapor/betikler'); ust_uste('<çıkış>'); slx_detay('<�
 python rapor/betikler/grafik.py <çıkış>          # matplotlib
 # Ek B (Simscape Multibody): 3B model kareleri -> rapor/img/mb_3b_gorunum.png, mb_kareler.png
 matlab -batch "addpath('simulasyon/simulink'); mb_kareler(5)"
+# Ek B: Mechanics Explorer animasyonu -> rapor/img/mb_animasyon.mp4, mb_me_kareler.png (arayüzlü MATLAB, ~2 dk)
+matlab -r "addpath('simulasyon/simulink'); mb_animasyon(5, [], true)"
 # 2) HTML -> PDF (Chrome)
 chrome --headless=new --no-pdf-header-footer --print-to-pdf=ham.pdf rapor/rapor.html
 # 3) model dosyalarını göm (pymupdf)
