@@ -160,6 +160,8 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#duzenek">5 · Düzenek seçenekleri</a>
   <a href="#yontem">6 · Yeniden üretim ve yöntem</a>
   <a href="#tanilama">7 · Dijital ikiz ve tanılama</a>
+  <div class="lbl" style="margin-top:14px">Raporlar</div>
+  <a href="#adim4">4. adım · Simülasyon ve doğrulama</a>
   <div class="lbl" style="margin-top:14px">Dayanaklar</div>
   <a href="#baslangic">Başlangıç noktası</a>
   <a href="#tarama">Literatür taraması</a>
@@ -622,10 +624,24 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <p>Rotor eylemsizliği ve dişli teması sertliği tahmin değerlerdir; eylemsizlik oranı ve frekanslar bu değerlere bağlıdır ve sistem tanılamada ölçülecektir. Ayrıntılı notlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/secenekler_sonuclar.md"><code>secenekler_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/sensor_7c_sonuclar.md"><code>sensor_7c_sonuclar.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/simulasyon/4a_ghaffari/kopru_7b_sonuclar.md"><code>kopru_7b_sonuclar.md</code></a>.</p>
 </section>
 
+<section id="adim4">
+  <div class="top"><div class="kicker">Çalışma planı · 4. adım</div><span class="pill done">Tamamlandı</span></div>
+  <h2>Simülasyon ve doğrulama</h2>
+  <p>Planın 4. adımında yapılan bütün iş tek raporda: ilk benzetimler ve boyutsuz harita, en yakın literatür sonucunun (Ghaffari ve Mohammadiasl 2013) yeniden üretimi, önerilen yerçekimli iki girişli DF ve karşılaştırması, oran ve kontrolcü eşlemesi, rejim ayrımı, düzenek seçimi, Simulink/Simscape dijital ikizi, ikizde sistem tanılama, donanım deney protokolü ve Simscape Multibody 3B modeli. Raporun tam içeriği ayrı sayfada, PDF ile birebir aynı.</p>
+  <div class="stats" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr))">
+    <div class="stat"><b>%20,2 / %22,1</b><span>yeniden üretilen DF'nin deneye uyum hatası (makalede %19,6 / %21,4)</span></div>
+    <div class="stat"><b>%19 ← %81</b><span>kritik kazanç hatası, yerçekimli DF ← Ghaffari DF (D, medyan)</span></div>
+    <div class="stat"><b>%0,1–3,5</b><span>dijital ikizde tanılanan parametrelerin hatası</span></div>
+    <div class="stat"><b>10 / 10</b><span>Multibody 3B ile 1B Simscape aynı rejim; salınan hücrelerde fark ≤ %0,31</span></div>
+  </div>
+  <figure style="margin-top:14px"><img src="img/adim4/mb_me_kareler.png" alt="Mechanics Explorer: dişli boşluklu kolun 90 derecedeki kalıcı salınımından bir çevrim boyunca altı kare" loading="lazy"><figcaption>Simscape Multibody 3B modeli, Mechanics Explorer: 90°'deki kalıcı salınımın bir çevrimi (142 ms). φ − θ işaret değiştiriyor, dişli bir kenardan öbürüne geçiyor.</figcaption></figure>
+  <p><b><a href="adim4.html">Raporun tamamı (web sayfası)</a></b> · <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/rapor/adim4_simulasyon_ve_dogrulama.pdf">PDF, 53 sayfa, model dosyaları gömülü</a> · <a href="adim4.html#b38">Ek B: Multibody 3B modeli ve animasyon</a></p>
+</section>
+
 <section id="yontem">
   <div class="top"><div class="kicker">Çalışma notu · 6</div></div>
   <h2>Literatür sonucunun yeniden üretimi ve önerilen yöntem</h2>
-  <p><b>4. adımın tamamı tek belgede:</b> <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/rapor/adim4_simulasyon_ve_dogrulama.pdf">simülasyon ve doğrulama raporu (PDF, 49 sayfa)</a>: ilk benzetimler, yeniden üretim, yerçekimli DF, eşleme, rejim ayrımı, düzenek seçenekleri, Simulink/Simscape dijital ikiz ve sistem tanılama; Simulink tasarım ayrıntıları ve model dosyaları PDF'e gömülü.</p>
+  <p><b>4. adımın tamamı tek belgede:</b> <a href="adim4.html">simülasyon ve doğrulama raporu (web sayfası)</a> · <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/rapor/adim4_simulasyon_ve_dogrulama.pdf">PDF, 53 sayfa</a>: ilk benzetimler, yeniden üretim, yerçekimli DF, eşleme, rejim ayrımı, düzenek seçenekleri, Simulink/Simscape dijital ikiz ve sistem tanılama, Simscape Multibody 3B modeli ve animasyonu; Simulink tasarım ayrıntıları ve model dosyaları PDF'e gömülü.</p>
   <p>Bu bölüm 4. aşamanın dört maddesini karşılar: yakın bir literatür sonucunun uygun model ve parametrelerle yeniden üretilmesi, önerilen katkının etkisinin karşılaştırmalı incelenmesi, kaynaklardaki boyutsuz oranların ve kontrolcü parametrelerinin bu çalışmanın tanımlarıyla eşlenmesi, sönümlü titreşim, zorlanmış cevap, kalıcı çevrim ve kararsızlığın ayrılması. Kod ve ayrıntılı sonuçlar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/simulasyon/4a_ghaffari"><code>simulasyon/4a_ghaffari/</code></a>.</p>
 
   <div class="tbl"><table>

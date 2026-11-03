@@ -45,3 +45,5 @@ chrome --headless=new --no-pdf-header-footer --print-to-pdf=ham.pdf rapor/rapor.
 # 3) model dosyalarını göm (pymupdf)
 python rapor/betikler/pdf_yap.py rapor/adim4_simulasyon_ve_dogrulama.pdf ham.pdf
 ```
+
+Web sürümü (GitHub Pages, `docs/adim4.html`): `python site/adim4_yap.py`. Sayfa `rapor.html`'den üretilir, görselleri `docs/img/adim4/`'e kopyalar; rapor değişince yeniden çalıştırılır.
