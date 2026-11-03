@@ -2,7 +2,8 @@ function mb_model_kur(ad)
 % MB_MODEL_KUR  Kolu Simscape Multibody ile 3B olarak kurar (sm_kol_model'in 3B karşılığı).
 %
 % Multibody tarafı (geometri, kütle, yerçekimi):
-%   World Frame + Mechanism Configuration (yerçekimi -Y yönünde, M.g)
+%   World Frame + Mechanism Configuration (yerçekimi dünya -Z yönünde, M.g); mekanizma T_eksen ile döndürülmüş
+%   çerçevede kurulu (aşağıdaki yerel eksenler o çerçevenin: eklem ekseni Z = dünya -Y, yerel -Y = dünya -Z)
 %   rotor: Revolute Joint (eklem_m, Z ekseni) + eşdeğer disk (Izz = S.JM), kol düzleminin M.zrot gerisinde
 %   kol:   Revolute Joint (eklem_L, aynı eksen) + çubuk (Brick) + uç kütlesi (Cylinder), kol -Y yönünde uzanır
 %          -> açı tanımı 1B modelle aynı: 0 sarkık, 90° yatay (+X), 180° dik; yerçekimi torku -mgl sin(th)
@@ -30,7 +31,13 @@ sb = 'sm_lib/Body Elements/';
 % --- Multibody: dünya, yerçekimi, gövde ---
 ekle(ad, [sf 'World Frame'], 'dunya', [40 700]);
 ekle(ad, sprintf('sm_lib/Utilities/Mechanism\nConfiguration'), 'mekanizma', [40 800], ...
-     'GravityVector', '[0 -M.g 0]');
+     'GravityVector', '[0 0 -M.g]');
+% Mekanizma çerçevesi: eklem ekseni (yerel Z) dünya -Y'sine, kolun sarkık yönü (yerel -Y) dünya -Z'sine.
+% Mechanics Explorer'ın varsayılan bakışı XZ düzlemi (z yukarı, kamera -Y tarafında) olduğundan kol düzlemi
+% ekrana paralel olur; rotor ve gövde (yerel -Z) kolun arkasında kalır. Yerelde yerçekimi -Y yönünde;
+% açı tanımı ve denklemler aynı (90° = yatay, dünya +X, ekranda sağ).
+ekle(ad, [sf sprintf('Rigid\nTransform')], 'T_eksen', [100 700], 'RotationMethod', 'RotationMatrix', ...
+     'RotationMatrix', '[1 0 0; 0 0 -1; 0 1 0]');
 ekle(ad, [sf sprintf('Rigid\nTransform')], 'T_govde', [160 900], 'TranslationMethod', 'Cartesian', ...
      'TranslationCartesianOffset', '[0 0 M.zrot-0.035]');
 ekle(ad, [sb 'Brick Solid'], 'govde', [260 900], 'BrickDimensions', '[0.05 0.05 0.05]', ...
@@ -44,6 +51,12 @@ eklem(ad, 'eklem_m', [280 600], 'S.x0(1)', 'S.x0(2)');
 ekle(ad, [sb 'Cylindrical Solid'], 'rotor', [420 600], 'CylinderRadius', 'M.rrot', 'CylinderLength', 'M.hrot', ...
      'InertiaType', 'Custom', 'Mass', 'M.mrot', 'CenterOfMass', '[0 0 0]', 'MomentsOfInertia', 'M.Irot', ...
      'ProductsOfInertia', '[0 0 0]', 'GraphicDiffuseColor', '[0.8 0.45 0.1]');
+
+% rotor işareti: kütlesiz Graphic (dinamiği değiştirmez), kolun ters yönünde diskin ön yüzünde -> φ görünür
+ekle(ad, [sf sprintf('Rigid\nTransform')], 'T_isaret', [420 520], 'TranslationMethod', 'Cartesian', ...
+     'TranslationCartesianOffset', '[0 0.8*M.rrot M.hrot/2]');
+ekle(ad, [sb 'Graphic'], 'isaret', [540 520], 'MarkerShape', 'Sphere', 'MarkerSize', '16', ...
+     'GraphicDiffuseColor', '[0.05 0.05 0.05]');
 
 % --- kol eklemi, çubuk, uç kütlesi ---
 eklem(ad, 'eklem_L', [280 760], 'S.x0(3)', 'S.x0(4)');
@@ -60,10 +73,12 @@ ekle(ad, [sb 'Cylindrical Solid'], 'uc', [540 820], 'CylinderRadius', 'M.ru', 'C
 
 % çerçeve bağlantıları (Revolute Joint: L1 = B, L2 = t; R1 = F, R2 = q, R3 = w)
 fb(ad, 'dunya', 'R1', 'mekanizma', 'R1');   % çözücü bloğu 1B ağda: arayüzler iki tarafı tek ağ yapar
-fb(ad, 'dunya', 'R1', 'T_govde', 'L1');     fb(ad, 'T_govde', 'R1', 'govde', 'R1');
-fb(ad, 'dunya', 'R1', 'T_rotor', 'L1');     fb(ad, 'T_rotor', 'R1', 'eklem_m', 'L1');
+fb(ad, 'dunya', 'R1', 'T_eksen', 'L1');
+fb(ad, 'T_eksen', 'R1', 'T_govde', 'L1');   fb(ad, 'T_govde', 'R1', 'govde', 'R1');
+fb(ad, 'T_eksen', 'R1', 'T_rotor', 'L1');   fb(ad, 'T_rotor', 'R1', 'eklem_m', 'L1');
 fb(ad, 'eklem_m', 'R1', 'rotor', 'R1');
-fb(ad, 'dunya', 'R1', 'eklem_L', 'L1');
+fb(ad, 'eklem_m', 'R1', 'T_isaret', 'L1');  fb(ad, 'T_isaret', 'R1', 'isaret', 'R1');
+fb(ad, 'T_eksen', 'R1', 'eklem_L', 'L1');
 fb(ad, 'eklem_L', 'R1', 'T_cubuk', 'L1');   fb(ad, 'T_cubuk', 'R1', 'cubuk', 'R1');
 fb(ad, 'eklem_L', 'R1', 'T_uc', 'L1');      fb(ad, 'T_uc', 'R1', 'uc', 'R1');
 
