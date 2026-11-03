@@ -4,6 +4,8 @@ Tek eklemli, dişli DC motorla sürülen bir robot kolunun modellenmesi, simüla
 
 **Araştırma defteri (adım adım günlük, literatür, simülasyon, malzeme):** <https://safaksahinn.github.io/dc-motor-robot-arm/>
 
+**4. adım raporu (simülasyon ve doğrulama, PDF):** [rapor/adim4_simulasyon_ve_dogrulama.pdf](rapor/adim4_simulasyon_ve_dogrulama.pdf) · [içerik ve kaynak](rapor/README.md)
+
 **Çalışma notu (hazırlanıyor):** [framing ve kısıtlar](calisma_notu/framing.md) · [donanım ve yazılım planı](calisma_notu/mimari.md) · [malzeme listeleri](calisma_notu/malzeme.md) · [framing adaylarının karşılaştırması](calisma_notu/framing_adaylari.md)
 
 ![Robot kolu animasyonu](sekiller/model_animasyon.gif)
