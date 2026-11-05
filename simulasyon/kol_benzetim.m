@@ -25,6 +25,9 @@ function out = kol_benzetim(p, theta0_deg, wc)
 % İsteğe bağlı integratör katmanı (varsayılan kapalı; eski sonuçlar değişmez):
 %   p.Iolu [rad]  : |e| < Iolu iken integral birikmez (ölü bant, z donar)
 %   p.Isifirla    : true ise konum hatası işaret değiştirdiğinde z = 0 (sıfırlama)
+% İsteğe bağlı konum kaynağı (varsayılan 'kol'): p.Pkaynak = 'motor' ise e = th_ref - phi_ölçülen
+%   (motor enkoderi, nicemleme p.qM); kontrolcü kol sensörünü hiç görmez. Kol, boşluğun bir
+%   ucunda ve dişli esnemesi kadar hedeften kayık durabilir (kalıcı hata <= r + tau_s/Ks).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df t) [N m] kola etki eder,
 % p.dT verilirse t >= dT'de kesilir. p.x0, p.z0: önceki benzetimin son durumundan sürdürme.
 
@@ -40,6 +43,7 @@ Kp = J*wc.^2;  Kd = 2*0.7*J*wc;  Ki = Kp.*wc/4;
 ppi = isfield(p,'kontrol') && strcmp(p.kontrol,'PPI');
 if ppi, kpP = wc;  KV = p.KV.*ones(1,n);  KI = p.KI.*ones(1,n); end
 motorD = strcmp(p.Dkaynak,'motor');
+motorP = isfield(p,'Pkaynak') && strcmp(p.Pkaynak,'motor');  % konum hatası motor tarafından (phi)
 
 % Başlangıç: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
 x = zeros(4,n);
@@ -65,7 +69,7 @@ k = 0;
 
 for i = 0:nStep-1
     if mod(i,kCtl) == 0                            % ---- kontrolcü örneği ----
-        thm = olc(x(3,:), p.qL);
+        if motorP, thm = olc(x(1,:), p.qM); else, thm = olc(x(3,:), p.qL); end
         if gL > 0, thBuf = [thBuf(2:end,:); thm];  thm = thBuf(1,:); end
         if isinf(p.fv)
             v = motorD*x(2,:) + ~motorD*x(4,:);

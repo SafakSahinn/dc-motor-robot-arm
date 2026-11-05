@@ -109,6 +109,7 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
     <div class="stat"><b>0</b><span>kol tarafı sensörü: kontrolcü yalnız motor enkoderini ve akımını görür</span></div>
   </div>
   <p>Sonuçlar henüz dijital ikizden (ayrıntılı benzetim modeli). Fiziksel düzenek hazırlanıyor.</p>
+  <div class="note"><b>Yeniden inceleniyor (5 Kasım)</b>Yukarıdaki 3,5× ve 10–170° sonuçları ikizde kontrolcü kol açısını görürken (kol tarafı geri besleme) elde edildi. Kol sensörsüz (motor tarafı) geri beslemede boşluk salınımı ikizde hiç çıkmıyor, ama kol hedefin 1,5–2,9° gerisinde kalıyor. Çerçeve buna göre yeniden değerlendiriliyor.</div>
 </section>
 
 <section>
@@ -267,7 +268,7 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
     <tr><td><span class="pill done">Bitti</span></td><td>Modelleme ve dijital ikiz; yerçekimli DF ve benzetimle doğrulanması; sistem tanılama planının ikizde sınanması; literatür taraması (51 tam metin)</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>İlk kazanç tablosu ve ikizde sınanması (yukarıda)</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>Sürtünme katmanı: yapışmalı sürtünmede ikizde 0,1° düzeyinde küçük "avlanma" çıkıyor; 0,25°'lik integratör ölü bandı bunu planlanan tabloda 10–140°'de bitiriyor (bedeli ≤ 0,3° kalıcı hata), yerleşme yine 0,9 s (sabit ayar 3,6 s)</td></tr>
-    <tr><td><span class="pill now">Sürüyor</span></td><td>180° (kol dik yukarı): integratör ölü bandı / sıfırlama salınımı <b>gidermedi</b>; salınımın kaynağı integral değil, boşluk içinde devrilen ters sarkaç. Seçilen önlem: θ<sub>d</sub> tabanlı boşluk telafisi (0. bölüm, Kararlar). İlk adım: konum döngüsünü motor tarafına alıp 180° taramasını yinelemek</td></tr>
+    <tr><td><span class="pill now">Sürüyor</span></td><td>180° (kol dik yukarı): integratör ölü bandı / sıfırlama salınımı <b>gidermedi</b>; salınımın kaynağı integral değil, boşluk içinde devrilen ters sarkaç. Seçilen önlem: θ<sub>d</sub> tabanlı boşluk telafisi (0. bölüm, Kararlar). İlk adım yapıldı: konum döngüsü motor tarafına alınınca 0–180°'nin hiçbirinde salınım kalmıyor (114 hücrede 0), bedeli 1,5–2,9° kalıcı hata. Çerçeve kararı bekleniyor</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Gerçekçi sensörlerle (enkoder nicemlemesi, hız kestirimi) yeniden sınama</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Bozucu gözlemcisinin (DOB/ESO) bant genişliğinin de tabloya eklenmesi; açılar arası geçişte sarsıntısız kazanç değişimi; motor tarafı salınım tespiti</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Donanım: sipariş, montaj, tanılama, açı × kazanç deneyleri; ESP32 yazılımı</td></tr>

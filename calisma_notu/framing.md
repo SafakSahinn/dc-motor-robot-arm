@@ -38,6 +38,20 @@ AS5600 kol açısı sensörü düzenekte kalır ama **yalnız doğrulama için**
 
 **Bununla gelen ikinci karar: konum döngüsü motor tarafına.** Bugüne kadarki ikiz konum hatasını kol açısından hesaplıyordu (`kol_benzetim.m`, `thm = olc(x(3,:), p.qL)`); bu, "kontrolcü kolu görmez" ilkesiyle çelişiyordu. Kontrolcü kolu görmeyecekse konum hatası da θ_M/N'den hesaplanmalı. Bu, 180° sorununu değiştirebilir (kol boşlukta devrilirken kontrolcü tepki vermez, ama kol hedefte değil boşluğun bir ucunda durur, ≤ ±b/2 kalıcı hata). `kol_benzetim.m`'ye varsayılanı kapalı bir seçenek eklenip `inceleme_180.m` bu ayarla yeniden çalıştırılacak; telafi bunun üzerine tasarlanacak.
 
+**İlk sonuç (5 Kasım 2026, `../simulasyon/5_planlama/inceleme_180_motor.m`, `konum_kaynagi_karsilastir.m`): konum döngüsü motor tarafına alınınca boşluk salınımı ikizde kayboluyor, yerine kalıcı hata geliyor.** P–PI, 0–180° × r_gs 0,20–0,70, başlangıç 1°:
+
+| Konum kaynağı | Salınımlı hücre | Kolun kalıcı hatası |
+|---|---|---|
+| Kol (eski, ideal) | 10 / 114 (hepsi 0° ve 180°'de) | ≈ 0 (en çok 0,27°) |
+| Motor (ideal) | 0 / 114 | ort. 2,25°, en çok 2,89° (90°'de) |
+| Motor (0,27° nicemli enkoder) | 3 / 114 (yalnız r_gs 0,20'de küçük düzensiz) | ort. 2,16°, en çok 2,88° |
+
+`inceleme_180_motor.m`: 180°'de r_gs 0,15–0,70 ve üç başlangıcın hepsinde salınım yok (eskiden yalnız ≈ 0,15). Kalıcı hata öngörülebilir: ≈ r + m g l sin θ / K_s (boşluğun yarısı + dişli esnemesi), 0°'de ≈ 0 (yerçekimi kolu boşluğun ortasında tutuyor), 180°'de −1,5° (kol bir yüze devrilip dayanıyor). Yorum: boşluk geri besleme döngüsünün **dışında** kalınca çevrim oluşmuyor; bu, boşluk literatüründe bilinen bir ödünleşim (yük tarafı geri besleme → doğruluk ama LC riski; motor tarafı → kararlılık ama boşluk kadar hata).
+
+**Önemli tutarsızlık:** sitedeki "3,5× daha hızlı" ve "10–170° salınımsız" sonuçları kol tarafı geri beslemeyle (kontrolcü AS5600'ü görürken) elde edildi; "0 kol tarafı sensörü" iddiası o sonuçlar için geçerli değildi.
+
+**Açık karar (kullanıcıya ait):** çerçeve bu bulguya göre yeniden düşünülmeli. Kazanç planlaması boşluk LC'sini önlemek için gerekçelendirilmişti; motor tarafı geri beslemede bu salınım ikizde zaten yok. Seçenekler kullanıcıya metinle sunuldu.
+
 **Geri dönüş noktası:** (ii) beklenenden çok zor ya da telafiyi bozacak kadar hatalı çıkarsa (i)'e dönülebilir; o zaman çerçeve "kol sensörlü telafi" olur, H6 ve "kol sensörü yok" iddiası düşer. Konum döngüsü motor tarafında 0–170°'deki başarıyı bozarsa kol tarafı geri beslemeye dönülür ve bu fark yazıda açıkça belirtilir.
 
 ### Kapsam kararı: boşluk kaynaklı salınım
