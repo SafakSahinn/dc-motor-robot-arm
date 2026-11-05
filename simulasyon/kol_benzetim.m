@@ -22,6 +22,9 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   wcmd = kp e,  tau = KV (wcmd - v) + KI z,  z = sum(wcmd - v)*Ts,  v = motor hızı
 %   KV = kv kr^2, KI = kr^2/Ti (Ghaffari'nin motor tarafı kv, Ti'sinden); r_gs = sqrt(kp KV / Ks).
 %
+% İsteğe bağlı integratör katmanı (varsayılan kapalı; eski sonuçlar değişmez):
+%   p.Iolu [rad]  : |e| < Iolu iken integral birikmez (ölü bant, z donar)
+%   p.Isifirla    : true ise konum hatası işaret değiştirdiğinde z = 0 (sıfırlama)
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df t) [N m] kola etki eder,
 % p.dT verilirse t >= dT'de kesilir. p.x0, p.z0: önceki benzetimin son durumundan sürdürme.
 
@@ -49,6 +52,9 @@ thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski sa
 if motorD, qv = p.qM; else, qv = p.qL; end
 yv_prev = olc(x(1+2*~motorD,:), qv);  vhat = zeros(1,n);
 aV = 1 - exp(-2*pi*p.fv*p.Ts);                     % filtre katsayısı (fv=Inf -> 1)
+Iolu = 0;  if isfield(p,'Iolu'), Iolu = p.Iolu; end
+Isif = isfield(p,'Isifirla') && p.Isifirla;
+e_onc = zeros(1,n);
 
 nStep = round(p.T/p.dt);
 kCtl  = max(1, round(p.Ts/p.dt));
@@ -79,7 +85,9 @@ for i = 0:nStep-1
         end
         u  = min(max(u0,-p.Tmax),p.Tmax);
         doy = (u0 > p.Tmax & iz > 0) | (u0 < -p.Tmax & iz < 0);
-        z  = z + iz*p.Ts .* ~doy;                  % basit anti-windup
+        if Isif, z(e.*e_onc < 0) = 0; end          % hata işaret değiştirdi: integrali sıfırla
+        e_onc = e;
+        z  = z + iz*p.Ts .* ~doy .* (abs(e) >= Iolu);  % basit anti-windup + ölü bant
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
     end
     tt = i*p.dt;

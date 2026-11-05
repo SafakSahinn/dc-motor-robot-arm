@@ -36,6 +36,12 @@ Armstrong ve Amin (1996, *Automatica*) şunu kanıtlıyor: statik sürtünme (ya
 
 İlk kazanç tablosu dijital ikizde 10–170°'de salınımsız çalıştı (`../simulasyon/5_planlama/tablo_ilk.m`). Tam 180°'de (kol dik yukarı) ise ön gerilim sıfır ve denge kararsız; orada r_gs ≥ 0,20 her kazançta salınım var, yalnız ≈ 0,15'te dar bir pencere kalıyor (`inceleme_180.m`). 5° ötede (175°) kol 0,55'e kadar sakin. **Karar: 0° ve 180° kapsamda kalıyor.** 180° için planlamaya ek bir önlem araştırılacak (ilk aday: integratör ölü bandı ya da sıfırlama; sürtünme katmanıyla aynı mekanizma). Önlem bulunamazsa 180° "yöntemin sınırı" olarak raporlanır.
 
+**İlk önlem denendi, 180°'de işe yaramadı (5 Kasım 2026, `../simulasyon/5_planlama/olu_bant_180.m`, `tablo_surtunme.m`).** `kol_benzetim.m`'ye varsayılanı kapalı iki seçenek eklendi: `p.Iolu` (|e| < Iolu iken integral donar) ve `p.Isifirla` (hata işaret değiştirince z = 0). Sonuçlar:
+- **180°:** ölü bant (0,25 / 0,5 / 1,0°) ve sıfırlama, sürtünmeli ya da sürtünmesiz, salınımsız pencereyi genişletmedi; ölü bant sürtünmesiz durumda tek sakin kazancı (0,15) da kaybettirdi. Yorum: 180°'deki salınım integral birikmesinden değil, kolun boşluk içinde serbestken yerçekimiyle devrilmesinden (ters sarkaç + ölü bölge) doğuyor; integratöre dokunan bir önlem bu mekanizmaya ulaşmıyor. 175°'nin 0,55'e kadar sakin olması, birkaç derecelik yerçekimi ön yükünün yettiğini gösteriyor.
+- **Sürtünme (Fc 0,04, Fs 0,06 N m):** katmansız tabloda 10–170°'nin 12 açısında, sabit ayarda 18 açıda küçük düzensiz salınım (yapışma–kayma avlanması; genlik plan 0,03–0,08°, sabit 0,06–0,17°, yani AS5600'ün 1–2 basamağı) çıktı. 0,25° ölü bantla plan 4 açıya iniyor (150–180°), kalıcı hata ≤ 0,31°, yerleşme ortancası değişmiyor (0,91 s; sabit 3,56 s). Sabit ayarda ölü bant avlanmayı gidermiyor. 90°'de sürtünmeli tarama (r_gs 0,10–0,70): katmansız 3 sakin kazanç, 0,25° ölü bantla 8.
+- **Sıfırlama** sürtünmeli 90°'de zararlı (0 sakin kazanç): orada kolu yerçekimine karşı tutan integralin kendisi.
+- **Açık karar:** 180° için farklı önlem (ör. hedefi birkaç derece kaydırıp yapay ön yük; yerçekimi ön ileri beslemesi) mi, yoksa 180° "yöntemin sınırı" mı?
+
 ### Ek hipotezler
 
 - **H5.** Açıya göre planlanan kontrolcü, 0–180° aralığının tamamında boşluk kaynaklı salınım üretmez ve ortalama yerleşme süresi, aynı aralıkta salınımsız kalan en iyi sabit kazançlı ayara göre kısadır (sabit ayar en kötü açıya, yani 0° ve 180° civarına göre seçilmek zorunda olduğu için yavaştır).

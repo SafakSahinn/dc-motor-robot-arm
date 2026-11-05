@@ -220,7 +220,9 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   <div class="tbl road"><table>
     <tr><td><span class="pill done">Bitti</span></td><td>Modelleme ve dijital ikiz; yerçekimli DF ve benzetimle doğrulanması; sistem tanılama planının ikizde sınanması; literatür taraması (51 tam metin)</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>İlk kazanç tablosu ve ikizde sınanması (yukarıda)</td></tr>
-    <tr><td><span class="pill now">Sürüyor</span></td><td>180° için ek önlem; sürtünme (yapışma) katmanı; gerçekçi sensörlerle (enkoder nicemlemesi) yeniden sınama</td></tr>
+    <tr><td><span class="pill done">Bitti</span></td><td>Sürtünme katmanı: yapışmalı sürtünmede ikizde 0,1° düzeyinde küçük "avlanma" çıkıyor; 0,25°'lik integratör ölü bandı bunu planlanan tabloda 10–140°'de bitiriyor (bedeli ≤ 0,3° kalıcı hata), yerleşme yine 0,9 s (sabit ayar 3,6 s)</td></tr>
+    <tr><td><span class="pill now">Sürüyor</span></td><td>180° (kol dik yukarı): integratör ölü bandı / sıfırlama salınımı <b>gidermedi</b>; salınımın kaynağı integral değil, boşluk içinde devrilen ters sarkaç. Farklı bir önlem ya da "yöntemin sınırı" kararı bekleniyor</td></tr>
+    <tr><td><span class="pill next">Sırada</span></td><td>Gerçekçi sensörlerle (enkoder nicemlemesi, hız kestirimi) yeniden sınama</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Bozucu gözlemcisinin (DOB/ESO) bant genişliğinin de tabloya eklenmesi; açılar arası geçişte sarsıntısız kazanç değişimi; motor tarafı salınım tespiti</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Donanım: sipariş, montaj, tanılama, açı × kazanç deneyleri; ESP32 yazılımı</td></tr>
   </table></div>
