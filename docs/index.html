@@ -160,7 +160,8 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <nav aria-label="Bölümler">
   <div class="lbl">Çalışma notu</div>
   <a href="#hedef">Amaç</a>
-  <a href="#framing">1 · Framing</a>
+  <a href="#cerceve">0 · Güncel çerçeve (5 Kasım)</a>
+  <a href="#framing">1 · Framing (ilk çerçeve)</a>
   <a href="#kapsam">2 · Kapsam ve kısıtlar</a>
   <a href="#mimari">3 · Donanım ve yazılım planı</a>
   <a href="#malzeme">4 · Malzeme listeleri</a>
@@ -185,21 +186,67 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <main>
 <header>
   <div class="kicker">Çalışma notu</div>
-  <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı</h1>
-  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı: araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem, dijital ikiz üzerinde sınanmış sistem tanılama ve deney protokolü.</p>
+  <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı ve açıya göre planlanan kontrol</h1>
+  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı ve bu sınırı kullanarak salınımı önleyen, yük tarafı sensörü gerektirmeyen kontrolcü: güncel çerçeve, araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem, dijital ikiz üzerinde sınanmış sistem tanılama ve deney protokolü.</p>
   <div class="meta"><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span></div>
 </header>
 
 <section id="hedef">
   <div class="top"><div class="kicker">Çalışma notu</div></div>
   <h2>Amaç</h2>
-  <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde, dişli boşluğunun kendiliğinden süren salınıma yol açtığı sınırı kol açısı ve kontrol kazancı cinsinden öngörmek ve bu öngörüyü düşük maliyetli bir düzenekte deneyle doğrulamak.</p>
+  <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde, dişli boşluğunun kendiliğinden süren salınıma yol açtığı sınırı kol açısı ve kontrol kazancı cinsinden öngörmek, <b>bu sınırı kullanarak kontrolcüyü ve gözlemciyi kolun açısına göre önceden ayarlayıp salınımı hiç başlatmamak</b>, ve bunu yük tarafı sensörü olmadan, ESP32 üzerinde, düşük maliyetli bir düzenekte deneyle göstermek.</p>
+  <p>5 Kasım 2026'da çalışmanın ağırlığı analizden (sınırı öngörmek) tasarıma (salınımı önlemek) kaydırıldı; ayrıntılar <a href="#cerceve">Güncel çerçeve</a> bölümünde. Analiz atılmadı, ayar tablosunu üreten araç oldu.</p>
   <p>Not altı bölümden oluşur: framing; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri; düzenek seçenekleri; literatür sonucunun yeniden üretimi ve önerilen yöntem. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
+</section>
+
+<section id="cerceve">
+  <div class="top"><div class="kicker">Çalışma notu · 0 · 5 Kasım 2026</div></div>
+  <h2>Güncel çerçeve: analizden tasarıma</h2>
+  <p>İlk çerçeve (1. bölüm) salınımın başladığı sınırı <b>öngörüyordu</b>. Danışmanla yapılan değerlendirmede bu sınırın asıl değerinin onu <b>kullanmak</b> olduğu sonucuna varıldı: sınır biliniyorsa kontrolcü, kolun hangi açıda durduğuna göre önceden ayarlanır ve salınım hiç başlamaz. DF ve dijital ikiz analizi (6. ve 7. bölümler) atılmadı; ayar tablosunu üreten araç oldu. Donanım, düzenek ve deney protokolü değişmedi.</p>
+  <p class="thesis">Ana soru: Kontrolcü kazancı ve gözlemci bant genişliği yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanırsa, boşluk kaynaklı salınım tüm çalışma açılarında, yük tarafı sensörü olmadan ve sabit kazançlı en iyi ayardan daha hızlı bir tepkiyle önlenebilir mi?</p>
+
+  <h3>Üç bileşen</h3>
+  <div class="tbl"><table>
+    <tr><th>#</th><th>Bileşen</th><th>Rolü</th></tr>
+    <tr><td>1</td><td><b>Açıya göre önceden planlanan kontrolcü ve gözlemci.</b> Kazanç ve gözlemci (DOB/ESO) bant genişliği, \(mg\ell\sin\theta_0\)'a göre bir tablodan seçilir. Tablo DF haritasından türetilir, dijital ikizde doğrulanır.</td><td>Ana katkı</td></tr>
+    <tr><td>2</td><td><b>Yalnız motor tarafı sinyallerle salınım başlangıcı tespiti</b> (motor akımı + enkoder). Planlama bir nedenle kaçırırsa (model hatası, aşınma) emniyet ağı.</td><td>Destek</td></tr>
+    <tr><td>3</td><td><b>ESP32 üzerinde 1 kHz gömülü gerçekleme.</b> Kol açısı sensörü (AS5600) yalnız doğrulama için kalır, kontrolcü onu görmez.</td><td>Uygulama</td></tr>
+  </table></div>
+
+  <h3>Kapsam kararı: boşluk kaynaklı salınım</h3>
+  <p>Armstrong ve Amin (1996, <i>Automatica</i>) statik sürtünme varken integral etkili bir konum kontrolcüsünde yapışma–kayma salınımının <b>kararlılığı sağlayan her kazanç ayarında</b> olası olduğunu ve DF'nin bunu güvenilir öngöremediğini kanıtlıyor. Bu yüzden planlama yalnız <b>boşluk kaynaklı</b> salınımı hedefler (sınırı açıya bağlı olan salınım). Sürtünme kaynaklı salınım için bilinen bir önlem (integratör ölü bandı ya da sıfırlama) ayrı bir katman olarak konur ve karşılaştırılan bütün kontrolcülerde aynı tutulur. Açı taramasıyla kaynak ayrıştırma bu yüzden zorunlu kalır: gözlenen salınımın kaynağı bilinmeden planlamanın başarısı ölçülemez.</p>
+
+  <h3>Hipotezler ve ölçütler (eklenenler)</h3>
+  <ul class="plain">
+    <li><b>H5.</b> Planlanan kontrolcü 0–180° aralığının tamamında boşluk kaynaklı salınım üretmez ve yerleşme süresi, aynı aralıkta salınımsız kalan en iyi sabit ayara göre kısadır. Sabit ayar en kötü açıya (0° ve 180° civarı) göre seçilmek zorunda olduğu için yavaştır.</li>
+    <li><b>H6.</b> Salınımın başladığı, yalnız motor akımı ve enkoderle birkaç periyot içinde tespit edilebilir.</li>
+    <li><b>Ölçüt önerileri:</b> salınımsız açı aralığı 0–180°; yerleşme süresi en iyi sabit ayardan en az %30 kısa; tespit gecikmesi ≤ 3 periyot, yanlış alarm ≤ %5; 1 kHz döngüde hesap yükü ≤ %50.</li>
+    <li><b>Karşılaştırma tabanları:</b> en kötü açıya göre ayarlanmış sabit kazanç; tepkisel bir yöntem (Piao 2020'deki hataya dayalı anahtarlama gibi); planlamasız ama tespit edince kazanç düşüren sürüm.</li>
+  </ul>
+
+  <h3>Literatür kontrolü</h3>
+  <p>IEEE Xplore 13, Web of Science 6, web 9 sorgu; 8 makalenin tam metni okundu, 1'inin yalnız özeti (SAGE erişimi yok). Ayrıntılar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md"><code>okuma_notlari.md</code></a>, <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/kontrol_taramasi/hedefli_tarama_2026-11-05.md"><code>hedefli_tarama_2026-11-05.md</code></a>.</p>
+  <div class="tbl"><table>
+    <tr><th>Çalışma</th><th>Yerçekimi</th><th>Boşluk</th><th>Yük sensörsüz</th><th>Açıya göre planlama</th><th>LC analizi</th><th>Bizim için</th></tr>
+    <tr><td>Zhang 2023, <i>IJCIM</i></td><td>~</td><td>✓</td><td>✓</td><td>~ ileri besleme</td><td>✗</td><td>Açık çevrim telafi</td></tr>
+    <tr><td>Li 2026, <i>Mechatronics</i></td><td>✗</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>Risk değil</td></tr>
+    <tr><td>Dai 2026, <i>MSSP</i></td><td>✗</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>2. bileşen öncülü</td></tr>
+    <tr><td>Piao 2020, <i>IFAC</i></td><td>✗</td><td>✗</td><td>✓</td><td>✗ tepkisel</td><td>✓ DF</td><td>Yöntem kaynağı</td></tr>
+    <tr><td>Weigand 2021, <i>RCIM</i></td><td>✓ ileri beslemede</td><td>✓</td><td>✗</td><td>✗</td><td>✗</td><td>Risk değil</td></tr>
+    <tr><td>Ruderman–Iwasaki 2016, <i>TIE</i></td><td>✓</td><td>✗ histerezis</td><td>✓</td><td>✗</td><td>✗</td><td><b>En yakın kurulum</b></td></tr>
+    <tr><td>Armstrong–Amin 1996, <i>Automatica</i></td><td>✗</td><td>✗</td><td>—</td><td>✗</td><td>✓ kesin</td><td>Kapsam kararının dayanağı</td></tr>
+    <tr><td>Han 2016, <i>Nonlinear Dyn.</i></td><td>✗</td><td>✓</td><td>✓</td><td>✗</td><td>✗</td><td>2. bileşen öncülü</td></tr>
+    <tr><td>Ahangarian Abhari 2019, <i>TIMC</i> (özet)</td><td>?</td><td>✓</td><td>?</td><td>✗</td><td>✗</td><td>Özete göre düşük risk</td></tr>
+    <tr><td><b>Bu çalışma</b></td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td>✓</td><td></td></tr>
+  </table></div>
+  <div class="note ok"><b>Sonuç</b>Yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanan kazanç ve gözlemci bant genişliğiyle boşluk kaynaklı salınımı önleyen bir çalışma bulunamadı. Yan kanıt: Ruderman–Iwasaki 2016'da kayan kip ek terimi kol 0°'deyken (yerçekimi torku sıfır) salınım üretiyor, 90°'de üretmiyor.</div>
+  <p>Ayrıntılı metin: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing.md"><code>framing.md</code>, 0. bölüm</a>.</p>
 </section>
 
 <section id="framing">
   <div class="top"><div class="kicker">Çalışma notu · 1</div></div>
-  <h2>Framing</h2>
+  <h2>Framing (ilk çerçeve, 24 Ekim)</h2>
+  <div class="note"><b>Güncellendi</b>Bu bölüm ilk çerçevedir. 5 Kasım'dan beri sınır öngörüsü amacın kendisi değil, açıya göre planlanan kontrolcünün aracı: bkz. <a href="#cerceve">Güncel çerçeve</a>.</div>
   <p><b>Çalışmanın türü: mevcut bir yöntemin belirli bir eksikliğini giderecek şekilde geliştirilmesi.</b> Yerçekiminin dişliyi bastırması literatürde nitel olarak biliniyor; kazanca bağlı boşluk salınımı ise yalnızca yerçekimsiz eksenlerde analiz edilmiş. Çalışma bu iki çizgiyi, yerçekimsiz eksenler için geliştirilmiş bir analiz yöntemini genişleterek birleştiriyor.</p>
 
   <h3>Problem</h3>
@@ -954,7 +1001,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="stats">
     <div class="stat"><b>26 + 12</b><span>IEEE + WoS sorgusu</span></div>
     <div class="stat"><b>130 + 44</b><span>IEEE + WoS sonucu listelendi</span></div>
-    <div class="stat"><b>43</b><span>tam metin okundu</span></div>
+    <div class="stat"><b>51</b><span>tam metin okundu</span></div>
     <div class="stat"><b>0</b><span>açı × kazanç sınırı + yerçekimi ön yükü</span></div>
   </div>
   <div class="note"><b>Karşılaştırma listesi ve son tarama</b>13 kaynaklı karşılaştırma listesinin tamamı tam metinden okundu; daha önce elde olmayan 5 kaynak (Lu 2015, Malzahn 2014, Kollár 2003, Giovannitti 2022, G. Sun 2021) açık erişimden edinildi. Öne çıkan üç çalışma metinden doğrulandı: Xu 2023 açıya göre ofset ölçüyor, Sun 2023 yerçekimli düzende farklı kazançlarla deney yapıyor, Malzahn 2014 açı taramasıyla sönümlü titreşim haritası çıkarıyor. Yani "yerçekimi + boşluk" tek başına açık bir boşluk değil; çalışma yöntem geliştirmeye dayandırıldı (bkz. Framing). Son tarama: en yakın 8 çalışmanın 75 ileriye atıfı, 17 hedefli sorgu (13'ü sıfır sonuç) ve web araması; doğrudan rakip çıkmadı, kaymalı DF aracının 1973'ten beri var olduğu ve kazanç düzleminde sınırın döner tablada da çıkarıldığı (Yang 2017) not edildi. Ayrıntı: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/son_tarama_2026-10-24.md"><code>literatur/son_tarama_2026-10-24.md</code></a>.</div>
@@ -1211,6 +1258,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="top"><div class="kicker">Yol haritası</div></div>
   <h2>Sonraki adımlar</h2>
   <ul class="plain">
+    <li><b>Güncel çerçeve (5 Kasım):</b> açıya göre planlanan kontrolcü ve gözlemci (<a href="#cerceve">0. bölüm</a>). Sıradaki teori işi: DF haritasından açı başına kazanç ve gözlemci bant genişliği tablosunun çıkarılması, dijital ikizde sabit kazançlı ayarla karşılaştırılması; sürtünme katmanı (integratör ölü bandı) eklenmesi; motor tarafı tespit ölçütünün ikizde sınanması.</li>
     <li><b>Görüşülecek konular:</b> başarı ölçütleri, düzenek seçimi (önerilen D: uç kütlesi 0–150 g değiştirilebilir), siparişin EKOM üzerinden üniversite hesabıyla verilmesi.</li>
     <li><b>Yöntem tarafında:</b> sistem tanılama planı dijital ikizde sınandı ve deney protokolü yazıldı (<a href="#tanilama">7. bölüm</a>). Donanımdan önce kalan: gözlemcinin firmware'e yazılması, motor dişlisi için kilit parçası. Diğer yöntem işlerinin sırası ve gerekçeleri: <a href="#yontem-sonraki">6. bölüm, Değerlendirme ve sonraki işler</a>.</li>
     <li><b>Deney tasarımına etkisi:</b> her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm (iki kararlılık); zorlama frekansının çevrim frekansının harmoniklerinden uzak seçilmesi.</li>
@@ -1547,6 +1595,28 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
         <dt>Ne yaptık</dt><dd>Kısıtları ve 4–5 aylık aşama planını yazdık; donanım ve yazılım blok şemalarını çizdik; iki kontrol turunda hataları düzelttik (TMP117 ayrı I²C hattına, AS5600 filtresi SF = 11, hız kestirimi nicemlemesi); fiyat ve stokları satıcı sayfalarından doğruladık.</dd>
         <dt>Sonuç</dt><dd>Elektronik EKOM (DigiKey'in Türkiye ortağı) üzerinden Türkiye'den alınabiliyor; 12 V ≥ 2 A bir masaüstü adaptör yeterli; mekanik iki seçenekli (hazır parça / baskı hizmeti), maliyetleri yakın.</dd>
         <dt>Bağlantı</dt><dd class="link">→ Kapsam, Donanım ve yazılım planı, Malzeme listeleri bölümleri.</dd>
+      </dl>
+    </div></li>
+  </ol>
+
+  <div class="phase">VI. Analizden tasarıma</div>
+  <ol class="log" style="counter-reset:adim 22">
+    <li><div class="step">
+      <h4>Kontrol ve kestirim yönünde hedefli tarama</h4>
+      <dl>
+        <dt>Neden</dt><dd>Sınırı öngörmek tek başına yeterince güçlü bir katkı değildi; sınırı kullanıp salınımı önleyen bir kontrolcünün literatürde açık olup olmadığını görmek gerekiyordu.</dd>
+        <dt>Ne yaptık</dt><dd>IEEE Xplore 13, Web of Science 6 ve web 9 sorgu; kazanç ve gözlemci planlaması, yük sensörsüz boşluk kestirimi, salınım tespiti başlıklarında. En yakın 8 makalenin tam metnini okuduk (Zhang 2023, Li 2026, Dai 2026, Piao 2020, Weigand 2021, Ruderman–Iwasaki 2016, Armstrong–Amin 1996, Han 2016).</dd>
+        <dt>Sonuç</dt><dd>Açıya göre önceden planlanan kazanç ve gözlemci için doğrudan rakip yok. Yük sensörsüz tespit için çok öncül var, destek bileşenine indi. Armstrong–Amin 1996: sürtünme kaynaklı salınım integral etkili kontrolde her kazançta olası, bu yüzden planlama boşluk kaynaklı salınıma odaklanmalı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 24: çerçeve güncellemesi.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Çerçeve güncellemesi</h4>
+      <dl>
+        <dt>Neden</dt><dd>Tarama sonucu ve danışmanla değerlendirme.</dd>
+        <dt>Ne yaptık</dt><dd>Ana soruyu, bileşenleri, kapsamı (boşluk kaynaklı salınım; sürtünme için ayrı katman), ek hipotezleri ve ölçütleri yazdık. İlk çerçevedeki DF + dijital ikiz analizi 1. bileşenin aracı oldu; donanım ve deney protokolü değişmedi.</dd>
+        <dt>Sonuç</dt><dd>Ana katkı: yerçekimi ön yüküne göre önceden planlanan kontrolcü ve gözlemci. Destek: motor tarafı salınım tespiti. Uygulama: ESP32 1 kHz.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Güncel çerçeve bölümü.</dd>
       </dl>
     </div></li>
   </ol>

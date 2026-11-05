@@ -1,6 +1,6 @@
 # Dişli DC Motorlu Tek Eklemli Robot Kol
 
-Tek eklemli, dişli DC motorla sürülen bir robot kolunun modellenmesi, simülasyonu ve fiziksel gerçeklenmesi. Proje, kolun doğrusal olmayan durum uzayı modeliyle başladı ve **dişli boşluğunun (backlash) ürettiği sürekli salınımların kolun çalışma açısına nasıl bağlı olduğunu** inceleyen bir araştırmaya dönüştü.
+Tek eklemli, dişli DC motorla sürülen bir robot kolunun modellenmesi, simülasyonu ve fiziksel gerçeklenmesi. Proje, kolun doğrusal olmayan durum uzayı modeliyle başladı ve **dişli boşluğunun (backlash) ürettiği sürekli salınımların kolun çalışma açısına nasıl bağlı olduğunu** inceleyen bir araştırmaya dönüştü. **Güncel çerçeve (5 Kasım 2026):** bu açı bağımlılığını kullanarak kontrolcüyü ve gözlemciyi kolun açısına göre önceden ayarlamak ve salınımı yük tarafı sensörü olmadan hiç başlatmamak ([framing.md, 0. bölüm](calisma_notu/framing.md)).
 
 **Araştırma defteri (adım adım günlük, literatür, simülasyon, malzeme):** <https://safaksahinn.github.io/dc-motor-robot-arm/>
 
@@ -52,7 +52,13 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 
 **Hipotez.** Boşluk, dişlinin ilettiği tork sıfırdan geçtiğinde devreye girer. Kolda bu tork, sabit yerçekimi torku ile salınımlı dinamik torkun toplamıdır. Yerçekimi bu sıfır geçişlerini açıya göre engeller ya da serbest bırakır. Dolayısıyla boşluk kaynaklı salınımın var olup olmadığı **çalışma açısı ile kontrolcü kazancının birlikte** belirlediği bir haritaya göre değişir.
 
-**Hedeflenen katkılar:**
+**Hedeflenen katkılar (güncel, 5 Kasım 2026):**
+- **Ana katkı:** kontrolcü kazancının ve bozucu gözlemci bant genişliğinin yerçekimi ön yüküne ($mg\ell\sin\theta_0$) göre önceden planlanması. Ayar tablosu tanımlama fonksiyonu haritasından türetilir ve dijital ikizde doğrulanır. Hedef, boşluk kaynaklı salınımı tüm açılarda önlemek ve sabit kazançlı en iyi ayardan daha hızlı tepki vermek.
+- **Destek:** salınım başlangıcının yalnız motor akımı ve enkoderle tespiti (yük tarafı sensörü yok).
+- **Uygulama:** ESP32 üzerinde 1 kHz gömülü gerçekleme.
+- Sürtünme kaynaklı yapışma–kayma salınımı integral etkili kontrolde her kazançta olası olduğu için (Armstrong ve Amin 1996) planlamanın hedefi değildir; onun için ayrı bir katman (integratör ölü bandı) kullanılır.
+
+**İlk çerçevedeki katkılar (analiz, artık ana katkının aracı):**
 - Yerçekimsiz sistemlerde "sabit referans limit cycle'ı yalnızca kaydırır" sonucunun (Esbrook, Tan, Khalil 2014) yerçekimli kolda geçerli olmadığını göstermek.
 - Açı–kazanç düzleminde nicel bir harita ve kaymalı (bias) tanımlama fonksiyonuyla analitik açıklama.
 - Açıya göre ayarlanan bir bozucu gözlemci.

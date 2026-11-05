@@ -1,6 +1,83 @@
-# Framing, kapsam ve kısıtlar (taslak)
+# Framing, kapsam ve kısıtlar
 
-Çalışma notunun 1. aşaması. Seçilen yön ve gerekçesi: `framing_adaylari.md` (ana katkı B; L zorunlu bileşen; H motivasyon; O uzantı). Literatür taraması: `../literatur/son_tarama_2026-10-24.md`.
+Çalışma notunun 1. aşaması. **Güncel çerçeve: 0. bölüm (5 Kasım 2026, danışmanla uzlaşıldı).** 1–8. bölümler ilk çerçevedir (24 Ekim): sınır öngörüsü analizi artık amacın kendisi değil, 1. bileşenin aracıdır ve bu yüzden geçerliliğini korur.
+
+İlk çerçevenin seçimi ve gerekçesi: `framing_adaylari.md`. Literatür: `../literatur/son_tarama_2026-10-24.md` (ilk çerçeve), `../literatur/kontrol_taramasi/hedefli_tarama_2026-11-05.md` ve `../literatur/okuma_notlari.md` (güncel çerçeve).
+
+## 0. Çerçeve güncellemesi (5 Kasım 2026): analizden tasarıma
+
+### Neden değişti
+
+İlk çerçeve salınım sınırını **öngörüyordu**. Danışmanla yapılan değerlendirmede, sınırı bilmenin asıl değerinin onu **kullanmak** olduğu sonucuna varıldı: sınır biliniyorsa kontrolcü, kolun hangi açıda olduğuna göre önceden ayarlanıp salınım hiç başlatılmayabilir. Ağırlık analizden tasarıma kaydı. DF + dijital ikiz analizi (4a–4b, 6. ve 7. bölümler) atılmadı; ayar tablosunu üreten araç oldu.
+
+### Güncel ana soru
+
+Yerçekimi etkisindeki tek motorlu, dişli boşluklu bir eklemde, kontrolcü kazancı ve gözlemci bant genişliği yerçekimi ön yükünün açıya bağlı değerine (mgℓ·sin θ₀) göre önceden planlanırsa, boşluk kaynaklı kendiliğinden salınım tüm çalışma açılarında, yük tarafı sensörü olmadan, sabit kazançlı en iyi ayardan daha iyi bir tepki hızıyla önlenebilir mi?
+
+### Üç bileşen
+
+| # | Bileşen | Rolü | Durum |
+|---|---|---|---|
+| 1 | **Açıya göre önceden planlanan kontrolcü ve gözlemci.** Kazanç ve DOB/ESO bant genişliği, θ₀'daki yerçekimi ön yüküne göre bir tablodan seçilir. Tablo, DF haritasından türetilir ve dijital ikizde doğrulanır. | Ana katkı | Literatürde doğrudan rakip bulunmadı (aşağıda) |
+| 2 | **Yalnız motor tarafı sinyallerle salınım başlangıcı tespiti** (motor akımı + enkoder, yük tarafı sensörü yok). Planlama kaçırırsa (model hatası, aşınma) emniyet ağı. | Destek | Çok öncülü var, tek başına yeni değil; sabit hedefte kendiliğinden başlayan LC'nin tespiti olarak konumlanır |
+| 3 | **ESP32 üzerinde 1 kHz gömülü gerçekleme.** | Uygulama | — |
+
+AS5600 kol açısı sensörü düzenekte kalır ama **yalnız doğrulama için** kullanılır; kontrolcü onu görmez.
+
+### Kapsam kararı: boşluk kaynaklı salınım
+
+Armstrong ve Amin (1996, *Automatica*) şunu kanıtlıyor: statik sürtünme (yapışma) varsa, integral etkili bir konum kontrolcüsünde (PID ya da eşdeğer integral etkisi taşıyan ESO/DOB) yapışma–kayma salınımı, **kararlılığı sağlayan her kazanç ayarında** olası bir harekettir; DF de bunu güvenilir öngöremez. Dolayısıyla:
+
+- Ana katkı **boşluk kaynaklı** salınıma odaklanır. Bu salınımın sınırı açıya bağlıdır (yerçekimi ön yükü) ve planlamayla önlenebilir.
+- **Sürtünme kaynaklı** yapışma–kayma salınımı kazanç planlamasıyla giderilmeye çalışılmaz. Bunun için bilinen bir önlem (integratör ölü bandı ya da integratör sıfırlama) ayrı bir katman olarak konur ve her iki kontrolcüde de (sabit ve planlanan) aynı tutulur. Böylece karşılaştırma adil kalır.
+- İlk çerçevedeki **L bileşeni** (açı taramasıyla kaynak ayrıştırma) bu yüzden daha da önemli: deneyde görülen salınımın boşluktan mı sürtünmeden mi geldiği ayırt edilmeden planlamanın başarısı ölçülemez.
+
+### Ek hipotezler
+
+- **H5.** Açıya göre planlanan kontrolcü, 0–180° aralığının tamamında boşluk kaynaklı salınım üretmez ve ortalama yerleşme süresi, aynı aralıkta salınımsız kalan en iyi sabit kazançlı ayara göre kısadır (sabit ayar en kötü açıya, yani 0° ve 180° civarına göre seçilmek zorunda olduğu için yavaştır).
+- **H6.** Salınım başlangıcı yalnız motor akımı ve enkoderle, yük tarafı sensörüne göre birkaç salınım periyodu içinde tespit edilebilir.
+
+### Ek başarı ölçütleri (öneri)
+
+| # | Ölçüt | Hedef |
+|---|---|---|
+| B8 | Salınımsız açı aralığı | Planlanan: 0–180° tamamı (ölçülen tüm açılarda boşluk kaynaklı LC yok) |
+| B9 | Tepki hızı | Ortalama yerleşme süresi, salınımsız en iyi sabit ayara göre en az %30 kısa |
+| B10 | Tespit | Tespit gecikmesi ≤ 3 salınım periyodu; salınımsız deneylerde yanlış alarm ≤ %5 |
+| B11 | Gömülü gerçekleme | 1 kHz döngüde tablo araması + gözlemci + tespit, döngü süresinin ≤ %50'si |
+
+**Karşılaştırma tabanları:** (i) en kötü açıya göre ayarlanmış sabit kazanç, (ii) tepkisel bir yöntem (Piao 2020'nin hataya dayalı anahtarlama kuralı ya da benzeri), (iii) planlamasız ama tespit + kazanç düşürmeli sürüm.
+
+### Literatür kontrolü (5 Kasım 2026)
+
+Tarama: IEEE Xplore 13 sorgu, Web of Science 6 sorgu, web 9 sorgu; 8 makalenin tam metni okundu, 1'inin yalnız özeti. Ayrıntılar `../literatur/okuma_notlari.md`.
+
+| Çalışma | Yerçekimi | Boşluk | Yük sensörsüz | Açıya göre planlama | LC analizi | Bizim için |
+|---|---|---|---|---|---|---|
+| Zhang 2023 *IJCIM* | ~ (duruşa bağlı boşluk) | ✓ | ✓ | ~ ileri besleme önerisi | ✗ | Açık çevrim telafi; risk değil |
+| Li 2026 *Mechatronics* | ✗ | ✓ | ✗ | ✗ (açı bağımlılığı redüktör geometrisi) | ✗ | Risk değil |
+| Dai 2026 *MSSP* | ✗ | ✓ | ✗ | ✗ | ✗ | Bileşen 2 öncülü |
+| Piao 2020 *IFAC* | ✗ | ✗ | ✓ | ✗ (tepkisel anahtarlama) | ✓ DF | Yöntem kaynağı, karşılaştırma tabanı |
+| Weigand 2021 *RCIM* | ✓ ileri beslemede | ✓ | ✗ | ✗ | ✗ | Risk değil |
+| Ruderman–Iwasaki 2016 *TIE* | ✓ mgℓ·sin q | ✗ (histerezis) | ✓ | ✗ | ✗ | **En yakın kurulum**, anılmalı |
+| Armstrong–Amin 1996 *Automatica* | ✗ | ✗ | — | ✗ | ✓ kesin | Kapsam kararının dayanağı |
+| Han 2016 *Nonlinear Dyn.* | ✗ | ✓ | ✓ | ✗ | ✗ | Bileşen 2 öncülü |
+| Ahangarian Abhari 2019 *TIMC* (özet) | ? | ✓ | ? | ✗ | ✗ | Özete göre düşük risk |
+| **Bu çalışma** | ✓ | ✓ | ✓ | ✓ | ✓ | |
+
+**Sonuç:** "Yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanan kazanç ve gözlemci bant genişliğiyle boşluk kaynaklı salınımı önlemek" yapan bir çalışma bulunamadı. Destekleyici yan kanıt: Ruderman–Iwasaki 2016'da kayan kip ek terimi kol 0°'deyken salınım üretiyor, 90°'de üretmiyor.
+
+### İlk çerçeveden ne değişti, ne kaldı
+
+| Konu | İlk çerçeve (24 Ekim) | Güncel (5 Kasım) |
+|---|---|---|
+| Amaç | Sınırı öngörmek ve deneyle doğrulamak | Sınırı kullanarak salınımı önleyen kontrolcü |
+| DF + dijital ikiz | Sonucun kendisi | Ayar tablosunu üreten araç |
+| Kol açısı sensörü (AS5600) | θ_d ölçümü için | Yalnız doğrulama; kontrolcü görmez |
+| L (kaynak ayrıştırma) | Zorunlu bileşen | Zorunlu; kapsam kararıyla daha da önemli |
+| O (açıya göre harmanlama) | Uzantı | 1. bileşenin içine girdi (planlama) |
+| H (dengeleme) | Motivasyon + ölçüt | Motivasyon olarak kalır |
+| Donanım, düzenek, deney protokolü | — | Değişmedi |
 
 **Açı tanımı:** θ = 0° kol aşağı sarkık, 90° yatay, 180° dik yukarı. Yerçekimi torku T_g = mgℓ·sin θ: 90°'de en büyük, 0° ve 180°'de sıfır.
 
