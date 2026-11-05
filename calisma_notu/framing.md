@@ -50,6 +50,21 @@ AS5600 kol açısı sensörü düzenekte kalır ama **yalnız doğrulama için**
 
 **Önemli tutarsızlık:** sitedeki "3,5× daha hızlı" ve "10–170° salınımsız" sonuçları kol tarafı geri beslemeyle (kontrolcü AS5600'ü görürken) elde edildi; "0 kol tarafı sensörü" iddiası o sonuçlar için geçerli değildi.
 
+**Ofset tablosu denendi (5 Kasım 2026, `../simulasyon/5_planlama/ofset_tablosu.m`).** Motor tarafı P–PI, motor hedefi φ_ref = θ_ref + sign(sin θ_ref)·r + m g l sin θ_ref / K_s (`kol_benzetim.m`, `p.ofset`). 0–180° × r_gs 0,3/0,5/0,7, 63 hücre, hiçbirinde salınım yok:
+
+| Tablo | 10–170° kalıcı hata (ort / en çok) | 180° |
+|---|---|---|
+| Ofsetsiz | 2,43° / 2,88° | −1,54° |
+| Tam model, ideal enkoder | 0,000° / 0,000° | **+3,07°** |
+| Tam model, 0,27° enkoder | 0,13° / 0,27° (bir enkoder adımı) | +3,21° |
+| r %20 yanlış | 0,30° / 0,31° (hata ≈ Δr, sabit) | +3,38° ya da −0,31° |
+| K_s %20 yanlış | 0,15–0,23° / 0,23–0,34° (90°'de en büyük) | +3,07° |
+
+- 0°, 5° ve 175° de düzeliyor; 0°'de ofsete hiç gerek yok (kol boşluğun ortasında kalıyor).
+- **180° tek açık nokta:** ön yük sıfır, kolun hangi yüze devrileceği dinamiğe bağlı. Tablo yanlış yüzü varsayınca hata 2r ≈ 3° oluyor, yani ofsetsizden kötü. Burada kolun hangi yüze yaslandığını bilmek (θ_d'nin işareti) gerçekten gerekli; θ_d kestirimi için tek ama somut kullanım yeri.
+- Doğruluğu tanılama belirliyor: r hatası doğrudan, K_s hatası sin θ ile ölçekli olarak kalıcı hataya geçiyor. Bu yüzden r ve K_s'nin motor sinyallerinden çevrim içi tanılanması doğal bir sonraki adım.
+- Henüz sınanmadı: sürtünmeli durumda motor tarafı geri besleme + ofset; yük değişimi (m g l bilinmiyorsa).
+
 **Açık karar (kullanıcıya ait):** çerçeve bu bulguya göre yeniden düşünülmeli. Kazanç planlaması boşluk LC'sini önlemek için gerekçelendirilmişti; motor tarafı geri beslemede bu salınım ikizde zaten yok. Seçenekler kullanıcıya metinle sunuldu.
 
 **Geri dönüş noktası:** (ii) beklenenden çok zor ya da telafiyi bozacak kadar hatalı çıkarsa (i)'e dönülebilir; o zaman çerçeve "kol sensörlü telafi" olur, H6 ve "kol sensörü yok" iddiası düşer. Konum döngüsü motor tarafında 0–170°'deki başarıyı bozarsa kol tarafı geri beslemeye dönülür ve bu fark yazıda açıkça belirtilir.

@@ -28,6 +28,8 @@ function out = kol_benzetim(p, theta0_deg, wc)
 % İsteğe bağlı konum kaynağı (varsayılan 'kol'): p.Pkaynak = 'motor' ise e = th_ref - phi_ölçülen
 %   (motor enkoderi, nicemleme p.qM); kontrolcü kol sensörünü hiç görmez. Kol, boşluğun bir
 %   ucunda ve dişli esnemesi kadar hedeften kayık durabilir (kalıcı hata <= r + tau_s/Ks).
+% p.ofset [rad] (skaler ya da her benzetim için bir değer): e = th_ref + ofset - ölçülen.
+%   Motor tarafı geri beslemede boşluk + dişli esnemesi telafisi için (ofset_tablosu.m).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df t) [N m] kola etki eder,
 % p.dT verilirse t >= dT'de kesilir. p.x0, p.z0: önceki benzetimin son durumundan sürdürme.
 
@@ -44,6 +46,7 @@ ppi = isfield(p,'kontrol') && strcmp(p.kontrol,'PPI');
 if ppi, kpP = wc;  KV = p.KV.*ones(1,n);  KI = p.KI.*ones(1,n); end
 motorD = strcmp(p.Dkaynak,'motor');
 motorP = isfield(p,'Pkaynak') && strcmp(p.Pkaynak,'motor');  % konum hatası motor tarafından (phi)
+ofs = zeros(1,n);  if isfield(p,'ofset'), ofs = p.ofset(:)'.*ones(1,n); end  % hedef ofseti [rad]
 
 % Başlangıç: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
 x = zeros(4,n);
@@ -78,7 +81,7 @@ for i = 0:nStep-1
             vhat = vhat + aV*((yv - yv_prev)/p.Ts - vhat);
             yv_prev = yv;  v = vhat;
         end
-        e  = th_ref - thm;
+        e  = th_ref + ofs - thm;
         if ppi
             ev = kpP.*e - v;                       % hız hatası (kol tarafı)
             u0 = KV.*ev + KI.*z;
