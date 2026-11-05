@@ -111,6 +111,40 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
 </section>
 
 <section>
+  <h2><span class="no">0</span>Biz ne yapacağız</h2>
+  <p>Kısaca: bir <b>kontrol algoritması</b> tasarlıyoruz. Önce bilgisayardaki dijital ikizde (MATLAB) çalıştığını gösteriyoruz, sonra aynı algoritmayı bir mikrodenetleyicide (ESP32) gerçek kolda çalıştırıyoruz. Güç elektroniği ya da sürücü tasarımı yok, sürücü hazır kart (DRV8874).</p>
+  <h3>Algoritma (asıl katkı: matematik + MATLAB)</h3>
+  <p>Kolun her açısında sistem farklı davranıyor, çünkü yerçekiminin dişliyi bastırma miktarı açıyla değişiyor. Bu yüzden her açı için ayrı bir ayar seçiyoruz. Bir derleyicinin hedef işlemciye göre farklı optimizasyon seçmesine benzer.</p>
+  <ol>
+    <li><b>Açı başına kazanç tablosu:</b> yerçekimli tanımlama fonksiyonu (DF) analizinden çıkıyor. İlk sürüm hazır.</li>
+    <li><b>180° önlemi ve sürtünme katmanı:</b> kol dik yukarıdayken çıkan salınıma ve yapışma–kayma "avlanmasına" karşı ek önlemler (ör. integratör ölü bandı).</li>
+    <li><b>Bozucu gözlemcisi (DOB/ESO):</b> gözlemcinin bant genişliğini de açıya göre tabloya eklemek.</li>
+    <li><b>Sarsıntısız geçiş (bumpless transfer):</b> kol bir açıdan diğerine giderken kazanç tablodan tabloya geçer. Bu geçiş motora darbe olarak yansımamalı.</li>
+    <li><b>Salınım tespiti:</b> kol sensörü kullanmadan, yalnız motor akımı ve enkoderle salınımın başladığını anlamak.</li>
+  </ol>
+  <h3>Mimari</h3>
+  <ul>
+    <li><b>Dijital ikiz → ESP32, birebir taşıma:</b> ikizdeki filtre ve kestirici, firmware'dekinin aynısı olmalı. Aksi halde ikizde gösterilen sonuç gerçek kolda geçerli olmaz.</li>
+    <li><b>Firmware iskeleti:</b> 1 kHz zamanlayıcı kesmesiyle çalışan bir kontrol döngüsü. Her turda sırasıyla sensör okuma, tablo araması, gözlemci, kontrol, tespit ve kayıt yapılır. Bu işler döngü süresinin en fazla yarısını kullanmalı.</li>
+  </ul>
+  <h3>Kodlama</h3>
+  <ul>
+    <li><b>MATLAB:</b> tasarım ve tarama betikleri (yazılıyor).</li>
+    <li><b>ESP32 C/C++ firmware</b> (henüz yazılmadı).</li>
+    <li><b>Veri kayıt ve analiz betikleri:</b> deneyden gelen veriyi ikizle karşılaştırmak için.</li>
+  </ul>
+  <div class="tbl"><table>
+    <tr><th>İş</th><th>Kaba pay</th></tr>
+    <tr><td>Analiz (DF, kararlılık, tablo)</td><td>~%25</td></tr>
+    <tr><td>Dijital ikizde tasarım ve sınama</td><td>~%25</td></tr>
+    <tr><td>C kodu (ESP32)</td><td>~%15</td></tr>
+    <tr><td>Düzenek ve deneyler</td><td>~%20</td></tr>
+    <tr><td>Değerlendirme ve yazım</td><td>~%15</td></tr>
+  </table></div>
+  <p>Alan: EEM'de kontrol sistemleri (doğrusal olmayan kontrol, kazanç planlaması, gözlemci); uygulama tarafı mekatronik.</p>
+</section>
+
+<section>
   <h2><span class="no">1</span>Problem: ölü bölge ve yerçekimi ön gerilimi</h2>
   <p>Dişli boşluğu bir <b>ölü bölge</b> (dead zone) doğrusalsızlığıdır: motor ile kol arasındaki açı farkı boşluğun içindeyken dişli tork iletmez, dışına çıkınca bir yay gibi iletir. Geri beslemeli bir döngüde bu ölü bölge, kazanç yeterince büyükse kendini sürdüren bir salınım üretir.</p>
   <p>Kol düşey düzlemde döndüğünde yerçekimi torku \(\tau_g = mg\ell\sin\theta\) dişliyi sürekli bir yüze bastırır. Elektronikteki karşılığı <b>B sınıfı kuvvetlendiricideki geçiş bozulması ve AB sınıfındaki ön gerilim</b>: ön gerilim çalışma noktasını ölü bölgenin dışına taşır. Burada ön gerilim kendiliğinden var, ama büyüklüğü açıyla değişiyor:</p>
