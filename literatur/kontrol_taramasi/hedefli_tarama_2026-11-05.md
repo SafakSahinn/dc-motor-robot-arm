@@ -93,6 +93,25 @@ Kurtarma mümkün. Yeni çerçeve:
 
 - IFAC 2020 ESO ve limit cycle (10.1016/j.ifacol.2020.12.1863): ScienceDirect bot doğrulaması çıkardı, aşılmadı. Sürtünmeyle ilgili olduğu için yenilik riski değil, yöntem kaynağı. Tarayıcıda elle açılınca okunabilir.
 
+## 3. tur: Web of Science Core Collection (aynı gün)
+
+İstinye Microsoft SSO hesabıyla girildi (oturum zaten açıktı, şifre girilmedi). Gelişmiş arama `#advancedSearchInputArea` alanına JS ile yazılıp Search düğmesine basıldı. Sonuç listesi sanal; ilk 8 kayıt görünür, gerisi kaydırınca yükleniyor.
+
+| Sorgu | Kayıt | İlgili olanlar |
+|---|---|---|
+| TS=(backlash AND ("gain schedul*" OR LPV OR "linear parameter varying")) | 9 | IEEE ile aynı (araç direksiyonu, haptik, 2016 LPV iki kütle). Yeni rakip yok. |
+| TS=(backlash AND gravit* AND ("limit cycle*" OR oscillat*)) | 2 | Düz dişli dinamiği, makro/mikro manipülatör görsel servo. Rakip yok. |
+| TS=(backlash AND (observer/adaptive/variable bandwidth OR bandwidth schedul* OR variable gain OR gain adapt*) AND (limit cycle* OR oscillat* OR servo*)) | 1 | G. Sun 2021 IET (zaten okundu) |
+| TS=((backlash OR dead zone) AND (angle/pose/posture/position/configuration-dependent) AND (control* OR observer*)) | 12 | **Li ve ark. 2026, *Mechatronics* 118** (aşağıda). **Dai ve ark. 2026, *MSSP* 258** (aşağıda). Weigand 2021 RCIM, cobot eklem tanılama, kremayer 2024 (biliniyor). |
+| TS=(backlash AND gravit* AND (observer* OR DOB OR ESO OR "extended state" OR schedul* OR adaptive)) | 3 | Takım tezgâhı tablası, iki eksenli tarayıcı. Rakip yok. |
+| TS=(backlash AND "limit cycle*" AND (detect* OR monitor* OR motor-side OR sensorless OR estimat*)) | 17 | **Di Rito ve ark. 2018 MetroAeroSpace**: uçuş eyleyicisinde limit cycle genliği ve frekansından boşluk kestirimi (sağlık izleme). Perumal–Selvaganesan 2019 *Trans. Inst. Meas. Control*: girişe bağlı Nyquist ile limit cycle öngörüsü, kesirli dereceli kontrolcüyle bastırma (yerçekimi yok). Diğerleri tanılama ve sürtünme. |
+
+### Yeni yakın çalışmalar (yalnız özet okundu)
+
+- **Li, Xie, ..., He 2026, *Mechatronics* 118 — "Dynamic dead-zone modeling and backlash compensation for rotary servo actuators based on PSO-BP neural network".** Boşluk genişliğinin **yük torkuna ve açısal konuma bağlı** olduğunu veriyle (sinir ağı) modelliyor. Asimetrik dinamik ölü bölge modeli, üzerine zaman-optimal kayan kipli telafi var. Amaç hız takibi; sinüs takibinde hız hatası %28–45 azalıyor. **Limit cycle, kararlılık sınırı, kazanç ya da gözlemci planlaması yok.** Yerçekimi açıkça geçmiyor. Bizim için anlamı: "açıya ve yüke bağlı boşluk" gözlemi 2026'da yayımlanmış. Katkımızı "boşluk açıya bağlıdır" iddiasına değil, **kapalı çevrim salınım sınırının ve kontrolcü planlamasının** açıya bağlı yerçekimi ön yükünden türetilmesine dayandırmalıyız. **Anılmalı, tam metni okunmalı.**
+- **Dai, Wan, ..., Zhou 2026, *MSSP* 258 — "A two-layered control for backlash compensation and oscillation suppression in ball screw drives".** Boşluk geçişini üç evreye ayırıyor. Yön değişiminden sonraki **motor tarafı konum artışlarıyla evreyi öngörüyor**. Tork kaybı için ileri besleme, salınım için ESO tabanlı sönüm katmanı var. Vidalı mil, yön değişimi, yerçekimi yok. 2. bileşen (motor tarafı tespit) için güncel ve güçlü bir öncül. **Anılmalı.**
+- **Di Rito 2018:** limit cycle'dan boşluk kestirimi. Ruderman 2018 ailesine eklenir.
+
 ## Kurtarma kararı (güncel)
 
 Kontrol ve kestirim çerçevesinde **ana katkı açık**: yerçekiminin açıya bağlı ön yüküne göre kontrolcü kazancını ve gözlemci bant genişliğini önceden planlayıp limit cycle'ı önlemek. Bunu yapan bir kayıt bulunamadı: IEEE 13 sorgu, web 9 sorgu, Zhang 2023 tam metin. En yakın işler ya tepkisel (G. Sun 2021, Padron 2022, Sun 2025), ya ileri beslemeli konum telafisi (Zhang 2023, 972619, 10591213), ya da yerçekimsiz LPV ve kazanç planlaması (7893560, 11616391, 9229519).
