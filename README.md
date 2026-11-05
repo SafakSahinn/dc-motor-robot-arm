@@ -2,7 +2,7 @@
 
 Tek eklemli, dişli DC motorla sürülen bir robot kolunun modellenmesi, simülasyonu ve fiziksel gerçeklenmesi. Proje, kolun doğrusal olmayan durum uzayı modeliyle başladı ve **dişli boşluğunun (backlash) ürettiği sürekli salınımların kolun çalışma açısına nasıl bağlı olduğunu** inceleyen bir araştırmaya dönüştü. **Güncel çerçeve (5 Kasım 2026):** bu açı bağımlılığını kullanarak kontrolcüyü ve gözlemciyi kolun açısına göre önceden ayarlamak ve salınımı yük tarafı sensörü olmadan hiç başlatmamak ([framing.md, 0. bölüm](calisma_notu/framing.md)).
 
-**Araştırma defteri (adım adım günlük, literatür, simülasyon, malzeme):** <https://safaksahinn.github.io/dc-motor-robot-arm/>
+**Proje sayfası (güncel çalışmanın özeti):** <https://safaksahinn.github.io/dc-motor-robot-arm/> · [ayrıntılı araştırma defteri](https://safaksahinn.github.io/dc-motor-robot-arm/defter.html)
 
 **4. adım raporu (simülasyon ve doğrulama, PDF):** [rapor/adim4_simulasyon_ve_dogrulama.pdf](rapor/adim4_simulasyon_ve_dogrulama.pdf) · [içerik ve kaynak](rapor/README.md) · [web sayfası](https://safaksahinn.github.io/dc-motor-robot-arm/adim4.html)
 

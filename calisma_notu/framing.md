@@ -32,6 +32,10 @@ Armstrong ve Amin (1996, *Automatica*) şunu kanıtlıyor: statik sürtünme (ya
 - **Sürtünme kaynaklı** yapışma–kayma salınımı kazanç planlamasıyla giderilmeye çalışılmaz. Bunun için bilinen bir önlem (integratör ölü bandı ya da integratör sıfırlama) ayrı bir katman olarak konur ve her iki kontrolcüde de (sabit ve planlanan) aynı tutulur. Böylece karşılaştırma adil kalır.
 - İlk çerçevedeki **L bileşeni** (açı taramasıyla kaynak ayrıştırma) bu yüzden daha da önemli: deneyde görülen salınımın boşluktan mı sürtünmeden mi geldiği ayırt edilmeden planlamanın başarısı ölçülemez.
 
+### Açı aralığı: 0–180° dahil (5 Kasım 2026 kararı)
+
+İlk kazanç tablosu dijital ikizde 10–170°'de salınımsız çalıştı (`../simulasyon/5_planlama/tablo_ilk.m`). Tam 180°'de (kol dik yukarı) ise ön gerilim sıfır ve denge kararsız; orada r_gs ≥ 0,20 her kazançta salınım var, yalnız ≈ 0,15'te dar bir pencere kalıyor (`inceleme_180.m`). 5° ötede (175°) kol 0,55'e kadar sakin. **Karar: 0° ve 180° kapsamda kalıyor.** 180° için planlamaya ek bir önlem araştırılacak (ilk aday: integratör ölü bandı ya da sıfırlama; sürtünme katmanıyla aynı mekanizma). Önlem bulunamazsa 180° "yöntemin sınırı" olarak raporlanır.
+
 ### Ek hipotezler
 
 - **H5.** Açıya göre planlanan kontrolcü, 0–180° aralığının tamamında boşluk kaynaklı salınım üretmez ve ortalama yerleşme süresi, aynı aralıkta salınımsız kalan en iyi sabit kazançlı ayara göre kısadır (sabit ayar en kötü açıya, yani 0° ve 180° civarına göre seçilmek zorunda olduğu için yavaştır).

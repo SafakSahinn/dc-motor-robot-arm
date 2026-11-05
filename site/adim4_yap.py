@@ -186,7 +186,7 @@ sayfa = f"""<!doctype html>
 <body>
 <div class="wrap">
 <nav aria-label="Rapor bölümleri">
-  <a class="geri" href="index.html">← Çalışma notu</a>
+  <a class="geri" href="defter.html">← Çalışma notu</a>
   <div class="lbl">4. adım raporu</div>
 {nav}
 </nav>
@@ -204,7 +204,7 @@ try:
 except Exception:
     SAYFA = None
 ps = f"{SAYFA} sayfa, " if SAYFA else ""
-sayfa = sayfa.replace("</header>", f"""  <div class="baglar"><a href="{PDF}">PDF sürümü ({ps}model dosyaları gömülü)</a><a href="{GH}/tree/main/simulasyon/simulink">Model dosyaları</a><a href="index.html">Çalışma notuna dön</a></div>
+sayfa = sayfa.replace("</header>", f"""  <div class="baglar"><a href="{PDF}">PDF sürümü ({ps}model dosyaları gömülü)</a><a href="{GH}/tree/main/simulasyon/simulink">Model dosyaları</a><a href="defter.html">Çalışma notuna dön</a></div>
 </header>""", 1)
 open(HEDEF, "w", encoding="utf-8", newline="\n").write(sayfa)
 print(f"{HEDEF}: {len(sayfa)//1024} KB, {len(menu)} menü bölümü, {len(gorseller)} görsel + video")
