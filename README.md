@@ -52,11 +52,12 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 
 **Hipotez.** Boşluk, dişlinin ilettiği tork sıfırdan geçtiğinde devreye girer. Kolda bu tork, sabit yerçekimi torku ile salınımlı dinamik torkun toplamıdır. Yerçekimi bu sıfır geçişlerini açıya göre engeller ya da serbest bırakır. Dolayısıyla boşluk kaynaklı salınımın var olup olmadığı **çalışma açısı ile kontrolcü kazancının birlikte** belirlediği bir haritaya göre değişir.
 
-**Hedeflenen katkılar (güncel, 5 Kasım 2026):**
-- **Ana katkı:** kontrolcü kazancının ve bozucu gözlemci bant genişliğinin yerçekimi ön yüküne ($mg\ell\sin\theta_0$) göre önceden planlanması. Ayar tablosu tanımlama fonksiyonu haritasından türetilir ve dijital ikizde doğrulanır. Hedef, boşluk kaynaklı salınımı tüm açılarda önlemek ve sabit kazançlı en iyi ayardan daha hızlı tepki vermek.
-- **Destek:** salınım başlangıcının yalnız motor akımı ve enkoderle tespiti (yük tarafı sensörü yok).
+**Hedeflenen katkılar (güncel, 5 Kasım 2026 akşam):**
+- **Temel (bilinen, anılır):** kol sensörsüz motor tarafı konum döngüsü + açıya göre ofset tablosu ($\varphi_{ref} = \theta_{ref} + s\,r + mg\ell\sin\theta_{ref}/K_s$; Neubauer ve ark. 2015). Dijital ikizde 0–180°'de boşluk salınımı yok, 10–175°'de kalıcı hata ≤ 0,27°.
+- **Ana katkı:** 180° çevresinde, yerçekimi ön yükü sıfıra inince kolun boşluğun hangi yüzüne yaslandığını ($s$) **yalnız motor akımı ve enkoderle** kestirmek (tork gözlemcisi + küçük tork darbesiyle aktif yoklama). Belirsiz bandın tanımı ve gözlenebilirlik sınırı dahil.
 - **Uygulama:** ESP32 üzerinde 1 kHz gömülü gerçekleme.
-- Sürtünme kaynaklı yapışma–kayma salınımı integral etkili kontrolde her kazançta olası olduğu için (Armstrong ve Amin 1996) planlamanın hedefi değildir; onun için ayrı bir katman (integratör ölü bandı) kullanılır.
+- **Kapsam dışı:** $r$ ve $K_s$'nin çevrim içi tanılanması (bir kez, bilinen yöntemle ölçülür). Sürtünme kaynaklı yapışma–kayma salınımı için ayrı bir katman (integratör ölü bandı; Armstrong ve Amin 1996).
+- Önceki çerçeve (açıya göre kazanç ve gözlemci planlaması, kol sensörlü) geri dönüş noktası olarak `calisma_notu/framing.md` 0. bölümde duruyor.
 
 **İlk çerçevedeki katkılar (analiz, artık ana katkının aracı):**
 - Yerçekimsiz sistemlerde "sabit referans limit cycle'ı yalnızca kaydırır" sonucunun (Esbrook, Tan, Khalil 2014) yerçekimli kolda geçerli olmadığını göstermek.

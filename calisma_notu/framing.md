@@ -1,6 +1,6 @@
 # Framing, kapsam ve kısıtlar
 
-Çalışma notunun 1. aşaması. **Güncel çerçeve: 0. bölüm (5 Kasım 2026, danışmanla uzlaşıldı).** 1–8. bölümler ilk çerçevedir (24 Ekim): sınır öngörüsü analizi artık amacın kendisi değil, 1. bileşenin aracıdır ve bu yüzden geçerliliğini korur.
+Çalışma notunun 1. aşaması. **Güncel çerçeve: 0. bölüm, "GÜNCEL ÇERÇEVE KARARI (5 Kasım 2026 akşam)" alt bölümü: motor tarafı döngü + ofset tablosu + 180° çevresinde yalnız motor sinyalleriyle yüz kestirimi (ana katkı).** 0. bölümün geri kalanı (açıya göre kazanç planlaması) bu kararla arşive geçti. 1–8. bölümler ilk çerçevedir (24 Ekim): sınır öngörüsü analizi artık amacın kendisi değil, 1. bileşenin aracıdır ve bu yüzden geçerliliğini korur.
 
 İlk çerçevenin seçimi ve gerekçesi: `framing_adaylari.md`. Literatür: `../literatur/son_tarama_2026-10-24.md` (ilk çerçeve), `../literatur/kontrol_taramasi/hedefli_tarama_2026-11-05.md` ve `../literatur/okuma_notlari.md` (güncel çerçeve).
 
@@ -122,7 +122,19 @@ Tarama: IEEE Xplore 13 sorgu, Web of Science 6 sorgu, web 9 sorgu; 8 makalenin t
 
 **Sonuç:** "Yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanan kazanç ve gözlemci bant genişliğiyle boşluk kaynaklı salınımı önlemek" yapan bir çalışma bulunamadı. Destekleyici yan kanıt: Ruderman–Iwasaki 2016'da kayan kip ek terimi kol 0°'deyken salınım üretiyor, 90°'de üretmiyor.
 
-### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; KARAR KULLANICIDA)
+### GÜNCEL ÇERÇEVE KARARI (5 Kasım 2026 akşam, kullanıcı onayladı)
+
+**Seçilen:** Temel (motor tarafı döngü + açıya göre ofset tablosu, bilinen yöntem, anılır) + **Katkı 1 ana katkı** (180° çevresinde, yerçekimi ön yükü sıfırken kolun boşluğun hangi yüzüne yaslandığını yalnız motor akımı + enkoderle kestirip ofset işaretini seçmek). **Katkı 2 kapsam dışı:** r ve K_s bilinen bir yöntemle (motor akımı + enkoder; Márton–Lantos 2009 / Gebler–Holtz 1998 tarzı) bir kez ölçülüp tabloya yazılır.
+
+**Gerekçe:** amaç EEM alanında bir kontrol algoritması; çevrim içi mekanik parametre tanılaması kullanıcının alanının dışında kalıyor. Danışmanın belirttiği gibi, birden fazla bilinen yöntemi birleştirerek yapılan çalışma geçerli; özgünlük, birleşimin çözdüğü köşe durumda (sıfır torkta yüz belirsizliği).
+
+**Bu karardan çıkan iş sırası:** (1) sürtünmeli ikizde motor tarafı + ofset; belirsiz bandın tanımı (akım işaretinin yüzü söylemediği açılar); (2) üst sınır: ölçülen θ_d işaretiyle ofset seçimi 180°'yi düzeltiyor mu (sensör kararındaki ara yolun (i) adımı); (3) yalnız motor sinyalleriyle yüz kestirici (tork gözlemcisi + küçük tork darbesiyle yoklama); (4) mgℓ değişimine duyarlılık.
+
+**Bu kararla geçersizleşen/arşive giden:** üç bileşen tablosundaki 1. bileşen (açıya göre kazanç/gözlemci planlaması) ve 2. bileşen (salınım başlangıcı tespiti), H5, B8–B10 önerileri; bunlar kol sensörlü döngü için kurulmuştu. Geri dönüş noktası olarak duruyorlar. Yeni hipotez ve ölçütler belirsiz bant tanımlandıktan sonra yazılacak.
+
+**Geri dönüş noktaları:** yüz kestirici yalnız motor sinyalleriyle tutmazsa → kol sensörlü geri besleme + kazanç planlaması; deneyde r ya da K_s zamanla belirgin değişirse → Katkı 2 yeniden açılır; 180° hiçbir yolla düzelmezse → "yöntemin sınırı".
+
+### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; karar yukarıda)
 
 Motor tarafı geri beslemede boşluk salınımı ikizde kaybolunca (yukarıda, sensör kararı) kazanç planlamasının gerekçesi zayıfladı. Yerine önerilen çerçeve:
 

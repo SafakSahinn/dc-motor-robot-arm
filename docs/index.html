@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Açıya Göre Planlanan Kontrol</title>
+<title>Sensörsüz Boşluk Telafisi</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Sade ana sayfa: tek sütun, kısa bölümler. Ayrıntılar defter.html'de. */
@@ -98,8 +98,8 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
 <main>
 <header>
   <div class="kicker">Araştırma · Kontrol sistemleri · Mekatronik</div>
-  <h1>Dişli boşluklu robot ekleminde açıya göre planlanan kontrol</h1>
-  <p>Ucuz dişli motorlardaki boşluk, konum kontrolünde kolun hedef etrafında durmadan salınmasına (limit cycle) yol açar. Düşey düzlemde dönen bir kolda yerçekimi bu boşluğu açıya bağlı olarak kapatır. Bu çalışma, bu etkiyi kullanarak kontrolcünün kazancını kolun açısına göre önceden ayarlıyor: salınım hiç başlamıyor, kol daha hızlı yerleşiyor ve bunun için kol tarafına ek sensör gerekmiyor.</p>
+  <h1>Dişli boşluklu robot ekleminde kol sensörsüz boşluk telafisi</h1>
+  <p>Ucuz dişli motorlardaki boşluk, kolun konumunu motordan bakarak bilmeyi zorlaştırır. Düşey düzlemde dönen bir kolda yerçekimi dişliyi bir yüze bastırır, bu yüzden kalan hata açıya göre bir tabloyla silinebilir; bu kısım bilinen bir yöntem. Kol dik yukarıdayken (180°) ise yerçekimi sıfırlanır ve kolun boşluğun hangi yüzüne yaslandığı belirsizleşir. Bu çalışmanın katkısı, bu belirsiz bölgede yüzü <b>yalnız motor akımı ve enkoderiyle</b> kestirip telafiyi buna göre seçen bir kontrol algoritması: bilinen yöntemleri birleştirip onların tanımsız bıraktığı köşe durumu çözüyor.</p>
   <div class="links">
     <a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a>
     <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing.md">Araştırma çerçevesi</a>
@@ -111,26 +111,27 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
 <section>
   <h2>Kısaca</h2>
   <div class="stats">
-    <div class="stat"><b>3,5×</b><span>sabit kazançlı en iyi ayardan daha hızlı yerleşme (dijital ikiz, 20–160°)</span></div>
-    <div class="stat"><b>10–170°</b><span>arasında hiçbir açıda salınım yok (dijital ikiz)</span></div>
-    <div class="stat"><b>0</b><span>kol tarafı sensörü: kontrolcü yalnız motor enkoderini ve akımını görür</span></div>
+    <div class="stat"><b>0 / 114</b><span>açı × kazanç denemesinde boşluk salınımı yok (motor tarafı döngü, dijital ikiz)</span></div>
+    <div class="stat"><b>≤ 0,27°</b><span>kalıcı hata 10–175° arasında, açıya göre ofset tablosuyla (gerçekçi enkoder)</span></div>
+    <div class="stat"><b>180°</b><span>tek açık nokta: yanlış yüz varsayılırsa hata ≈ 3°. Çalışmanın katkısı burada</span></div>
   </div>
-  <p>Sonuçlar henüz dijital ikizden (ayrıntılı benzetim modeli). Fiziksel düzenek hazırlanıyor.</p>
-  <div class="note"><b>Yeniden inceleniyor (5 Kasım)</b>Yukarıdaki 3,5× ve 10–170° sonuçları ikizde kontrolcü kol açısını görürken (kol tarafı geri besleme) elde edildi. Kol sensörsüz (motor tarafı) geri beslemede boşluk salınımı ikizde hiç çıkmıyor, ama kol hedefin 1,5–2,9° gerisinde kalıyor. Çerçeve buna göre yeniden değerlendiriliyor.</div>
+  <p>Sonuçlar henüz dijital ikizden (ayrıntılı benzetim modeli). Kontrolcü kol açısını görmüyor; kol sensörü (AS5600) yalnız hakem. Fiziksel düzenek hazırlanıyor.</p>
+  <div class="note"><b>Çerçeve değişti (5 Kasım)</b>Önceki manşetler (kazanç planlamasıyla 3,5× hızlı yerleşme, 10–170° salınımsız) kontrolcü kol açısını görürken alınmıştı. Kol sensörsüz döngüde o salınım zaten çıkmıyor; çalışma bu yüzden yeniden çerçevelendi. Eski sonuçlar 3. ve 4. bölümde arşiv olarak duruyor.</div>
 </section>
 
 <section>
   <h2><span class="no">0</span>Biz ne yapacağız</h2>
   <p>Kısaca: bir <b>kontrol algoritması</b> tasarlıyoruz. Önce bilgisayardaki dijital ikizde (MATLAB) çalıştığını gösteriyoruz, sonra aynı algoritmayı bir mikrodenetleyicide (ESP32) gerçek kolda çalıştırıyoruz. Güç elektroniği ya da sürücü tasarımı yok, sürücü hazır kart (DRV8874).</p>
   <h3>Algoritma (asıl katkı: matematik + MATLAB)</h3>
-  <p>Kolun her açısında sistem farklı davranıyor, çünkü yerçekiminin dişliyi bastırma miktarı açıyla değişiyor. Bu yüzden her açı için ayrı bir ayar seçiyoruz. Bir derleyicinin hedef işlemciye göre farklı optimizasyon seçmesine benzer.</p>
+  <p>Yaklaşım: bilinen birkaç yöntemi tek bir kontrolcüde birleştirip, onların hiçbirinin çözmediği bir köşe durumu (kol dik yukarıda, yerçekimi sıfır) için yeni bir parça eklemek. Yazılımdaki karşılığı: herkesin kullandığı bir protokolün üstüne, protokolün tanımsız bıraktığı durumu yöneten bir modül yazmak.</p>
   <ol>
-    <li><b>Açı başına kazanç tablosu:</b> yerçekimli tanımlama fonksiyonu (DF) analizinden çıkıyor. İlk sürüm hazır.</li>
-    <li><b>180° önlemi ve sürtünme katmanı:</b> sürtünmenin yol açtığı yapışma–kayma "avlanmasına" karşı integratör ölü bandı (hazır). Kol dik yukarıdayken çıkan salınıma karşı <b>boşluk telafisi</b>: kontrolcü motor ile kol arasındaki açı farkını (θ<sub>d</sub>) izler, yön değiştirirken motoru boşluğun öbür yüzüne hızla atlatır (aşağıda, Kararlar).</li>
-    <li><b>Bozucu gözlemcisi (DOB/ESO):</b> gözlemcinin bant genişliğini de açıya göre tabloya eklemek.</li>
-    <li><b>Sarsıntısız geçiş (bumpless transfer):</b> kol bir açıdan diğerine giderken kazanç tablodan tabloya geçer. Bu geçiş motora darbe olarak yansımamalı.</li>
-    <li><b>Salınım tespiti:</b> kol sensörü kullanmadan, yalnız motor akımı ve enkoderle salınımın başladığını anlamak.</li>
+    <li><b>Motor tarafı konum döngüsü</b> (bilinen): kontrolcü yalnız motor enkoderini görür, boşluk döngünün dışında kalır, salınım çıkmaz. İkizde hazır.</li>
+    <li><b>Açıya göre ofset tablosu</b> (bilinen, Neubauer 2015): motor hedefi = kol hedefi + yüz × boşluk + yerçekimi torku / dişli sertliği. Kalıcı hatayı siler. İkizde hazır.</li>
+    <li><b>Yüz kestirici, asıl katkı:</b> 180° çevresinde yerçekimi torku sürtünme ve akım gürültüsünden küçükleşince akımın işareti yüzü söylemez. Üç adım: (a) bu belirsiz bandı tanımlamak, (b) orada yalnız motor sinyalleriyle yüzün ne kadar bilinebileceğini göstermek, (c) çalışan bir yöntem: motor tarafı tork gözlemcisi + küçük bir tork darbesiyle aktif yoklama (Gebler–Holtz 1998 fikrinin uyarlaması). Kestirilen yüz, ofset tablosunda doğru işareti seçer.</li>
+    <li><b>Sürtünme katmanı</b> (bilinen): yapışma–kayma "avlanmasına" karşı integratör ölü bandı. İkizde hazır.</li>
+    <li><b>ESP32 gömülü gerçekleme:</b> hepsi 1 kHz döngüde.</li>
   </ol>
+  <p>Boşluk (r) ve dişli sertliği (K<sub>s</sub>) bilinen bir yöntemle (motor akımı + enkoder) bir kez ölçülüp tabloya yazılır; bunların çevrim içi tanılanması bu çalışmanın konusu değil (aşağıda, Kararlar).</p>
   <h3>Kararlar: neyi neden seçtik</h3>
   <p><b>θ<sub>d</sub> nereden gelecek?</b> Boşluk telafisi için kontrolcünün, dişlinin boşluğun neresinde olduğunu bilmesi gerekiyor: θ<sub>d</sub> = motor açısı / N − kol açısı.</p>
   <div class="tbl"><table>
@@ -142,16 +143,16 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   <p><b>Neden ara yol:</b> zor işe girmeden önce fikrin kendisini sınıyoruz, son kontrolcüde de kol sensörü kullanmıyoruz. Kol sensörü yalnız referans ve doğrulama için kalıyor.</p>
   <p><b>Bununla gelen ikinci karar:</b> konum döngüsü de motor tarafına geçiyor. Şimdiye kadarki ikiz konum hatasını kol açısından hesaplıyordu, bu "kontrolcü kolu görmez" ilkesiyle çelişiyordu. Önce bu değişiklikle 180° taraması yeniden yapılacak, telafi onun üzerine kurulacak.</p>
   <div class="note"><b>Geri dönüş noktası</b>Kestirim beklenenden çok zor ya da telafiyi bozacak kadar hatalı çıkarsa (i)'e döneriz; o zaman "kol sensörü yok" iddiası düşer. Motor tarafı konum döngüsü 0–170°'deki başarıyı bozarsa kol tarafı geri beslemeye döneriz ve bunu yazıda açıkça belirtiriz. 180° önlemi de tutmazsa 180° "yöntemin sınırı" olarak raporlanır.</div>
-  <h3>Yeni çerçeve önerisi: literatür ne diyor? (5 Kasım akşam)</h3>
-  <p>Konum döngüsü motor tarafına geçince boşluk salınımı ikizde kayboldu, geriye boşluk + dişli esnemesi kadar kalıcı hata kaldı. Bu hatayı açıya göre bir ofset tablosu siliyor; tek açık nokta 180°. Önerilen çerçeve üç parça. Her biri için hedefli tarama yapıldı (IEEE 15 sorgu, 4 yeni tam metin, 8 özet ve patent).</p>
+  <h3>Seçilen çerçeve (5 Kasım akşam)</h3>
+  <p>Konum döngüsü motor tarafına geçince boşluk salınımı ikizde kayboldu; kazanç planlamasının gerekçesi zayıfladı. Üç parçalı bir çerçeve önerildi ve her parça için hedefli literatür kontrolü yapıldı (IEEE 15 sorgu, 4 yeni tam metin, 8 özet ve patent).</p>
   <div class="tbl"><table>
-    <tr><th>Parça</th><th>Ne</th><th>Literatürde</th></tr>
-    <tr><td>Temel</td><td>Kol sensörsüz, motor tarafı kontrol + açıya göre ofset tablosu</td><td><span class="pill next">Yapılmış</span> Neubauer ve ark. 2015 aynı kuralı kullanıyor (tork işareti × boşluk + esneme). Anılır, katkı değil.</td></tr>
-    <tr><td>Katkı 1</td><td>180° çevresinde (yerçekimi ≈ 0) kolun boşluğun hangi yüzüne yaslandığını yalnız motor akımı ve enkoderle bulmak</td><td><span class="pill now">Boşluk var, dar</span> Doğrudan yapan yok. Mevcut kurallar (tork işareti, son hareket yönü) tam bu bölgede çalışmıyor. Yapı taşları (tork gözlemcisi, tork darbesiyle yoklama) biliniyor.</td></tr>
-    <tr><td>Katkı 2</td><td>Boşluk (r) ve dişli sertliğini (K<sub>s</sub>) motor sinyallerinden, yerçekimini ölçüm aracı yaparak çevrim içi tanılamak</td><td><span class="pill next">Kısmen yapılmış</span> Yerçekimiyle boşluk ölçümü Giovannitti ve ark. 2022'de, motor tarafından çevrim içi sertlik Li ve ark. 2026'da var. Kalan yalnız ikisinin birleşimi.</td></tr>
+    <tr><th>Parça</th><th>Ne</th><th>Literatürde</th><th>Karar</th></tr>
+    <tr><td>Temel</td><td>Kol sensörsüz, motor tarafı kontrol + açıya göre ofset tablosu</td><td>Yapılmış: Neubauer ve ark. 2015 aynı kuralı kullanıyor (tork işareti × boşluk + esneme)</td><td><span class="pill done">Alındı</span> Altyapı, anılır</td></tr>
+    <tr><td>Katkı 1</td><td>180° çevresinde (yerçekimi ≈ 0) kolun boşluğun hangi yüzüne yaslandığını yalnız motor akımı ve enkoderle bulmak</td><td>Doğrudan yapan yok. Mevcut kurallar (tork işareti, son hareket yönü) bu bölgede çalışmıyor; yapı taşları biliniyor</td><td><span class="pill done">Seçildi</span> Ana katkı</td></tr>
+    <tr><td>Katkı 2</td><td>Boşluk ve dişli sertliğini çevrim içi tanılamak</td><td>Kısmen yapılmış (Giovannitti 2022, Li 2026)</td><td><span class="pill next">Kapsam dışı</span> Bir kez ölçülür</td></tr>
   </table></div>
-  <p><b>Hüküm:</b> çerçeve bilinen yöntemlerin birleşimi + dar bir yeni parça. Özgünlük Katkı 1'e dayanmalı: yüzün akımdan okunamadığı bandı tanımlamak, orada yalnız motor sinyalleriyle neyin bilinebileceğini göstermek ve çalışan bir yöntem önermek. Yazılım benzetmesi: herkesin bildiği bir protokolü (Temel) kullanıyoruz, katkımız protokolün tanımsız bıraktığı köşe durumu (sıfır tork) çözmek.</p>
-  <div class="note"><b>Karar bekleniyor · geri dönüş noktası</b>Çerçeve henüz onaylanmadı. Katkı 1 dar bulunursa iki seçenek açık: kol sensörlü geri besleme + açıya göre kazanç planlaması (ilk 5 Kasım çerçevesi, literatürde rakipsiz ama kol sensörü gerekir) ya da çift döngü.</div>
+  <p><b>Neden böyle:</b> amaç elektrik-elektronik mühendisliği alanında bir <b>kontrol algoritması</b>. Katkı 2 daha çok mekanik parametre tanılaması, bu yüzden dışarıda bırakıldı. Danışmanın da belirttiği gibi, bilinen birden fazla yöntemi birleştirerek yeni bir sorunu çözmek geçerli bir çalışma biçimi; özgünlük, birleşimin çözdüğü köşe durumda (180°'de yüz belirsizliği).</p>
+  <div class="note"><b>Geri dönüş noktaları</b>(1) Yüz kestirici yalnız motor sinyalleriyle tutmazsa: kol sensörlü geri besleme + açıya göre kazanç planlaması (önceki çerçeve, 3.–4. bölüm, literatürde rakipsiz ama kol sensörü gerekir). (2) Deneyde boşluk ya da sertlik zamanla belirgin değişirse (ısınma, aşınma): Katkı 2 yeniden açılır. (3) 180° hiçbir yolla düzelmezse "yöntemin sınırı" olarak raporlanır.</div>
   <h3>Mimari</h3>
   <ul>
     <li><b>Dijital ikiz → ESP32, birebir taşıma:</b> ikizdeki filtre ve kestirici, firmware'dekinin aynısı olmalı. Aksi halde ikizde gösterilen sonuç gerçek kolda geçerli olmaz.</li>
@@ -165,13 +166,13 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   </ul>
   <div class="tbl"><table>
     <tr><th>İş</th><th>Kaba pay</th></tr>
-    <tr><td>Analiz (DF, kararlılık, tablo)</td><td>~%25</td></tr>
+    <tr><td>Analiz (belirsiz bant, gözlenebilirlik, kestirici tasarımı)</td><td>~%25</td></tr>
     <tr><td>Dijital ikizde tasarım ve sınama</td><td>~%25</td></tr>
     <tr><td>C kodu (ESP32)</td><td>~%15</td></tr>
     <tr><td>Düzenek ve deneyler</td><td>~%20</td></tr>
     <tr><td>Değerlendirme ve yazım</td><td>~%15</td></tr>
   </table></div>
-  <p>Alan: EEM'de kontrol sistemleri (doğrusal olmayan kontrol, kazanç planlaması, gözlemci); uygulama tarafı mekatronik.</p>
+  <p>Alan: EEM'de kontrol sistemleri (doğrusal olmayan kontrol, gözlemci ve kestirim, gömülü kontrol); uygulama tarafı mekatronik.</p>
 </section>
 
 <section>
@@ -203,49 +204,45 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
 </section>
 
 <section>
-  <h2><span class="no">2</span>Çözüm: açıya göre kazanç planlaması</h2>
-  <p>Hedef açı \(\theta_{ref}\) önceden bilindiği için o açıdaki ön gerilim de bilinir. Kontrolcünün kazancı bir tablodan, o açıda salınımın başlamayacağı en yüksek değer olarak seçilir (<i>gain scheduling</i>, planlama değişkeni hedef açı). Ek olarak, yalnız motor akımı ve enkoderle çalışan bir tespit katmanı, model hatası yüzünden yine de salınım başlarsa kazancı düşürür.</p>
+  <h2><span class="no">2</span>Çözüm: motor tarafı döngü + ofset tablosu + yüz kestirici</h2>
+  <p>Kontrolcü yalnız motor enkoderini görür. Hedef açı \(\theta_{ref}\) önce ofset tablosundan geçer: motorun gitmesi gereken açı \(\varphi_{ref} = \theta_{ref} + s\,r + mg\ell\sin\theta_{ref}/K_s\). Burada \(s = \pm 1\), kolun boşluğun hangi yüzüne yaslandığı. 10–175° arasında \(s\) yerçekimi torkunun işaretinden bellidir. 180° çevresinde belli değildir; orada \(s\)'yi yüz kestirici verir.</p>
   <figure class="scroll">
-    <svg class="diag" viewBox="0 0 900 270" role="img" aria-label="Blok şema: hedef açı kazanç tablosuna ve toplama noktasına girer, kontrolcü sürücüyü, sürücü motoru, motor dişli ölü bölgesini, dişli kolu sürer; motor enkoderi geri besler, tespit bloğu akım ve enkoderden çalışır, kol açısı sensörü yalnız doğrulama içindir">
+    <svg class="diag" viewBox="0 0 940 250" role="img" aria-label="Blok şema: hedef açı ofset tablosundan geçip toplama noktasına girer, kontrolcü sürücüyü, sürücü motoru, motor dişli ölü bölgesini, dişli kolu sürer; motor enkoderi geri besler; yüz kestirici akım ve enkoderden yüz işaretini kestirip ofset tablosuna verir; kol açısı sensörü yalnız doğrulama içindir">
       <defs><marker id="ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
-      <text class="t-lbl" x="10" y="104">θ_ref</text>
-      <line class="w" x1="58" y1="100" x2="112" y2="100" marker-end="url(#ok)"/>
-      <line class="w" x1="80" y1="100" x2="80" y2="40"/><line class="w" x1="80" y1="40" x2="150" y2="40" marker-end="url(#ok)"/>
-      <circle cx="125" cy="100" r="12" class="b"/><text class="t-sm" x="125" y="104" text-anchor="middle">Σ</text>
-      <rect class="b-new" x="152" y="20" width="150" height="40" rx="6"/><text class="t-lbl" x="227" y="38" text-anchor="middle">Kazanç tablosu</text><text class="t-sm" x="227" y="53" text-anchor="middle">K(θ_ref)</text>
-      <line class="w" x1="227" y1="60" x2="227" y2="78" marker-end="url(#ok)"/>
-      <line class="w" x1="137" y1="100" x2="168" y2="100" marker-end="url(#ok)"/>
-      <rect class="b" x="170" y="80" width="114" height="40" rx="6"/><text class="t-lbl" x="227" y="98" text-anchor="middle">Kontrolcü</text><text class="t-sm" x="227" y="113" text-anchor="middle">P–PI, 1 kHz</text>
-      <line class="w" x1="284" y1="100" x2="312" y2="100" marker-end="url(#ok)"/>
-      <rect class="b" x="314" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="364" y="98" text-anchor="middle">Sürücü</text><text class="t-sm" x="364" y="113" text-anchor="middle">DRV8874</text>
-      <line class="w" x1="414" y1="100" x2="442" y2="100" marker-end="url(#ok)"/>
-      <rect class="b" x="444" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="494" y="98" text-anchor="middle">DC motor</text><text class="t-sm" x="494" y="113" text-anchor="middle">+ redüktör</text>
-      <line class="w" x1="544" y1="100" x2="572" y2="100" marker-end="url(#ok)"/>
-      <rect class="b-nl" x="574" y="80" width="110" height="40" rx="6"/><text class="t-lbl" x="629" y="98" text-anchor="middle">Dişli boşluğu</text><text class="t-sm" x="629" y="113" text-anchor="middle">ölü bölge</text>
-      <line class="w" x1="684" y1="100" x2="712" y2="100" marker-end="url(#ok)"/>
-      <rect class="b" x="714" y="80" width="110" height="40" rx="6"/><text class="t-lbl" x="769" y="98" text-anchor="middle">Kol</text><text class="t-sm" x="769" y="113" text-anchor="middle">J, mgℓ·sin θ</text>
-      <line class="w" x1="824" y1="100" x2="868" y2="100" marker-end="url(#ok)"/><text class="t-lbl" x="874" y="104">θ</text>
-      <!-- motor enkoderi geri beslemesi -->
-      <line class="w" x1="494" y1="120" x2="494" y2="160"/><line class="w" x1="494" y1="160" x2="125" y2="160"/>
-      <line class="w" x1="125" y1="160" x2="125" y2="114" marker-end="url(#ok)"/>
-      <text class="t-sm" x="310" y="154" text-anchor="middle">motor enkoderi (θ_m / N)</text>
-      <!-- tespit -->
-      <rect class="b-new" x="300" y="190" width="170" height="40" rx="6"/><text class="t-lbl" x="385" y="208" text-anchor="middle">Salınım tespiti</text><text class="t-sm" x="385" y="223" text-anchor="middle">akım + enkoder</text>
-      <line class="w" x1="494" y1="160" x2="494" y2="210"/><line class="w" x1="494" y1="210" x2="472" y2="210" marker-end="url(#ok)"/>
-      <line class="w" x1="300" y1="210" x2="40" y2="210"/><line class="w" x1="40" y1="210" x2="40" y2="20"/><line class="w" x1="40" y1="20" x2="150" y2="20"/>
-      <line class="w" x1="140" y1="20" x2="150" y2="26" marker-end="url(#ok)"/>
-      <text class="t-sm" x="170" y="203">kazancı düşür</text>
-      <!-- doğrulama sensörü -->
-      <line class="w-d" x1="769" y1="120" x2="769" y2="200"/>
-      <rect x="704" y="200" width="130" height="40" rx="6" fill="none" stroke="var(--muted)" stroke-dasharray="5 4"/>
-      <text class="t-lbl" x="769" y="218" text-anchor="middle">AS5600</text><text class="t-sm" x="769" y="233" text-anchor="middle">yalnız doğrulama</text>
+      <text class="t-lbl" x="6" y="104">θ_ref</text>
+      <line class="w" x1="46" y1="100" x2="58" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="60" y="80" width="130" height="40" rx="6"/><text class="t-lbl" x="125" y="98" text-anchor="middle">Ofset tablosu</text><text class="t-sm" x="125" y="113" text-anchor="middle">φ_ref(θ_ref, s)</text>
+      <line class="w" x1="190" y1="100" x2="201" y2="100" marker-end="url(#ok)"/>
+      <circle cx="215" cy="100" r="12" class="b"/><text class="t-sm" x="215" y="104" text-anchor="middle">Σ</text>
+      <line class="w" x1="227" y1="100" x2="238" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="240" y="80" width="114" height="40" rx="6"/><text class="t-lbl" x="297" y="98" text-anchor="middle">Kontrolcü</text><text class="t-sm" x="297" y="113" text-anchor="middle">P–PI, 1 kHz</text>
+      <line class="w" x1="354" y1="100" x2="382" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="384" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="434" y="98" text-anchor="middle">Sürücü</text><text class="t-sm" x="434" y="113" text-anchor="middle">DRV8874</text>
+      <line class="w" x1="484" y1="100" x2="512" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="514" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="564" y="98" text-anchor="middle">DC motor</text><text class="t-sm" x="564" y="113" text-anchor="middle">+ redüktör</text>
+      <line class="w" x1="614" y1="100" x2="642" y2="100" marker-end="url(#ok)"/>
+      <rect class="b-nl" x="644" y="80" width="110" height="40" rx="6"/><text class="t-lbl" x="699" y="98" text-anchor="middle">Dişli boşluğu</text><text class="t-sm" x="699" y="113" text-anchor="middle">ölü bölge</text>
+      <line class="w" x1="754" y1="100" x2="782" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="784" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="834" y="98" text-anchor="middle">Kol</text><text class="t-sm" x="834" y="113" text-anchor="middle">J, mgℓ·sin θ</text>
+      <line class="w" x1="884" y1="100" x2="912" y2="100" marker-end="url(#ok)"/><text class="t-lbl" x="916" y="104">θ</text>
+      <line class="w" x1="564" y1="120" x2="564" y2="150"/><line class="w" x1="564" y1="150" x2="215" y2="150"/>
+      <line class="w" x1="215" y1="150" x2="215" y2="114" marker-end="url(#ok)"/>
+      <text class="t-sm" x="390" y="144" text-anchor="middle">motor enkoderi (θ_m / N)</text>
+      <rect class="b-new" x="300" y="180" width="190" height="44" rx="6"/><text class="t-lbl" x="395" y="199" text-anchor="middle">Yüz kestirici</text><text class="t-sm" x="395" y="215" text-anchor="middle">akım + enkoder, tork darbesi</text>
+      <line class="w" x1="564" y1="150" x2="564" y2="202"/><line class="w" x1="564" y1="202" x2="492" y2="202" marker-end="url(#ok)"/>
+      <line class="w" x1="300" y1="202" x2="125" y2="202"/><line class="w" x1="125" y1="202" x2="125" y2="122" marker-end="url(#ok)"/>
+      <text class="t-sm" x="140" y="195">yüz s = ±1</text>
+      <line class="w-d" x1="834" y1="120" x2="834" y2="190"/>
+      <rect x="769" y="190" width="130" height="40" rx="6" fill="none" stroke="var(--muted)" stroke-dasharray="5 4"/>
+      <text class="t-lbl" x="834" y="208" text-anchor="middle">AS5600</text><text class="t-sm" x="834" y="223" text-anchor="middle">yalnız hakem</text>
     </svg>
-    <figcaption>Yeşil bloklar bu çalışmanın katkısı, turuncu blok sorunun kaynağı olan doğrusalsızlık. Kol açısı sensörü (kesik çizgi) kontrol döngüsünde yok, yalnız deneyde doğrulama için kayıt alır.</figcaption>
+    <figcaption>Yeşil blok bu çalışmanın katkısı (yüz kestirici). Ofset tablosu ve motor tarafı döngü bilinen yöntemler. Turuncu blok sorunun kaynağı olan doğrusalsızlık. Kol açısı sensörü (kesik çizgi) kontrol döngüsünde yok, yalnız doğrulama için kayıt alır.</figcaption>
   </figure>
 </section>
 
 <section>
-  <h2><span class="no">3</span>Tablo nasıl çıkıyor: tanımlama fonksiyonu</h2>
+  <h2><span class="no">3</span>Önceki çerçeve (arşiv): kazanç tablosu ve tanımlama fonksiyonu</h2>
+  <div class="note"><b>Arşiv · geri dönüş noktası</b>3. ve 4. bölüm, kontrolcünün kol açısını gördüğü (kol sensörlü) önceki çerçeveye ait. Yüz kestirici tutmazsa bu yola dönülür; bu yüzden silinmedi.</div>
   <p>Her açı için "salınımın başladığı kazanç" <b>tanımlama fonksiyonu</b> (describing function, DF) ile hesaplanıyor. DF, ölü bölgeyi salınımın genliğine bağlı eşdeğer bir kazançla değiştirip döngüyü doğrusal gibi incelemeye izin veren klasik bir yaklaşım. Yerçekimi ön gerilimi yüzünden dişlideki sapma bir sinüs artı bir DC bileşen olduğu için iki girişli DF kullanılıyor:</p>
   <div class="eq">\(x(t) = B + A\sin\omega t, \qquad N(A,B)\,L(j\omega) = -1\)</div>
   <p>\(B\), DC dengesinden (dişlinin ortalama torku yerçekimi torkunu taşımalı) bulunur; \(L(j\omega)\) döngünün geri kalanı (kontrolcü, motor, kol). Bu denklemin çözümü varsa salınım vardır. Açı ve kazanç taranarak her açıdaki kritik kazanç çıkar. Tabloya bunun <b>%80'i</b> yazılır.</p>
@@ -256,13 +253,13 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
 </section>
 
 <section>
-  <h2><span class="no">4</span>İlk sonuç (dijital ikiz)</h2>
+  <h2><span class="no">4</span>Önceki çerçeve (arşiv): ilk sonuç</h2>
   <p>Her açıda kol hedefin 5° altından bırakılıp planlanan kazançla ve sabit kazançla (tablonun en küçük değeri, r<sub>gs</sub> = 0,24) koşuldu; ayrıca 0,2° ve 1° başlangıçlarla salınım arandı.</p>
   <div class="chart" id="c2"></div>
   <div class="legend" id="c2l"></div>
   <figcaption>Yerleşme süresi: kolun hedefin ±0,25° bandına son kez girdiği an. Ortanca (20–160°): planlanan 0,96 s, sabit 3,32 s.</figcaption>
   <details><summary>Tablo görünümü</summary><div class="tbl" id="c2t"></div></details>
-  <div class="note"><b>Açık sorun: 180°</b>Kol dik yukarıdayken hem ön gerilim sıfır hem de denge kararsız (yerçekimi kolu dengeden uzaklaştırıyor). Orada r<sub>gs</sub> ≥ 0,20 her kazançta salınım var, yalnız 0,15 civarında dar bir pencere kalıyor. Yalnız 5° ötede (175°) kol 0,55'e kadar sakin. 0° ve 180° kapsama dahil; 180° için ek önlem (integratör ölü bandı ve benzerleri) araştırılıyor.</div>
+  <div class="note"><b>Açık sorun: 180°</b>Kol dik yukarıdayken hem ön gerilim sıfır hem de denge kararsız (yerçekimi kolu dengeden uzaklaştırıyor). Orada r<sub>gs</sub> ≥ 0,20 her kazançta salınım var, yalnız 0,15 civarında dar bir pencere kalıyor. Yalnız 5° ötede (175°) kol 0,55'e kadar sakin. 0° ve 180° kapsama dahil. Bu sorun yeni çerçevede yüz kestiriciye dönüştü (2. bölüm).</div>
 </section>
 
 <section>
@@ -270,10 +267,10 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   <div class="tbl"><table>
     <tr><th>Parça</th><th>Seçim</th><th>Görevi</th></tr>
     <tr><td>Motor</td><td>JGB37-520, 1:30 redüktörlü DC motor</td><td>Eyleyici; kendi boşluğu + ayarlanabilir kaplin (0–5°)</td></tr>
-    <tr><td>Denetleyici</td><td>ESP32</td><td>1 kHz kontrol döngüsü, tablo araması, tespit</td></tr>
+    <tr><td>Denetleyici</td><td>ESP32</td><td>1 kHz kontrol döngüsü, ofset tablosu, yüz kestirici</td></tr>
     <tr><td>Sürücü</td><td>DRV8874 H köprüsü</td><td>Motora gerilim; akım sınırı ≈ 2 A</td></tr>
-    <tr><td>Akım ölçümü</td><td>INA228</td><td>Motor akımı (tork kestirimi ve tespit)</td></tr>
-    <tr><td>Kol açısı</td><td>AS5600 manyetik enkoder</td><td>Yalnız doğrulama ve referans (ikizde θ<sub>d</sub> ölçümü); son kontrolcüye girmez</td></tr>
+    <tr><td>Akım ölçümü</td><td>INA228</td><td>Motor akımı (tork gözlemcisi ve yüz kestirimi)</td></tr>
+    <tr><td>Kol açısı</td><td>AS5600 manyetik enkoder</td><td>Yalnız hakem: yüz kestiricinin doğruluğunu ölçer; son kontrolcüye girmez</td></tr>
     <tr><td>Sıcaklık</td><td>TMP117</td><td>Motor ısınmasını kayıt</td></tr>
     <tr><td>Kol</td><td>15 cm alüminyum lama + değiştirilebilir uç kütlesi</td><td>Yerçekimi torkunu açıdan bağımsız değiştirmek</td></tr>
   </table></div>
@@ -283,30 +280,32 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   <h2><span class="no">6</span>Durum</h2>
   <div class="tbl road"><table>
     <tr><td><span class="pill done">Bitti</span></td><td>Modelleme ve dijital ikiz; yerçekimli DF ve benzetimle doğrulanması; sistem tanılama planının ikizde sınanması; literatür taraması (51 tam metin)</td></tr>
-    <tr><td><span class="pill done">Bitti</span></td><td>İlk kazanç tablosu ve ikizde sınanması (yukarıda)</td></tr>
+    <tr><td><span class="pill done">Bitti</span></td><td>Önceki çerçeve: ilk kazanç tablosu ve ikizde sınanması (kol sensörlü, 3.–4. bölüm)</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>Sürtünme katmanı: yapışmalı sürtünmede ikizde 0,1° düzeyinde küçük "avlanma" çıkıyor; 0,25°'lik integratör ölü bandı bunu planlanan tabloda 10–140°'de bitiriyor (bedeli ≤ 0,3° kalıcı hata), yerleşme yine 0,9 s (sabit ayar 3,6 s)</td></tr>
-    <tr><td><span class="pill now">Sürüyor</span></td><td>180° (kol dik yukarı): integratör ölü bandı / sıfırlama salınımı <b>gidermedi</b>; salınımın kaynağı integral değil, boşluk içinde devrilen ters sarkaç. Seçilen önlem: θ<sub>d</sub> tabanlı boşluk telafisi (0. bölüm, Kararlar). İlk adım yapıldı: konum döngüsü motor tarafına alınınca 0–180°'nin hiçbirinde salınım kalmıyor (114 hücrede 0), bedeli 1,5–2,9° kalıcı hata. Açıya göre ofset tablosu (boşluk + dişli esnemesi) bu hatayı 10–175°'de gerçekçi enkoderle ≤ 0,27°'ye indiriyor (r ya da K<sub>s</sub> %20 yanlış tanılanırsa ≈ 0,3°). 180°'de kolun hangi yüze devrileceği belirsiz, tablo yanlış yüzü varsayınca hata ≈ 3°. Çerçeve kararı bekleniyor</td></tr>
-    <tr><td><span class="pill done">Bitti</span></td><td>Yeni çerçeve için literatür kontrolü (5 Kasım akşam): Temel yapılmış, Katkı 2 kısmen yapılmış, Katkı 1'de (180° çevresinde yüz kestirimi) dar ama gerçek bir boşluk var (0. bölüm)</td></tr>
-    <tr><td><span class="pill next">Sırada</span></td><td>Gerçekçi sensörlerle (enkoder nicemlemesi, hız kestirimi) yeniden sınama</td></tr>
-    <tr><td><span class="pill next">Sırada</span></td><td>Bozucu gözlemcisinin (DOB/ESO) bant genişliğinin de tabloya eklenmesi; açılar arası geçişte sarsıntısız kazanç değişimi; motor tarafı salınım tespiti</td></tr>
-    <tr><td><span class="pill next">Sırada</span></td><td>Donanım: sipariş, montaj, tanılama, açı × kazanç deneyleri; ESP32 yazılımı</td></tr>
+    <tr><td><span class="pill done">Bitti</span></td><td>Motor tarafı döngü: 0–180°'de boşluk salınımı yok (114 denemede 0). Açıya göre ofset tablosu kalıcı hatayı 10–175°'de gerçekçi enkoderle ≤ 0,27°'ye indiriyor (r ya da K<sub>s</sub> %20 yanlışsa ≈ 0,3°). 180°'de yanlış yüz varsayılırsa hata ≈ 3°</td></tr>
+    <tr><td><span class="pill done">Bitti</span></td><td>Literatür kontrolü ve çerçeve kararı (5 Kasım akşam): Temel + yüz kestirici (ana katkı); çevrim içi r/K<sub>s</sub> tanılama kapsam dışı (0. bölüm)</td></tr>
+    <tr><td><span class="pill next">Sırada</span></td><td>Belirsiz bandın ikizde tanımı: sürtünmeli ikizde motor tarafı + ofset (henüz sınanmadı) ve 180° çevresinde akımın işaretinin hangi açılarda yüzü söylemediği</td></tr>
+    <tr><td><span class="pill next">Sırada</span></td><td>Üst sınır: yüzü kusursuz bilsek (ikizde ölçülen θ<sub>d</sub>) 180° düzeliyor mu? Düzelmiyorsa kestiriciye hiç girilmez</td></tr>
+    <tr><td><span class="pill next">Sırada</span></td><td>Yalnız motor sinyalleriyle yüz kestirici: tork gözlemcisi + küçük tork darbesiyle yoklama; yük (mgℓ) değişimine duyarlılık</td></tr>
+    <tr><td><span class="pill next">Sırada</span></td><td>Donanım: sipariş, montaj, r ve K<sub>s</sub>'nin bir kez ölçülmesi, 180° çevresi deneyleri; ESP32 yazılımı</td></tr>
   </table></div>
-  <p>Kapsam notu: integral etkili bir kontrolcüde statik sürtünmenin yol açtığı yapışma–kayma salınımı her kazançta olası (Armstrong ve Amin 1996). Bu yüzden planlama yalnız boşluk kaynaklı salınımı hedefliyor; sürtünme için ayrı, bilinen bir önlem kullanılıyor.</p>
+  <p>Kapsam notu: integral etkili bir kontrolcüde statik sürtünmenin yol açtığı yapışma–kayma salınımı her kazançta olası (Armstrong ve Amin 1996). Bu yüzden sürtünme için ayrı, bilinen bir önlem (integratör ölü bandı) kullanılıyor.</p>
 </section>
 
 <section>
   <h2><span class="no">7</span>En yakın çalışmalar</h2>
   <div class="tbl"><table>
     <tr><th>Çalışma</th><th>Ne yapıyor</th><th>Bu çalışmadan farkı</th></tr>
-    <tr><td>Ghaffari ve ark. 2013, <i>IEEE/ASME TMECH</i></td><td>Boşluklu servo eksende DF ile salınım öngörüsü</td><td>Yerçekimi yok; yöntemimizin temeli</td></tr>
+    <tr><td>Ghaffari ve ark. 2013, <i>IEEE/ASME TMECH</i></td><td>Boşluklu servo eksende DF ile salınım öngörüsü</td><td>Yerçekimi yok; önceki çerçevenin temeli</td></tr>
     <tr><td>Ruderman, Iwasaki 2016, <i>IEEE TIE</i></td><td>Tek eklem + yerçekimi, yalnız motor sinyalleriyle burulma kestirimi</td><td>Boşluk yok, kazanç sabit, salınım analizi yok</td></tr>
-    <tr><td>Neubauer ve ark. 2015, <i>Mech. Sci.</i></td><td>Robot kalibrasyonunda boşluk yönünü motor torkunun işaretinden seçiyor, esnekliği motor sinyallerinden tanılıyor</td><td>Ofset tablomuzun öncülü; sıfır torkta yüz tanımsız bırakılıyor</td></tr>
+    <tr><td>Neubauer ve ark. 2015, <i>Mech. Sci.</i></td><td>Robot kalibrasyonunda boşluk yönünü motor torkunun işaretinden seçiyor, esnekliği motor sinyallerinden tanılıyor</td><td>Ofset tablomuzun öncülü; sıfır torkta yüz tanımsız bırakılıyor, bizim katkımız tam burası</td></tr>
     <tr><td>Giovannitti ve ark. 2022, <i>J. Intell. Manuf.</i></td><td>Yerçekimi torkunun sıfır geçişindeki darbeden, yalnız motor enkoderiyle boşluk kestirimi</td><td>Hareket hâlinde ve çevrimdışı; sertlik ve yüz kestirimi yok</td></tr>
+    <tr><td>Gebler, Holtz 1998, <i>IECON</i></td><td>Çıkış sensörsüz, küçük tork darbeleriyle boşluk tanılama</td><td>Yerçekimi yok, ayrı öğrenme fazı; tork darbesi fikrini yüz yoklamasına uyarlıyoruz</td></tr>
     <tr><td>Sun ve ark. 2023, <i>IEEE TIE</i></td><td>Düşey kolda boşluğu ikinci motorla ön yükleme</td><td>İki motor gerekiyor, tek açı</td></tr>
     <tr><td>Piao ve ark. 2020, <i>IFAC</i></td><td>Gözlemci bant genişliği ile salınım arasındaki bağ (DF)</td><td>Sürtünme var, boşluk ve yerçekimi yok; tepkisel anahtarlama</td></tr>
     <tr><td>Dai ve ark. 2026, <i>MSSP</i></td><td>Motor tarafı sinyallerle boşluk evresi kestirimi</td><td>Kol tarafı enkoder kullanıyor, yerçekimi yok</td></tr>
   </table></div>
-  <p>Yerçekimi ön gerilimine göre önceden planlanan kazançla boşluk salınımını önleyen bir çalışma bulunamadı. Tam liste: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md">okuma notları</a>.</p>
+  <p>Yerçekimi ön yükünün sıfıra indiği bölgede, kolun boşluğun hangi yüzüne yaslandığını yalnız motor sinyalleriyle kestiren bir çalışma bulunamadı. Tam liste: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md">okuma notları</a>.</p>
 </section>
 
 <footer>Son güncelleme: 5 Kasım 2026 · Önceki aşamaların tamamı (literatür, malzeme, düzenek seçenekleri, tanılama, günlük): <a href="defter.html">ayrıntılı araştırma defteri</a></footer>
