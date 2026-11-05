@@ -122,6 +122,29 @@ Tarama: IEEE Xplore 13 sorgu, Web of Science 6 sorgu, web 9 sorgu; 8 makalenin t
 
 **Sonuç:** "Yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanan kazanç ve gözlemci bant genişliğiyle boşluk kaynaklı salınımı önlemek" yapan bir çalışma bulunamadı. Destekleyici yan kanıt: Ruderman–Iwasaki 2016'da kayan kip ek terimi kol 0°'deyken salınım üretiyor, 90°'de üretmiyor.
 
+### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; KARAR KULLANICIDA)
+
+Motor tarafı geri beslemede boşluk salınımı ikizde kaybolunca (yukarıda, sensör kararı) kazanç planlamasının gerekçesi zayıfladı. Yerine önerilen çerçeve:
+
+- **Temel:** kol sensörsüz motor tarafı kontrol + açıya göre ofset tablosu (φ_ref = θ + sign(sin θ)·r + mgℓ sin θ / K_s).
+- **Katkı 1:** yerçekimi ön yükünün sıfıra indiği bölgede (180° ve çevresi) kolun hangi yüze yaslandığını yalnız motor akımı + enkoderle kestirip ofseti buna göre seçmek.
+- **Katkı 2:** r ve K_s'yi motor sinyallerinden, yerçekimini bilinen ve açıyla değişen bir yük olarak kullanıp çevrim içi tanılamak.
+- **Doğrulama:** AS5600 yalnız hakem.
+
+Hedefli kontrol: IEEE 15 sorgu, web 7 sorgu, 4 yeni tam metin (Gebler–Holtz 1998, Márton–Lantos 2009, Neubauer 2015, Yao 2026), 8 özet/patent; önceki okumalar bu iki soru için yeniden tarandı. Ayrıntı `../literatur/kontrol_taramasi/hedefli_tarama_2026-11-05.md` (4. tur) ve `../literatur/okuma_notlari.md`.
+
+| Parça | Hüküm | En yakın kaynaklar |
+|---|---|---|
+| Temel | **Yapılmış** | Neubauer 2015 *Mech. Sci.* (sign(motor torku)·boşluk + esneklik, aynı kural), Ruderman 2016 *TIE*, Weigand 2021 *RCIM*, CNC lost motion telafisi |
+| Katkı 1 | **Boşluk var, dar** | Doğrudan yapan yok. Neubauer sign(0) = 0 bırakıyor, Yao 2026 yüzü son hız işaretinden seçiyor; Malzahn 2014 ve Kollár 2002 sorunu yalnız gözlüyor. Yapı taşları biliniyor: tork gözlemcisi (Ruderman–Iwasaki 2016), temas kipi kestirimi (Lagerberg–Egardt 2007, Kaiser 2023), tork darbesiyle yoklama (Gebler–Holtz 1998) |
+| Katkı 2 | **Kısmen yapılmış** | r motor sinyalleriyle: Gebler–Holtz 1998, Márton–Lantos 2009, Han 2016; yerçekimini ölçüm aracı yaparak r: **Giovannitti 2022**; K_s motor tarafından: Neubauer 2015 (çevrimdışı), Li 2026 *TIA* (çevrim içi + kazanç planlama). Kalan yalnız birleşim (sabit hedefte, r ve K_s birlikte, çıkış sensörsüz) |
+
+**Sonuç:** çerçeve "bilinen yöntemlerin birleşimi + dar bir yeni parça" olarak kalıyor. Özgünlük iddiası Katkı 1'e dayanmalı ve şu üç şeyi göstermeli: (1) yüzün tork işaretinden okunamadığı bandın tanımı (|mgℓ sin θ| ≲ sürtünme + akım gürültüsü), (2) bu bantta yalnız motor sinyalleriyle yüzün gözlenebilirlik sınırı, (3) çalışan bir yöntem (ilk aday: Gebler–Holtz tarzı küçük tork darbesiyle aktif yoklama). Katkı 2 destek katmanı; anılan öncüllerin üzerine kurulur.
+
+**Teknik uyarı (Katkı 2):** durağan durumda φ = θ + sign·r + τ_g/K_s ve θ bilinmiyor; r ile K_s yalnız motor konumundan ayrılamaz. Ya akımdan τ_g okunup θ'ya çevrilir (mgℓ bilinmeli, 90° civarında duyarsız) ya da dinamik uyarım gerekir. İkizde önce gözlenebilirlik sınanmalı.
+
+**Geri dönüş noktası:** kullanıcı Katkı 1'i dar bulursa (a) kol tarafı geri besleme + kazanç planlaması (ilk 5 Kasım çerçevesi, literatürde doğrudan rakipsiz ama sensörlü) ya da (b) çift döngü seçenekleri açık kalıyor.
+
 ### İlk çerçeveden ne değişti, ne kaldı
 
 | Konu | İlk çerçeve (24 Ekim) | Güncel (5 Kasım) |

@@ -590,6 +590,63 @@ Tam metin Springer Link'te okundu (5 Kasım 2026; OpenAthens → TÜBİTAK ULAKB
 - **Kaynakçadan:** Villwock–Pacas 2009 (zaten listede); Gebler–Holtz 1998 IECON (çıkış sensörsüz boşluk tanılama: küçük tork darbeleri ya da di_q/dt tepesi; **yük bir tarafa dayalı olmalı** diyorlar → yerçekimi ön yükü durumuyla ilgili, okunacaklara eklenmeli); Malas–Chatterjee 2014 (röleyle kendinden uyarmalı salınım).
 - **Bizim için (risk değerlendirmesi): rakip DEĞİL, 2. bileşen için anılacak öncül.** Bu bir **çevrimdışı/ayrı tanılama testi** (salınımı kendisi zorla üretiyor); bizim işimiz normal regülasyon sırasında kendiliğinden başlayan LC'nin tespiti. Yerçekimi varsayımı (T_L = 0) bizim düzenekte geçersiz: yerçekimi ön yükü dişliyi bir yüzeye dayadığı için röle genliği mgℓ·sinθ₀'ı aşmadıkça boşluk geçilmez. Bu da yöntemin açıya bağlı sınırını ve bizim çerçevemizin farkını gösteriyor.
 
+---
+
+**5 Kasım 2026, akşam: "Temel + Katkı 1 + Katkı 2" çerçevesi için hedefli kontrol.** Soru: (Katkı 1) yerçekimi ön yükünün sıfıra indiği bölgede (180° ve çevresi) kolun hangi yüze yaslandığını yalnız motor akımı ve enkoderle kestirip ofseti buna göre seçmek; (Katkı 2) boşluk yarı genişliği r ve dişli sertliği K_s'yi motor sinyallerinden, yerçekimini bilinen ve açıyla değişen bir yük olarak kullanıp çevrim içi tanılamak, daha önce yapılmış mı? Aşağıdaki dört makale bu amaçla tam okundu. Sonuç tablosu `kontrol_taramasi/hedefli_tarama_2026-11-05.md` 4. turda.
+
+## Dirk Gebler, Joachim Holtz — Identification and compensation of gear backlash without output position sensor in high-precision servo systems (IECON '98, cilt 2, s. 662–666, 1998)
+
+Tam metin IEEE Xplore'da okundu (5 Kasım 2026; OpenAthens yönlendiricisi, PDF pdf.js ile çıkarıldı) · DOI 10.1109/IECON.1998.724172 · arnumber 724172 · Wuppertal Üniv.
+
+- **Düzenek:** 60 N·cm senkron motor + planet dişli (oran 50) + küçük eylemsizlikli yük (0,1 kg·m²), resolver 4848 adım/tur, akım döngüsü 0,1 ms, kontrol 0,2 ms. Çıkış enkoderi **yalnız sonuçları izlemek için**. Yük yatay, **yerçekimi yok**. Boşluk çok küçük (mrad mertebesi).
+- **Tanılama 1 (dolaylı dinamik):** motor pozitif yönde sürülüp dişli bir yüze oturtuluyor, sonra ters yönde giderek büyüyen küçük tork darbeleri veriliyor. Darbe boşluk içinde kaldıkça motor yer değiştirmesi darbeyle artıyor; dişli öbür yüze değince artış duruyor. "Yük bir yüze dayalı" koşulu buradaki ilk adım: **dayanma motorun kendi hareketiyle kuruluyor**, yerçekimiyle değil.
+- **Tanılama 2 (yarı durağan):** yavaş yörüngede motor konumu sabitken akım referansının ortalaması alınıyor (nicemlemeye dayalı süzgeç), Δi_sq*/Δt'nin tepeleri: büyük tepe yön değişimi, küçük tepe boşluğun iki ucu. İki tepe arasındaki motor açısı = boşluk. Yani temas, **çıkış milinin yük torkunun akıma eklenmesinden** anlaşılıyor.
+- **Telafi:** yön değişiminde PID'den zaman-optimal (bang-bang) kontrolcüye geçiş; t_as, t_ds kendi kendine öğrenme ile ayarlanıyor (8–10 tekrar).
+- **Açıkça söylenen sınır:** "Çıkış sensörü olmadığı için yük tarafındaki bilinmeyen kuvvetlerin etkisi telafi edilemez; yöntem lazer kesme gibi özel işler içindir", "yük torku bozucuları hesaba katılmıyor."
+- **Bizim için (risk değerlendirmesi): rakip DEĞİL; Katkı 2'nin (r tanılama) öncülü, Katkı 1 için yöntem fikri.** (1) r, yük sensörsüz, motor akımından tanılanabiliyor: 1998'den beri biliniyor, katkı sayılamaz. (2) Bilinmeyen yük torkunu dışarıda bırakıyor; bizde yük torku (yerçekimi) bilinen ve açıya bağlı, yani Gebler–Holtz'un "çözülemez" dediği durum bizim için kaynak. (3) **Küçük tork darbesiyle yüz yoklama** fikri, 180°'de belirsiz yüzü bulmak için aktif bir sondalama yöntemi olarak doğrudan uyarlanabilir (Katkı 1'in olası yöntemi). K_s tanılama yok.
+
+## Lőrinc Márton, Béla Lantos — Friction and backlash measurement and identification method for robotic arms (ICAR 2009, Münih)
+
+Tam metin IEEE Xplore'da okundu (5 Kasım 2026; OpenAthens) · arnumber 5174762 · Sapientia + BME
+
+- **Model:** H(q)q̈ + C q̇ + G(q) = B(τ), boşluk kip anahtarı (temas / boşluk), motor akımı → tork (denklem 4–5), üstel Stribeck sürtünmesi iki doğruyla parçalı doğrusallaştırılıyor (denklem 7–9).
+- **Sürtünme:** sabit hız rejimlerinde akım ve hız ortalaması, G(q_i) ve merkezkaç terimi çıkarılarak en küçük kareler (denklem 11–14). "Yerçekimi ve merkezkaç etkileri sürtünme tanılamada ihmal edilemez" sonucu.
+- **Boşluk:** yön değişiminde t₁ = hızın sıfır geçişi, t₂ = sonrasındaki ilk akım yerel minimumu (motor yükü yeniden kavrayınca akım tekrar yükseliyor); β = ∫ q̇_M dt (t₁→t₂). **Yalnız motor tarafı enkoder (500 darbe/tur) + akım.**
+- **Yerçekimi hakkında kritik cümle:** "Yön değişiminde motor ve yük tarafında hızın sıfır olması için eklem, hareket yönü yerçekimine **dik** olacak konumda olmalı." Yani yerçekimini ölçümü bozan bir etken olarak **dışarıda bırakıyor**.
+- **Deney:** SCARA (yatay düzlem, yerçekimi eklem torkuna girmiyor), 12 V DC motorlar, β = 0,47° (±%6,3) ve 0,35° (±%11,9). Telafi edilmiş model tabanlı kontrolde ortalama takip hatası 1,73 → 0,97°.
+- **Bizim için: rakip DEĞİL; Katkı 2'nin (r) öncülü.** Motor akımı + enkoderle r ölçümü robot kolunda yapılmış. Yerçekimi bu yaklaşımda engel; bizim fikrimiz (yerçekimini ölçüm aracı yapmak) bunun tersi ama Giovannitti 2022 bunu zaten yapıyor (yukarıda). K_s yok, sabit hedef yok.
+
+## Matthias Neubauer, Hubert Gattringer, Andreas Müller, Armin Steinhauser, Wolfgang Höbarth — A two-stage calibration method for industrial robots with joint and drive flexibilities (Mechanical Sciences, cilt 6, sayı 2, 2015, s. 191–201)
+
+Tam metin PDF okundu (açık erişim, Copernicus) · DOI 10.5194/ms-6-191-2015 · JKU Linz
+
+- **Model:** esnek eklem + esnek tahrik (motor açısı, kol açısı, yatak esnekliği), statik çözüm yinelemeyle (denklem 7–14).
+- **1. aşama (esneklik):** robot küçük PD kazançlarıyla tutulup ters dinamik ileri beslemesi ekleniyor, motor torklarına periyodik çoklu sinüs uyarımı; **motor torku ve motor konumundan** frekans cevabı matrisi (FRM), doğrusallaştırılmış modelin transfer fonksiyonu uydurularak sertlik ve sönüm **çevrimdışı** tanılanıyor.
+- **2. aşama (geometri + boşluk):** lazer izleyiciyle uç konumu; ofset, eksen kayıklığı, uzunluk hataları ve **boşluk p_BL** (yalnız 2. ve 3. eksen) birlikte tanılanıyor. Boşluğun yönü için denklem (18): **R = R|_{φ = q + sign(M)·p_BL}, sign(0) = 0**. Gerekçe: "boşluk geometrik bir hata değil, duruşa bağlı; boşluğun hangi yönde olduğunu belirlemek için gövdelerin kütle merkezleri hesaba katılmalı; gövde dinamiğini hesaplamamak için karar **motor torkunun işaretine** göre veriliyor." Sıfır tork bölgesi tartışılmıyor.
+- **Deney:** Stäubli TX90L, en büyük uç hatası 0,32 mm (pozların %90'ında 0,23 mm).
+- **Bizim için (risk değerlendirmesi): Temel için DOĞRUDAN ÖNCÜL, Katkı 1 için boşluğu gösteren kaynak.** (1) φ_ref = θ + sign(τ_g)·r + τ_g/K_s ofset tablomuz, Neubauer'in boşluk + esneklik modelinin tek eklemli, kontrolcü içine konmuş hâli. Temel'i katkı gibi sunamayız; Neubauer, CNC "lost motion" telafisi (Sugie–Iwasaki 2000 IECON, konuma bağlı lost motion; yalnız başlık görüldü) ve Ruderman 2016 TIE (motor tarafı ters dinamik + ters histerezis, yerçekimli iki eklemli kol) anılmalı. (2) **sign(M) = 0 durumunu tanımsız bırakıyorlar**; endüstriyel robotta bu duruşlar kalibrasyonda kaçınılabilir. Bizim 180° problemimiz tam bu boşluk: tork sıfıra yakınken yüz modelden okunamıyor. (3) K_s'yi yalnız motor tarafı sinyallerle tanılamak 2015'te yapılmış (çevrimdışı, frekans alanında).
+
+## Jinxiang Yao ve ark. — A gear backlash identification and compensation method to enhance industrial robot repeatability (IEEE Access, cilt 14, 2026, s. 2236–2248)
+
+Tam metin okundu (açık erişim, CC BY) · DOI 10.1109/ACCESS.2025.3643729 · arnumber 11299080 · Foshan Huashu Robot
+
+- Kinematik hata modeline boşluk + oran düzeltme katsayısı + dönüş yönü ekleniyor: q_r = q_n·r_i + ζ_i·b_i, **ζ = hedefe varmadan önceki eklem hızının işareti** (denklem 5–6). IRLS ile lazer izleyici verisinden 39 parametre. Telafi: hedef açıya δ_i·b_i eklemek, yön son hız işaretinden (denklem 21–23). 210 kg yüklü 6 eksenli robot, iki yönlü tekrarlanabilirlik %48, çok yönlü %53 iyileşiyor.
+- Yerçekimi modelde yok: temas yüzünün **son hareket yönüyle** belirlendiğini varsayıyor. Ağır yüklü robotta bu varsayımın yerçekimiyle çelişebileceği tartışılmıyor.
+- **Bizim için:** rakip değil. Yüz seçiminin literatürde iki kaba kuralı var: tork işareti (Neubauer 2015) ve yaklaşma yönü (Yao 2026; Ahmad 1985'in "hareket yerçekimine karşıysa" kuralı ikisinin karışımı). 180°'de ikisi de yetmiyor: yerçekimi torku sıfır, yaklaşma yönü ise kolun boşluk içinde hangi yüze devrileceğini belirlemiyor (ters sarkaç). Kaynakçasında boşluk tanılama için iyi bir özet (Kubela, Sigron, Ryu, Woodside, Alam–Ibaraki 2022 TMECH).
+
+### Kısa kontrol listesi (yalnız özet ya da patent metni, 5 Kasım akşam)
+
+| Kaynak | Ne yapıyor | Katkı 1 | Katkı 2 |
+|---|---|---|---|
+| Li, Zhang ve ark. 2026 *IEEE TIA* (arnumber 11275820) | Kalıcı mıknatıslı kaplinde **yük tarafı bilgisi olmadan** Luenberger + RLS ile çevrim içi burulma sertliği, kazanç planlamasına (PI + dinamik çentik) giriyor | — | **K_s'yi motor tarafından çevrim içi tanılama yapılmış** (yerçekimi ve boşluk yok, dinamik uyarım) |
+| Universal Robots patenti US 12330306 (Madsen, 2018 öncelik) | Dişli sertliği normal çalışma sırasında, G(q) dahil dinamik modelle | — | Yerçekimi modelde ama **çıkış enkoderi şart**; boşluk yok |
+| Cognibotics patenti US 9645565 (Nilsson, 2012) | Kol kelepçelenip motor her iki yüze sürülerek boşluk + esneklik + sürtünme | Yüz = motorun sürdüğü yön (kelepçeli) | Yalnız motor sinyalleri, ama kelepçe ve ayrı kalibrasyon |
+| FANUC patenti US 11633859 (2019) | Duruş, yerçekimi komşu redüktörleri bir yüze bastıracak şekilde seçilip boşluk akımın tepesinden ölçülüyor | Yerçekimi yüzü sabitlemek için kullanılıyor, sıfır tork bölgesi yok | Bakım amaçlı boşluk ölçümü, sabit nesneye bastırma |
+| Kaiser ve ark. 2023 ISR Europe | Çift motorlu eklemde temas durumuna göre anahtarlamalı durum uzayı, boşluk konumu kestiricisi (benzetim) | Temas durumu kestirimi var, ama çift motor ve yerçekimsiz | — |
+| Reddy ve ark. 2022 *TMECH*; Lagerberg–Egardt 2007 *TCST* | Araç aktarma organında hız + tork sinyalleriyle Kalman tabanlı boşluk büyüklüğü/konumu kestirimi | Boşluk içi konum kestirimi (yön değişimi anında) | Boşluk büyüklüğü çevrim içi, ek sensörsüz |
+| Li ve ark. 2020 *Meas. Control* | Yük tarafı jiroskop + iki enkoderle çevrim içi boşluk ölçümü | — | Yük sensörlü, rakip değil |
+| Ruderman 2016 *TIE* (arnumber 7480795) | Yalnız motor tarafı ölçümle, yerçekimli iki eklemli kolda ters dinamik + ters histerezis haritasıyla burulma telafisi | — | Temel'in histerezisli karşılığı |
+
 ## Henüz okunmadı (öncelik sırasıyla)
 
 1. Márton, Lantos — Friction and backlash induced limit cycles (ECC 2009)
@@ -598,6 +655,6 @@ Tam metin Springer Link'te okundu (5 Kasım 2026; OpenAthens → TÜBİTAK ULAKB
 4. ~~2022 Equivalence between nonlinear friction and backlash~~ OKUNDU
 5. ~~2022 Load-side acceleration control~~ OKUNDU. **İndirilmiş 31 IEEE PDF'nin tamamı okundu (18 Ekim).**
 6. ~~Wang 2024, Ghaffari 2013, Wang 2017, Yu–Tang 2024 (LADOB)~~ OKUNDU (yukarıda).
-6b. ~~Esbrook–Tan–Khalil 2014, Horng 2006~~ OKUNDU. ~~Olsson–Åström 2001, Fischer–Tomizuka 1996~~ OKUNDU. ~~Armstrong & Amin 1996 Automatica, Han 2016 Nonlinear Dyn., Weigand 2021 RCIM, Ruderman–Iwasaki 2016 TIE~~ OKUNDU (5 Kasım). Ahangarian Abhari 2019 TIMC: yalnız özet (SAGE erişimi yok). Kalan yeni hedefler: Brandenburg–Schäfer 1987 EPE (iki kütlede boşluk + Coulomb birlikte; Armstrong–Amin'den); Gebler–Holtz 1998 IECON (çıkış sensörsüz boşluk tanılama, yük bir tarafa dayalı; Han 2016'dan); Hensen ve ark. 2003 Automatica (LuGre vs anahtarlamalı sürtünme modeliyle avlanma LC'si); Armstrong-Hélouvry ve ark. 1994 Automatica (sürtünme anketi, ScienceDirect → kampüste); Wallenborg, Åström 1988 (robot tahrikinde limit cycle); Atherton 1975 kitabı (kaymalı DF); Mees, Bergen 1975 TAC ve Bergen ve ark. 1982 (tanımlama fonksiyonunun geçerliliği/hata sınırları); Ghaffari, Tomizuka, Soltan 2008 Nonlinear Dyn. (limit cycle kararlılığı); kaymalı (bias) tanımlama fonksiyonu için bir ders kitabı kaynağı (Gelb & Vander Velde 1968 "Multiple-Input Describing Functions", ya da Khalil'in kitabı)
+6b. ~~Esbrook–Tan–Khalil 2014, Horng 2006~~ OKUNDU. ~~Olsson–Åström 2001, Fischer–Tomizuka 1996~~ OKUNDU. ~~Armstrong & Amin 1996 Automatica, Han 2016 Nonlinear Dyn., Weigand 2021 RCIM, Ruderman–Iwasaki 2016 TIE~~ OKUNDU (5 Kasım). Ahangarian Abhari 2019 TIMC: yalnız özet (SAGE erişimi yok). Kalan yeni hedefler: Brandenburg–Schäfer 1987 EPE (iki kütlede boşluk + Coulomb birlikte; Armstrong–Amin'den); ~~Gebler–Holtz 1998 IECON~~ OKUNDU (5 Kasım akşam; ayrıca Márton–Lantos 2009 ICAR, Neubauer 2015 Mech. Sci., Yao 2026 Access); Hensen ve ark. 2003 Automatica (LuGre vs anahtarlamalı sürtünme modeliyle avlanma LC'si); Armstrong-Hélouvry ve ark. 1994 Automatica (sürtünme anketi, ScienceDirect → kampüste); Wallenborg, Åström 1988 (robot tahrikinde limit cycle); Atherton 1975 kitabı (kaymalı DF); Mees, Bergen 1975 TAC ve Bergen ve ark. 1982 (tanımlama fonksiyonunun geçerliliği/hata sınırları); Ghaffari, Tomizuka, Soltan 2008 Nonlinear Dyn. (limit cycle kararlılığı); kaymalı (bias) tanımlama fonksiyonu için bir ders kitabı kaynağı (Gelb & Vander Velde 1968 "Multiple-Input Describing Functions", ya da Khalil'in kitabı)
 8. WoS okumalarından çıkan yeni hedefler (22 Ekim): Wang ve ark. 2016 IECON "Analysis of limit cycle mechanism for two-mass system with backlash nonlinearity" (sertlik oranı r_s, IEEE); Yang ve ark. 2016 TMECH, mil torku sınırlama (Sun 2023 listesinde de var); Awan ve ark. 2024 Appl. Sci. (açık erişim, sarkaç + çift DC motor); Robertz ve ark. 2010 ICRA "Precise robot motions using dual motor control" (endüstriyel robotta çift motor).
 7. Springer referans listesinden eklenecek IEEE makaleleri: Wang ve ark. 2017 IEEE TIE (limit cycle, transmission backlash, 10.1109/TIE.2017.2711564); Villwock ve Pacas 2009 IEEE TIE (boşluk tanılama); Merzouki ve ark. 2007 CEP (boşluk gözlemi)

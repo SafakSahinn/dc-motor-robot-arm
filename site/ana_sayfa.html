@@ -135,6 +135,16 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   <p><b>Neden ara yol:</b> zor işe girmeden önce fikrin kendisini sınıyoruz, son kontrolcüde de kol sensörü kullanmıyoruz. Kol sensörü yalnız referans ve doğrulama için kalıyor.</p>
   <p><b>Bununla gelen ikinci karar:</b> konum döngüsü de motor tarafına geçiyor. Şimdiye kadarki ikiz konum hatasını kol açısından hesaplıyordu, bu "kontrolcü kolu görmez" ilkesiyle çelişiyordu. Önce bu değişiklikle 180° taraması yeniden yapılacak, telafi onun üzerine kurulacak.</p>
   <div class="note"><b>Geri dönüş noktası</b>Kestirim beklenenden çok zor ya da telafiyi bozacak kadar hatalı çıkarsa (i)'e döneriz; o zaman "kol sensörü yok" iddiası düşer. Motor tarafı konum döngüsü 0–170°'deki başarıyı bozarsa kol tarafı geri beslemeye döneriz ve bunu yazıda açıkça belirtiriz. 180° önlemi de tutmazsa 180° "yöntemin sınırı" olarak raporlanır.</div>
+  <h3>Yeni çerçeve önerisi: literatür ne diyor? (5 Kasım akşam)</h3>
+  <p>Konum döngüsü motor tarafına geçince boşluk salınımı ikizde kayboldu, geriye boşluk + dişli esnemesi kadar kalıcı hata kaldı. Bu hatayı açıya göre bir ofset tablosu siliyor; tek açık nokta 180°. Önerilen çerçeve üç parça. Her biri için hedefli tarama yapıldı (IEEE 15 sorgu, 4 yeni tam metin, 8 özet ve patent).</p>
+  <div class="tbl"><table>
+    <tr><th>Parça</th><th>Ne</th><th>Literatürde</th></tr>
+    <tr><td>Temel</td><td>Kol sensörsüz, motor tarafı kontrol + açıya göre ofset tablosu</td><td><span class="pill next">Yapılmış</span> Neubauer ve ark. 2015 aynı kuralı kullanıyor (tork işareti × boşluk + esneme). Anılır, katkı değil.</td></tr>
+    <tr><td>Katkı 1</td><td>180° çevresinde (yerçekimi ≈ 0) kolun boşluğun hangi yüzüne yaslandığını yalnız motor akımı ve enkoderle bulmak</td><td><span class="pill now">Boşluk var, dar</span> Doğrudan yapan yok. Mevcut kurallar (tork işareti, son hareket yönü) tam bu bölgede çalışmıyor. Yapı taşları (tork gözlemcisi, tork darbesiyle yoklama) biliniyor.</td></tr>
+    <tr><td>Katkı 2</td><td>Boşluk (r) ve dişli sertliğini (K<sub>s</sub>) motor sinyallerinden, yerçekimini ölçüm aracı yaparak çevrim içi tanılamak</td><td><span class="pill next">Kısmen yapılmış</span> Yerçekimiyle boşluk ölçümü Giovannitti ve ark. 2022'de, motor tarafından çevrim içi sertlik Li ve ark. 2026'da var. Kalan yalnız ikisinin birleşimi.</td></tr>
+  </table></div>
+  <p><b>Hüküm:</b> çerçeve bilinen yöntemlerin birleşimi + dar bir yeni parça. Özgünlük Katkı 1'e dayanmalı: yüzün akımdan okunamadığı bandı tanımlamak, orada yalnız motor sinyalleriyle neyin bilinebileceğini göstermek ve çalışan bir yöntem önermek. Yazılım benzetmesi: herkesin bildiği bir protokolü (Temel) kullanıyoruz, katkımız protokolün tanımsız bıraktığı köşe durumu (sıfır tork) çözmek.</p>
+  <div class="note"><b>Karar bekleniyor · geri dönüş noktası</b>Çerçeve henüz onaylanmadı. Katkı 1 dar bulunursa iki seçenek açık: kol sensörlü geri besleme + açıya göre kazanç planlaması (ilk 5 Kasım çerçevesi, literatürde rakipsiz ama kol sensörü gerekir) ya da çift döngü.</div>
   <h3>Mimari</h3>
   <ul>
     <li><b>Dijital ikiz → ESP32, birebir taşıma:</b> ikizdeki filtre ve kestirici, firmware'dekinin aynısı olmalı. Aksi halde ikizde gösterilen sonuç gerçek kolda geçerli olmaz.</li>
@@ -269,6 +279,7 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
     <tr><td><span class="pill done">Bitti</span></td><td>İlk kazanç tablosu ve ikizde sınanması (yukarıda)</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>Sürtünme katmanı: yapışmalı sürtünmede ikizde 0,1° düzeyinde küçük "avlanma" çıkıyor; 0,25°'lik integratör ölü bandı bunu planlanan tabloda 10–140°'de bitiriyor (bedeli ≤ 0,3° kalıcı hata), yerleşme yine 0,9 s (sabit ayar 3,6 s)</td></tr>
     <tr><td><span class="pill now">Sürüyor</span></td><td>180° (kol dik yukarı): integratör ölü bandı / sıfırlama salınımı <b>gidermedi</b>; salınımın kaynağı integral değil, boşluk içinde devrilen ters sarkaç. Seçilen önlem: θ<sub>d</sub> tabanlı boşluk telafisi (0. bölüm, Kararlar). İlk adım yapıldı: konum döngüsü motor tarafına alınınca 0–180°'nin hiçbirinde salınım kalmıyor (114 hücrede 0), bedeli 1,5–2,9° kalıcı hata. Açıya göre ofset tablosu (boşluk + dişli esnemesi) bu hatayı 10–175°'de gerçekçi enkoderle ≤ 0,27°'ye indiriyor (r ya da K<sub>s</sub> %20 yanlış tanılanırsa ≈ 0,3°). 180°'de kolun hangi yüze devrileceği belirsiz, tablo yanlış yüzü varsayınca hata ≈ 3°. Çerçeve kararı bekleniyor</td></tr>
+    <tr><td><span class="pill done">Bitti</span></td><td>Yeni çerçeve için literatür kontrolü (5 Kasım akşam): Temel yapılmış, Katkı 2 kısmen yapılmış, Katkı 1'de (180° çevresinde yüz kestirimi) dar ama gerçek bir boşluk var (0. bölüm)</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Gerçekçi sensörlerle (enkoder nicemlemesi, hız kestirimi) yeniden sınama</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Bozucu gözlemcisinin (DOB/ESO) bant genişliğinin de tabloya eklenmesi; açılar arası geçişte sarsıntısız kazanç değişimi; motor tarafı salınım tespiti</td></tr>
     <tr><td><span class="pill next">Sırada</span></td><td>Donanım: sipariş, montaj, tanılama, açı × kazanç deneyleri; ESP32 yazılımı</td></tr>
@@ -282,6 +293,8 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
     <tr><th>Çalışma</th><th>Ne yapıyor</th><th>Bu çalışmadan farkı</th></tr>
     <tr><td>Ghaffari ve ark. 2013, <i>IEEE/ASME TMECH</i></td><td>Boşluklu servo eksende DF ile salınım öngörüsü</td><td>Yerçekimi yok; yöntemimizin temeli</td></tr>
     <tr><td>Ruderman, Iwasaki 2016, <i>IEEE TIE</i></td><td>Tek eklem + yerçekimi, yalnız motor sinyalleriyle burulma kestirimi</td><td>Boşluk yok, kazanç sabit, salınım analizi yok</td></tr>
+    <tr><td>Neubauer ve ark. 2015, <i>Mech. Sci.</i></td><td>Robot kalibrasyonunda boşluk yönünü motor torkunun işaretinden seçiyor, esnekliği motor sinyallerinden tanılıyor</td><td>Ofset tablomuzun öncülü; sıfır torkta yüz tanımsız bırakılıyor</td></tr>
+    <tr><td>Giovannitti ve ark. 2022, <i>J. Intell. Manuf.</i></td><td>Yerçekimi torkunun sıfır geçişindeki darbeden, yalnız motor enkoderiyle boşluk kestirimi</td><td>Hareket hâlinde ve çevrimdışı; sertlik ve yüz kestirimi yok</td></tr>
     <tr><td>Sun ve ark. 2023, <i>IEEE TIE</i></td><td>Düşey kolda boşluğu ikinci motorla ön yükleme</td><td>İki motor gerekiyor, tek açı</td></tr>
     <tr><td>Piao ve ark. 2020, <i>IFAC</i></td><td>Gözlemci bant genişliği ile salınım arasındaki bağ (DF)</td><td>Sürtünme var, boşluk ve yerçekimi yok; tepkisel anahtarlama</td></tr>
     <tr><td>Dai ve ark. 2026, <i>MSSP</i></td><td>Motor tarafı sinyallerle boşluk evresi kestirimi</td><td>Kol tarafı enkoder kullanıyor, yerçekimi yok</td></tr>
