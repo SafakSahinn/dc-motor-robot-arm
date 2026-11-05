@@ -59,6 +59,44 @@ Kurtarma mümkün. Yeni çerçeve:
 
 Önceki işler yeni çerçevede şöyle kullanılır: DF ve limit cycle haritası tasarım tablosu olur. Dijital ikiz ve tanılama sonuçları denetleyici tasarımının modeli olur. Deney protokolü (D0–D6) aynen kalır, D6'ya planlamalı ve planlamasız karşılaştırması eklenir.
 
+## 2. tur: IEEE Xplore ve tam metin (aynı gün, tarayıcı bağlandıktan sonra)
+
+### IEEE Xplore sorguları (13 sorgu, `/rest/search`, kurum girişi gerekmedi)
+
+| Sorgu (All Metadata) | Kayıt | Konuyla ilgili olanlar |
+|---|---|---|
+| backlash AND (gain scheduling OR gain-scheduled OR LPV) | 7 | 7893560 (2016): LPV modelle değişken ve bilinmeyen boşluk genişliği, yerçekimi yok. 11616391 (ACC 2026): Fairino FR3 robotta hız ve yüke göre kazanç planlamalı PID. Sürekli hatanın kaynağı eklem esnekliği ve boşluk. Limit cycle ve açıya bağlı yerçekimi yok. Diğerleri araç ve direksiyon. |
+| backlash AND gravity AND (limit cycle OR oscillation) | 7 | PA-10 harmonik dişli modelleme (2004, 2005), 5410358 anti-backlash dişlide tork telafisi. Açıya bağlı analiz yok. |
+| backlash AND (observer bandwidth OR adaptive/variable bandwidth OR variable gain) | 2 | 9959378 (zaten okundu) |
+| backlash AND limit cycle AND (operating point OR position-dependent OR configuration-dependent OR load torque) | 8 | Wang 2017 TIE ve Hu 2017 ITEC (zaten okundu), 8868674 özdeğer tabanlı limit cycle analizi, 9901536 boşluk iptalli MPC, 10256212 tork tipi ters boşluk modeli |
+| backlash AND (mode/contact detection OR backlash state OR gap estimation) | 3 | 9966093 (2022) elektrikli aktarma organında boşluk açısı kestirimi, 8172348 düşük maliyetli robotta temas tespiti |
+| backlash AND gravity AND (observer OR DOB OR ESO) | 1 | 5410358 |
+| backlash AND limit cycle AND describing function AND (design OR tuning) | 5 | Wang 2017 TIE, Sun 2025 TAES (zaten okundu) |
+| (gear backlash OR geared) AND gravity AND (single-link OR single joint OR pendulum) | 6 | Ruderman–Iwasaki 2016 TIE (7153537): motor torku ve hızıyla "sanal burulma sensörü" kuruyor, sensörsüz. Diğerleri sarkaç ve dengeleme robotu. |
+| backlash AND preload AND (gravity OR load torque) | 3 | 10363063 (2023): çift motorla elektriksel ön yük, frezeleme robotu |
+| backlash AND limit cycle AND (detection OR monitoring) | 7 | 5354660 (2009, 14 atıf): takım tezgâhında titreşim ve limit cycle tespiti ile boşluk bastırma |
+| (DOB OR ESO) AND (gain scheduling OR bandwidth scheduling) AND (robot OR manipulator OR joint) | 9 | 9229519 VSA'da kazanç planlamalı GESO (boşluk yok), 11646850 uyarlamalı bant genişlikli ESO (hava-su robotu). Boşluk yok. |
+| backlash AND manipulator AND (gravity compensation OR gravitational torque) | 4 | PA-10, eksoskeleton PID. Analiz yok. |
+| (backlash OR dead zone) AND (angle/posture/pose/position-dependent) | 6 | 972619 (2000) konuma göre değişen kayıp hareket telafisi (CNC), 10591213 (2024) kremayer dişlide duruma bağlı aktarım hatasının öğrenilmesi. İkisi de ileri beslemeli konum düzeltmesi, salınım yok. |
+
+**Sonuç:** IEEE'de de doğrudan rakip çıkmadı. Kazanç planlama ya da bant genişliği planlaması ile boşluk ve yerçekimini birleştiren kayıt yok.
+
+### Zhang ve ark. 2023 (IJCIM): TAM METİN OKUNDU, risk değil
+
+- KUKA KR120 robotu, lazer izleyici, düşük hız (1,5–10 mm/s).
+- Yaklaşım tamamen **açık çevrim ileri beslemeli yörünge değişikliği**. Kendi ifadeleriyle, yavaş harekette dinamik tepki ihmal edilebildiği için boşluğa bağlı kararsızlık daha az önemli. Açık çevrimin kararsızlaştırıcı etkisi olmadığını da yazıyorlar. **Limit cycle, kapalı çevrim kararlılığı ve kazanç ayarı YOK.**
+- "Planlama": boşluk telafi sabiti d_b, gerekirse eklem açısının fonksiyonu yapılabilir diyorlar ama yapmıyorlar. A2 ekleminde boşluk açıyla 0,0022° ile 0,0050° arasında değişiyor, nedenini "dişli kutusu kusurları ve ön yük değişimi" diye veriyorlar.
+- **Motivasyon için faydalı alıntı:** girişte "boşluğun yaygın çözümü ön yüklemedir; endüstriyel robotlarda bu, kol ve yük ağırlığıyla doğal olarak vardır" diyorlar. Bu, açıya bağlı doğal ön yük fikrimizin bilinen bir statik gözlem olduğunu ama kapalı çevrimde incelenmediğini destekliyor. Sonuçta da gelecek iş olarak "eklem yüklenmesini hesaba katmak" öneriliyor.
+- Makalede **Weigand–Gafur–Ruskowski 2021 RCIM** (ikincil enkoderlerle düzlük tabanlı eklem kontrolü, boşluk ve sürtünme) anılıyor. Okunacaklar listesine eklendi.
+
+### Tam metni okunamayanlar
+
+- IFAC 2020 ESO ve limit cycle (10.1016/j.ifacol.2020.12.1863): ScienceDirect bot doğrulaması çıkardı, aşılmadı. Sürtünmeyle ilgili olduğu için yenilik riski değil, yöntem kaynağı. Tarayıcıda elle açılınca okunabilir.
+
+## Kurtarma kararı (güncel)
+
+Kontrol ve kestirim çerçevesinde **ana katkı açık**: yerçekiminin açıya bağlı ön yüküne göre kontrolcü kazancını ve gözlemci bant genişliğini önceden planlayıp limit cycle'ı önlemek. Bunu yapan bir kayıt bulunamadı: IEEE 13 sorgu, web 9 sorgu, Zhang 2023 tam metin. En yakın işler ya tepkisel (G. Sun 2021, Padron 2022, Sun 2025), ya ileri beslemeli konum telafisi (Zhang 2023, 972619, 10591213), ya da yerçekimsiz LPV ve kazanç planlaması (7893560, 11616391, 9229519).
+
 ## Açık işler
 
 1. Tarayıcı bağlanınca IEEE Xplore'da sistematik sorgular: backlash + (gain scheduling OR LPV OR scheduled OR "operating point") + (gravity OR "vertical" OR "load torque"); "observer bandwidth" + backlash + "limit cycle"; backlash + "mode detection" / "contact detection".
