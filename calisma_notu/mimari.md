@@ -28,7 +28,7 @@
 | Besleme | Mean Well 12 V 3 A | Motor gücü | Dalgalanması düşük; ucuz adaptörün dalgalanması doğrudan torka biner |
 | Kontrol birimi | ESP32-DevKitC | Kontrol döngüsü, sensör okuma, veri akışı | Donanım enkoder sayacı, 20 kHz PWM, tek duyarlıklı FPU; 1 kHz için yeterli |
 | Motor tarafı ölçüm | Motor enkoderi (kuadratür) | θ_M; türev terimi için hız | Kol hızından türev almak döngüyü kararsızlaştırıyor (simülasyon) |
-| Kol tarafı ölçüm | AS5600 + diametral mıknatıs, filtre SF = 11 | θ_L (mutlak); konum geri beslemesi; θ_d | Mutlak açı: her deneyde θ₀ yeniden bulunur. Varsayılan filtre 2,2 ms gecikme verir; SF = 11 ile 0,286 ms |
+| Kol tarafı ölçüm | AS5600 + diametral mıknatıs, filtre SF = 11 | θ_L (mutlak); **yalnız doğrulama ve referans**, son kontrolcüye girmez. İkizde ve deneyde θ_d'yi ölçerek telafi için üst sınır verir (`framing.md`, sensör kararı) | Mutlak açı: her deneyde θ₀ yeniden bulunur. Varsayılan filtre 2,2 ms gecikme verir; SF = 11 ile 0,286 ms |
 | Akım | INA228 (I²C-0) | Tork kestirimi (k_t·i); ısınma ve doyum izleme | Salınım deneylerinde akım RMS'i sınırlayıcı |
 | Sıcaklık | TMP117 × 2 (ayrı hat I²C-1, 400 kHz) | Sargı direnci ve sürtünme sıcaklığa bağlı | Tekrarlanabilirlik (B6). TMP117 en fazla 400 kHz destekler, bu yüzden hızlı hatta değil |
 | Mekanik | Ayarlanabilir kaplin, Ø8 çelik mil, 2 × 608 rulman, gövde, kol, ağırlıklar, sürtünme pabucu | Boşluk, yerçekimi ve sürtünme düğmeleri | Framing'in üç bağımsız düğmesi: 2r, mgℓ, F_C |

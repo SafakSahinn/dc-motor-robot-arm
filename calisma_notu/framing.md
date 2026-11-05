@@ -24,6 +24,22 @@ Yerçekimi etkisindeki tek motorlu, dişli boşluklu bir eklemde, kontrolcü kaz
 
 AS5600 kol açısı sensörü düzenekte kalır ama **yalnız doğrulama için** kullanılır; kontrolcü onu görmez.
 
+### Sensör kararı: θ_d ölçülür mü, kestirilir mi? (5 Kasım 2026)
+
+180° için seçilen önlem **boşluk telafisi**: kontrolcü motor ile kol arasındaki açı farkını (θ_d = θ_M/N − θ_L) izler, tork yönü değişmesi gerektiğinde motoru boşluğun öbür yüzüne hızla atlatır, kolun serbest kaldığı süreyi kısaltır. Bunun için θ_d gerekir. Seçenekler:
+
+| Yol | θ_d nereden gelir | Artısı | Eksisi |
+|---|---|---|---|
+| (i) Ölçmek | AS5600 + motor enkoderi | Kolay, doğrudan | "Kol sensörü yok" iddiası ve H6 düşer; motor enkoderi kol tarafında 0,27°, 3° boşluk ≈ 11 adım |
+| (ii) Kestirmek | Yalnız motor akımı + enkoder (gözlemci: temas varken dişli torku ≠ 0, boşlukta ≈ 0) | Katkısı büyük; bileşen 2, H6, Dai 2026 ve Ruderman–Iwasaki 2016 ile uyumlu | Zor; kestirim hatası telafiyi bozabilir |
+| **Ara yol (seçildi)** | İkizde önce (i), sonra (ii) | (i) üst sınır olur: θ_d'yi kusursuz bilsek bile telafi 180°'yi düzeltmiyorsa (ii)'ye hiç girilmez; düzeltiyorsa (ii)'nin kaybı (i)'ye göre ölçülür | Bir adım fazla iş |
+
+**Neden ara yol:** zor işe (kestirim) girmeden önce fikrin kendisi ucuzca sınanıyor, son kontrolcünün "kol sensörü yok" iddiası korunuyor. (i) yalnız ikizde ve deneyde **referans** olarak kalır, son kontrolcüye girmez.
+
+**Bununla gelen ikinci karar: konum döngüsü motor tarafına.** Bugüne kadarki ikiz konum hatasını kol açısından hesaplıyordu (`kol_benzetim.m`, `thm = olc(x(3,:), p.qL)`); bu, "kontrolcü kolu görmez" ilkesiyle çelişiyordu. Kontrolcü kolu görmeyecekse konum hatası da θ_M/N'den hesaplanmalı. Bu, 180° sorununu değiştirebilir (kol boşlukta devrilirken kontrolcü tepki vermez, ama kol hedefte değil boşluğun bir ucunda durur, ≤ ±b/2 kalıcı hata). `kol_benzetim.m`'ye varsayılanı kapalı bir seçenek eklenip `inceleme_180.m` bu ayarla yeniden çalıştırılacak; telafi bunun üzerine tasarlanacak.
+
+**Geri dönüş noktası:** (ii) beklenenden çok zor ya da telafiyi bozacak kadar hatalı çıkarsa (i)'e dönülebilir; o zaman çerçeve "kol sensörlü telafi" olur, H6 ve "kol sensörü yok" iddiası düşer. Konum döngüsü motor tarafında 0–170°'deki başarıyı bozarsa kol tarafı geri beslemeye dönülür ve bu fark yazıda açıkça belirtilir.
+
 ### Kapsam kararı: boşluk kaynaklı salınım
 
 Armstrong ve Amin (1996, *Automatica*) şunu kanıtlıyor: statik sürtünme (yapışma) varsa, integral etkili bir konum kontrolcüsünde (PID ya da eşdeğer integral etkisi taşıyan ESO/DOB) yapışma–kayma salınımı, **kararlılığı sağlayan her kazanç ayarında** olası bir harekettir; DF de bunu güvenilir öngöremez. Dolayısıyla:
@@ -40,7 +56,7 @@ Armstrong ve Amin (1996, *Automatica*) şunu kanıtlıyor: statik sürtünme (ya
 - **180°:** ölü bant (0,25 / 0,5 / 1,0°) ve sıfırlama, sürtünmeli ya da sürtünmesiz, salınımsız pencereyi genişletmedi; ölü bant sürtünmesiz durumda tek sakin kazancı (0,15) da kaybettirdi. Yorum: 180°'deki salınım integral birikmesinden değil, kolun boşluk içinde serbestken yerçekimiyle devrilmesinden (ters sarkaç + ölü bölge) doğuyor; integratöre dokunan bir önlem bu mekanizmaya ulaşmıyor. 175°'nin 0,55'e kadar sakin olması, birkaç derecelik yerçekimi ön yükünün yettiğini gösteriyor.
 - **Sürtünme (Fc 0,04, Fs 0,06 N m):** katmansız tabloda 10–170°'nin 12 açısında, sabit ayarda 18 açıda küçük düzensiz salınım (yapışma–kayma avlanması; genlik plan 0,03–0,08°, sabit 0,06–0,17°, yani AS5600'ün 1–2 basamağı) çıktı. 0,25° ölü bantla plan 4 açıya iniyor (150–180°), kalıcı hata ≤ 0,31°, yerleşme ortancası değişmiyor (0,91 s; sabit 3,56 s). Sabit ayarda ölü bant avlanmayı gidermiyor. 90°'de sürtünmeli tarama (r_gs 0,10–0,70): katmansız 3 sakin kazanç, 0,25° ölü bantla 8.
 - **Sıfırlama** sürtünmeli 90°'de zararlı (0 sakin kazanç): orada kolu yerçekimine karşı tutan integralin kendisi.
-- **Açık karar:** 180° için farklı önlem (ör. hedefi birkaç derece kaydırıp yapay ön yük; yerçekimi ön ileri beslemesi) mi, yoksa 180° "yöntemin sınırı" mı?
+- **Karar (5 Kasım 2026):** 180° için asıl önlem θ_d tabanlı **boşluk telafisi** (yukarıdaki sensör kararı). Hedefi birkaç derece kaydırıp yerçekimine ön yük yaptırmak, isteğe bağlı hızlı bir ön deneme olarak kalıyor. İkisi de tutmazsa 180° "yöntemin sınırı" olarak raporlanır.
 
 ### Ek hipotezler
 
