@@ -13,12 +13,12 @@ Malzemeyi üç düzeyde değerlendirdik: en ucuz **ilk liste**, maxon motorlu **
 | Motor + enkoder | JGB37-520 12 V 1:30 (ya da enkoderli JGA25-370) | Simülasyon bu sınıfla yapıldı; hemen alınabilir; parametreler tanılanacak. maxon tek başına dengeli listenin ≈ 10 katı |
 | Sürücü | Pololu DRV8874 (#4035) | TB6612FNG önerilen en fazla 1,0 A; motorun durma akımı 2,3 A |
 | Denetleyici | Espressif ESP32-DevKitC | Orijinal kart; fark birkaç dolar |
-| Kol açısı | Adafruit AS5600 + diametral mıknatıs | Orijinal ams çipi; motor enkoderi (0,27°) θ_d'yi sınırladığından daha ince sensör ölçüme yansımaz |
+| Motor açısı (ince) + kol açısı | Adafruit AS5600 × 2 + diametral mıknatıs: biri motorun arka milinde (kontrol), biri kol milinde (yalnız doğrulama) | Yüz kestirici motor tarafı konumu ≤ 0,02° istiyor, Hall enkoder 0,27°; arka mildeki AS5600 kol tarafında 0,0029° verir. Orijinal ams çipi |
 | Akım | Adafruit INA228 (20 bit) | ≈ 15 $ fazlasına ≈ 256 kat çözünürlük |
 | Sıcaklık | Adafruit TMP117 × 2 | Ortam ve motor gövdesi her deneyle kaydedilir |
 | Güç | Masaüstü 12 V ≥ 2 A adaptör (evdeki kullanılabilir) | 12 V ve ≥ 2 A yeterli; dalgalanmanın etkisi küçük ve INA228 ile kaydediliyor. Mean Well GST36E12 DigiKey'de stokta değil; panel tipi LRS-35-12 alternatif |
 
-Toplam (elektronik + motor): ilk liste ≈ 1.336 TL, **dengeli ≈ 639 TL + 13 € + 70 $**, üst sınıf ≈ 485 € + 150 $.
+Toplam (elektronik + motor): ilk liste ≈ 1.594 TL, **dengeli ≈ 639 TL + 13 € + 76 $**, üst sınıf ≈ 485 € + 156 $.
 
 ---
 
@@ -69,9 +69,11 @@ Toplam (elektronik + motor): ilk liste ≈ 1.336 TL, **dengeli ≈ 639 TL + 13 �
 
 ---
 
-## 4. Kol açısı: Adafruit AS5600
+## 4. Açı sensörleri: iki Adafruit AS5600
 
-θ_d = motor açısı/N − kol açısı. Ölçümün inceliğini iki sensörden kaba olanı belirler; dengeli listede bu, motor enkoderi (0,27°).
+> **Güncelleme (6 Kasım 2026):** ikinci bir AS5600 motorun arka mil ucuna konur. Gerekçe: kol sensörsüz yüz kestirici, motor tarafı konumu ≈ 0,02° ya da daha ince istiyor; Hall enkoderin 0,27°'siyle ikizde tutmuyor, AS5600'le (dişliden önce ölçtüğü için 0,088° / 30 = 0,0029°) 1 kHz, sensör gecikmesi ve gürültüsüyle tutuyor (`../calisma_notu/framing.md`, iş sırası 3 ve AS5600 eki). Kol milindeki AS5600 yalnız doğrulama içindir. İki sensörün adresi aynı (0x36): motor tarafındaki I²C-0'da (1 MHz), kol tarafındaki I²C-1'de (400 kHz, TMP117'lerle). TCA9548A çoklayıcı ya da adresi ayarlanabilen AS5600L de çözümdü; ESP32'nin iki hattı zaten olduğu için ek parça gerekmedi. Montaj ve çok tur sayımı: `../calisma_notu/mimari.md` §3 ve §4.1.
+
+θ_d = motor açısı/N − kol açısı. Ölçümün inceliğini iki sensörden kaba olanı belirler: önce motor enkoderiydi (0,27°), motor milindeki AS5600'le artık kol sensörü (0,088°).
 
 | | **Adafruit AS5600 (seçilen)** | AS5600 modülü (markasız) | AS5047P | AMT22 |
 |---|---|---|---|---|
@@ -80,7 +82,7 @@ Toplam (elektronik + motor): ilk liste ≈ 1.336 TL, **dengeli ≈ 639 TL + 13 �
 | Montaj | Diametral mıknatıs, hizalama | aynı | aynı | Manşon, mıknatıssız |
 | Fiyat | 5,95 $ | ≈ 258 TL | ≈ 16,7 $ – 21,7 € | 73,72 $ |
 
-AS5600 motor enkoderinden üç kat ince; daha ince sensör bu motorla ölçüme yansımaz. Adafruit kartı orijinal ams çipiyle, belgeli ve markasız modülden ucuz. Diametral mıknatıs (6 × 2,5 mm) mile ortalanacak; doğruluk hizalamaya bağlı olduğundan sensör motor enkoderine göre birkaç açıda kalibre edilecek.
+Kol tarafında AS5600 (0,088°) bu çalışma için yeterli: doğrulama ve θ_d ölçümü, 3° boşluk ≈ 34 adım. Daha ince θ_d gerekirse kolda AMT22. Adafruit kartı orijinal ams çipiyle, belgeli ve markasız modülden ucuz. Diametral mıknatıs (6 × 2,5 mm) mile ortalanacak; doğruluk hizalamaya bağlı olduğundan sensör motor enkoderine göre birkaç açıda kalibre edilecek.
 
 ---
 
@@ -112,15 +114,16 @@ AS5600 motor enkoderinden üç kat ince; daha ince sensör bu motorla ölçüme 
 | Bağlantı | Protokol | Not |
 |---|---|---|
 | Motor enkoderi → ESP32 | A/B kuadratür → PCNT | Enkoder 3,3–5 V; 3,3 V ile beslenirse çıkış doğrudan ESP32'ye (veri sayfasından teyit) |
-| AS5600 → ESP32 | I²C-0, 0x36 | 1 MHz (Fast-mode Plus) |
+| AS5600 (motor arka mili) → ESP32 | I²C-0, 0x36 | 1 MHz (Fast-mode Plus), her döngü ≈ 50 µs |
+| AS5600 (kol mili) → ESP32 | **I²C-1**, 0x36 | 400 kHz, her döngü ≈ 120 µs; yalnız kayıt, kontrol yolunda değil |
 | INA228 → ESP32 | I²C-0, 0x40 | aynı hat |
-| TMP117 × 2 → ESP32 | **I²C-1** (ikinci hat), 0x48 / 0x49 | **400 kHz**, 1–10 Hz. TMP117 veri sayfasında SCL en fazla 400 kHz; 1 MHz'lik hatta çalışması garanti değil. ESP32'nin iki I²C denetleyicisi var. |
+| TMP117 × 2 → ESP32 | **I²C-1** (ikinci hat), 0x48 / 0x49 | **400 kHz**, 1–10 Hz; kol AS5600 okumalarının arasına yerleştirilir. TMP117 veri sayfasında SCL en fazla 400 kHz; 1 MHz'lik hatta çalışması garanti değil. ESP32'nin iki I²C denetleyicisi var. |
 | ESP32 → DRV8874 | EN'ye 20 kHz PWM, PH yön, nSLEEP HIGH | Akım sınırı ≈ 2 A |
 | ESP32 ↔ bilgisayar | USB seri, 921600 baud | Veri kaydı; kontrol döngüsünde Wi-Fi yok |
 
-**Bilinen risk:** 1 kHz'te iki I²C cihazı (AS5600, INA228) zamanlamayı zorlayabilir; bu yüzden I²C-0 1 MHz'te çalışır, yavaş TMP117'ler ayrı hatta. Gerekirse INA228 daha seyrek okunur.
+**Bilinen risk:** 1 kHz'te I²C-0'daki iki cihaz (motor AS5600, INA228) zamanlamayı zorlayabilir; bu yüzden I²C-0 1 MHz'te çalışır, kontrol yolunda olmayan kol AS5600'ü ve yavaş TMP117'ler ayrı hatta. Gerekirse INA228 daha seyrek okunur; motor AS5600 her döngüde okunmalı (çok tur sayımı ve yüz kestirici).
 
-**AS5600 filtre ayarı (zorunlu):** varsayılan yavaş filtrede (SF = 00) adım yanıtı gecikmesi **2,2 ms**. Konum geri beslemesi bu sensörden alındığı için bu gecikme döngüde bir faz kaybı yaratır ve salınım sınırını kaydırır. **SF = 11** seçilir: gecikme 0,286 ms, gürültü 0,043° RMS (çözünürlüğün, 0,088°, yarısı). Hızlı filtre eşiği (FTH) kapalı tutulur, çünkü salınım sırasında filtre davranışı değişmemeli. Kalan gecikme benzetim modeline eklenir.
+**AS5600 filtre ayarı (zorunlu, iki sensörde de):** varsayılan yavaş filtrede (SF = 00) adım yanıtı gecikmesi **2,2 ms**. Konum geri beslemesi motor tarafı sensörden alındığı için bu gecikme döngüde bir faz kaybı yaratır ve salınım sınırını kaydırır. **SF = 11** seçilir: gecikme 0,286 ms, gürültü 0,043° RMS (çözünürlüğün, 0,088°, yarısı). Hızlı filtre eşiği (FTH) kapalı tutulur, çünkü salınım sırasında filtre davranışı değişmemeli. Histerezis (HYST) kapalı ve RAW ANGLE okunur: histerezis sensörde bir ölü bant gibi davranır ve yüz kestiricinin gördüğü küçük hareketleri siler. Kalan gecikme benzetim modeline eklendi (ikizde 0,4 ms ve 0,043° RMS gürültüyle sınandı).
 
 ---
 

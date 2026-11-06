@@ -8,11 +8,13 @@ Sayılar D düzeneğinin benzetim değerleridir (J_M = J_L = 0,0036 kg·m², K_s
 
 | Konu | Ayar | Neden |
 |---|---|---|
-| Döngü ve kayıt | 1 kHz, kayıt **seyreltmesiz** (her örnek): t, θ_L (AS5600 ham), φ (enkoder sayımı), v̂, u, V (PWM görev oranından), i | 4.3'te 5 ms'lik kayıt K_m ve J_M'yi %4–13 bozdu (README 4.2 düzeltmesi) |
+| Döngü ve kayıt | 1 kHz, kayıt **seyreltmesiz** (her örnek): t, θ_L (kol AS5600 ham, I²C-1), φ (motor arka milindeki AS5600, tur sayımıyla; kol tarafında 0,0029°), Hall sayımı (sağlama), v̂, u, V (PWM görev oranından), i | 4.3'te 5 ms'lik kayıt K_m ve J_M'yi %4–13 bozdu (README 4.2 düzeltmesi) |
 | Hız kestirimi | **Gözlemci** (iki satırlık Euler güncellemesi), bütün deneylerde aynı | Sınır kestiriciye bağlı (README yan soru: fark +0,05–0,10, periyot −0,15). Periyot yöntemi kullanılmaz |
 | Kontrolcü | P–PI (k_p = r_gs²·K_s/K_V, K_V, K_I benzetimle aynı) | r_gs ekseni Ghaffari tanımıyla |
 | Sürücü modu | **Mod 1 (gerilim), bütün deneylerde** | Hızlı akım döngüsü gerekmiyor: tanılama mod 1'de de aynı doğrulukta (README 4.3, 4e). Akım yalnız kayıt için |
 | Meta veri | Firmware sürümü, kazançlar, mod, kestirici, sıcaklıklar, uç kütlesi | Benzetim aynısıyla kurulur |
+
+**Not (6 Kasım 2026):** φ artık motor arka milindeki AS5600'ten okunuyor (önce Hall enkoderdi, kol tarafında 0,27°). D1–D5'in ikizdeki doğrulukları Hall nicemlemesiyle bulundu; daha ince φ'yle aynı ya da daha iyi olmaları beklenir, ikizde yeniden koşulmadı. 180° çevresindeki yüz kestirici deneyleri bu listeye D6'dan sonra eklenecek (ikizdeki senaryolar ve ayar: `framing.md` iş sırası 3).
 
 ## 1. Deney sırası
 
@@ -20,7 +22,7 @@ Sıra bağımlılığa göre: her deney öncekilerin sonucunu kullanır. D1–D2
 
 | # | Düzenek | Ne yapılır | Süre × tekrar | Çıkan | Benzetimde doğruluk | Betik |
 |---|---|---|---|---|---|---|
-| D0 | Kalibrasyon | `mimari.md` §5'in 1–3, 8, 11. maddeleri: enkoder yönü ve sayım/tur, AS5600 ayarı, akım ölçümü kalibrasyonu, döngü zamanlaması, akım (tork) sınırı | — | Sensör ölçekleri, I_sınır | — | — |
+| D0 | Kalibrasyon | `mimari.md` §5'in 1–3, 8, 11. maddeleri: Hall enkoder yönü ve sayım/tur, motor AS5600'ün tur sayımı (Hall'a göre kayma yok) ve tur içi doğrusallık tablosu, iki AS5600'ün ayarı (SF = 11, FTH ve HYST kapalı), akım ölçümü kalibrasyonu, döngü zamanlaması (iki I²C hattı birlikte), akım (tork) sınırı | — | Sensör ölçekleri, I_sınır | — | — |
 | D1 | Kol sökülü | Mod 1, açık çevrim, gerilim sinüsü 0,25 Hz (u = 0,4 N·m eşdeğeri, ≈ 9,8 V genlik) | 9 s × 3 | K_m, R_a, J_M, b_M, F_c | K_m %0,05, J_M %0,5, b_M %1,4, F_c %1 | `km_kestir.m`, `tani_JM.m` |
 | D2 | Kol sökülü | Mod 1, açık çevrim, tork sinüsü 0,1 N·m eşdeğeri (V = R_a·u/K_m), 0,02 Hz | 36 s × 3 | F_s | %1–2,5 | `tani_Fs.m` |
 | D3 | Kol takılı | Kol 90°'de durgun başlar. P–PI r_gs 0,8, mod 1, referansa sinüs 90° ± 70°, 0,05 Hz | 21 s × 5 | K_s, mgl, AS5600 sıfırı θ₀ | K_s %0,5–1, mgl %0,1, θ₀ 0,05° | `tani_Ks.m`, `tani_mgl.m` |

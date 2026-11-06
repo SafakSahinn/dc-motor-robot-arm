@@ -227,14 +227,14 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
       <line class="w" x1="884" y1="100" x2="912" y2="100" marker-end="url(#ok)"/><text class="t-lbl" x="916" y="104">θ</text>
       <line class="w" x1="564" y1="120" x2="564" y2="150"/><line class="w" x1="564" y1="150" x2="215" y2="150"/>
       <line class="w" x1="215" y1="150" x2="215" y2="114" marker-end="url(#ok)"/>
-      <text class="t-sm" x="390" y="144" text-anchor="middle">motor enkoderi (θ_m / N)</text>
+      <text class="t-sm" x="390" y="144" text-anchor="middle">motor milinde AS5600 (θ_m / N)</text>
       <rect class="b-new" x="280" y="180" width="230" height="44" rx="6"/><text class="t-lbl" x="395" y="199" text-anchor="middle">Yüz kestirici</text><text class="t-sm" x="395" y="215" text-anchor="middle">akım + enkoder, tork darbesi</text>
       <line class="w" x1="564" y1="150" x2="564" y2="202"/><line class="w" x1="564" y1="202" x2="512" y2="202" marker-end="url(#ok)"/>
       <line class="w" x1="280" y1="202" x2="125" y2="202"/><line class="w" x1="125" y1="202" x2="125" y2="122" marker-end="url(#ok)"/>
       <text class="t-sm" x="140" y="195">yüz s = ±1</text>
       <line class="w-d" x1="834" y1="120" x2="834" y2="190"/>
       <rect x="769" y="190" width="130" height="40" rx="6" fill="none" stroke="var(--muted)" stroke-dasharray="5 4"/>
-      <text class="t-lbl" x="834" y="208" text-anchor="middle">AS5600</text><text class="t-sm" x="834" y="223" text-anchor="middle">yalnız hakem</text>
+      <text class="t-lbl" x="834" y="208" text-anchor="middle">AS5600 (kol)</text><text class="t-sm" x="834" y="223" text-anchor="middle">yalnız hakem</text>
     </svg>
     <figcaption>Yeşil blok bu çalışmanın katkısı (yüz kestirici). Ofset tablosu ve motor tarafı döngü bilinen yöntemler. Turuncu blok sorunun kaynağı olan doğrusalsızlık. Kol açısı sensörü (kesik çizgi) kontrol döngüsünde yok, yalnız doğrulama için kayıt alır.</figcaption>
   </figure>
@@ -270,7 +270,8 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
     <tr><td>Denetleyici</td><td>ESP32</td><td>1 kHz kontrol döngüsü, ofset tablosu, yüz kestirici</td></tr>
     <tr><td>Sürücü</td><td>DRV8874 H köprüsü</td><td>Motora gerilim; akım sınırı ≈ 2 A</td></tr>
     <tr><td>Akım ölçümü</td><td>INA228</td><td>Motor akımı (tork gözlemcisi ve yüz kestirimi)</td></tr>
-    <tr><td>Kol açısı</td><td>AS5600 manyetik enkoder</td><td>Yalnız hakem: yüz kestiricinin doğruluğunu ölçer; son kontrolcüye girmez</td></tr>
+    <tr><td>Motor açısı</td><td>AS5600 manyetik enkoder, motorun arka milinde</td><td>Kontrolcünün ve yüz kestiricinin gördüğü konum; dişliden önce ölçtüğü için kol tarafında ≈ 0,003° (motorun kendi enkoderi 0,27°, yedek)</td></tr>
+    <tr><td>Kol açısı</td><td>İkinci AS5600, kol milinde</td><td>Yalnız hakem: yüz kestiricinin doğruluğunu ölçer; son kontrolcüye girmez. İki sensörün adresi aynı olduğundan ayrı I²C hatlarında</td></tr>
     <tr><td>Sıcaklık</td><td>TMP117</td><td>Motor ısınmasını kayıt</td></tr>
     <tr><td>Kol</td><td>15 cm alüminyum lama + değiştirilebilir uç kütlesi</td><td>Yerçekimi torkunu açıdan bağımsız değiştirmek</td></tr>
   </table></div>

@@ -27,8 +27,8 @@
 | Sürücü | DRV8874 | PWM'i motor gerilimine çevirir; donanım akım sınırı | Durma akımı (2,3 A) TB6612'nin sınırının üstünde; akım sınırı salınım deneylerinde motoru korur |
 | Besleme | Mean Well 12 V 3 A | Motor gücü | Dalgalanması düşük; ucuz adaptörün dalgalanması doğrudan torka biner |
 | Kontrol birimi | ESP32-DevKitC | Kontrol döngüsü, sensör okuma, veri akışı | Donanım enkoder sayacı, 20 kHz PWM, tek duyarlıklı FPU; 1 kHz için yeterli |
-| Motor tarafı ölçüm | Motor enkoderi (kuadratür) | θ_M; türev terimi için hız | Kol hızından türev almak döngüyü kararsızlaştırıyor (simülasyon) |
-| Kol tarafı ölçüm | AS5600 + diametral mıknatıs, filtre SF = 11 | θ_L (mutlak); **yalnız doğrulama ve referans**, son kontrolcüye girmez. İkizde ve deneyde θ_d'yi ölçerek telafi için üst sınır verir (`framing.md`, sensör kararı) | Mutlak açı: her deneyde θ₀ yeniden bulunur. Varsayılan filtre 2,2 ms gecikme verir; SF = 11 ile 0,286 ms |
+| Motor tarafı ölçüm | **AS5600 motorun arka mil ucunda** (diametral mıknatıs, filtre SF = 11, I²C-0) + motorun Hall enkoderi (kuadratür, PCNT) | θ_M: kontrolcünün ve yüz kestiricinin gördüğü tek konum. AS5600 12 bit × N = 30 → kol tarafında 0,0029°; çok tur sayımı yazılımda. Hall enkoder (0,27°) aynı milde kalır: tur sayımının sağlaması ve yedek | Yüz kestirici motor tarafı konumun ≈ 0,02° ya da daha ince ölçülmesini istiyor; 0,27°'lik Hall enkoderle tutmuyor (`framing.md`, iş sırası 3). Kol hızından türev almak döngüyü kararsızlaştırıyor (simülasyon) |
+| Kol tarafı ölçüm | İkinci AS5600 kol milinin ucunda + diametral mıknatıs, filtre SF = 11, **I²C-1** | θ_L (mutlak); **yalnız doğrulama ve referans**, son kontrolcüye girmez. İki AS5600'ün adresi aynı (0x36), bu yüzden ayrı hatlarda; doğrulama sensörü için 400 kHz yeter. İkizde ve deneyde θ_d'yi ölçerek telafi için üst sınır verir (`framing.md`, sensör kararı) | Mutlak açı: her deneyde θ₀ yeniden bulunur. Varsayılan filtre 2,2 ms gecikme verir; SF = 11 ile 0,286 ms |
 | Akım | INA228 (I²C-0) | Tork kestirimi (k_t·i); ısınma ve doyum izleme | Salınım deneylerinde akım RMS'i sınırlayıcı |
 | Sıcaklık | TMP117 × 2 (ayrı hat I²C-1, 400 kHz) | Sargı direnci ve sürtünme sıcaklığa bağlı | Tekrarlanabilirlik (B6). TMP117 en fazla 400 kHz destekler, bu yüzden hızlı hatta değil |
 | Mekanik | Ayarlanabilir kaplin, Ø8 çelik mil, 2 × 608 rulman, gövde, kol, ağırlıklar, sürtünme pabucu | Boşluk, yerçekimi ve sürtünme düğmeleri | Framing'in üç bağımsız düğmesi: 2r, mgℓ, F_C |
@@ -39,7 +39,7 @@
 
 - **Ortak toprak:** adaptörün eksi ucu, DRV8874 GND ve ESP32 GND tek noktada birleşir. USB toprağı da bilgisayar üzerinden bu noktaya bağlanır; toprak döngüsünü önlemek için kablolar kısa ve yıldız bağlantılı tutulur.
 - **Enkoder beslemesi:** Hall enkoder 3,3 V ile beslenir, böylece çıkışları doğrudan ESP32'ye girer. 3,3 V'ta çalışmazsa 5 V ile beslenir ve çıkışlara seviye çevirici eklenir. Bu durum veri sayfası ya da ölçümle doğrulanacak.
-- **I²C hatları:** I²C-0 (AS5600, INA228) 1 MHz, I²C-1 (TMP117 × 2) 400 kHz. Adafruit kartlarındaki çekme dirençleri iki hatta ayrı ayrı kontrol edilir; hızlı hatta kablo kısa tutulur.
+- **I²C hatları:** I²C-0 (motor AS5600 0x36, INA228 0x40) 1 MHz; I²C-1 (kol AS5600 0x36, TMP117 0x48 / 0x49) 400 kHz. AS5600'ün adresi sabit olduğundan iki sensör ayrı hatlarda; çoklayıcı ya da AS5600L gerekmez. Adafruit kartlarındaki çekme dirençleri iki hatta ayrı ayrı kontrol edilir; hızlı hatta kablo kısa tutulur.
 - **Motor beslemesi:** DRV8874'ün VM girişine, kartın önerdiği şekilde ek elektrolitik kondansatör. Akım sınırı kartın direnciyle ≈ 2 A'e ayarlanır.
 - **Acil durdurma:** 12 V hattında elle kesilebilen bir anahtar (yazılımdan bağımsız). Yazılım tarafı: akım, açı, sıcaklık sınırları ve iletişim kesilince motoru durdurma.
 - **Pin planı** 5. aşamada (donanım hazırlığı) çıkarılacak.
@@ -49,16 +49,17 @@
 ```
   yan görünüş (kol düşey düzlemde döner)
 
-   [motor + 1:30 dişli]──(kaplin: dil + yuva, 0/1,5/3/5°)──[mil Ø8]══(rulman)═══(rulman)══[mıknatıs] ⟶ AS5600
-                                                             │
-                                                     [sürtünme diski + keçe pabuç, vidayla ayarlı]
-                                                             │
-                                          karşı ağırlık ◄────┼────► kol 15 cm ──► uç kütlesi (0/20/50 g)
+   AS5600 ⟵ [mıknatıs]┄[Hall disk]┄[motor + 1:30 dişli]──(kaplin: dil + yuva, 0/1,5/3/5°)──[mil Ø8]══(rulman)═══(rulman)══[mıknatıs] ⟶ AS5600
+                                                                                             │
+                                                                                     [sürtünme diski + keçe pabuç, vidayla ayarlı]
+                                                                                             │
+                                                                          karşı ağırlık ◄────┼────► kol 15 cm ──► uç kütlesi (0/20/50 g)
 ```
 
 - **Kaplin:** motor milinden (6 mm D) kol miline (Ø8). Dil ve yuva arasındaki açısal boşluk, değiştirilebilir 3B baskı parçalarla 0 / 1,5 / 3 / 5°.
 - **Kol mili:** iki 608 rulmanla gövdeye yataklanır. Kol yükünü motor milinden ayırır, böylece motorun kendi yatakları eğilme yükü taşımaz.
-- **AS5600:** milin ucunda, mıknatısla eksenel hizada. Kalibrasyon: birkaç açıda motor enkoderine göre (boşluk bir yöne bastırılı tutularak).
+- **AS5600 (kol, doğrulama):** kol milinin ucunda, mıknatısla eksenel hizada. Kalibrasyon: birkaç açıda motor tarafı AS5600'e göre (boşluk bir yöne bastırılı tutularak).
+- **AS5600 (motor, kontrol):** motorun arka mil ucunda. Ø6 diametral mıknatıs, Hall enkoderin çok kutuplu halka mıknatısının göbeğine takılan bir baskı uzatmayla ≈ 5 mm geride, mil ekseninde ortalanır; sensör kartı motorun arka kapağına bağlı bir tutucuda (hava aralığı 0,5–3 mm). Uzatmanın nedeni: halka mıknatısın alanı, kutup adımı ≈ 3 mm olduğundan eksen boyunca hızla söner (5 mm'de kabaca binde birkaçına; hesap, doğrulanmadı), yani AS5600'ü bozmaz. Diametral mıknatısın Hall sensörlerini etkileyip etkilemediği montajda sayım/tur ile kontrol edilir. Bozuyorsa Hall disk sökülür; Hall enkoder yalnız yedek olduğundan yöntem etkilenmez (tur sayımının sağlaması kaybolur, yazılımdaki sarma yine çalışır). Arka milin erişilebilirliği ve Hall disk göbeğinin ölçüsü motor gelince ölçülecek; tutucu ona göre çizilecek.
 - **Kol:** alüminyum lama; uçta vidalı ağırlık yuvası, milin öbür tarafında karşı ağırlık yuvası (H).
 - **Sürtünme pabucu:** mile bağlı bir disk ve ona vidayla bastırılan keçe pabuç. Sürtünmeyi açıdan bağımsız olarak ekler (L senaryosu).
 - **Güvenlik:** 0° altı ve 180° üstüne geçişi önleyen mekanik durdurucu; yazılımda açı sınırı.
@@ -75,14 +76,14 @@
 | Görev | Ayrıntı |
 |---|---|
 | Döngü | 1 kHz, donanım zamanlayıcısıyla. Kontrol bir çekirdeğe sabitlenir, Wi-Fi kapalı. Döngü süresi ve gecikmesi her pakete yazılır. |
-| Okuma | Enkoder: PCNT (gürültü filtresi açık; 16 bit sayaç taşması yazılımda izlenir). AS5600: I²C-0 1 MHz, her döngüde; açılışta SF = 11, FTH kapalı yazılır. INA228: I²C-0, dönüşüm süresi ve ortalama sayısı 1 kHz'e göre ayarlanır, her döngüde ya da 500 Hz. TMP117: I²C-1 400 kHz, 10 Hz. |
-| Kestirim | θ_M (kol tarafına indirgenmiş), θ_L, ω_M, θ_d = θ_M − θ_L. **Hız kestirimi kritik:** kol tarafında bir enkoder sayımı 0,27° olduğundan 1 kHz'te ardışık fark yöntemi 4,7 rad/s'lik basamaklar verir. Salınım sırasındaki hızlar ise ≈ 1 rad/s mertebesinde, yani bir basamağın altında. Birinci yöntem: ardışık fark + 50 Hz birinci derece filtre (simülasyonun gerçekçi modeliyle aynı; filtre ≈ 3 ms gecikme ekler). İkinci yöntem: enkoder kenarları arasındaki sürenin donanım zamanlayıcısıyla ölçülmesi (ESP32 MCPWM yakalama birimi); düşük hızda çok daha iyi. Hangi yöntem seçilirse seçilsin sabit tutulur, her kayda yazılır ve benzetim modeline aynen girer, çünkü sınır bu ayara duyarlıdır. |
+| Okuma | Hall enkoder: PCNT (gürültü filtresi açık; 16 bit sayaç taşması yazılımda izlenir). Motor AS5600: I²C-0 1 MHz, her döngüde (≈ 50 µs); kol AS5600: I²C-1 400 kHz, her döngüde (≈ 120 µs; ESP32'nin ikinci I²C denetleyicisiyle, kontrol yolunu beklemeden). İkisinde de açılışta SF = 11, FTH kapalı, HYST kapalı yazılır ve okunarak doğrulanır; okunan RAW ANGLE (histerezis sensörde bir ölü bant gibi davranır, yüz kestiriciyi kör eder). **Çok tur sayımı (motor):** her döngüde Δ = ham − önceki, [−2048, 2048) aralığına sarılır, tur sayacı güncellenir. Bunun için iki okuma arasında motor yarım turdan az dönmeli: en yüksek hız 333 rpm × 30 ≈ 167 tur/s → 1 kHz'te 0,17 tur/örnek (3 kat pay). Okuma hatası ya da atlanan örnekte tur sayısı Hall sayımından yeniden kurulur (Hall bir motor turunda 44 sayım verir, tur belirsizliği olmaz). INA228: I²C-0, dönüşüm süresi ve ortalama sayısı 1 kHz'e göre ayarlanır, her döngüde ya da 500 Hz. TMP117: I²C-1 400 kHz, 10 Hz. |
+| Kestirim | θ_M (motor AS5600'ten, kol tarafına indirgenmiş), θ_L, ω_M, θ_d = θ_M − θ_L; yüz kestirici (tork gözlemcisi, olay + yoklama, ikizdeki ayarlar: `framing.md` iş sırası 3, "AS5600 motor milinde" eki). **Not (6 Kasım 2026):** aşağıdaki hız kestirimi tartışması 0,27°'lik Hall enkoder içindi; motor AS5600'üyle bir sayım kol tarafında 0,0029°, ardışık fark basamağı ≈ 0,05 rad/s. **Hız kestirimi kritik:** kol tarafında bir enkoder sayımı 0,27° olduğundan 1 kHz'te ardışık fark yöntemi 4,7 rad/s'lik basamaklar verir. Salınım sırasındaki hızlar ise ≈ 1 rad/s mertebesinde, yani bir basamağın altında. Birinci yöntem: ardışık fark + 50 Hz birinci derece filtre (simülasyonun gerçekçi modeliyle aynı; filtre ≈ 3 ms gecikme ekler). İkinci yöntem: enkoder kenarları arasındaki sürenin donanım zamanlayıcısıyla ölçülmesi (ESP32 MCPWM yakalama birimi); düşük hızda çok daha iyi. Hangi yöntem seçilirse seçilsin sabit tutulur, her kayda yazılır ve benzetim modeline aynen girer, çünkü sınır bu ayara duyarlıdır. |
 | Kontrolcü A: PID | u = K_p e + K_i ∫e − K_d ω_M; e = θ₀ − θ_L. Kazançlar ω_c'den: K_p = J ω_c², K_d = 1,4 J ω_c, K_i = K_p ω_c / 4 (simülasyonla aynı). Integral doyması önlemi (anti-windup): çıkış doyumdayken integral dondurulur. Sürücü ölü bandı telafi edilmez, çünkü telafi salınım sınırını değiştirir; ölü bant tanılanıp modele girer. |
 | Kontrolcü B: P–PI | Ghaffari 2013 yapısı: dış konum döngüsü (k_p), iç hız döngüsü (k_v, T_i), hız motor enkoderinden. Ghaffari'nin r_gs tanımıyla birebir karşılaştırma için. |
 | Seçenekler | Yerçekimi ileri beslemesi açık/kapalı; geri besleme kol ya da motor açısından (O uzantısı için hazır); yapay nicemleme (L). Not: ileri besleme dişliden geçen torku değiştirmez (yerçekimi yükü yine dişliden taşınır), yani doğal ön yük yok olmaz; yalnız integral teriminin yükünü alır. Bu yüzden ana deneylerde kapalı tutulur, etkisi ayrıca denenir. |
 | Güvenlik | Yazılım akım sınırı (DRV8874'ün donanım sınırının altında), açı sınırı, motor gövdesi sıcaklık eşiği, iletişim kesilince motoru durdurma |
 | Komutlar | θ₀, kontrolcü ve kazançlar, deney süresi, adım genliği, kayıt hızı, mod |
-| Kayıt paketi | Zaman damgası, θ_M sayımı, θ_L ham, akım, PWM görev oranı, döngü süresi; sıcaklıklar 10 Hz. ≈ 20 bayt × 1 kHz ≈ 20 kB/s (921600 baud ≈ 92 kB/s'nin altında). |
+| Kayıt paketi | Zaman damgası, θ_M (motor AS5600 tur + ham), Hall sayımı, θ_L ham, akım, PWM görev oranı, yüz kestiricinin ŝ'si ve yoklama evresi, döngü süresi; sıcaklıklar 10 Hz. ≈ 26 bayt × 1 kHz ≈ 26 kB/s (921600 baud ≈ 92 kB/s'nin altında). |
 
 ### 4.2 Deney ve veri toplama (bilgisayar)
 
@@ -104,7 +105,7 @@ Bilgisayar tarafı MATLAB'da yazılır (`serialport` ile seri haberleşme). Sim�
 | Model | Amaç | Durum |
 |---|---|---|
 | Sistem tanılama modelleri: motor elektrik (R, k_t), mekanik (J_M, b, F_C), dişli teması (K_s), boşluk (2r), sürücü ölü bandı, sürücü akım (tork) sınırı | Benzetim ve DF parametreleri | Deney tarifleri literatürde (Yamada 2016, Malik 2009) |
-| Sayısal benzetim: iki kütle + boşluk + yerçekimi + Stribeck sürtünmesi + nicemleme + ayrık zaman + sensör gecikmesi (AS5600 filtresi 0,286 ms ve I²C okuma süresi) | "Kesin" referans; rejim ayrımı | Var (`simulasyon/`); tanılanan parametrelerle ve sensör gecikmesiyle güncellenecek |
+| Sayısal benzetim: iki kütle + boşluk + yerçekimi + Stribeck sürtünmesi + nicemleme + ayrık zaman + sensör gecikmesi (AS5600 filtresi 0,286 ms ve I²C okuma süresi) | "Kesin" referans; rejim ayrımı | Var (`simulasyon/`); motor tarafı AS5600 gecikmesi ve gürültüsü `p.gM`, `p.nM` ile eklendi (`yuz_kestirici_as5600.m`); tanılanan parametrelerle güncellenecek |
 | Ghaffari / simetrik DF | Yerçekimsiz referans öngörü (B1'deki karşılaştırma) | 4a'da yeniden üretildi (`simulasyon/4a_ghaffari/`): tam DF ve sürtünmesiz benzetim birebir; sürtünmeli uyum için tork sınırı gerekti |
 | İki girişli DF | Önerilen öngörü | 4b'de türetilecek |
 | Kesin parçalı doğrusal çözüm (Kollár / Esbrook yöntemi) | DF'nin bozulduğu rejimde referans | Gerekirse |
@@ -119,8 +120,8 @@ Bilgisayar tarafı MATLAB'da yazılır (`serialport` ile seri haberleşme). Sim�
 
 > **Güncelleme (2026-11-02):** 4–7. maddelerin (boşluk, sürtünme, J_M ve b, K_s) yerine dijital ikizde sınanmış tarifler geçti: `deney_protokolu.md` (D1–D5, ayrıca c_s, F_s, mgl ve J_L). Hız kestirimi için §4.1'deki iki yöntem yerine gözlemci seçildi (`simulasyon/simulink/README.md`, hız kestirimi yan sorusu). Aşağıdaki liste kalibrasyon maddeleri (1–3, 8–11) için geçerli.
 
-1. Enkoder yönü ve sayım/tur doğrulaması (kol tarafında 1320).
-2. AS5600 yapılandırması (SF = 11, FTH kapalı) okunarak doğrulanır; sıfırı ve doğrusallığı dişli bir yöne bastırılı tutularak motor enkoderine göre birkaç açıda.
+1. Hall enkoder yönü ve sayım/tur doğrulaması (kol tarafında 1320); motor AS5600'ün yönü ve tur sayımı Hall sayımıyla karşılaştırılarak (birkaç yüz motor turu boyunca kayma olmamalı).
+2. İki AS5600'ün yapılandırması (SF = 11, FTH ve HYST kapalı) okunarak doğrulanır. Motor AS5600'ün doğrusallığı: motor sabit hızda döndürülürken açının tur içi harmonikleri çıkarılır (mıknatıs kaçıklığından gelen, her turda tekrarlayan hata) ve tabloyla düzeltilir. Kol AS5600'ün sıfırı ve doğrusallığı: dişli bir yöne bastırılı tutularak motor AS5600'e göre birkaç açıda.
 3. INA228 kalibrasyonu: bilinen dirençle; DRV8874 CS çıkışıyla çapraz kontrol.
 4. Boşluk ölçümü: θ_d'nin iki kenarı arasındaki fark, birkaç açıda (Yamada 2016 tarifi); önce kaplin 0° ile motorun kendi boşluğu, sonra her kaplin ayarı.
 5. Ölü bant ve sürtünme: yavaş rampa ve tek yönlü sabit hız deneyleri.

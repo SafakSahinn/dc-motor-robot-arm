@@ -98,15 +98,15 @@ Malzeme üç düzeyde değerlendirildi: en ucuz ilk liste, maxon motorlu üst s�
 | Motor + enkoder | JGB37-520 1:30, 639 TL | **JGB37-520 1:30, 639 TL** (ya da enkoderli JGA25-370) | maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16, ≈ 472 € |
 | Sürücü | TB6612FNG, 81 TL | **TI DRV8874 (Pololu #4035), 11,94 $** | DRV8874 × 2 |
 | Denetleyici | genel ESP32, ≈ 270 TL | **Espressif ESP32-DevKitC, ≈ 13 €** | aynı |
-| Kol açısı | AS5600 modülü, ≈ 258 TL | **Adafruit AS5600, 5,95 $** + mıknatıs | AMT22 14 bit, 73,72 $ |
+| Motor açısı (ince) + kol açısı | AS5600 modülü × 2, ≈ 516 TL | **Adafruit AS5600 × 2, 11,90 $** + mıknatıs (motor arka mili + kol mili) | motorda AS5600, kolda AMT22 14 bit, 73,72 $ |
 | Akım | INA219, 87 TL | **Adafruit INA228 (20 bit), 14,95 $** | aynı |
 | Sıcaklık | — | **Adafruit TMP117 × 2, 23 $** | aynı |
 | Güç | genel 12 V 2 A | **Mean Well 12 V 3 A, ≈ 15 $** | aynı |
-| **Toplam** | **≈ 1.336 TL** | **≈ 639 TL + 13 € + 70 $** | **≈ 485 € + 150 $** |
+| **Toplam** | **≈ 1.594 TL** | **≈ 639 TL + 13 € + 76 $** | **≈ 485 € + 156 $** |
 
 Mekanik parçalar (ayrı kol mili ve iki rulman, 15 cm alüminyum kol, ≈ 20 g değiştirilebilir uç kütlesi, 3B baskı gövde ve 1,5° / 3° / 5° boşluklu kaplin) üç listede aynı.
 
-**Neden dengeli liste:** simülasyon bu motor sınıfıyla yapıldı ve motor hemen alınabilir; TB6612FNG önerilen en fazla 1,0 A iken motorun durma akımı 2,3 A, DRV8874 ≈ 7 $ fazlasına 2,1 A sürekli ve akım sınırı veriyor; $\theta_d$'yi ucuz motorun enkoderi (≈ 0,27°) sınırladığından AMT22'nin inceliği ölçüme yansımaz, orijinal AS5600 yeterli; INA228 ve TMP117 fiyatı az değiştirip veriyi belirgin iyileştiriyor. **Sınır:** 1,5–5°'lik boşluk motor enkoderiyle 6–18 adımda ölçülür; ince ayrıntı için üst sınıf motor gerekir. **Yükseltme yolu:** motor ve kol enkoderi üst sınıfa çevrilir, diğer parçalar aynı kalır.
+**Neden dengeli liste:** simülasyon bu motor sınıfıyla yapıldı ve motor hemen alınabilir; TB6612FNG önerilen en fazla 1,0 A iken motorun durma akımı 2,3 A, DRV8874 ≈ 7 $ fazlasına 2,1 A sürekli ve akım sınırı veriyor; motorun Hall enkoderi (≈ 0,27°) kol sensörsüz yüz kestirici için kaba olduğundan motorun arka miline ikinci bir AS5600 konuyor (kol tarafında 0,0029°; kol milindeki AS5600 yalnız doğrulama, adresleri aynı olduğundan ayrı I²C hatlarında); INA228 ve TMP117 fiyatı az değiştirip veriyi belirgin iyileştiriyor. **Sınır:** $\theta_d$'nin inceliğini artık kol milindeki AS5600 (0,088°) belirler, 1,5–5°'lik boşluk ≈ 17–57 adımda ölçülür; daha ince ayrıntı için kolda AMT22. **Yükseltme yolu:** motor ve kol enkoderi üst sınıfa çevrilir, diğer parçalar aynı kalır.
 
 Bütün adaylar (motorlar, geliştirme kartları, sürücüler, sensörler), fiyatları, kaynakları ve seçilme/elenme nedenleri: [`donanim/alisveris_listesi.md`](donanim/alisveris_listesi.md). Gerekçeler ve haberleşme: [`donanim/tasarim_kararlari.md`](donanim/tasarim_kararlari.md).
 

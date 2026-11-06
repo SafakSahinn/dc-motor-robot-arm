@@ -15,24 +15,24 @@ Fiyatlar üretici ya da satıcı sitelerindeki liste fiyatları: TL fiyatları K
 | Motor + enkoder | JGB37-520 12 V 1:30, 639,29 TL | **JGB37-520 12 V 1:30, 639,29 TL** (Karaköy'de enkoderli JGA25-370 bulunursa o) | maxon DCX 22 L + GPX 22 LZ 26:1 + ENX 16, ≈ 472 € |
 | Motor sürücü | TB6612FNG modülü, 81,36 TL | **Pololu DRV8874 (#4035), 11,94 $** | Pololu DRV8874 × 2, 23,88 $ |
 | Denetleyici | ESP32 DevKit (genel), ≈ 270 TL | **Espressif ESP32-DevKitC, ≈ 13 €** | Espressif ESP32-DevKitC, ≈ 13 € |
-| Kol açısı | AS5600 modülü (markasız), ≈ 258 TL | **Adafruit AS5600 (#6357), 5,95 $** + diametral mıknatıs | AMT22 14 bit (AMT222B-V), 73,72 $ |
+| Motor açısı (ince) + kol açısı | AS5600 modülü (markasız) × 2, ≈ 516 TL | **Adafruit AS5600 (#6357) × 2, 11,90 $** + diametral mıknatıs (biri motor arka milinde, biri kol milinde) | motor milinde AS5600, kolda AMT22 14 bit (AMT222B-V), 73,72 $ |
 | Akım | INA219 modülü, 87,18 TL | **Adafruit INA228 (#5832), 14,95 $** | Adafruit INA228, 14,95 $ |
 | Sıcaklık | — | **Adafruit TMP117 × 2, 23,00 $** | Adafruit TMP117 × 2, 23,00 $ |
 | Enkoder alıcısı | gerekmez | gerekmez | TI AM26LV32E (RS-422) |
 | Güç | Genel 12 V 2 A adaptör | **Mean Well 12 V 3 A, ≈ 15 $** | Mean Well 12 V 3 A, ≈ 15 $ |
-| **Toplam (elektronik + motor)** | **≈ 1.336 TL** + adaptör | **≈ 639 TL + 13 € + 70 $** | **≈ 485 € + 150 $** |
+| **Toplam (elektronik + motor)** | **≈ 1.594 TL** + adaptör | **≈ 639 TL + 13 € + 76 $** | **≈ 485 € + 156 $** |
 
 Mekanik parçalar (rulman, mil, kol, ağırlıklar, vidalar, 3B baskı gövde ve kaplin) üç listede de aynı ve toplama dahil değil.
 
 **Neden dengeli liste:**
 - Motor ilk listedeki gibi: simülasyon bu sınıfla yapıldı, hemen alınabilir, parametreler tanılanacak. maxon kombinasyonu tek başına dengeli listenin ≈ 10 katı.
 - Sürücü değişti: TB6612FNG önerilen en fazla 1,0 A, motorun durma akımı 2,3 A. DRV8874 ≈ 7 $ fazlasına 2,1 A sürekli, donanım akım sınırı ve akım ölçüm çıkışı veriyor.
-- Kol açısında AMT22 bu motorla boşa gider: θ_d'yi ucuz motorun enkoderi (≈ 0,27°) sınırlar. Adafruit AS5600 aynı çipin orijinali, belgeli ve 5,95 $.
+- **İki AS5600 (6 Kasım 2026 kararı):** yüz kestirici motor tarafı konumu ≈ 0,02° ya da daha ince istiyor; motorun Hall enkoderi (0,27°) yetmiyor. Motorun arka miline takılan AS5600, dişliden önce ölçtüğü için kol tarafında 0,0029° verir. Kol milindeki ikinci AS5600 yalnız doğrulama içindir, kontrolcü onu görmez. Adresleri aynı (0x36), ayrı I²C hatlarına bağlanırlar. Adafruit AS5600 aynı çipin orijinali, belgeli ve 5,95 $.
 - INA228 fiyatı az değiştiriyor (≈ 15 $), çözünürlüğü ≈ 256 kat artırıyor.
 - TMP117 ucuz ve ortam + motor sıcaklığını her deneye veri olarak ekliyor.
 - Yükseltme yolu açık: motor ve kol enkoderi üst sınıfa çevrilebilir, diğer parçalar aynı kalır.
 
-**Sınır:** motor enkoderi çıkışta 1320 sayım/tur (≈ 0,27°); 1,5–5°'lik boşluk 6–18 adımla ölçülür. Boşluğun varlığı ve genliği görülür, ince ayrıntı için üst sınıf motor gerekir.
+**Sınır:** θ_d'nin inceliğini artık kol milindeki AS5600 (0,088°) belirler: 1,5–5°'lik boşluk ≈ 17–57 adımla ölçülür (yalnız Hall enkoderle 6–18 adımdı). Daha ince θ_d gerekirse kolda AMT22 (0,022°).
 
 ---
 
@@ -77,18 +77,18 @@ Kaynaklar: [Conrad](https://www.conrad.com/en/o/microcontroller-boards-kits-mcu-
 
 Kaynaklar: [Pololu #4035](https://www.pololu.com/product/4035) · [TB6612FNG, direnc.net](https://www.direnc.net/tb6612fng-dc-ve-step-motor-surucu-modulu) · [Pololu #713](https://www.pololu.com/product/713) · [Toshiba veri sayfası](https://toshiba.semicon-storage.com/info/docget.jsp?did=10660)
 
-### 4. Kol açısı sensörü
+### 4. Açı sensörleri (motor arka mili ve kol mili)
 
 | Seçenek | Özellik | Fiyat | Değerlendirme |
 |---|---|---|---|
-| ✅ Adafruit AS5600 (#6357) | ams AS5600, 12 bit (0,088°), I²C; mıknatıs ayrı | 5,95 $ | Dengeli liste; orijinal çip, belgeli kart |
+| ✅ Adafruit AS5600 (#6357) × 2 | ams AS5600, 12 bit (0,088°), I²C, adres 0x36 sabit; mıknatıs ayrı | 5,95 $ × 2 | Dengeli liste; orijinal çip, belgeli kart. Biri motor arka milinde (kol tarafında 0,0029°), biri kol milinde |
 | AS5600 modülü (markasız) | 12 bit, I²C | ≈ 258 TL (Çiçeksepeti) | İlk liste; çip orijinal olmayabilir |
 | ams AS5047P + adaptör | 14 bit, SPI + ABI | ≈ 16,7 $ – 21,7 € (stok sorunlu) | Ara seçenek |
 | Same Sky AMT22 14 bit (AMT222B-V) | ±0,2° doğruluk, SPI, mıknatıssız | 73,72 $ | Üst sınıf; ince enkoderli motorla anlamlı |
 
 Kaynaklar: [Adafruit AS5600](https://www.adafruit.com/product/6357) · [AS5600, Çiçeksepeti](https://www.ciceksepeti.com/as5600-manyetik-aci-sensoru-olcum-modulu-12-bit-temassiz-pozisyon-kcm45524464) · [AS5047P](https://www.infineon.com/row/public/documents/24/49/infineon-as5047p-datasheet-en.pdf) · [AMT222B-V](https://www.digikey.com/en/products/detail/same-sky-formerly-cui-devices/AMT222B-V/9838236)
 
-**Mıknatıs:** diametral (kuzey-güney yan yana), 6 × 2,5 mm; eksenel mıknatıs çalışmaz. Mile ortalanmalı; sensör motor enkoderine göre birkaç açıda kalibre edilecek.
+**Mıknatıs:** diametral (kuzey-güney yan yana), 6 × 2,5 mm; eksenel mıknatıs çalışmaz. Mile ortalanmalı. Motor tarafındaki sensör sabit hızda dönüşle (tur içi harmonikler), kol tarafındaki motor tarafına göre birkaç açıda kalibre edilecek (`../calisma_notu/mimari.md` §5).
 
 ### 5. Akım sensörü
 
@@ -116,7 +116,7 @@ Kaynak: [Adafruit TMP117](https://www.adafruit.com/product/4821)
 | Parça | Seçim | Fiyat | Not |
 |---|---|---|---|
 | ✅ Güç | Mean Well 12 V 3 A (GST36 serisi) | ≈ 14,6 $ – 17 € | [Farnell](https://ie.farnell.com/mean-well/gst36e12-p1j/adaptor-ac-dc-12v-3a/dp/2815899) · [Jameco](https://www.jameco.com/z/GST36B12-P1J-MEAN-WELL-12V-3A-36W-Class-2-AC-DC-Industrial-Desktop-Power-Adapter-Level-VI-2-1mm-Plug_2257361.html) |
-| ✅ Diametral mıknatıs | 6 × 2,5 mm | — | AS5600 için |
+| ✅ Diametral mıknatıs | 6 × 2,5 mm, 3 adet (1 yedek) | — | İki AS5600 için |
 | ✅ Rulman | 2 adet, kol mili çapında (SKF / NSK tercih) | rulmancı | |
 | ✅ Kol, mil, ağırlıklar, vidalar | 15 cm alüminyum lama, çelik mil, ≈ 20 g uç, M3 vida | hırdavat | |
 | ✅ Gövde, boşluklu kaplin | 3B baskı; 1,5° / 3° / 5° | baskı | JGB37 mili 6 mm D |
@@ -127,6 +127,6 @@ Kaynak: [Adafruit TMP117](https://www.adafruit.com/product/4821)
 ## Sipariş kontrol listesi (dengeli liste)
 
 - [ ] JGB37-520 1:30 (ya da Karaköy'de enkoderli JGA25-370): model etiketi fotoğrafı, mil çapı, enkoder besleme gerilimi.
-- [ ] DRV8874, Adafruit AS5600, INA228, TMP117 × 2: tek siparişte yetkili distribütörden (kargo ve gümrük tek sefer).
+- [ ] DRV8874, Adafruit AS5600 × 2, INA228, TMP117 × 2: tek siparişte yetkili distribütörden (kargo ve gümrük tek sefer).
 - [ ] Espressif ESP32-DevKitC, Mean Well 12 V 3 A, diametral mıknatıs.
 - [ ] Rulman iç çapı = kol mili çapı.

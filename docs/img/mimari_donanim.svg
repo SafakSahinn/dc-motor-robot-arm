@@ -53,17 +53,17 @@
   <!-- Bant 2: ölçüm -->
   <g text-anchor="middle">
     <rect x="470" y="235" width="125" height="58" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
-    <text x="532" y="259" font-weight="600">Motor enkoderi</text><text x="532" y="277">0,27° (kol tarafı)</text>
+    <text x="532" y="256" font-weight="600">AS5600 (motor)</text><text x="532" y="272" font-size="11">0,0029° kol tarafı</text><text x="532" y="286" font-size="11">+ Hall 0,27° (yedek)</text>
 
     <rect x="625" y="235" width="120" height="58" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
     <text x="685" y="259" font-weight="600">TMP117 × 2</text><text x="685" y="277">ortam + motor</text>
 
     <rect x="775" y="235" width="115" height="58" rx="8" fill="#e3f1e3" stroke="#3a7d3a"/>
-    <text x="832" y="259" font-weight="600">AS5600</text><text x="832" y="277">kol açısı 0,088°</text>
+    <text x="832" y="256" font-weight="600">AS5600 (kol)</text><text x="832" y="272" font-size="11">0,088° · yalnız</text><text x="832" y="286" font-size="11">doğrulama</text>
   </g>
   <!-- sensörlerin bağlı olduğu yerler -->
   <line x1="532" y1="160" x2="532" y2="235" stroke="#3a7d3a" stroke-width="1.5"/>
-  <text x="526" y="200" font-size="11" fill="#3a7d3a" text-anchor="end">rotorda</text>
+  <text x="526" y="200" font-size="11" fill="#3a7d3a" text-anchor="end">arka mil ucunda</text>
   <path d="M575,160 L575,212 L670,212 L670,235" fill="none" stroke="#8a6d00" stroke-width="1.5" stroke-dasharray="5 3"/>
   <text x="582" y="206" font-size="11" fill="#8a6d00">gövde ısısı</text>
   <line x1="832" y1="160" x2="832" y2="235" stroke="#3a7d3a" stroke-width="1.5"/>
@@ -76,7 +76,7 @@
 
     <rect x="175" y="410" width="850" height="100" rx="8" fill="#dde9f7" stroke="#2563a8"/>
     <text x="600" y="442" font-weight="600" font-size="14">ESP32-DevKitC · 1 kHz kontrol döngüsü</text>
-    <text x="600" y="465">PCNT (enkoder) · LEDC PWM 20 kHz · I²C-0 1 MHz (AS5600, INA228) · I²C-1 400 kHz (TMP117)</text>
+    <text x="600" y="465">PCNT (Hall) · LEDC PWM 20 kHz · I²C-0 1 MHz (AS5600 motor, INA228) · I²C-1 400 kHz (AS5600 kol, TMP117 × 2)</text>
     <text x="600" y="488">PID / P–PI · güvenlik sınırları (akım, açı, sıcaklık) · zaman damgalı kayıt paketi</text>
   </g>
   <!-- sinyal okları -->
