@@ -1,0 +1,32 @@
+=== hiz_gozlemci, 2026-11-06 18:11, D, r_gs 0,50, r 1.50°
+Kurulum akim_gurultu "INA228 taban" (1 kHz, AS5600 motor milinde 0,4 ms / 0,043°, olay+yoklama yokOrta 0,6 vDurF 10 Hz,
+gözlemci torku INA228 0,54 ms + 0,1 ms, akım döngüsü 500 Hz). Kazançlar aynı. Satır: kontrolcünün hız kaynağı.
+42 senaryo; H7: son 1 s |e| <= 0,5°, en büyük <= 1°, son yüz doğru (B12). B13: yoklama + 0,3 s kol hareketi (darbesiz).
+u RMS / |u| doyumda: son 1 s, tüm senaryolar (hız gürültüsünün torka yansıması).
+
+sürtünme    satır             | H7 geçen | B12 son yüz | en kötü |e| | ort |e| | en büyük | B13 en çok | yoklama ort | temas ort | u RMS son 1 s | doyum %
+sürtünmeli  ideal hız         | 42/42    | 42/42       |   0.21      |  0.11   |  0.21    |  0.33      |  1.3        |  0.0      | 0.0377         | 0.00
+sürtünmeli  w^ (gozW 40 Hz)   | 42/42    | 42/42       |   0.18      |  0.10   |  0.20    |  0.32      |  1.2        |  0.0      | 0.0381         | 0.00
+sürtünmeli  ideal (gozW 20)   | 42/42    | 42/42       |   0.21      |  0.13   |  0.21    |  3.70      |  1.4        |  0.0      | 0.0363         | 0.00
+sürtünmeli  w^ (gozW 20 Hz)   | 38/42    | 38/42       |   2.32      |  0.32   |  3.66    |  3.71      |  1.5        |  0.0      | 0.0388         | 0.00
+      geçemeyen (e/en büyük): 179.75>179.5 a yok +1.86/3.64; 179.75>179.5 a darbe +2.32/3.64; 180.25>179.5 a darbe +1.58/3.66; 179.75>180.5 u darbe -2.23/3.64
+sürtünmeli  ideal (gozW 30)   | 42/42    | 42/42       |   0.21      |  0.12   |  0.21    |  0.33      |  1.4        |  0.1      | 0.0367         | 0.00
+sürtünmeli  w^ (gozW 30 Hz)   | 42/42    | 42/42       |   0.21      |  0.13   |  0.21    |  0.32      |  1.3        |  0.1      | 0.0365         | 0.00
+sürtünmeli  ideal (gozW 50)   | 42/42    | 42/42       |   0.18      |  0.10   |  0.20    |  0.36      |  1.2        |  0.0      | 0.0381         | 0.00
+sürtünmeli  w^ (gozW 50 Hz)   | 42/42    | 42/42       |   0.18      |  0.10   |  0.20    |  0.36      |  1.2        |  0.0      | 0.0383         | 0.00
+sürtünmeli  ideal (gozW 80)   | 40/42    | 42/42       |   2.19      |  0.20   |  2.86    |  0.36      |  1.6        |  0.4      | 0.0396         | 0.00
+      geçemeyen (e/en büyük): 180.00>179.5 a darbe -2.19/2.86; 180.25>179.5 a yanlış s0 -1.76/2.75
+sürtünmeli  w^ (gozW 80 Hz)   | 41/42    | 42/42       |   2.53      |  0.17   |  2.94    |  0.37      |  1.5        |  0.3      | 0.0384         | 0.00
+      geçemeyen (e/en büyük): 179.00>179.0 a darbe -2.53/2.94
+sürtünmesiz ideal hız         | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0031         | 0.00
+sürtünmesiz w^ (gozW 40 Hz)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0041         | 0.00
+sürtünmesiz ideal (gozW 20)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0031         | 0.00
+sürtünmesiz w^ (gozW 20 Hz)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0032         | 0.00
+sürtünmesiz ideal (gozW 30)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0031         | 0.00
+sürtünmesiz w^ (gozW 30 Hz)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0035         | 0.00
+sürtünmesiz ideal (gozW 50)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0031         | 0.00
+sürtünmesiz w^ (gozW 50 Hz)   | 42/42    | 42/42       |   0.00      |  0.00   |  0.00    |  0.30      |  1.3        |  0.0      | 0.0051         | 0.00
+sürtünmesiz ideal (gozW 80)   | 41/42    | 42/42       |   0.85      |  0.02   |  2.81    |  0.30      |  1.5        |  0.2      | 0.0034         | 0.00
+      geçemeyen (e/en büyük): 179.00>179.0 a darbe -0.85/2.81
+sürtünmesiz w^ (gozW 80 Hz)   | 39/42    | 42/42       |   0.88      |  0.05   |  2.75    |  0.29      |  1.6        |  0.4      | 0.0112         | 0.00
+      geçemeyen (e/en büyük): 179.00>179.0 a darbe -0.88/2.75; 179.00>179.0 u darbe -0.61/2.66; 180.00>180.5 u darbe +0.59/2.56

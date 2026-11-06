@@ -11,10 +11,14 @@
 %   3) 1 kHz görevde gerçek algoritmanın hesap süresi (yukIter = 0, sentetik girdi, 10 000 tur).
 %   Çalıştırma (bu klasörden):  matlab -batch "ktl_esdeger"
 %   Çıktı: ktl_esdeger_log.txt, ktl_esdeger.mat
+%   Hız kaynağı: ortam değişkeni KTL_VKAYNAK=gozlemci ise ikiz ve kart kontrolcü hızı olarak
+%   gözlemcinin w^'sini kullanır (p.vKaynak, HIZ_GOZLEMCI); çıktı ktl_esdeger_gozlemci_log.txt/.mat.
 clear; clc;
-diary off; if isfile("ktl_esdeger_log.txt"), delete("ktl_esdeger_log.txt"); end
-diary("ktl_esdeger_log.txt");
-fprintf("=== ktl_esdeger %s ===\n", string(datetime("now")));
+vKaynak = getenv("KTL_VKAYNAK");  if isempty(vKaynak), vKaynak = 'olcum'; end
+if strcmp(vKaynak, 'gozlemci'), ad = "ktl_esdeger_gozlemci"; else, ad = "ktl_esdeger"; end
+diary off; if isfile(ad + "_log.txt"), delete(ad + "_log.txt"); end
+diary(ad + "_log.txt");
+fprintf("=== ktl_esdeger %s, hız kaynağı: %s ===\n", string(datetime("now")), vKaynak);
 kok = fileparts(fileparts(mfilename('fullpath')));
 addpath(kok, fullfile(kok, '4a_ghaffari'));
 
@@ -26,7 +30,7 @@ p0.qM = 2*pi/(4096*30);  p0.Ts = 1e-3;  p0.Nper = 10;  p0.yuzN = 20;
 p0.gM = 4e-4;  p0.nM = deg2rad(0.043)/p0.N;
 p0.yuzKes = 'olay+yoklama';  p0.yokOrta = 0.6;  p0.vDurF = 10;
 p0.tOlc = true;  p0.tPen = 0.54e-3;  p0.tGec = 0.1e-3;  p0.akimW = 2*pi*500;
-p0.ktlKayit = true;
+p0.ktlKayit = true;  p0.vKaynak = vKaynak;
 kpv = 0.50^2*p0.Ks/p0.KV;  eps_ = 0.5;  tD = 3;
 istek = [179 179.25 179.75 180 180.25 180.75 181];
 [I, Y, B] = ndgrid(istek, [1 -1], 1:3);
@@ -123,5 +127,5 @@ fprintf("adım süresi µs: ort %.2f, p50 %.2f, p99 %.2f, en uzun %.2f (bütçe 
 sira = sira + 1;  ist = esp32_istat(sp, sira);
 fprintf("kart sayaçları: paketOk %d, crcHata %d, siraAtlama %d, copBayt %d\n", ist.paketOk, ist.crcHata, ist.siraAtlama, ist.copBayt);
 
-save("ktl_esdeger.mat", "S", "RT", "hedef", "I", "Y", "B");
+save(ad + ".mat", "S", "RT", "hedef", "I", "Y", "B");
 diary off;

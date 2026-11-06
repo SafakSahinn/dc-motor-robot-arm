@@ -202,9 +202,15 @@ uzun 37,7 µs (yalnız ilk tur); periyot sapması en çok 1,7 µs, kaçan kesme 
 
 ### Açık kalan
 
-- **Hız kaynağı:** ikizdeki tüm 42 senaryo sonuçları ideal motor hızıyla. Donanımda w^
-  kullanılacak. Adım 5'ten önce ya da birlikte: ikize "kontrolcü hızı = gözlemcinin w^'si"
-  seçeneği eklenip 42 senaryo yeniden koşulmalı (karttaki `HIZ_GOZLEMCI` bunun karşılığı).
+- ~~**Hız kaynağı**~~ **KAPANDI (6 Kasım 2026):** ikize `p.vKaynak = 'gozlemci'` eklendi
+  (`hiz_gozlemci.m`, ayrıntı `framing.md` "Kontrolcünün hızı = gözlemcinin w^'si"). w^ ile
+  (gozW 40 Hz) iki ikizde de H7 42/42, B13 ≤ 0,32°; ideal hızla aynı. Pay gozW 30–50 Hz.
+  `ktl_ayar_paketle.m` bu modda `hizKaynak = 1` (HIZ_GOZLEMCI) gönderiyor. `ktl_esdeger.m`,
+  `KTL_VKAYNAK=gozlemci` ile (log `ktl_esdeger_gozlemci_log.txt`): 81/84 senaryo ayrık
+  kararlarda birebir, |Δw^| ≤ 1,5e-7. Kalan 3'ü tek örneklik eşitlik durumu: yoklamada
+  `yol <= ykDm·yokOrta`, yol = 165 = 0,6·275 sayım. Double radyanda "geçmedi", float sayımda
+  "geçti" çıkıyor; kart 1 ms erken frenliyor, sonrası aynı. Hızla ilgisi yok. **PIL'de bu
+  modla koşulacak** (donanımdaki seçim).
 - Açıya göre kazanç/ofset tablosu kodda değil (hedef başına ayar).
 
 Sıradaki: adım 5, adım kilitli PIL (ikiz MATLAB'da, kart döngüde, `T_KTL_ADIM` n = 1).

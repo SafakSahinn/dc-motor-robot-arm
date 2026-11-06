@@ -277,6 +277,23 @@ Betik: `simulasyon/5_planlama/akim_gurultu.m` (log yanında). Şimdiye kadar tor
 - **Akım döngüsü yavaşlarsa** (ölçüm değil, tesise giden tork) sürtünmesiz ikizde yoklama bozuluyor: 100 Hz'te B13 0,98°. Mod 3'ün akım döngüsü (500 Hz tasarım) en az 200 Hz olmalı; 100 ile 500 Hz arası sınanmadı.
 - **Sınır (elektrik modeli):** `kol_benzetim` tork girişli (mod 3 ideal + burada eklenen birinci derece akım döngüsü). Mod 1'in (gerilim sürüşü) zıt EMK'sı ve R_a, L_a dinamiği yalnız Simscape modelinde (`sm_model_kur(..., 'elektrik')`). Yüz kestirici mod 1'de çalıştırılacaksa ayrıca Simscape'te sınanmalı; bu turda yapılmadı. Ayrıca PWM dalgalanmasının örtüşmesi (aliasing) beyaz gürültüyle temsil edildi.
 
+### Kontrolcünün hızı = gözlemcinin w^'si (6 Kasım 2026, ESP32 adım 4'ten sonra)
+
+Betik: `simulasyon/5_planlama/hiz_gozlemci.m` (log yanında). Önceki bütün 42 senaryo sonuçlarında `p.fv = Inf` idi, yani P-PI'nin hız terimi motor hızını **hatasız** görüyordu. Donanımda bu hız tork gözlemcisinden gelecek (`mimari.md` §4.1; kartta `kontrol::HIZ_GOZLEMCI`). İkize `p.vKaynak = 'gozlemci'` eklendi (varsayılan eski davranış; gerileme temiz, `belirsiz_bant` ve `yuz_kestirici_as5600` loglarında yalnız tarih değişti). Sıra kartla aynı: v, o örnekte yüz kestirici bloğunda güncellenen w^. Kurulum (5a)'nın INA228 tabanı. Kazançlar (KV, KI, kp = 0,50²·K_s/KV) değişmedi.
+
+| Satır | Sürtünmeli H7 / B13 | Sürtünmesiz H7 / B13 | u RMS son 1 s (sürtünmeli / sürtünmesiz) [N·m] |
+|---|---|---|---|
+| İdeal hız (eski sonuç) | 42/42 / 0,33° | 42/42 / 0,30° | 0,0377 / 0,0031 |
+| **w^, gozW 40 Hz (taban)** | **42/42 / 0,32°** | **42/42 / 0,30°** | 0,0381 / 0,0041 |
+| w^, gozW 30 Hz | 42/42 / 0,32° | 42/42 / 0,30° | 0,0365 / 0,0035 |
+| w^, gozW 50 Hz | 42/42 / 0,36° | 42/42 / 0,30° | 0,0383 / 0,0051 |
+| w^, gozW 20 Hz | 38/42 / 3,71° | 42/42 / 0,30° | 0,0388 / 0,0032 |
+| w^, gozW 80 Hz | 41/42 / 0,37° | 39/42 / 0,29° | 0,0384 / 0,0112 |
+
+- **Sonuç: w^ ideal hızın yerini tutuyor.** Tabanda (gozW 40 Hz) iki ikizde de H7 42/42, B13 ≤ 0,32°; kalıcı hata (en kötü 0,18°) ideal hızdakiyle (0,21°) aynı mertebede. Gürültünün torka yansıması küçük: sürtünmesiz ikizde u RMS 0,0031'den 0,0041 N·m'ye çıkıyor, doyum hiç yok. Kazanç ayarı gerekmedi.
+- **gozW payı 30–50 Hz.** 20 ve 80 Hz'teki bozulmanın çoğu hız kaynağından değil, yüz kestiricinin kendisinden: aynı gozW ideal hızla da bozuluyor (20 Hz: B13 3,70°, çünkü yokTmin = 3/gozW uzuyor ve d^ yavaşlıyor; 80 Hz: ideal hızla da sürtünmeli 40/42, sürtünmesiz 41/42). w^'nin 20 Hz'te eklediği: sürtünmeli 4 senaryoda yanlış son yüz (B12 38/42); 80 Hz'te sürtünmesiz u RMS'i 3,6 katına çıkıyor (0,0112). gozW 40 Hz'te kalınıyor.
+- **Kart eşdeğerliği bu modda** (`6_esp32/ktl_esdeger.m`, `KTL_VKAYNAK=gozlemci`, log `ktl_esdeger_gozlemci_log.txt`): 84 senaryonun 81'inde ayrık kararlar 8000 örneğin hepsinde aynı, |Δw^| ≤ 1,5e-7 rad/s, |Δd^| ≤ 4,5e-8 N·m. Kalan 3'ü (sürtünmeli j 12, 18, 26) **tek örneklik bir eşitlik durumu**, hız kaynağıyla ilgisiz: yoklamanın "geri itme → fren" geçişi `yol <= ykDm·yokOrta`, ykDm = 275 sayım, eşik 0,6·275 = 165, yol tam 165. İkiz bunu radyanla double hesapta "geçmedi" buluyor, kart sayım × float 0,6f ile (165,0000066) "geçti" buluyor. Kart 1 ms erken frenliyor, sonraki bütün örnekler aynı (yoklama sayıları eşit). Sonuca etkisi yok. İstenirse ileride iki tarafta da tamsayı karşılaştırmaya (10·yol ≤ 6·ykDm) çevrilebilir.
+
 ### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; karar yukarıda)
 
 Motor tarafı geri beslemede boşluk salınımı ikizde kaybolunca (yukarıda, sensör kararı) kazanç planlamasının gerekçesi zayıfladı. Yerine önerilen çerçeve:

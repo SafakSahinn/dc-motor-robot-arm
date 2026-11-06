@@ -80,6 +80,10 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %                     eski davranış), tGec [s] dönüşüm sonu ile okuma arası gecikme (varsayılan 0), tGur [N m]
 %                     RMS beyaz gürültü (her kontrol örneğinde bir), tOfs [N m], tKaz (1). Gürültü ayrı
 %                     rastgele akıştan (tohum p.tTohum, varsayılan 2). Hepsi p.dt çözünürlüğünde.
+% p.vKaynak (varsayılan 'olcum': v yukarıdaki gibi p.fv'ye göre): 'gozlemci' ise P-PI'nin hız terimi
+%   tork gözlemcisinin w^'si olur (donanımdaki seçim, mimari.md §4.1; kartta kontrol::HIZ_GOZLEMCI).
+%   Kartla aynı sıra: v, yüz kestirici bloğunda o örnekte GÜNCELLENMİŞ w^'dir (e satırından hemen önce
+%   atanır). Yalnız yuzKes açıkken (gözlemci yalnız orada var); değilse hata. ktlKayit'te KT.v = w^.
 % p.ktlKayit = true (yalnız yuzKes açıkken; varsayılan kapalı): her kontrol örneğinin girdi ve çıktısı
 %   out.ktl'ye yazılır (ESP32 açık döngü eşdeğerlik testi, 6_esp32/ktl_esdeger.m). Alanlar (örnek x senaryo):
 %   sayim (motor ölçümü / qM, tamsayı), v (kontrolcünün gördüğü hız), uo (gözlemcinin gördüğü tork),
@@ -177,6 +181,10 @@ Iolu = 0;  if isfield(p,'Iolu'), Iolu = p.Iolu; end
 Isif = isfield(p,'Isifirla') && p.Isifirla;
 e_onc = zeros(1,n);
 ktlK = kesMod > 0 && al(p,'ktlKayit',false);       % kontrol örneklerinin kaydı (ESP32 eşdeğerlik)
+vKay = al(p,'vKaynak','olcum');                      % kontrolcünün hız kaynağı
+vGoz = strcmp(vKay,'gozlemci');
+if ~vGoz && ~strcmp(vKay,'olcum'), error('bilinmeyen vKaynak: %s', vKay); end
+if vGoz && kesMod == 0, error('vKaynak = ''gozlemci'' yalnız yuzKes açıkken (gözlemci orada)'); end
 
 nStep = round(p.T/p.dt);
 kCtl  = max(1, round(p.Ts/p.dt));
@@ -270,6 +278,7 @@ for i = 0:nStep-1
             end
             ofs = sOf*rN + ofsG;
         end
+        if vGoz, v = wh; end                       % hız = bu örnekte güncellenmiş w^ (kart: HIZ_GOZLEMCI)
         e  = th_ref + ofs - thm;
         if ppi
             ev = kpP.*e - v;                       % hız hatası (kol tarafı)

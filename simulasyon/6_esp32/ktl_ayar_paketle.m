@@ -5,16 +5,18 @@ function y = ktl_ayar_paketle(p, thRef, c0, kp, yuz0)
 %   p    : kol_benzetim'e verilen yapı (yuzKes açık, kontrol 'PPI', Pkaynak 'motor')
 %   thRef: hedef [rad] (tek senaryo), c0: başlangıç motor sayımı (out.ktl.ilkSayim)
 %   kp   : konum kazancı [1/s] (kol_benzetim'in 3. argümanı), yuz0: başlangıç yüzü (+1/-1)
-%   Hız kaynağı HIZ_GIRDI (ikizde p.fv = Inf: kontrolcü gerçek motor hızını görür).
+%   Hız kaynağı: p.vKaynak = 'gozlemci' ise HIZ_GOZLEMCI (1, kart w^'yi kullanır), değilse HIZ_GIRDI
+%   (0; ikizde p.fv = Inf olmalı: kontrolcü gerçek motor hızını görür, kart Girdi.v'yi kullanır).
 if ~(isfield(p,'kontrol') && strcmp(p.kontrol,'PPI')), error('yalnız PPI'); end
 if ~(isfield(p,'Pkaynak') && strcmp(p.Pkaynak,'motor')), error('yalnız motor tarafı konum'); end
-if ~strcmp(p.Dkaynak,'motor') || ~isinf(p.fv), error('yalnız gerçek motor hızı (fv = Inf)'); end
+hizK = strcmp(al(p,'vKaynak','olcum'), 'gozlemci');
+if ~hizK && (~strcmp(p.Dkaynak,'motor') || ~isinf(p.fv)), error('yalnız gerçek motor hızı (fv = Inf) ya da vKaynak gozlemci'); end
 kes = find(strcmp(p.yuzKes, {'edilgen','olay','yoklama','olay+yoklama'}));
 wo = al(p,'gozW', 2*pi*40);
 dbl = [thRef, p.Ts, p.qM, al(p,'yokTmin',3/wo), al(p,'yokTmax',0.3), al(p,'yokBekle',0.5), ...
        al(p,'yokPer',Inf), al(p,'yokBant',deg2rad(1))];
 i32 = [c0, al(p,'Nper',100), al(p,'yuzN',200), al(p,'yokMaks',6)];
-u8 = [kes, 0, al(p,'tOlc',false), isfield(p,'Isifirla') && p.Isifirla];
+u8 = [kes, hizK, al(p,'tOlc',false), isfield(p,'Isifirla') && p.Isifirla];
 f = [kp, p.KV, p.KI, p.Tmax, p.olu, al(p,'Iolu',0), ...
      al(p,'rN',p.r), al(p,'mglN',p.mgl), al(p,'KsN',p.Ks), al(p,'yuzRampa',0.5), yuz0, ...
      wo, al(p,'JMN',p.JM), al(p,'bMN',p.bM), al(p,'FcN',p.Fc), al(p,'FsN',p.Fs), ...
