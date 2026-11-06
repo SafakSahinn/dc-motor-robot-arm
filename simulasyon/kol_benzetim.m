@@ -36,14 +36,43 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   'durunca': s yalnız kol durgunken (|dth| < p.yuzV, p.yuzN örnek boyunca) ve temas varken güncellenir.
 %   Başlangıç yüzü p.yuz0 (yoksa sign(sin th_ref), 0 ise +1). p.ofset bu durumda kullanılmaz.
 %   Çıktı: out.yuzDegis (tüm süre), out.yuzDegisAn (analiz penceresi) yüz seçimi değişim sayıları.
-% İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df t) [N m] kola etki eder,
-% p.dT verilirse t >= dT'de kesilir. p.x0, p.z0: önceki benzetimin son durumundan sürdürme.
+% p.yuzKes (varsayılan yok/kapalı): YALNIZ MOTOR SİNYALLERİYLE yüz kestirici (iş sırası 3).
+%   Ofset = s_of*r + mgl sin(th_ref)/Ks; s_of kestiricinin yüzü s^'ye p.yuzRampa [s] sürede
+%   (-1'den +1'e) rampayla gider (0: basamak). Başlangıç yüzü p.yuz0 (yoksa sign(sin th_ref)).
+%   Kestirici yalnız enkoderi (olc(phi, qM)), uygulanan torku u ve kendi durumunu görür.
+%   Tork gözlemcisi (Luenberger, üçlü kutup p.gozW [rad/s]): JM phi'' = u - bM phi' - d,
+%   d = tau_f + tau_s. Sürtünme aralığı: hareketteyken tau_f = sign(w^)*[FcN, FsN], dururken
+%   [-FsN, FsN] -> tau_s aralığı [lo, hi].
+%   'edilgen' : motor durgunken (|w^| < p.vDur, p.yuzN örnek) s^ = sign(u) (karşılaştırma tabanı)
+%   'olay'    : lo > p.tauEsik ya da hi < -p.tauEsik, p.Nper örnek sürerse s^ = o işaret
+%               (çarpma ya da tork aktaran her hareket)
+%   'yoklama' : |th_ref - 180°| <= p.yokBant ve motor p.yokBekle s (varsayılan 0,5: 0,3 s'de kol boşlukta hâlâ düşüyor olabiliyor, 1 s'de
+%               ince enkoder yapışma-kayma kıpırtısını gördüğü için motor hiç o kadar durgun sayılmıyor) durgunken, kontrolcü
+%               dondurulur, u = p.yokA*(-s^) uygulanır (inanılan BOŞLUĞA doğru mutlak itiş; tutma
+%               torku eklenmez, çünkü sürtünmeye yaslanmış integratör onu Fs mertebesine çıkarabiliyor).
+%               İtiş yönündeki dişli torku tahmini (-s^)*d^ - FcN > p.yokEsik olursa temas var: s^ = itiş
+%               yönü, itiş kesilir (yalnız itiş p.yokTmin (3/gozW) s sürdükten ve motor itiş yönünde
+%               hareket ederken; öncesinde d^ hâlâ eski tutma torkunu gösteriyor). Motor önce p.yokD
+%               yol alırsa boşluk: s^ doğru. Yol süresine
+%               bakmak işe yaramıyor: dişli yayı sıkışırken motor ilk anda neredeyse serbest ilerliyor.
+%               Boşluk bulunursa motor bang-bang ile (fren, geri it, fren) başlangıca döndürülür; kol
+%               desteksiz kaldığı süre kısalır. En çok p.yokTmax s. Bir yüz değişiminden sonra motor
+%               oturunca yeniden yoklanır (en çok p.yokMaks); ayrıca p.yokPer s'de bir (varsayılan Inf).
+%               'olay+yoklama'da yoklama torku olay sayılmaz.
+%   'olay+yoklama': ikisi birlikte.
+%   Çıktı: out.shat (s^ kaydı), out.dhat, out.yuzDegis, out.yuzDegisAn, out.yuzSon,
+%   out.yokSay (yoklama sayısı), out.yokKol (yoklama + 0,3 s içinde kolun en büyük hareketi [rad],
+%   yalnız ölçüm için gerçek theta kullanılır), out.yokTemas (temas bulan yoklama sayısı).
+% İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
+% p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
+% durumundan sürdürme.
 
 th_ref = deg2rad(theta0_deg(:)');
-dA = 0;  df = 0;  dT = Inf;
+dA = 0;  df = 0;  dT = Inf;  dT0 = 0;
 if isfield(p,'dA'), dA = p.dA;  df = p.df; end
 if isfield(p,'dT'), dT = p.dT; end
-bozucu = @(tt) dA*sin(2*pi*df*tt)*(tt < dT);
+if isfield(p,'dT0'), dT0 = p.dT0; end
+bozucu = @(tt) dA*sin(2*pi*df*(tt-dT0))*(tt >= dT0 && tt < dT);
 wc     = wc(:)';
 n      = numel(th_ref);
 J      = p.JM + p.JL;
@@ -63,6 +92,35 @@ if isfield(p,'ofsetYuz') && ~isempty(p.ofsetYuz)
     durSay = zeros(1,n);  yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
     ofsG = p.mgl*sin(th_ref)/p.Ks;  ofs = yz*p.r + ofsG;
 end
+kesMod = 0;                                        % 0 kapalı, 1 edilgen, 2 olay, 3 yoklama, 4 olay+yoklama
+if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
+    kesMod = find(strcmp(p.yuzKes, {'edilgen','olay','yoklama','olay+yoklama'}));
+    if isempty(kesMod), error('bilinmeyen yuzKes: %s', p.yuzKes); end
+    sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
+    sh(sh == 0) = 1;  sOf = sh;                    % s^ ve ofsetteki (rampalı) yüz
+    ofsG = p.mgl*sin(th_ref)/p.Ks;  ofs = sOf*p.r + ofsG;
+    rampa  = al(p,'yuzRampa', 0.5);
+    wo     = al(p,'gozW', 2*pi*40);
+    JMN    = al(p,'JMN', p.JM);   bMN = al(p,'bMN', p.bM);
+    FcN    = al(p,'FcN', p.Fc);   FsN = al(p,'FsN', p.Fs);
+    tauE   = al(p,'tauEsik', 0.015); Nper = al(p,'Nper', 100);
+    vEs    = al(p,'vEsik', 0.05);    vDur = al(p,'vDur', 0.01);
+    yuzN   = al(p,'yuzN', 200);
+    yokA   = al(p,'yokA', 0.12);     yokD = al(p,'yokD', deg2rad(0.5));
+    yokEs  = al(p,'yokEsik', 0.04);  yokTmax = al(p,'yokTmax', 0.3);
+    yokTmin = al(p,'yokTmin', 3/wo);                % gözlemcinin eski tutma torkunu unutma süresi
+    yokBek = al(p,'yokBekle', 0.5);  yokPer = al(p,'yokPer', Inf);  yokMaks = al(p,'yokMaks', 6);
+    yokBant = al(p,'yokBant', deg2rad(1));
+    l1 = 3*wo;  l2 = 3*wo^2;  l3 = JMN*wo^3;
+    yokEtkin = (kesMod >= 3) & abs(th_ref - pi) <= yokBant + 1e-12;
+    wh = zeros(1,n);  dh = zeros(1,n);           % ph (phi^) başlangıç durumundan sonra kurulur
+    perSay = zeros(1,n);  perIs = zeros(1,n);  durSay = zeros(1,n);
+    yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
+    yk = false(1,n);  ykF = zeros(1,n);  ykT = zeros(1,n);  ykPhi0 = zeros(1,n);  ykDir = zeros(1,n);
+    ykYon = zeros(1,n);  ykDm = zeros(1,n);
+    ykSon = -Inf(1,n);  ykSay = zeros(1,n);  ykTemas = zeros(1,n);  ykTh0 = zeros(1,n);
+    ykIzBit = -Inf(1,n);  ykKol = zeros(1,n);
+end
 
 % Başlangıç: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
 x = zeros(4,n);
@@ -70,6 +128,7 @@ x(3,:) = th_ref - deg2rad(p.adim);
 x(1,:) = x(3,:);
 z = zeros(1,n);  u = zeros(1,n);
 if isfield(p,'x0'), x = p.x0;  z = p.z0; end        % önceki benzetimin son durumundan sürdür
+if kesMod > 0, ph = olc(x(1,:), p.qM); end
 gL = 0;  if isfield(p,'gL'), gL = p.gL; end
 thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
 if motorD, qv = p.qM; else, qv = p.qL; end
@@ -84,6 +143,7 @@ kCtl  = max(1, round(p.Ts/p.dt));
 iAn   = round((p.T-p.Tan)/p.dt);
 nRec  = floor((nStep-iAn)/p.dec);
 TH = zeros(nRec,n);  DEL = zeros(nRec,n);  TAU = zeros(nRec,n);  U = zeros(nRec,n);
+if kesMod > 0, SH = zeros(nRec,n);  DH = zeros(nRec,n); end
 k = 0;
 
 for i = 0:nStep-1
@@ -107,6 +167,55 @@ for i = 0:nStep-1
             dg = yy ~= yz;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
             yz = yy;  ofs = yz*p.r + ofsG;
         end
+        if kesMod > 0                              % yüz kestirici: yalnız enkoder + u
+            tt = i*p.dt;  shOnc = sh;
+            y  = olc(x(1,:), p.qM);
+            eo = y - ph;                           % gözlemci (u: son uygulanan tork)
+            ph = ph + p.Ts*(wh + l1*eo);
+            wh = wh + p.Ts*((u - bMN*wh - dh)/JMN + l2*eo);
+            dh = dh - p.Ts*l3*eo;
+            durSay = (durSay + 1).*(abs(wh) < vDur);
+            if kesMod == 1                         % edilgen: durgunken sign(u)
+                d1 = durSay >= yuzN & u ~= 0;  sh(d1) = sign(u(d1));
+            end
+            if kesMod == 2 || kesMod == 4          % olay: sürtünme aralığını aşan dişli torku
+                sg = sign(wh).*(abs(wh) > vEs);
+                a1 = dh - sg*FsN;  a2 = dh - sg*FcN;  dur0 = (sg == 0)*FsN;
+                lo = min(a1,a2) - dur0;  hi = max(a1,a2) + dur0;
+                ad = (lo > tauE) - (hi < -tauE);
+                perSay = (perSay + 1).*(ad ~= 0 & ad == perIs);  perIs = ad;
+                d2 = ad ~= 0 & perSay >= Nper;
+                if kesMod == 4, d2 = d2 & ykF == 0 & tt - ykSon > yokTmin; end   % yoklama torku olay sayılmaz
+                sh(d2) = ad(d2);
+            end
+            if kesMod >= 3                         % etken yoklama (evreler: 1 it, 2 fren, 3 geri, 4 fren)
+                yk = ykF > 0;  ykT(yk) = ykT(yk) + p.Ts;
+                yol = ykDir.*(y - ykPhi0);
+                tsY = ykDir.*dh - FcN;                              % itiş yönünde dişli torku tahmini
+                bT = ykF == 1 & tsY > yokEs & ykT >= yokTmin & ykDir.*wh > vEs;  % temas: s^ = itiş yönü
+                bS = ykF == 1 & ~bT & yol >= yokD;                  % serbest yol: boşluk -> s^ doğru
+                ykF(bS) = 2;                                        % frenle, sonra geri getir
+                b3 = ykF == 2 & ykDir.*wh <= 0;  ykF(b3) = 3;  ykDm(b3) = yol(b3);
+                b4 = ykF == 3 & yol <= ykDm/2;   ykF(b4) = 4;
+                bB = (ykF == 4 & (ykDir.*wh >= 0 | yol <= 0)) | bT | (yk & ykT >= yokTmax);
+                ykF(bB) = 0;  ykSon(bB) = tt;  ykIzBit(bB & ~bT) = tt + 0.3;
+                ykTemas = ykTemas + bT;  sh(bT) = ykDir(bT);
+                bas = yokEtkin & ykF == 0 & durSay*p.Ts >= yokBek & (tt - ykSon) >= yokPer & ykSay < yokMaks;
+                ykF(bas) = 1;  ykT(bas) = 0;  ykPhi0(bas) = y(bas);  ykDir(bas) = -sh(bas);
+                ykTh0(bas) = x(3,bas);  ykSay = ykSay + bas;
+                yk = ykF > 0;  ykYon = ykDir.*(1 - 2*(ykF == 2 | ykF == 3));   % evreye göre tork yönü
+                izl = yk | tt <= ykIzBit;
+                ykKol(izl) = max(ykKol(izl), abs(x(3,izl) - ykTh0(izl)));
+            end
+            dg = sh ~= shOnc;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
+            if kesMod >= 3, ykSon(dg & ykF == 0) = -Inf; end   % yüz değişti: oturunca yeniden yokla
+            if rampa > 0
+                adm = 2*p.Ts/rampa;  sOf = sOf + max(min(sh - sOf, adm), -adm);
+            else
+                sOf = sh;
+            end
+            ofs = sOf*p.r + ofsG;
+        end
         e  = th_ref + ofs - thm;
         if ppi
             ev = kpP.*e - v;                       % hız hatası (kol tarafı)
@@ -119,8 +228,11 @@ for i = 0:nStep-1
         u  = min(max(u0,-p.Tmax),p.Tmax);
         doy = (u0 > p.Tmax & iz > 0) | (u0 < -p.Tmax & iz < 0);
         if Isif, z(e.*e_onc < 0) = 0; end          % hata işaret değiştirdi: integrali sıfırla
-        e_onc = e;
+        e_onc = e;  zOnc = z;
         z  = z + iz*p.Ts .* ~doy .* (abs(e) >= Iolu);  % basit anti-windup + ölü bant
+        if kesMod >= 3                             % yoklama sırasında kontrolcü donar
+            u(yk) = min(max(yokA*ykYon(yk), -p.Tmax), p.Tmax);  z(yk) = zOnc(yk);   % mutlak itiş torku
+        end
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
     end
     tt = i*p.dt;
@@ -132,6 +244,7 @@ for i = 0:nStep-1
         k = k+1;
         [~,ts] = f(x, tt+p.dt);
         TH(k,:) = x(3,:);  DEL(k,:) = x(1,:)-x(3,:);  TAU(k,:) = ts;  U(k,:) = u;
+        if kesMod > 0, SH(k,:) = sh;  DH(k,:) = dh; end
     end
 end
 
@@ -140,6 +253,10 @@ out.t = t;  out.th = TH;  out.delta = DEL;  out.tau_s = TAU;  out.u = U;
 out.theta0_deg = theta0_deg;  out.wc = wc;
 out.x_son = x;  out.z_son = z;                     % p.x0, p.z0 ile sürdürmek için
 if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = yz; end
+if kesMod > 0
+    out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;
+    if kesMod >= 3, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
+end
 
 % --- Analiz ---
 thd = rad2deg(TH);
@@ -181,6 +298,11 @@ out.sinif(out.kararsiz) = 4;
               dth;
               (ts - p.bL*dth - p.mgl*sin(th) + bozucu(tt))/p.JL];
     end
+end
+
+function v = al(p, ad, vars)
+% AL  p.(ad) varsa onu, yoksa varsayılanı döndürür.
+if isfield(p, ad), v = p.(ad); else, v = vars; end
 end
 
 function y = olc(x, q)
