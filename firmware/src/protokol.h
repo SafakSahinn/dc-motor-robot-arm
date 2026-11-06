@@ -17,7 +17,7 @@ namespace prot {
 
 constexpr uint8_t BAS0 = 0xA5;
 constexpr uint8_t BAS1 = 0x5A;
-constexpr uint8_t YUK_MAKS = 128;
+constexpr uint8_t YUK_MAKS = 240;
 constexpr size_t EK_YUK = 8;
 
 // Paket tipleri. Kartın cevabı = istek tipi | 0x80.
@@ -26,7 +26,33 @@ enum Tip : uint8_t {
   T_ISTAT      = 0x02,  // sayaçları gönder (yük: Istat yapısı)
   T_ISTAT_SIFIR= 0x03,  // sayaçları sıfırla
   T_BAUD       = 0x04,  // yük: uint32 baud; önce eski hızda onay, sonra geçiş
+  // 1 kHz döngü kaydı (adım 3)
+  T_DONGU_BASLAT = 0x10,  // yük: uint32 ornekSayisi, uint32 yukIter → cevap: Durum
+  T_DONGU_DURUM  = 0x11,  // cevap: Durum
+  T_KAYIT_OKU    = 0x12,  // yük: uint32 bas, uint32 adet → art arda Kayit paketleri
   T_HATA       = 0x7F,  // kart → PC: bilinmeyen tip vb.
+};
+
+// 1 kHz döngünün bir turunun kaydı (8 bayt). Zamanlar CPU çevrimi (240 MHz).
+struct __attribute__((packed)) Kayit {
+  uint32_t periyotCyc;  // bu uyanış - önceki uyanış
+  uint16_t gecikmeCyc;  // zamanlayıcı kesmesi → görev uyanışı (65535'te doyar)
+  uint16_t isCyc4;      // kontrol adımının süresi / 4 (65535 = 1,09 ms'de doyar)
+};
+constexpr uint8_t KAYIT_PAKET = YUK_MAKS / sizeof(Kayit);  // 30
+
+// Döngü durumu (T_DONGU_* cevabı, 40 bayt).
+struct __attribute__((packed)) Durum {
+  uint32_t durum;       // 0 boşta, 1 kayıt sürüyor, 2 kayıt bitti
+  uint32_t kayitN;      // yazılan kayıt
+  uint32_t hedefN;      // istenen kayıt
+  uint32_t tick;        // açılıştan beri tur sayısı
+  uint32_t kacan;       // kaçırılan zamanlayıcı kesmesi (görev yetişemedi)
+  uint32_t yukIter;     // sahte kontrol yükü (float döngü tekrarı)
+  uint32_t perMinCyc;   // kayıt boyunca en kısa / en uzun periyot
+  uint32_t perMaxCyc;
+  uint32_t gecMaxCyc;   // en uzun uyanma gecikmesi
+  uint32_t isMaxCyc;    // en uzun kontrol adımı
 };
 
 // Kart tarafı sayaçlar (T_ISTAT cevabının yükü, 32 bayt).
