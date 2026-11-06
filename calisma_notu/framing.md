@@ -226,6 +226,29 @@ Ayarlı kestiricide kalıcı hata her satırda ≤ 0,21°, ŝ doğruluğu ortala
 - **Sonuç:** ayarlı olay+yoklama, AS5600 motor milinde, 1 kHz, 1 ms'ye kadar gecikme ve 3× veri sayfası gürültüsünde 10/10 koşu türünde 42/42; B13 en çok 0,43° (≤ 0,5° ölçütünün içinde ama pay azaldı); B12 her koşu türünde 42/42 (son yüz doğru, H7'nin parçası). Donanım için önerilen ayar bu.
 - **Sınırlar (bu ek için):** AS5600'ün doğrusal olmama hatası (mıknatıs hizasına bağlı, motor milinde ±1°'ye kadar, kol tarafında ≈ 0,03°, her motor turunda tekrarlayan) modellenmedi; gürültü beyaz varsayıldı; I²C okuma hatası/atlaması yok. Yukarıdaki genel sınırlar (akım gürültüsü yok, kontrolcü hız teriminde gerçek motor hızı) burada da geçerli.
 
+### İş sırası (4): yük ve model parametresi duyarlılığı (6 Kasım 2026)
+
+Betik: `simulasyon/5_planlama/duyarlilik.m` (log yanında). Gerçekçi koşul: 1 kHz, AS5600 motor milinde, 0,4 ms gecikme, 0,043° RMS gürültü (motor milinde), ayarlı olay+yoklama (yokOrta 0,6, vDurF 10 Hz). Aynı 42 senaryo; ölçüt H7 (B12 = son yüz doğru dahil) ve B13 ≤ 0,5°. Her satırda tek büyüklük değişir. **mgℓ, K_s, r:** ikizin gerçeği değişir, ofset tablosu ve kestirici nominal değeri bilir (ikize `p.rN`, `p.KsN`, `p.mglN` eklendi, varsayılan = gerçek). **F_c, F_s, J_M, b_M:** ikiz nominal, gözlemcinin bildiği değer yanlış. Kontrolcü kazançları her satırda nominal. mgℓ değişirken J_L sabit (yalnız yerçekimi torku değişir).
+
+| Büyüklük | Güvenli aralık (sürtünmeli; H7 42/42 ve B13 ≤ 0,5°) | Bozulduğu yer | İkizdeki tanılama doğruluğu (`deney_protokolu.md`) |
+|---|---|---|---|
+| mgℓ (gerçek) | ×0,8–1,2 (sınanan uçlar) | — | %0,1 |
+| K_s (gerçek) | ×0,8–1,2 | — | %0,5–1 |
+| r (gerçek) | ×0,9–1,2 (en kötü 0,36°) | ×0,8: 21/42, B12 31/42 | %0,2 |
+| F_c (gözlemcinin bildiği) | ×0,5–1,2 | ×1,3: B13 3,6° (H7 42/42); ×1,5: 31/42 | %1 |
+| F_s (bildiği) | ×0,5–1,5 | — | %1–2,5 |
+| J_M (bildiği) | ×0,8–1,3 | ×0,7: 33/42 (sürtünmesiz 26/42); ×1,5: B13 3,65° | %0,5 |
+| b_M (bildiği) | ×0,5–1,5 (sonuç hiç değişmiyor) | — | %1,4 |
+
+Sürtünmesiz ikizde mgℓ, K_s, r, b_M bütün satırlarda 42/42; J_M ×0,7'de 26/42 (×0,5 ve ×0,6'da 42/42, tekdüze değil).
+
+- **Kestirici yükten ve dişli sertliğinden bağımsız.** mgℓ ve K_s ±%20'de sonuç değişmiyor: 180° çevresinde sin θ ≈ 0,01–0,02, ofsetin mgℓ/K_s kısmı ≈ 0,02°, hatası ölçülemeyecek kadar küçük. Uç kütlesi değiştirildiğinde tablonun yeniden ölçülmesi gerekmiyor.
+- **En hassas büyüklük boşluk r, ama tek yönlü.** r olduğundan büyük bilinirse (gerçek ×0,8) ofset kolu boşluğun ötesine iter, 180°'nin hemen yanında kolu tepeden aşırır: 21/42, yüz bile yanlış (B12 31/42). Küçük bilinirse (gerçek ×1,2) yalnız kalıcı hata büyür (0,35°). ±%10'da güvenli. D4'ün doğruluğu (%0,2) bu payın 50 katı küçük.
+- **F_c fazla bilinirse yoklama temas kaçırıyor.** Temas kararı "itiş yönündeki dişli torku − F̂_c > eşik"; F̂_c büyükse temas torku eksik görülür, itiş yokTmax'a kadar sürer, kolu 3,6° oynatır. Eksik bilinmesi zararsız (×0,5'te 42/42). **Sonuç:** asimetri var; donanımda F̂_c tanılanan değerin biraz altında (ör. ×0,9) seçilmeli. Bu önemli, çünkü F_c ısınmayla değişebilir (dişli yağı); D1'in %1'lik doğruluğu sıcaklık kaymasını kapsamıyor. TMP117 kaydıyla F_c'nin sıcaklığa bağımlılığı ölçülmeli.
+- **J_M eksik bilinirse gözlemci kararsızlaşmaya yaklaşıyor.** ×0,7 ve altında kalıcı hata 1–2°'ye çıkıyor (yüz doğru, kontrol döngüsü avlanıyor); fazla bilinmesi ×1,3'e kadar zararsız, ×1,5'te bir yoklama temas kaçırıyor. D1'in doğruluğu (%0,5) bol pay bırakıyor.
+- **H7'ye göre:** gerçekçi tanılama hatalarıyla (D1–D5'in ikizdeki doğrulukları) H7 ve B13 sağlanıyor; güvenli aralıklar bu hataların 10–50 katı. Asıl risk tanılama değil, **zamanla kayma**: F_c (sıcaklık) ve r (aşınma). İkisi için de güvenli taraf belli (F̂_c'yi düşük, r̂'yi düşük seçmek).
+- **Sınırlar:** tek büyüklük değişimi (birleşik hatalar sınanmadı); F_c'nin sıcaklıkla değişimi zaman içinde değil, sabit bir sapma olarak sınandı; akım ölçüm gürültüsü yok (u gerçek tork).
+
 ### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; karar yukarıda)
 
 Motor tarafı geri beslemede boşluk salınımı ikizde kaybolunca (yukarıda, sensör kararı) kazanç planlamasının gerekçesi zayıfladı. Yerine önerilen çerçeve:

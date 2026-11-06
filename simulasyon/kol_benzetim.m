@@ -67,6 +67,7 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %               oturunca yeniden yoklanır (en çok p.yokMaks); ayrıca p.yokPer s'de bir (varsayılan Inf).
 %               'olay+yoklama'da yoklama torku olay sayılmaz.
 %   'olay+yoklama': ikisi birlikte.
+%   Ofsetteki r, K_s, mgl kestiricinin bildiği değerlerdir: p.rN, p.KsN, p.mglN (varsayılan: ikizin gerçeği).
 %   Çıktı: out.shat (s^ kaydı), out.dhat, out.yuzDegis, out.yuzDegisAn, out.yuzSon,
 %   out.yokSay (yoklama sayısı), out.yokKol (yoklama + 0,3 s içinde kolun en büyük hareketi [rad],
 %   yalnız ölçüm için gerçek theta kullanılır), out.yokTemas (temas bulan yoklama sayısı).
@@ -105,7 +106,8 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     if isempty(kesMod), error('bilinmeyen yuzKes: %s', p.yuzKes); end
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;                    % s^ ve ofsetteki (rampalı) yüz
-    ofsG = p.mgl*sin(th_ref)/p.Ks;  ofs = sOf*p.r + ofsG;
+    rN = al(p,'rN', p.r);                            % kestiricinin/ofsetin bildiği değerler (duyarlılık, iş sırası 4)
+    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf*rN + ofsG;
     rampa  = al(p,'yuzRampa', 0.5);
     wo     = al(p,'gozW', 2*pi*40);
     JMN    = al(p,'JMN', p.JM);   bMN = al(p,'bMN', p.bM);
@@ -233,7 +235,7 @@ for i = 0:nStep-1
             else
                 sOf = sh;
             end
-            ofs = sOf*p.r + ofsG;
+            ofs = sOf*rN + ofsG;
         end
         e  = th_ref + ofs - thm;
         if ppi
