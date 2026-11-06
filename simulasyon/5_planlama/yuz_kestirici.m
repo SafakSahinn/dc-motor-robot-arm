@@ -12,7 +12,8 @@ function yuz_kestirici
 % İstekler 179, 179,25, 179,75, 180, 180,25, 180,75, 181°; |istek - 180| < 0,5° ise hedef kaydırma
 % kuralı (kolun geldiği tarafa göre 179,5 / 180,5). Kol hedefe ±1,1° uzaktan, iki yönden gelir.
 % Bozucu: yok | t = 3 s'de kola 180°'ye doğru yük darbesi (0,05 N m, 20 ms yarım sinüs) | yanlış
-% başlangıç yüzü. Enkoder ideal / 0,017° (0,27°/16) / 0,27°; sürtünmeli (Fc 0,04 Fs 0,06) ve sürtünmesiz.
+% başlangıç yüzü. Enkoder ideal / 0,017° (0,27°/16) / 0,27° / AS5600 motor milinde (12 bit x N = 30,
+% kol tarafında 0,0029°; zamanlama ve gürültü yuz_kestirici_as5600.m'de); sürtünmeli (Fc 0,04 Fs 0,06) ve sürtünmesiz.
 kok = fileparts(fileparts(mfilename('fullpath')));
 addpath(kok, fullfile(kok, '4a_ghaffari'));
 p0 = secenek_duzenek('D');  wa = sqrt(p0.Ks/p0.JL);
@@ -33,7 +34,7 @@ n = numel(hedef);  ac = hedef;  th = deg2rad(ac);
 bozAd = {'yok', 'darbe', 'yanlış s0'};
 
 yt  = {'tablo', 'ust_sinir', 'edilgen', 'olay', 'yoklama', 'olay+yok', 'olay+yok/p', 'olay+yok/b'};
-enk = {'ideal', 0; '0,017°', 2*pi/1320/16; '0,27°', 2*pi/1320};
+enk = {'ideal', 0; '0,017°', 2*pi/1320/16; '0,27°', 2*pi/1320; 'AS5600', 2*pi/(4096*30)};  % AS5600 motor milinde: kol tarafında 0,0029°
 sur = {'sürtünmeli', 0.04, 0.06; 'sürtünmesiz', 0, 0};
 fid = fopen('yuz_kestirici_log.txt', 'w');
 yaz = @(varargin) [fprintf(varargin{:}), fprintf(fid, varargin{:})];

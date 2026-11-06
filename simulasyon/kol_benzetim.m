@@ -13,6 +13,10 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   v   = motor hızı (p.Dkaynak='motor') ya da kol hızı ('kol');
 %   p.gL > 0 ise kol açısı ölçümü gL kontrol örneği gecikmeli kullanılır (AS5600 filtresi + I2C okuması).
 %         p.fv sonluysa nicemlenmiş açının farkından + birinci derece filtreyle kestirilir.
+%   Motor açısı ölçümü (varsayılan ideal zamanlama, gürültüsüz): p.gM [s] gecikme (benzetim adımı
+%   p.dt çözünürlüğünde; motor miline takılan AS5600'ün filtresi + I2C okuması için), p.nM [rad, kol
+%   tarafı] RMS beyaz gürültü (nicemlemeden önce eklenir; tohum p.nTohum, varsayılan 1). Konum
+%   hatası (Pkaynak='motor'), hız farkı (Dkaynak='motor', fv sonlu) ve yüz kestirici aynı ölçümü görür.
 % Ardından doyum (+-Tmax) ve sürücü ölü bandı (|tau| < olu -> 0).
 % Kazançlar rijit model (J = JM + JL) için kapalı çevrim hızı wc'ye göre:
 %   Kp = J wc^2,  Kd = 2*0.7*J*wc,  Ki = Kp*wc/4.
@@ -56,7 +60,10 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %               yol alırsa boşluk: s^ doğru. Yol süresine
 %               bakmak işe yaramıyor: dişli yayı sıkışırken motor ilk anda neredeyse serbest ilerliyor.
 %               Boşluk bulunursa motor bang-bang ile (fren, geri it, fren) başlangıca döndürülür; kol
-%               desteksiz kaldığı süre kısalır. En çok p.yokTmax s. Bir yüz değişiminden sonra motor
+%               desteksiz kaldığı süre kısalır. Geri itişten frene geçiş yol <= p.yokOrta*(alınan yol) olunca
+%               (varsayılan 0,5: başlangıçta durur; 0,6: alınan yolun ~%20'si kadar önde durur, kol yoklamada
+%               biraz düştüğünden motor ona çarpıp yayı fazladan sıkıştırmaz). Durgunluk kararı p.vDurF [Hz]
+%               birinci derece süzgeçten geçmiş w^ ile (varsayılan Inf: süzgeç yok; enkoder gürültüsüne karşı). En çok p.yokTmax s. Bir yüz değişiminden sonra motor
 %               oturunca yeniden yoklanır (en çok p.yokMaks); ayrıca p.yokPer s'de bir (varsayılan Inf).
 %               'olay+yoklama'da yoklama torku olay sayılmaz.
 %   'olay+yoklama': ikisi birlikte.
@@ -111,6 +118,8 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     yokTmin = al(p,'yokTmin', 3/wo);                % gözlemcinin eski tutma torkunu unutma süresi
     yokBek = al(p,'yokBekle', 0.5);  yokPer = al(p,'yokPer', Inf);  yokMaks = al(p,'yokMaks', 6);
     yokBant = al(p,'yokBant', deg2rad(1));
+    yokOrta = al(p,'yokOrta', 0.5);  vDurF = al(p,'vDurF', Inf);
+    aDur = 1 - exp(-2*pi*vDurF*p.Ts);  whF = zeros(1,n);   % durgunluk kararı için süzülmüş w^ (Inf: süzgeç yok)
     l1 = 3*wo;  l2 = 3*wo^2;  l3 = JMN*wo^3;
     yokEtkin = (kesMod >= 3) & abs(th_ref - pi) <= yokBant + 1e-12;
     wh = zeros(1,n);  dh = zeros(1,n);           % ph (phi^) başlangıç durumundan sonra kurulur
@@ -128,6 +137,13 @@ x(3,:) = th_ref - deg2rad(p.adim);
 x(1,:) = x(3,:);
 z = zeros(1,n);  u = zeros(1,n);
 if isfield(p,'x0'), x = p.x0;  z = p.z0; end        % önceki benzetimin son durumundan sürdür
+gMs = round(al(p,'gM',0)/p.dt);  nM = al(p,'nM',0);    % motor ölçümü: gecikme [adım], gürültü
+if gMs > 0, phBuf = repmat(x(1,:), gMs+1, 1); end
+if nM > 0
+    rng(al(p,'nTohum',1));  olcM = @(xx) olc(xx + nM*randn(size(xx)), p.qM);
+else
+    olcM = @(xx) olc(xx, p.qM);
+end
 if kesMod > 0, ph = olc(x(1,:), p.qM); end
 gL = 0;  if isfield(p,'gL'), gL = p.gL; end
 thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
@@ -147,13 +163,15 @@ if kesMod > 0, SH = zeros(nRec,n);  DH = zeros(nRec,n); end
 k = 0;
 
 for i = 0:nStep-1
+    if gMs > 0, phBuf = [phBuf(2:end,:); x(1,:)]; end   % en eski satır gMs adım önceki phi
     if mod(i,kCtl) == 0                            % ---- kontrolcü örneği ----
-        if motorP, thm = olc(x(1,:), p.qM); else, thm = olc(x(3,:), p.qL); end
+        if gMs > 0, ymot = olcM(phBuf(1,:)); else, ymot = olcM(x(1,:)); end   % motor ölçümü (bir kez)
+        if motorP, thm = ymot; else, thm = olc(x(3,:), p.qL); end
         if gL > 0, thBuf = [thBuf(2:end,:); thm];  thm = thBuf(1,:); end
         if isinf(p.fv)
             v = motorD*x(2,:) + ~motorD*x(4,:);
         else
-            yv = olc(x(1+2*~motorD,:), qv);
+            if motorD, yv = ymot; else, yv = olc(x(3,:), qv); end
             vhat = vhat + aV*((yv - yv_prev)/p.Ts - vhat);
             yv_prev = yv;  v = vhat;
         end
@@ -169,12 +187,13 @@ for i = 0:nStep-1
         end
         if kesMod > 0                              % yüz kestirici: yalnız enkoder + u
             tt = i*p.dt;  shOnc = sh;
-            y  = olc(x(1,:), p.qM);
+            y  = ymot;
             eo = y - ph;                           % gözlemci (u: son uygulanan tork)
             ph = ph + p.Ts*(wh + l1*eo);
             wh = wh + p.Ts*((u - bMN*wh - dh)/JMN + l2*eo);
             dh = dh - p.Ts*l3*eo;
-            durSay = (durSay + 1).*(abs(wh) < vDur);
+            if isinf(vDurF), whF = wh; else, whF = whF + aDur*(wh - whF); end
+            durSay = (durSay + 1).*(abs(whF) < vDur);
             if kesMod == 1                         % edilgen: durgunken sign(u)
                 d1 = durSay >= yuzN & u ~= 0;  sh(d1) = sign(u(d1));
             end
@@ -196,7 +215,7 @@ for i = 0:nStep-1
                 bS = ykF == 1 & ~bT & yol >= yokD;                  % serbest yol: boşluk -> s^ doğru
                 ykF(bS) = 2;                                        % frenle, sonra geri getir
                 b3 = ykF == 2 & ykDir.*wh <= 0;  ykF(b3) = 3;  ykDm(b3) = yol(b3);
-                b4 = ykF == 3 & yol <= ykDm/2;   ykF(b4) = 4;
+                b4 = ykF == 3 & yol <= ykDm*yokOrta;   ykF(b4) = 4;
                 bB = (ykF == 4 & (ykDir.*wh >= 0 | yol <= 0)) | bT | (yk & ykT >= yokTmax);
                 ykF(bB) = 0;  ykSon(bB) = tt;  ykIzBit(bB & ~bT) = tt + 0.3;
                 ykTemas = ykTemas + bT;  sh(bT) = ykDir(bT);

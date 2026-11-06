@@ -179,9 +179,11 @@ Betik: `simulasyon/5_planlama/yuz_kestirici.m` (log yanında). İkize varsayıla
 | var | ideal | 10/42 | 42/42 | 20/42 | 42/42 | 42/42 | **42/42** (en kötü 0,18°) | 42/42 |
 | var | 0,017° | 10/42 | 42/42 | 20/42 | 38/42 | 24/42 | **42/42** (0,17°) | 42/42 |
 | var | 0,27° | 10/42 | 42/42 | 23/42 | 17/42 | 2/42 | **4/42** | 3/42 |
+| var | AS5600 (0,0029°) | 10/42 | 42/42 | 20/42 | 42/42 | 31/42 | **42/42** (0,18°) | 42/42 |
 | yok | ideal | 4/42 | 4/42 | 42/42 | 42/42 | 42/42 | **42/42** (0,00°) | 8/42 |
 | yok | 0,017° | 4/42 | 4/42 | 42/42 | 42/42 | 20/42 | **42/42** (0,02°) | 12/42 |
 | yok | 0,27° | 7/42 | 7/42 | 33/42 | 42/42 | 10/42 | **37/42** (0,54°) | 20/42 |
+| yok | AS5600 (0,0029°) | 4/42 | 4/42 | 42/42 | 42/42 | 38/42 | **42/42** (0,03°) | 7/42 |
 
 Bulgular:
 - **Önerilen kestirici: olay + yoklama + rampa.** Motor enkoderi 0,017° ya da daha inceyse 4 koşu türünün hepsinde 42/42. Kalıcı hata ≤ 0,18°, yani üst sınırla aynı düzeyde. Yoklamada kolun en büyük hareketi ≤ 0,32° (B13 önerisi 0,5°). Yanlış yüze düşülen koşularda yakalama süresi (son |e| > 0,5° anı − olay anı) ortalama 2,3 s (ideal) / 2,8 s (0,017°), en çok 6,3 s; üst sınırda 2,2 s. Sürenin büyük kısmı düzeltme hareketinin kendisi (rampa + yerleşme).
@@ -193,6 +195,34 @@ Bulgular:
 - **H7'ye göre:** H7 olay + yoklama ile, motor enkoderi ≤ 0,017° şartıyla ikizde sağlanıyor. Kalıcı hata yanlış yüzde ≈ 3°'den ≤ 0,18°'ye iniyor, edilgen yöntem sürtünmede 20/42 iken kestirici 42/42. Mevcut 0,27°'lik enkoderle sağlanmıyor.
 - **B12 için not:** "son yüz doğru" ölçüsüyle olay+yok 42/42 (%100). Zaman içinde ŝ doğruluğu ortalaması ise ideal enkoderde 0,996, 0,017°'de 0,942 (en kötü koşu 0,40: sessiz konmadan sonra yoklamaya kadar geçen sürede ŝ yanlış). B12'nin hangi ölçüyle tanımlanacağı karar bekliyor.
 - **Sınırlar:** u ikizde uygulanan torkun kendisi, akım ölçüm gürültüsü (INA228) yok. Kontrolcünün hız terimi ikizde gerçek motor hızını kullanıyor; kestirici ise yalnız nicemli enkoderi görüyor. Sürtünme tanh ile yumuşatılmış (iş sırası 1'deki not; edilgen yöntem gerçekte daha da kötü olabilir). Gözlemci F_c, F_s, J_M, b_M'nin doğru bilindiğini varsayıyor; parametre hatasına duyarlılık sınanmadı.
+
+**Kararlar (6 Kasım 2026, kullanıcı):**
+- **Yöntem onaylandı:** olay + yoklama + rampa (ikizde `p.yuzKes = 'olay+yoklama'`, rampa 0,5 s).
+- **Enkoder kararı:** AS5600 motor miline (arka mil ucu, eksenel mıknatıs) konur; motor tarafı konum kol tarafında ≈ 0,003° (12 bit × N = 30) çözünürlükle ölçülür, hedef ≤ 0,02°. Kol tarafında kontrolcüye giren sensör yine yok. Donanım ayrıntısı (kol milindeki doğrulama sensörünün durumu, I²C adresi, çok tur sayımı) donanım belgelerinde.
+- **Açık:** B12'nin tanımı ("son yüz doğru" ile %100 mü, zaman içindeki ŝ doğruluğu ile %94–99,6 mı) ve B13 ≤ 0,5° (ölçülen en çok 0,32°).
+
+**Ek: AS5600 motor milinde, gerçekçi zamanlama (6 Kasım 2026).** Betik `simulasyon/5_planlama/yuz_kestirici_as5600.m` (log yanında); aynı 42 senaryo ve H7. Yukarıdaki tablo ve `yuz_kestirici.m`'nin tüm sonuçları kontrolcü ve kestirici **10 kHz'te** (p.Ts = p.dt = 0,1 ms) çalışırken alındı; ESP32 döngüsü 1 kHz. İkize iki seçenek eklendi (varsayılan kapalı): motor ölçümüne gecikme `p.gM` [s] ve gürültü `p.nM` [rad, kol tarafı]. Kestiricide iki ayar eklendi (varsayılanlar eski davranış): `p.yokOrta` (yoklamanın geri dönüşünde geri itişten frene geçiş noktası, varsayılan 0,5) ve `p.vDurF` (durgunluk kararı için hız kestirimi süzgeci [Hz], varsayılan Inf). Gecikme 0,4 ms (SF = 11 filtresi 0,286 ms + iç örnekleme + I²C), gürültü 0,043° RMS motor milinde (veri sayfası, SF = 11) → kol tarafında 0,0014°.
+
+| Sürtünme | Koşu | edilgen | olay+yok (eski ayar) | **olay+yok ayarlı** (yokOrta 0,6, vDurF 10 Hz) |
+|---|---|---|---|---|
+| var | 10 kHz | 20/42 | 42/42 (B13 0,28°) | 42/42 (0,36°) |
+| var | 1 kHz | 20/42 | 42/42 (0,23°) | 42/42 (0,33°) |
+| var | 1 kHz + 0,4 ms gecikme | 20/42 | 42/42 (0,24°) | 42/42 (0,33°) |
+| var | 1 kHz + gecikme + gürültü | 20/42 | 41/42 (yoklama hiç başlamıyor) | **42/42** (0,43°) |
+| var | zor: 1 ms gecikme + 3× gürültü | 10/42 | 37/42 (yoklama yok) | **42/42** (0,38°) |
+| yok | 10 kHz | 42/42 | 42/42 (0,27°) | 42/42 (0,31°) |
+| yok | 1 kHz | 42/42 | **30/42** (1,05°) | 42/42 (0,28°) |
+| yok | 1 kHz + gecikme | 42/42 | **16/42** (3,54°) | 42/42 (0,30°) |
+| yok | 1 kHz + gecikme + gürültü | 42/42 | 42/42 (yoklama yok) | 42/42 (0,30°) |
+| yok | zor | 4/42 | 42/42 (yoklama yok) | 42/42 (0,29°) |
+
+Ayarlı kestiricide kalıcı hata her satırda ≤ 0,21°, ŝ doğruluğu ortalaması ≥ 0,98 (en kötü koşu 0,63, zor koşulda).
+
+- **AS5600 motor milinde yeterli.** İdeal zamanlamada 0,017°'lik enkoderle aynı sonuç: olay+yok iki sürtünmede de 42/42, en kötü 0,18° / 0,03°.
+- **1 kHz'te yoklamanın geri dönüşü kolu devirebiliyor (sürtünmesizde).** Yoklama sırasında kol desteksiz kalıp ≈ 0,12° düşüyor. Motor bang-bang ile tam başlangıç açısına döndüğünde yayı fazladan sıkıştırıp kolu yukarı fırlatıyor. 10 kHz'te kol 180°'nin altında kalıyordu; 1 kHz'te fren biraz geç algılanınca kol 180°'yi aşıp karşı yüze düşüyor. Sürtünme kolu frenlediği için sürtünmeli ikizde görülmüyor. Çözüm: frene yolun %60'ında geçmek (yokOrta 0,6); motor başlangıcın ≈ %20 yol önünde durur, son yaklaşmayı kontrolcü yumuşak yapar. Bedeli: B13 0,23°'den 0,33°'ye.
+- **Enkoder gürültüsü yoklamayı kapatıyor.** 0,0014° RMS gürültü gözlemcinin hız kestirimini 0,01 rad/s'lik durgunluk eşiğinin üstünde tutuyor; motor hiç "durgun" sayılmadığı için yoklama başlamıyor, kestirici yalnız olaya kalıyor (sürtünmede sessiz konmaları kaçırıyor). Çözüm: durgunluk kararını 10 Hz'te süzülmüş hız kestirimiyle vermek (vDurF 10). Olay sezicisinin kendisi gürültüden etkilenmedi.
+- **Sonuç:** ayarlı olay+yoklama, AS5600 motor milinde, 1 kHz, 1 ms'ye kadar gecikme ve 3× veri sayfası gürültüsünde 10/10 koşu türünde 42/42; B13 en çok 0,43° (≤ 0,5° önerisinin içinde ama pay azaldı). Donanım için önerilen ayar bu.
+- **Sınırlar (bu ek için):** AS5600'ün doğrusal olmama hatası (mıknatıs hizasına bağlı, motor milinde ±1°'ye kadar, kol tarafında ≈ 0,03°, her motor turunda tekrarlayan) modellenmedi; gürültü beyaz varsayıldı; I²C okuma hatası/atlaması yok. Yukarıdaki genel sınırlar (akım gürültüsü yok, kontrolcü hız teriminde gerçek motor hızı) burada da geçerli.
 
 ### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; karar yukarıda)
 
