@@ -249,6 +249,34 @@ Sürtünmesiz ikizde mgℓ, K_s, r, b_M bütün satırlarda 42/42; J_M ×0,7'de 
 - **H7'ye göre:** gerçekçi tanılama hatalarıyla (D1–D5'in ikizdeki doğrulukları) H7 ve B13 sağlanıyor; güvenli aralıklar bu hataların 10–50 katı. Asıl risk tanılama değil, **zamanla kayma**: F_c (sıcaklık) ve r (aşınma). İkisi için de güvenli taraf belli (F̂_c'yi düşük, r̂'yi düşük seçmek).
 - **Sınırlar:** tek büyüklük değişimi (birleşik hatalar sınanmadı); F_c'nin sıcaklıkla değişimi zaman içinde değil, sabit bir sapma olarak sınandı; akım ölçüm gürültüsü yok (u gerçek tork).
 
+### İş sırası (5a): gözlemcinin torku INA228 ölçümünden (6 Kasım 2026)
+
+Betik: `simulasyon/5_planlama/akim_gurultu.m` (log yanında). Şimdiye kadar tork gözlemcisi uygulanan torku (komut u) hatasız görüyordu. Donanımda tork k_t·i, i Adafruit INA228'den. İkize iki seçenek eklendi (varsayılan kapalı, gerileme temiz: `belirsiz_bant` ve `yuz_kestirici_as5600` loglarında yalnız tarih değişti):
+
+- `p.tOlc`: gözlemci u yerine ölçümü görür: kazanç × (gerçek torkun dönüşüm penceresi `tPen` boyunca ortalaması, `tGec` önce biten) + ofset + beyaz gürültü (her kontrol örneğinde bir; ayrı rastgele akış).
+- `p.akimW`: tesise uygulanan tork komutu birinci derece izler (akım döngüsünün bant genişliği).
+
+**Sayılar.** Veri sayfası (TI INA228): dönüşüm süresi 50 µs – 4,12 ms (8 seçenek), ortalama 1–1024; şant ofseti en çok ±1 µV, kazanç hatası en çok ±%0,05. Adafruit kartının şantı 15 mΩ (ürün sayfası). k_t kol tarafında 12 V / 333 rpm = 0,344 N·m/A, yani 0,001 N·m ≈ 2,9 mA. Ofset 1 µV / 15 mΩ = 67 µA ≈ 2·10⁻⁵ N·m, kazanç hatası ihmal edilebilir. **Gürültü veri sayfasında yalnız grafikte verildiği için taranıyor (doğrulanmadı).** PWM dalgalanması (20 kHz, L_a 2,5 mH, 12 V: tepeden tepeye ≈ 60 mA ≈ 0,02 N·m) 0,54 ms'lik dönüşümde ≈ 11 PWM periyodu üzerinden ortalanır, bu nedenle beklenen RMS birkaç mA (≈ 0,001 N·m) mertebesinde; bu da doğrulanmadı.
+
+**Taban:** pencere 0,54 ms (1 kHz döngüye sığan en uzun tek dönüşüm), okuma gecikmesi 0,1 ms, akım döngüsü 500 Hz. Koşul `duyarlilik.m` ile aynı (1 kHz, AS5600 motor milinde, ayarlı olay+yoklama), aynı 42 senaryo. Her satırda tabandan tek değişiklik.
+
+| Büyüklük | Güvenli aralık (iki ikizde de H7 42/42 ve B13 ≤ 0,5°) | Bozulduğu yer | Beklenen donanım değeri |
+|---|---|---|---|
+| Taban (INA228, ölçüm açık) | 42/42, B13 0,33° (sürtünmesiz 0,30°) | — | — |
+| Gürültü (RMS) | ≤ 0,02 N·m (≈ 58 mA) | 0,03: 40/42 (sürtünmesiz 38/42, B13 1,03°); 0,05: 34/42 ve 25/42, yoklama hiç başlamıyor | ≈ 0,001 N·m (doğrulanmadı) |
+| Okuma gecikmesi | ≤ 2 ms | 5 ms: 28/42 ve 29/42 | ≈ 0,1 ms |
+| Dönüşüm penceresi | ≤ 4,2 ms (1,052 ms × 4) | 16,8 ms: 39/42, sürtünmesiz 16/42 | 0,54 ms |
+| Akım döngüsü bandı | 500 Hz (taban) | sürtünmesiz 100 Hz: B13 0,98° (H7 42/42); 50 Hz: 0/42 | 500 Hz hedef |
+| Ofset | ±0,01 N·m (≈ 29 mA) | ±0,02: sürtünmeli 24–29/42, sürtünmesiz 16/42, B13 3,7° | 2·10⁻⁵ N·m (veri sayfası) |
+| Kazanç (k_t hatası) | ×0,9–1,1 | ×0,8: sürtünmeli B13 3,69°; ×1,2: sürtünmesiz B13 1,06° (H7 her yerde 42/42) | k_t tanılaması %0,3 |
+
+- **Gürültüye pay geniş.** 0,02 N·m'ye kadar sonuç tabanla aynı. Beklenen düzeyin (≈ 0,001) yaklaşık 20 katı. Bozulma 0,03'te başlıyor; 0,05'te yoklama hiç başlamıyor, çünkü gürültü w^'yi durgunluk eşiğinin üstünde tutuyor (iş sırası 3'teki enkoder gürültüsüyle aynı mekanizma). Eşiklerin (`yokEsik` 0,04, `tauEsik` 0,015) yeniden ayarlanması gerekmedi.
+- **Tohum kontrolü:** 0,001 N·m satırında B13 0,63° çıktı (0,003'te 0,41°, tekdüze değil). 5 tohumla yinelendi (gürültü 0, 0,0003, 0,001, 0,003; iki ikiz): H7 her koşuda 42/42. B13 > 0,5° 40 koşu × 28 senaryo içinde yalnız bir kez (0,001, tohum 1); öbür koşularda B13 en çok 0,39°. Kaynak tek bir yoklamada rastlantı; ölçüt sınırında, izlenmeli.
+- **Ofset ve kazanç, F̂_c ile aynı mekanizma.** Temas kararı "itiş yönündeki dişli torku tahmini − F̂_c > eşik". Torkun eksik ölçülmesi (ofset ya da k_t ×0,8) temas torkunu küçük gösteriyor, itiş yokTmax'a kadar sürüyor, kol 3,7° oynuyor. İş sırası (4)'te F̂_c +%30 (≈ +0,012 N·m) aynı sonucu vermişti. Burada sınır ±0,01–0,02 N·m arasında. INA228'in kendi ofseti bunun ~400'de biri, asıl risk sıfır kalibrasyonu ve k_t·i ile gerçek motor torku arasındaki fark (örn. dişli verimi). **Öneri:** akım sıfırı her deneyden önce motor kapalıyken ölçülsün (`mimari.md` kalibrasyon adımı 3'e eklenebilir).
+- **Gecikme ve pencere:** 1 kHz döngüde tek dönüşüm (0,54 ms) ya da 4'lük ortalama rahat. Uzun ortalama (≥ 16 ms) gözlemciyi bozuyor. INA228'i 500 Hz'te okumak (`mimari.md` seçeneği) ≈ 2 ms gecikme demek, güvenli bölgede.
+- **Akım döngüsü yavaşlarsa** (ölçüm değil, tesise giden tork) sürtünmesiz ikizde yoklama bozuluyor: 100 Hz'te B13 0,98°. Mod 3'ün akım döngüsü (500 Hz tasarım) en az 200 Hz olmalı; 100 ile 500 Hz arası sınanmadı.
+- **Sınır (elektrik modeli):** `kol_benzetim` tork girişli (mod 3 ideal + burada eklenen birinci derece akım döngüsü). Mod 1'in (gerilim sürüşü) zıt EMK'sı ve R_a, L_a dinamiği yalnız Simscape modelinde (`sm_model_kur(..., 'elektrik')`). Yüz kestirici mod 1'de çalıştırılacaksa ayrıca Simscape'te sınanmalı; bu turda yapılmadı. Ayrıca PWM dalgalanmasının örtüşmesi (aliasing) beyaz gürültüyle temsil edildi.
+
 ### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; karar yukarıda)
 
 Motor tarafı geri beslemede boşluk salınımı ikizde kaybolunca (yukarıda, sensör kararı) kazanç planlamasının gerekçesi zayıfladı. Yerine önerilen çerçeve:

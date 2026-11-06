@@ -71,6 +71,15 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   Çıktı: out.shat (s^ kaydı), out.dhat, out.yuzDegis, out.yuzDegisAn, out.yuzSon,
 %   out.yokSay (yoklama sayısı), out.yokKol (yoklama + 0,3 s içinde kolun en büyük hareketi [rad],
 %   yalnız ölçüm için gerçek theta kullanılır), out.yokTemas (temas bulan yoklama sayısı).
+% Gözlemcinin gördüğü tork (iş sırası 5; varsayılan kapalı: gözlemci son komut u'yu hatasız görür):
+%   p.akimW [rad/s] : tesise uygulanan tork komutu birinci derece izler (mod 3 akım döngüsü bandı;
+%                     varsayılan Inf: tork = komut). Kayıtlardaki out.u yine komuttur.
+%   p.tOlc = true   : gözlemci u yerine INA228 ölçümünü görür (k_t i, kol tarafı N m):
+%                     tKaz * ort(uygulanan tork, [t - tGec - tPen, t - tGec]) + tOfs + tGur*randn
+%                     tPen [s] dönüşüm süresi x ortalama sayısı (varsayılan Ts: son aralığın ortalaması =
+%                     eski davranış), tGec [s] dönüşüm sonu ile okuma arası gecikme (varsayılan 0), tGur [N m]
+%                     RMS beyaz gürültü (her kontrol örneğinde bir), tOfs [N m], tKaz (1). Gürültü ayrı
+%                     rastgele akıştan (tohum p.tTohum, varsayılan 2). Hepsi p.dt çözünürlüğünde.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -147,6 +156,14 @@ else
     olcM = @(xx) olc(xx, p.qM);
 end
 if kesMod > 0, ph = olc(x(1,:), p.qM); end
+ua = u;  aAk = 1 - exp(-al(p,'akimW',Inf)*p.dt);       % akım döngüsü (Inf: tork = komut)
+tOlc = kesMod > 0 && al(p,'tOlc',false);           % gözlemci torku ölçümden mi (iş sırası 5)
+if tOlc
+    tG = round(al(p,'tGec',0)/p.dt);  tP = max(1, round(al(p,'tPen',p.Ts)/p.dt));
+    tGur = al(p,'tGur',0);  tOfs = al(p,'tOfs',0);  tKaz = al(p,'tKaz',1);
+    tAkis = RandStream('mt19937ar', 'Seed', al(p,'tTohum',2));   % motor gürültüsünden ayrı akış
+    tBuf = repmat(u, tG+tP, 1);
+end
 gL = 0;  if isfield(p,'gL'), gL = p.gL; end
 thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
 if motorD, qv = p.qM; else, qv = p.qL; end
@@ -192,7 +209,13 @@ for i = 0:nStep-1
             y  = ymot;
             eo = y - ph;                           % gözlemci (u: son uygulanan tork)
             ph = ph + p.Ts*(wh + l1*eo);
-            wh = wh + p.Ts*((u - bMN*wh - dh)/JMN + l2*eo);
+            if tOlc                                % gözlemcinin gördüğü tork: INA228 ölçümü
+                bt = tBuf(end-tG-tP+1:end-tG, :);
+                uo = tKaz*(sum(bt, 1)/tP) + tOfs + tGur*randn(tAkis, 1, n);
+            else
+                uo = u;
+            end
+            wh = wh + p.Ts*((uo - bMN*wh - dh)/JMN + l2*eo);
             dh = dh - p.Ts*l3*eo;
             if isinf(vDurF), whF = wh; else, whF = whF + aDur*(wh - whF); end
             durSay = (durSay + 1).*(abs(whF) < vDur);
@@ -256,6 +279,8 @@ for i = 0:nStep-1
         end
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
     end
+    if aAk == 1, ua = u; else, ua = ua + aAk*(u - ua); end   % tesise uygulanan tork (akım döngüsü)
+    if tOlc, tBuf = [tBuf(2:end,:); ua]; end       % son satır: bu adımda uygulanan tork
     tt = i*p.dt;
     k1 = f(x, tt);  k2 = f(x+0.5*p.dt*k1, tt+0.5*p.dt);  k3 = f(x+0.5*p.dt*k2, tt+0.5*p.dt);
     k4 = f(x+p.dt*k3, tt+p.dt);
@@ -315,7 +340,7 @@ out.sinif(out.kararsiz) = 4;
             tf = 0;
         end
         dx = [dphi;
-              (u - p.bM*dphi - tf - ts)/p.JM;
+              (ua - p.bM*dphi - tf - ts)/p.JM;
               dth;
               (ts - p.bL*dth - p.mgl*sin(th) + bozucu(tt))/p.JL];
     end
