@@ -126,6 +126,15 @@ for b = BAUDLAR
     catch e
         r.not = string(e.message);
         fprintf("BASARISIZ: %s\n", e.message);
+        % Teşhis: kart hâlâ cevap veriyor mu, sayaçları ne diyor?
+        try
+            pause(0.2); sp.DiscardInBuffer(); sira = sira + 1;
+            ist = esp32_istat(sp, sira);
+            fprintf("  teshis kart: paketOk %d, crcHata %d, siraAtlama %d, copBayt %d, uzunHata %d\n", ...
+                    ist.paketOk, ist.crcHata, ist.siraAtlama, ist.copBayt, ist.uzunHata);
+        catch
+            fprintf("  teshis: kart bu hizda cevap vermiyor\n");
+        end
         % Kartı sıfırla, açılış hızına dön
         esp32_kapat(sp); pause(0.3);
         sp = esp32_ac(PORT, 921600);

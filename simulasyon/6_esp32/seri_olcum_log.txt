@@ -1,39 +1,40 @@
-=== seri_olcum 06-Nov-2026 15:55:34 ===
+=== seri_olcum 06-Nov-2026 16:05:22 ===
 CRC16('123456789') = 0x29B1 (beklenen 0x29B1)
-MATLAB paketle+coz (I/O'suz): 130.5 us/tur
+MATLAB paketle+coz (I/O'suz): 130.4 us/tur
 
 --- karsilastirma: MATLAB serialport(), 921600 baud ---
-serialport RTT ms: min 9.226  p50 15.731  p99 18.909  max 26.658
+serialport RTT ms: min 7.772  p50 15.692  p99 16.555  max 26.252
 (Windows zamanlayici adimi 15.625 ms; serialport okuma is parcacigi bu adimla uyaniyor)
 
 --- baud 921600 ---
-RTT ms: min 1.047  p50 1.131  p90 1.201  p99 1.329  p99.9 1.542  max 4.013
+RTT ms: min 1.084  p50 1.185  p90 1.262  p99 1.388  p99.9 1.705  max 3.301
 kayip (zaman asimi): 0, bozuk/uyusmayan cevap: 0  (N = 5000)
-akis: 2385 paket/s, 76.3 kB/s her yon (teorik 92.2 kB/s)
-kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 922190, islemMaks 144 us
+akis: 2374 paket/s, 76.0 kB/s her yon (teorik 92.2 kB/s)
+kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 922190, islemMaks 175 us
 
 --- baud 1000000 ---
-RTT ms: min 0.989  p50 1.075  p90 1.147  p99 1.301  p99.9 1.439  max 6.796
+RTT ms: min 1.029  p50 1.121  p90 1.200  p99 1.330  p99.9 1.511  max 3.361
 kayip (zaman asimi): 0, bozuk/uyusmayan cevap: 0  (N = 5000)
-akis: 2647 paket/s, 84.7 kB/s her yon (teorik 100.0 kB/s)
-kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 1000000, islemMaks 38 us
+akis: 2620 paket/s, 83.8 kB/s her yon (teorik 100.0 kB/s)
+kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 1000000, islemMaks 40 us
 
 --- baud 1500000 ---
-RTT ms: min 0.781  p50 0.852  p90 0.917  p99 1.052  p99.9 1.186  max 2.431
+RTT ms: min 0.816  p50 0.882  p90 0.944  p99 1.056  p99.9 1.211  max 2.134
 kayip (zaman asimi): 0, bozuk/uyusmayan cevap: 0  (N = 5000)
-akis: 3332 paket/s, 106.6 kB/s her yon (teorik 150.0 kB/s)
-kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 1500586, islemMaks 42 us
+akis: 3274 paket/s, 104.8 kB/s her yon (teorik 150.0 kB/s)
+kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 1500586, islemMaks 64 us
 
 --- baud 2000000 ---
 BASARISIZ: cevap gelmedi (0/8 bayt): Message: The operation has timed out.
 Source: System
 HelpLink: None
+  teshis: kart bu hizda cevap vermiyor
 
 === ozet (.NET SerialPort, 32 B paket) ===
      baud   p50 ms   p99 ms   max ms   Hz@p50   paket/s     kB/s  kayip   hata
-   921600    1.131    1.329    4.013      884      2385     76.3      0      0
-  1000000    1.075    1.301    6.796      930      2647     84.7      0      0
-  1500000    0.852    1.052    2.431     1173      3332    106.6      0      0
+   921600    1.185    1.388    3.301      844      2374     76.0      0      0
+  1000000    1.121    1.330    3.361      892      2620     83.8      0      0
+  1500000    0.882    1.056    2.134     1133      3274    104.8      0      0
   2000000  BASARISIZ (cevap gelmedi (0/8 bayt): Message: The operation has timed out.
 Source: System
 HelpLink: None)

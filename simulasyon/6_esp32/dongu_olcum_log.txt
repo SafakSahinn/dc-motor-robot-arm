@@ -1,0 +1,35 @@
+=== dongu_olcum 06-Nov-2026 16:02:17 ===
+
+--- A sessiz, hafif (iter 300) ---
+kart sayaclari: paketOk 24, crcHata 0, siraAtlama 0, copBayt 0
+kayit cekme: 10000 kayit (80.0 kB) 0.559 s, 143.2 kB/s
+periyot us: ort 1000.0000  min 993.300  max 1006.700  | sapma p99 0.012  max|.| 6.700
+uyanma gecikmesi us: p50 8.53  p99 8.53  max 15.20
+kontrol adimi us: p50 18.98  p99 18.98  max 27.17
+kacan kesme: 0,  karttaki maks: per 1006.700 us, gec 15.20 us, is 27.17 us
+
+--- B trafik, hafif (iter 300) ---
+kart sayaclari: paketOk 9450, crcHata 0, siraAtlama 0, copBayt 0
+kayit cekme: 10000 kayit (80.0 kB) 0.558 s, 143.3 kB/s
+periyot us: ort 1000.0000  min 990.458  max 1009.554  | sapma p99 6.706  max|.| 9.554
+uyanma gecikmesi us: p50 8.53  p99 13.90  max 17.38
+kontrol adimi us: p50 18.98  p99 19.30  max 19.38
+kacan kesme: 0,  karttaki maks: per 1009.554 us, gec 17.38 us, is 19.40 us
+es zamanli yanki: 9400 paket, RTT p50 1.050 ms p99 1.268 ms
+
+--- C trafik, agir (iter 4800) ---
+kart sayaclari: paketOk 9450, crcHata 0, siraAtlama 0, copBayt 0
+kayit cekme: 10000 kayit (80.0 kB) 0.558 s, 143.3 kB/s
+periyot us: ort 1000.0000  min 992.125  max 1009.233  | sapma p99 6.406  max|.| 9.233
+uyanma gecikmesi us: p50 8.53  p99 14.02  max 17.16
+kontrol adimi us: p50 300.23  p99 301.73  max 302.05
+kacan kesme: 0,  karttaki maks: per 1009.233 us, gec 17.16 us, is 302.05 us
+es zamanli yanki: 9400 paket, RTT p50 1.050 ms p99 1.248 ms
+
+=== ozet (1 kHz, N = 10000 tur/kosul) ===
+kosul                |sap|p99   |sap|max    gec p99    gec max     is max  kacan
+A sessiz, hafif       0.012us    6.700us     8.53us    15.20us     27.2us      0
+B trafik, hafif       6.706us    9.554us    13.90us    17.38us     19.4us      0
+C trafik, agir        6.406us    9.233us    14.02us    17.16us    302.1us      0
+
+bitti.

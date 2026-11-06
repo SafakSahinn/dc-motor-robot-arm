@@ -30,15 +30,24 @@ sıra numarasını bir öncekinin +1'i olarak bekler ve CRC hatası, sıra atlam
 PIL büyüklüğünde yük: 6 float = 24 B, paket 32 B. RTT = MATLAB'ın `write` çağrısından cevabın
 son baytı okunana dek, N = 5000. Akış: 64 paket tek yazımda, 64 cevap okunur, 40 tekrar.
 
+Son firmware ile (adım 3 sürümü: haberleşme çekirdek 0'da, engelleyici okuma):
+
 | baud | RTT p50 | p99 | en uzun | paket/s (akış) | kB/s her yön | kayıp / hata |
 |---:|---:|---:|---:|---:|---:|---:|
-| 921 600 | 1,13 ms | 1,33 ms | 4,01 ms | 2385 | 76,3 | 0 / 0 |
-| 1 000 000 | 1,08 ms | 1,30 ms | 6,80 ms | 2647 | 84,7 | 0 / 0 |
-| **1 500 000** | **0,85 ms** | **1,05 ms** | 2,43 ms | 3332 | 106,6 | 0 / 0 |
+| 921 600 | 1,19 ms | 1,39 ms | 3,30 ms | 2374 | 76,0 | 0 / 0 |
+| 1 000 000 | 1,12 ms | 1,33 ms | 3,36 ms | 2620 | 83,8 | 0 / 0 |
+| **1 500 000** | **0,88 ms** | **1,06 ms** | 2,13 ms | 3274 | 104,8 | 0 / 0 |
 | 2 000 000 | çalışmıyor (kart geçiyor, CP2102 cevabı iletmiyor) | | | | | |
 | 3 000 000 | .NET/CP210x sürücüsü kabul etmiyor (üst sınır 2 187 500) | | | | | |
 
-Toplam 22 683 pakette (her baud için 7561) CRC hatası, sıra atlaması ve çöp bayt sıfır.
+Her baud için 7561 paket; CRC hatası, sıra atlaması ve çöp bayt sıfır. Adım 2 sürümünde
+(haberleşme `loop()` içinde, yoklamalı) sayılar aynı düzeydeydi: 1,5 M'de p50 0,85 ms.
+
+**Bir kez görülen kayıp:** adım 3 firmware'inin ilk `seri_olcum` koşusunda 1,5 M'deki 64
+paketlik toplu yazımda 448 bayt (14 paket) gelmedi. Sonraki MATLAB koşusunda ve Python ile
+6 × 2561 pakette yeniden üretilemedi, sebebi bilinmiyor. PIL adım kilitli olduğundan toplu
+yazım yapmaz; kayıt çekmede de her parça CRC + sıra no ile doğrulanır, kayıp sessiz geçmez.
+Uzun PIL koşularında kayıp/zaman aşımı sayacı tutulmalı, gerekirse tekrar istenmeli.
 
 ### Üç bulgu
 
@@ -62,7 +71,7 @@ Toplam 22 683 pakette (her baud için 7561) CRC hatası, sıra atlaması ve çö
 
 Bir PIL turu ≈ RTT + MATLAB'da paketle/çöz + ikizin bir adımı + kartta algoritmanın hesabı.
 
-- RTT (1,5 M, p50/p99): 0,85 / 1,05 ms.
+- RTT (1,5 M, p50/p99): 0,88 / 1,06 ms.
 - MATLAB paketle + çöz: **~130 µs** (CRC'nin bayt döngüsü yorumlanıyor). Gerekirse CRC
   vektörleştirilebilir ya da PIL sırasında tek yönde basit toplama düşülebilir; şimdilik yeterli.
 - İkiz adımı ve kart hesabı: adım 4–5'te ölçülecek (kart tarafı tahmini onlarca µs).
@@ -75,4 +84,54 @@ Windows zamanlaması) yalnız duvar saatini uzatır, sonucu değiştirmez.
 
 **Karar:** PIL 1,5 Mbaud'da koşar. Kart 921 600'de açılır, MATLAB `T_BAUD` ile 1,5 M'ye geçirir.
 Gerçek zamanlı çalışmada (adım 6–7) MATLAB döngüde olmadığından bu gecikme önemsizdir;
-seri hat yalnız komut ve kayıt tamponu taşır (akış 1,5 M'de ~107 kB/s).
+seri hat yalnız komut ve kayıt tamponu taşır.
+
+## Adım 3: 1 kHz kontrol görevi iskeleti (2026-11-06)
+
+### Yapı (`firmware/src/main.cpp`)
+
+- **Çekirdek 1, kontrol görevi**, en yüksek öncelik. Donanım zamanlayıcısı (1 MHz sayaç,
+  1000 µs'de alarm) kesme üretir; kesme çevrim sayacını not edip görevi bildirimle uyandırır.
+  Zamanlayıcı görevin içinde kurulur, böylece kesme de çekirdek 1'e bağlanır. Görev şimdilik
+  sahte bir float yükü koşar (`sahteAdim`); adım 4'te gerçek algoritma buraya girer.
+- **Çekirdek 0, haberleşme görevi.** `Serial.begin` burada çağrılır, UART kesmesi de çekirdek
+  0'a kurulur. İlk bayt engelleyerek beklenir (`readBytes`, görev uyur), kalanı toplu okunur.
+  Arduino `loop()` görevi silinir.
+- **Kayıt tamponu**: 10 000 tur × 8 B (periyot, kesme→uyanma gecikmesi, adım süresi; CPU
+  çevrimi, 240 MHz → 4,2 ns). Yeni paketler: `10` kaydı başlat (N, yük), `11` durum, `12` kaydı
+  oku. `12` istenen aralığı **art arda paketlerle** (paket başına 30 kayıt, sıra no = parça
+  indisi) bekleme olmadan gönderir. Ayrıca kaçırılan kesme sayılır.
+
+### Ölçüm (`dongu_olcum.m`, log `dongu_olcum_log.txt`, grafik `dongu_olcum.png`)
+
+Her koşul 10 000 tur (10 s). B ve C'de kayıt boyunca MATLAB kesintisiz adım kilitli yankı
+gönderir (~9400 paket, PIL benzeri yük).
+
+| koşul | \|periyot sapması\| p99 | en büyük | uyanma gecikmesi p50 / p99 / en uzun | adım süresi en uzun | kaçan |
+|---|---:|---:|---:|---:|---:|
+| A: sessiz hat, adım ~19 µs | 0,012 µs | 6,7 µs | 8,5 / 8,5 / 15,2 µs | 27 µs (ilk tur, önbellek) | 0 |
+| B: yankı trafiği, adım ~19 µs | 6,7 µs | 9,6 µs | 8,5 / 13,9 / 17,4 µs | 19,4 µs | 0 |
+| C: yankı trafiği, adım ~300 µs | 6,4 µs | 9,2 µs | 8,5 / 14,0 / 17,2 µs | 302 µs | 0 |
+
+Kayıt çekme: 10 000 kayıt (80 kB) 0,56 s'de, 143 kB/s (1,5 M'nin %95'i). Tüm koşullarda kart
+tarafında CRC hatası, sıra atlaması ve çöp bayt sıfır.
+
+### Yorum
+
+- **Periyot sapması en çok ~10 µs, yani periyodun %1'i.** Ortalama periyot tam 1000,0000 µs
+  (donanım zamanlayıcısı kayma yapmaz); sapma yalnız uyanma gecikmesindeki oynamadan gelir.
+  1 kHz kontrol için önemsiz: iş sırası 5a'da ikiz 2 ms'ye kadar ölçüm gecikmesine
+  dayanıklı çıkmıştı, bu 200 kat büyük.
+- **Uyanma gecikmesi sabit ~8,5 µs** (Arduino zamanlayıcı sarmalayıcısı + FreeRTOS bağlam
+  değişimi). Seri trafik altında kuyruk 17 µs'ye uzar. Haberleşme ayrı çekirdekte olsa da iki
+  çekirdek FreeRTOS çekirdek kilidini paylaşır: çekirdek 0 UART kuyruğunda kilidi tutarken
+  çekirdek 1'in bildirimi kısa süre bekler. Yazılım benzetmesi: iki iş parçacığı ayrı CPU'da
+  ama aynı mutex'e dokunuyor. Gerekirse kesme içinde doğrudan iş yapmak (görev yerine) ya da
+  ESP-IDF'nin `gptimer`'ını sarmalayıcısız kullanmak bunu düşürür; şimdilik gerek yok.
+- **Ağır yük (300 µs) zamanlamayı bozmuyor**: periyot ve gecikme dağılımı B ile aynı, kaçan
+  kesme yok. Gerçek algoritmanın (adım 4) bütçesi rahat: 1000 µs − ~20 µs gecikme.
+- **Adım süresinin kendisi çok kararlı**: 19 µs'lik adım p50 18,98, p99 19,30 µs. Adım 4'te
+  algoritmanın süresi bu altyapıyla doğrudan ölçülecek.
+
+Sıradaki: adım 4, algoritmanın C'ye çevrilmesi (P-PI, ofset tablosu, tork gözlemcisi, yüz
+kestirici), `kol_benzetim.m`'deki sırayla, float ve int32 motor turu sayacıyla.
