@@ -1,0 +1,41 @@
+=== seri_olcum 06-Nov-2026 15:55:34 ===
+CRC16('123456789') = 0x29B1 (beklenen 0x29B1)
+MATLAB paketle+coz (I/O'suz): 130.5 us/tur
+
+--- karsilastirma: MATLAB serialport(), 921600 baud ---
+serialport RTT ms: min 9.226  p50 15.731  p99 18.909  max 26.658
+(Windows zamanlayici adimi 15.625 ms; serialport okuma is parcacigi bu adimla uyaniyor)
+
+--- baud 921600 ---
+RTT ms: min 1.047  p50 1.131  p90 1.201  p99 1.329  p99.9 1.542  max 4.013
+kayip (zaman asimi): 0, bozuk/uyusmayan cevap: 0  (N = 5000)
+akis: 2385 paket/s, 76.3 kB/s her yon (teorik 92.2 kB/s)
+kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 922190, islemMaks 144 us
+
+--- baud 1000000 ---
+RTT ms: min 0.989  p50 1.075  p90 1.147  p99 1.301  p99.9 1.439  max 6.796
+kayip (zaman asimi): 0, bozuk/uyusmayan cevap: 0  (N = 5000)
+akis: 2647 paket/s, 84.7 kB/s her yon (teorik 100.0 kB/s)
+kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 1000000, islemMaks 38 us
+
+--- baud 1500000 ---
+RTT ms: min 0.781  p50 0.852  p90 0.917  p99 1.052  p99.9 1.186  max 2.431
+kayip (zaman asimi): 0, bozuk/uyusmayan cevap: 0  (N = 5000)
+akis: 3332 paket/s, 106.6 kB/s her yon (teorik 150.0 kB/s)
+kart: paketOk 7561, crcHata 0, siraAtlama 0, copBayt 0, uzunHata 0, baud 1500586, islemMaks 42 us
+
+--- baud 2000000 ---
+BASARISIZ: cevap gelmedi (0/8 bayt): Message: The operation has timed out.
+Source: System
+HelpLink: None
+
+=== ozet (.NET SerialPort, 32 B paket) ===
+     baud   p50 ms   p99 ms   max ms   Hz@p50   paket/s     kB/s  kayip   hata
+   921600    1.131    1.329    4.013      884      2385     76.3      0      0
+  1000000    1.075    1.301    6.796      930      2647     84.7      0      0
+  1500000    0.852    1.052    2.431     1173      3332    106.6      0      0
+  2000000  BASARISIZ (cevap gelmedi (0/8 bayt): Message: The operation has timed out.
+Source: System
+HelpLink: None)
+
+bitti.
