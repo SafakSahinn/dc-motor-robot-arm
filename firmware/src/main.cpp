@@ -1,42 +1,94 @@
-// Adım 1: ilk yükleme sınaması.
-// Kartın yaşadığını gösterir: LED yanıp söner, seri porttan çip bilgisi ve
-// float hız ölçümü (FPU gerçekten çalışıyor mu) yazılır.
+// Adım 2: seri ikili paket protokolü, yankı modu.
+// Kart gelen paketleri doğrular (başlık, uzunluk, CRC, sıra no), YANKI
+// paketlerini aynen geri gönderir ve hata sayaçlarını tutar. MATLAB tarafı:
+// simulasyon/6_esp32/. Protokol tanımı: protokol.h.
+//
+// Not: Bu modda kart açılışta hiçbir metin basmaz; seri hat yalnız ikili
+// paketler içindir (açılıştaki ROM çıktısı 115200 baud, PC tarafı atar).
 #include <Arduino.h>
+#include "protokol.h"
 
 #ifndef LED_BUILTIN
-#define LED_BUILTIN 2   // çoğu ESP32 geliştirme kartında mavi LED GPIO2'de
+#define LED_BUILTIN 2
 #endif
 
-static void floatHizOlc() {
-  // 100000 float çarp-topla; FPU varsa ~1 ms civarı sürmeli
-  volatile float a = 1.0001f, b = 0.9999f, s = 0.0f;
-  uint32_t t0 = micros();
-  for (int i = 0; i < 100000; ++i) s = s * b + a;
+static constexpr uint32_t BAUD_ACILIS = 921600;
+
+static prot::Ayristirici ayr;
+static prot::Istat ist;
+static uint8_t cikis[prot::EK_YUK + prot::YUK_MAKS];
+static uint16_t bekSira = 0;
+static bool ilkPaket = true;
+
+static void gonder(uint8_t tip, uint16_t sira, const void* yuk, uint8_t n) {
+  size_t m = prot::paketle(cikis, tip, sira, (const uint8_t*)yuk, n);
+  Serial.write(cikis, m);
+}
+
+static void paketIsle(uint32_t t0) {
+  const uint8_t tip = ayr.tip();
+  const uint16_t sira = ayr.sira();
+
+  // Sıra denetimi: her paket bir öncekinin +1'i olmalı (16 bitte sarar).
+  if (!ilkPaket && sira != bekSira) ist.siraAtlama++;
+  ilkPaket = false;
+  bekSira = (uint16_t)(sira + 1);
+
+  switch (tip) {
+    case prot::T_YANKI:
+      gonder(tip | 0x80, sira, ayr.yuk(), ayr.uzunluk());
+      break;
+    case prot::T_ISTAT:
+      ist.baud = Serial.baudRate();
+      ist.calismaMs = millis();
+      gonder(tip | 0x80, sira, &ist, sizeof(ist));
+      break;
+    case prot::T_ISTAT_SIFIR: {
+      uint32_t b = ist.baud;
+      memset(&ist, 0, sizeof(ist));
+      ist.baud = b;
+      ilkPaket = true;
+      gonder(tip | 0x80, sira, nullptr, 0);
+      break;
+    }
+    case prot::T_BAUD: {
+      if (ayr.uzunluk() != 4) { gonder(prot::T_HATA, sira, &tip, 1); break; }
+      uint32_t yeni;
+      memcpy(&yeni, ayr.yuk(), 4);
+      gonder(tip | 0x80, sira, &yeni, 4);  // onay eski hızda
+      Serial.flush();                      // son bayt hatta çıkana kadar bekle
+      delay(20);                           // PC tarafının portu ayarlamasına süre
+      Serial.updateBaudRate(yeni);
+      ilkPaket = true;
+      return;  // işlem süresine flush/delay sayılmasın
+    }
+    default:
+      gonder(prot::T_HATA, sira, &tip, 1);
+      break;
+  }
   uint32_t dt = micros() - t0;
-  Serial.printf("float testi: 100000 islem %lu us (sonuc %.3f)\n",
-                (unsigned long)dt, (double)s);
+  if (dt > ist.islemMaksUs) ist.islemMaksUs = dt;
 }
 
 void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
-  Serial.begin(921600);
-  delay(300);
-  Serial.println();
-  Serial.println("=== robot kol ESP32: adim 1 ===");
-  Serial.printf("cip: %s rev %d, %d cekirdek, %lu MHz\n",
-                ESP.getChipModel(), ESP.getChipRevision(),
-                ESP.getChipCores(), (unsigned long)ESP.getCpuFreqMHz());
-  Serial.printf("flash: %lu KB, bos heap: %lu B\n",
-                (unsigned long)(ESP.getFlashChipSize() / 1024),
-                (unsigned long)ESP.getFreeHeap());
-  floatHizOlc();
+  Serial.setRxBufferSize(4096);
+  Serial.begin(BAUD_ACILIS);
+  ist.baud = BAUD_ACILIS;
 }
 
 void loop() {
-  static uint32_t sayac = 0;
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(250);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(250);
-  if (++sayac % 4 == 0) Serial.printf("canli, t=%lu s\n", (unsigned long)(millis() / 1000));
+  // Gelen baytları toplu oku (bayt bayt Serial.read() her çağrıda sürücü
+  // kilidi alır, ~10 µs/bayt), ayrıştırıcıya ver; paket bitince hemen cevapla.
+  static uint8_t giris[256];
+  int n = Serial.available();
+  while (n > 0) {
+    size_t m = Serial.read(giris, n > (int)sizeof(giris) ? sizeof(giris) : (size_t)n);
+    if (m == 0) break;
+    n -= (int)m;
+    for (size_t i = 0; i < m; ++i)
+      if (ayr.besle(giris[i], ist)) paketIsle(micros());
+  }
+  // Canlılık: LED her 1024 iyi pakette bir durum değiştirir.
+  digitalWrite(LED_BUILTIN, (ist.paketOk >> 10) & 1);
 }
