@@ -134,6 +134,18 @@ Tarama: IEEE Xplore 13 sorgu, Web of Science 6 sorgu, web 9 sorgu; 8 makalenin t
 
 **Geri dönüş noktaları:** yüz kestirici yalnız motor sinyalleriyle tutmazsa → kol sensörlü geri besleme + kazanç planlaması; deneyde r ya da K_s zamanla belirgin değişirse → Katkı 2 yeniden açılır; 180° hiçbir yolla düzelmezse → "yöntemin sınırı".
 
+### İş sırası (1): sürtünmeli ikizde motor tarafı + ofset ve belirsiz bant (6 Kasım 2026)
+
+Betikler: `simulasyon/5_planlama/surtunme_ofset.m`, `belirsiz_bant.m` (D düzeneği, Fc 0,04, Fs 0,06 N m, mgℓ 0,240 N m, r 1,5°, motor tarafı P-PI, ofset = sign(sin θ)·r + mgℓ sin θ / K_s, kol hedefe alttan ve üstten).
+
+- **Ofset tablosu sürtünmede de tutuyor.** Boşluk salınımı yok. Kalan "düzensiz" sınıflar yapışma-kayma titremesi, genlik 0,1° altında. 10–170°'de kalıcı hata ideal enkoderle ≤ 0,38°, 0,27°'lik enkoderle ≤ 0,51° (sürtünmesizde ≤ 0,27° idi).
+- **Yanlış yüz yalnız 180°'nin 1° içinde.** 170–180° arası 0,25° adımla, 6 koşu türü: kol yanlış yüze 179–180°'de düşüyor (üstten gelişte 179°'den, alttan gelişte 179,5–180°'den itibaren), hata ≈ 2r ≈ 3,1–3,4°. 179°'nin altında yerçekimi kolu her zaman doğru yüze yaslıyor, yani yüz hedef açıdan zaten belli. **Yüz kestirimi gereken bant |θ − 180°| ≤ 1° (< r).**
+- **Durgun akım işareti bu bantta kör.** Durgunken u = τ_s + τ_f, |τ_f| ≤ Fs, bu yüzden sign(u) yüzü ancak mgℓ|sin θ| > Fs iken kesin söyler: analitik kör bant ±14,5° (Fs/mgℓ = 0,25). İkizde sign(u) 5° ve 175°'de zaten yanlış (u ile τ_s arası ≈ Fc farkı). Yüzün gerçekten belirsiz olduğu ±1°'lik bantta kolu yüzde tutan tork ≤ 0,004 N m, yani Fc'nin onda biri. **Sonuç: "akımın işaretine bak" türü edilgen kestirim bu düzenekte çalışamaz.** Bu, Katkı 1'in "önemsiz görülme" riskine karşı somut cevap.
+- **Devrilme olayının motor tarafında izi var.** 180°'de devrilen koşuda kol boşluğu geçip karşı yüze çarpınca dişli torku −0,07 N m'ye iniyor (Fc'den büyük), motor torku 30 ms içinde +0,046'dan −0,026 N m'ye dönüyor. Yani durgun işaret kör ama **çarpma olayı gözlenebilir**. Kestirici için iki aday: (a) olay tabanlı: tork gözlemcisiyle çarpma darbesini yakalayıp yüzü güncellemek, (b) etken yoklama: küçük tork darbesiyle boşluğu bilerek kapatıp hangi yönde serbest hareket olduğuna bakmak.
+- **Ölçüt önerisi (onay bekliyor):** H7: "|θ − 180°| ≤ 1° bandında yalnız motor sinyalleriyle yüz kestirimi, edilgen akım işaretinden anlamlı ölçüde doğru (edilgen yöntemin bant içi doğruluğu henüz ölçülmedi); hata yanlış yüzde ≈ 3°'den ≤ 0,5°'ye". B12: bant içi yüz doğruluğu ≥ %95; B13: yoklama varsa kol hareketi ≤ 0,5°.
+- **Not (sınanmadı, iş sırası 2'de bakılacak):** tam 180° hiçbir yüzde durgun denge değil (sin θ = 0 iken yüzde tutan tork sıfır). Yüz kusursuz bilinse bile en iyi sonuç 180° ∓ küçük bir pay olabilir; üst sınır deneyi bunu ölçecek.
+- Benzetim sürtünmesi tanh ile yumuşatılmış (veps 2e-3 rad/s): durgunlukta τ_f → 0 eğilimli, yani ikiz akım işaretini gerçekte olduğundan **daha iyi** gösteriyor; kör bant donanımda daha geniş olabilir, daha dar olamaz.
+
 ### Önerilen yeni çerçeve ve literatür kontrolü (5 Kasım 2026 akşam; karar yukarıda)
 
 Motor tarafı geri beslemede boşluk salınımı ikizde kaybolunca (yukarıda, sensör kararı) kazanç planlamasının gerekçesi zayıfladı. Yerine önerilen çerçeve:
