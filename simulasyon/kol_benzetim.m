@@ -30,6 +30,12 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   ucunda ve dişli esnemesi kadar hedeften kayık durabilir (kalıcı hata <= r + tau_s/Ks).
 % p.ofset [rad] (skaler ya da her benzetim için bir değer): e = th_ref + ofset - ölçülen.
 %   Motor tarafı geri beslemede boşluk + dişli esnemesi telafisi için (ofset_tablosu.m).
+% p.ofsetYuz (varsayılan yok/kapalı): ÜST SINIR deneyi için ofsetin işareti kolun GERÇEK temas
+%   yüzünden (ikizde delta = phi - th) seçilir: ofset = s*r + mgl sin(th_ref)/Ks.
+%   'anlik' : her kontrol örneğinde, temas varken (|delta| >= r) s = sign(delta); boşlukta s tutulur.
+%   'durunca': s yalnız kol durgunken (|dth| < p.yuzV, p.yuzN örnek boyunca) ve temas varken güncellenir.
+%   Başlangıç yüzü p.yuz0 (yoksa sign(sin th_ref), 0 ise +1). p.ofset bu durumda kullanılmaz.
+%   Çıktı: out.yuzDegis (tüm süre), out.yuzDegisAn (analiz penceresi) yüz seçimi değişim sayıları.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df t) [N m] kola etki eder,
 % p.dT verilirse t >= dT'de kesilir. p.x0, p.z0: önceki benzetimin son durumundan sürdürme.
 
@@ -47,6 +53,16 @@ if ppi, kpP = wc;  KV = p.KV.*ones(1,n);  KI = p.KI.*ones(1,n); end
 motorD = strcmp(p.Dkaynak,'motor');
 motorP = isfield(p,'Pkaynak') && strcmp(p.Pkaynak,'motor');  % konum hatası motor tarafından (phi)
 ofs = zeros(1,n);  if isfield(p,'ofset'), ofs = p.ofset(:)'.*ones(1,n); end  % hedef ofseti [rad]
+yuzMod = 0;                                        % 0 kapalı, 1 anlık, 2 durunca
+if isfield(p,'ofsetYuz') && ~isempty(p.ofsetYuz)
+    yuzMod = find(strcmp(p.ofsetYuz, {'anlik','durunca'}));
+    if isfield(p,'yuz0'), yz = p.yuz0(:)'.*ones(1,n); else, yz = sign(sin(th_ref)); end
+    yz(yz == 0) = 1;
+    yuzV = 0.01; if isfield(p,'yuzV'), yuzV = p.yuzV; end
+    yuzN = 200;  if isfield(p,'yuzN'), yuzN = p.yuzN; end
+    durSay = zeros(1,n);  yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
+    ofsG = p.mgl*sin(th_ref)/p.Ks;  ofs = yz*p.r + ofsG;
+end
 
 % Başlangıç: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
 x = zeros(4,n);
@@ -81,6 +97,16 @@ for i = 0:nStep-1
             vhat = vhat + aV*((yv - yv_prev)/p.Ts - vhat);
             yv_prev = yv;  v = vhat;
         end
+        if yuzMod > 0                              % üst sınır: yüz ikizin gerçek deltasından
+            dl = x(1,:) - x(3,:);  tm = abs(dl) >= p.r;
+            if yuzMod == 2
+                durSay = (durSay + 1).*(abs(x(4,:)) < yuzV);
+                tm = tm & durSay >= yuzN;
+            end
+            yy = yz;  yy(tm) = sign(dl(tm));
+            dg = yy ~= yz;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
+            yz = yy;  ofs = yz*p.r + ofsG;
+        end
         e  = th_ref + ofs - thm;
         if ppi
             ev = kpP.*e - v;                       % hız hatası (kol tarafı)
@@ -113,6 +139,7 @@ t = (1:nRec)'*p.dt*p.dec;
 out.t = t;  out.th = TH;  out.delta = DEL;  out.tau_s = TAU;  out.u = U;
 out.theta0_deg = theta0_deg;  out.wc = wc;
 out.x_son = x;  out.z_son = z;                     % p.x0, p.z0 ile sürdürmek için
+if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = yz; end
 
 % --- Analiz ---
 thd = rad2deg(TH);
