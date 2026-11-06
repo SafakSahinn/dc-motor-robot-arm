@@ -133,5 +133,78 @@ tarafında CRC hatası, sıra atlaması ve çöp bayt sıfır.
 - **Adım süresinin kendisi çok kararlı**: 19 µs'lik adım p50 18,98, p99 19,30 µs. Adım 4'te
   algoritmanın süresi bu altyapıyla doğrudan ölçülecek.
 
-Sıradaki: adım 4, algoritmanın C'ye çevrilmesi (P-PI, ofset tablosu, tork gözlemcisi, yüz
-kestirici), `kol_benzetim.m`'deki sırayla, float ve int32 motor turu sayacıyla.
+## Adım 4: algoritmanın C++'a çevrilmesi (2026-11-06)
+
+### Kod (`firmware/src/kontrol.h/.cpp`)
+
+`kontrol::Kontrolcu`: `baslat(Ayar)` + `adim(Girdi) → Cikti`. Saf C++ (yalnız `<stdint.h>`,
+`<math.h>`), Arduino'ya bağlı değil. Kapsam: P-PI (motor tarafı konum + motor hızı), ofset
+(`s_of*r + mgl sin(th_ref)/K_s`), tork gözlemcisi, yüz kestirici (edilgen / olay / yoklama /
+olay+yoklama, rampa), doyum, anti-windup, integral ölü bandı, sürücü ölü bandı. Sıra
+`kol_benzetim.m` ile birebir; her blokta MATLAB satır numarası yorumda.
+
+- **Girdi** (10 B): motor AS5600 ham açısı (0..4095), motor hızı, ölçülen tork.
+  **Çıktı** (20 B): u, w^, d^, s_of, s^, yoklama evresi, hesap süresi (çevrim).
+  **Ayar** (180 B): aynı zamanda paket yükü; MATLAB karşılığı `ktl_ayar_paketle.m`.
+- **Çok tur sayımı:** her örnekte Δ = ham − önceki, [−2048, 2048)'e sarılır, int32 sayaca
+  eklenir (`mimari.md`'deki tarif). Başlangıç sayımı `Ayar.ilkSayim`.
+- **float ve büyük açı:** 180°'de sayım ≈ 61 440; float açıyı (≈ 3,14 rad) 2,4e-7 rad adımla
+  tutar, gözlemcinin 1 ms'lik artışları ise ~1e-6 rad. Bu yüzden açılar hep fark olarak
+  hesaplanır: hedef = `refC` sayım + `refF` kesir, gözlemci phi^ yerine (phi^ − son ölçüm)
+  farkını taşır. Yazılım benzetmesi: büyük bir zaman damgasına küçük süreleri eklemek yerine
+  tamsayı "epoch" + küçük kayan ofset tutmak.
+- **Zaman eşikleri tamsayıya çevrilir:** `yokBekle`, `yokTmin`, `yokTmax`, `yokPer` ve olay
+  maskesi `baslat`'ta, MATLAB'ın double karşılaştırmasını (birikimli `ykT + Ts` dahil) aynen
+  yaparak örnek sayısına dönüşür. Örnek: `yokTmax` 0,3 float'a çevrilip karşılaştırılsaydı
+  300 değil 301. örnekte biterdi.
+- **IRAM:** `adim()` IRAM'de (`KONTROL_HIZLI`). Flash'ta iken önbellek ıskası ilk turu 308 µs'ye,
+  ilk yoklamayı 16–28 µs'ye, PIL'de her paketin ilk örneğini ~40 µs'ye çıkarıyordu. Float bölme
+  de kaldırıldı (ESP32 FPU'sunda donanım bölme yok; 1/J_M önceden hesaplanır).
+- **Hız kaynağı:** `HIZ_GIRDI` (dışarıdan verilen motor hızı) ya da `HIZ_GOZLEMCI` (w^).
+  **Dikkat:** 42 senaryonun kurulumunda `p.fv = Inf`, yani ikizde kontrolcü motor hızını
+  **hatasız** görüyor. Eşdeğerlik testi bu yüzden `HIZ_GIRDI` ile koşar. Donanımda hız
+  gözlemciden gelecek (`mimari.md` §4.1 güncellemesi); ikizde bu henüz sınanmadı (aşağıda).
+- `baslat()` double hesaplar yüzünden ~1 ms sürer. 1 kHz görevde çağrılmaz: haberleşme görevi
+  hazır nesneyi kurar, kontrol görevi kopyalar.
+- Kazanç: `kp`, `KV`, `KI` ayardan gelir (42 senaryoda r_gs 0,50 sabit). Açıya göre tablo
+  (`tablo_ilk_D.csv`) henüz kodda yok; hedef değişince ayarla birlikte gönderilecek.
+
+Yeni paketler (`protokol.h`): `20` T_KTL_BASLAT (Ayar → Turetilen: refC, refF, eşik sayıları),
+`21` T_KTL_ADIM (n ≤ 12 Girdi → n Cikti; PIL'de n = 1). Ayrıca `10` kaydı `yukIter = 0` ile
+başlatılırsa 1 kHz görev sahte yük yerine gerçek algoritmayı sentetik girdiyle koşar.
+
+`kol_benzetim.m`'ye `p.ktlKayit` eklendi (varsayılan kapalı): her kontrol örneğinin girdisi ve
+çıktısı `out.ktl`'ye yazılır. Gerileme kontrolü: `belirsiz_bant` ve `yuz_kestirici_as5600`
+loglarında yalnız tarih satırı değişti.
+
+### Açık döngü eşdeğerlik testi (`ktl_esdeger.m`, log `ktl_esdeger_log.txt`)
+
+İkiz 42 senaryoyu `akim_gurultu.m`'nin "INA228 taban" kurulumuyla koşar (1 kHz, AS5600 motor
+milinde, 0,4 ms gecikme, 0,043° gürültü, gözlemci torku INA228'den, akım döngüsü 500 Hz,
+olay+yoklama, yokOrta 0,6, vDurF 10 Hz), sürtünmeli ve sürtünmesiz. Kaydedilen girdiler karta
+12'şer örnekle beslenir; kart kendi durumuyla koşar (ikizin durumu kopyalanmaz).
+
+| | sürtünmeli | sürtünmesiz |
+|---|---:|---:|
+| ayrık kararlar (s^, yoklama evresi) 8000 örneğin hepsinde aynı | 42/42 | 42/42 |
+| en büyük \|Δu\| [N m] | 3,4e-7 | 3,2e-7 |
+| en büyük \|Δw^\| [rad/s] | 1,2e-7 | 1,4e-7 |
+| en büyük \|Δd^\| [N m] | 4,3e-8 | 4,4e-8 |
+| en büyük \|Δs_of\| | 2,6e-6 | 2,6e-6 |
+| kartta adım süresi ort / p99 / en uzun [µs] | 3,53 / 4,01 / 9,48 | 3,54 / 4,00 / 9,46 |
+
+Farklar float yuvarlaması düzeyinde (u'nun 0,49 N m doyumunun ~1e-6'sı). s_of'taki 2,6e-6,
+rampa adımının (0,004) float birikimi.
+
+**1 kHz görevde (çekirdek 1, sentetik girdi, 10 000 tur):** adım ort 3,66 µs, p99 4,10, en
+uzun 37,7 µs (yalnız ilk tur); periyot sapması en çok 1,7 µs, kaçan kesme 0. Bütçenin
+(~980 µs) %0,4'ü. Kart sayaçlarında CRC hatası, sıra atlaması ve çöp bayt sıfır.
+
+### Açık kalan
+
+- **Hız kaynağı:** ikizdeki tüm 42 senaryo sonuçları ideal motor hızıyla. Donanımda w^
+  kullanılacak. Adım 5'ten önce ya da birlikte: ikize "kontrolcü hızı = gözlemcinin w^'si"
+  seçeneği eklenip 42 senaryo yeniden koşulmalı (karttaki `HIZ_GOZLEMCI` bunun karşılığı).
+- Açıya göre kazanç/ofset tablosu kodda değil (hedef başına ayar).
+
+Sıradaki: adım 5, adım kilitli PIL (ikiz MATLAB'da, kart döngüde, `T_KTL_ADIM` n = 1).

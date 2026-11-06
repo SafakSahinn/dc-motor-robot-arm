@@ -30,6 +30,9 @@ enum Tip : uint8_t {
   T_DONGU_BASLAT = 0x10,  // yük: uint32 ornekSayisi, uint32 yukIter → cevap: Durum
   T_DONGU_DURUM  = 0x11,  // cevap: Durum
   T_KAYIT_OKU    = 0x12,  // yük: uint32 bas, uint32 adet → art arda Kayit paketleri
+  // Kontrol algoritması (adım 4–5, kontrol.h)
+  T_KTL_BASLAT   = 0x20,  // yük: kontrol::Ayar (180 B) → cevap: kontrol::Turetilen (24 B)
+  T_KTL_ADIM     = 0x21,  // yük: n × kontrol::Girdi (10 B, n <= 12) → cevap: n × kontrol::Cikti (20 B)
   T_HATA       = 0x7F,  // kart → PC: bilinmeyen tip vb.
 };
 

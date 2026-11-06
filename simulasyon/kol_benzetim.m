@@ -80,6 +80,10 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %                     eski davranış), tGec [s] dönüşüm sonu ile okuma arası gecikme (varsayılan 0), tGur [N m]
 %                     RMS beyaz gürültü (her kontrol örneğinde bir), tOfs [N m], tKaz (1). Gürültü ayrı
 %                     rastgele akıştan (tohum p.tTohum, varsayılan 2). Hepsi p.dt çözünürlüğünde.
+% p.ktlKayit = true (yalnız yuzKes açıkken; varsayılan kapalı): her kontrol örneğinin girdi ve çıktısı
+%   out.ktl'ye yazılır (ESP32 açık döngü eşdeğerlik testi, 6_esp32/ktl_esdeger.m). Alanlar (örnek x senaryo):
+%   sayim (motor ölçümü / qM, tamsayı), v (kontrolcünün gördüğü hız), uo (gözlemcinin gördüğü tork),
+%   u, wh, dh, sOf, sh, ykF; ayrıca ilkSayim (gözlemcinin başlangıç phi^'si / qM).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -172,6 +176,7 @@ aV = 1 - exp(-2*pi*p.fv*p.Ts);                     % filtre katsayısı (fv=Inf 
 Iolu = 0;  if isfield(p,'Iolu'), Iolu = p.Iolu; end
 Isif = isfield(p,'Isifirla') && p.Isifirla;
 e_onc = zeros(1,n);
+ktlK = kesMod > 0 && al(p,'ktlKayit',false);       % kontrol örneklerinin kaydı (ESP32 eşdeğerlik)
 
 nStep = round(p.T/p.dt);
 kCtl  = max(1, round(p.Ts/p.dt));
@@ -180,6 +185,11 @@ nRec  = floor((nStep-iAn)/p.dec);
 TH = zeros(nRec,n);  DEL = zeros(nRec,n);  TAU = zeros(nRec,n);  U = zeros(nRec,n);
 if kesMod > 0, SH = zeros(nRec,n);  DH = zeros(nRec,n); end
 k = 0;
+if ktlK
+    nK = ceil(nStep/kCtl);  kc = 0;  bos = zeros(nK,n);
+    KT = struct('sayim',bos,'v',bos,'uo',bos,'u',bos,'wh',bos,'dh',bos,'sOf',bos,'sh',bos,'ykF',bos);
+    KT.ilkSayim = round(ph/p.qM);
+end
 
 for i = 0:nStep-1
     if gMs > 0, phBuf = [phBuf(2:end,:); x(1,:)]; end   % en eski satır gMs adım önceki phi
@@ -278,6 +288,11 @@ for i = 0:nStep-1
             u(yk) = min(max(yokA*ykYon(yk), -p.Tmax), p.Tmax);  z(yk) = zOnc(yk);   % mutlak itiş torku
         end
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
+        if ktlK
+            kc = kc + 1;
+            KT.sayim(kc,:) = round(ymot/p.qM);  KT.v(kc,:) = v;  KT.uo(kc,:) = uo;  KT.u(kc,:) = u;
+            KT.wh(kc,:) = wh;  KT.dh(kc,:) = dh;  KT.sOf(kc,:) = sOf;  KT.sh(kc,:) = sh;  KT.ykF(kc,:) = ykF;
+        end
     end
     if aAk == 1, ua = u; else, ua = ua + aAk*(u - ua); end   % tesise uygulanan tork (akım döngüsü)
     if tOlc, tBuf = [tBuf(2:end,:); ua]; end       % son satır: bu adımda uygulanan tork
@@ -297,7 +312,8 @@ end
 t = (1:nRec)'*p.dt*p.dec;
 out.t = t;  out.th = TH;  out.delta = DEL;  out.tau_s = TAU;  out.u = U;
 out.theta0_deg = theta0_deg;  out.wc = wc;
-out.x_son = x;  out.z_son = z;                     % p.x0, p.z0 ile sürdürmek için
+out.x_son = x;  out.z_son = z;
+if ktlK, out.ktl = KT; end                     % p.x0, p.z0 ile sürdürmek için
 if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = yz; end
 if kesMod > 0
     out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;

@@ -1,10 +1,12 @@
-// Adım 2–3: seri ikili paket protokolü + 1 kHz kontrol görevi iskeleti.
+// Adım 2–4: seri ikili paket protokolü + 1 kHz kontrol görevi + kontrol algoritması.
 //
 // Görev yerleşimi (ESP32'nin iki çekirdeği):
 //   Çekirdek 1: kontrol görevi, en yüksek öncelik. Donanım zamanlayıcısı her
 //               1 ms'de kesme üretir, kesme görevi uyandırır (bildirim). Görev
 //               sahte bir kontrol adımı koşar ve zamanlamayı kayıt tamponuna
-//               yazar. İleride gerçek algoritma (adım 4) buraya girecek.
+//               yazar. yukIter = 0 ile kayıt başlatılırsa sahte yük yerine
+//               gerçek algoritma (kontrol.cpp) sentetik girdiyle koşar: hesap
+//               süresi 1 kHz bağlamında ölçülür (son T_KTL_BASLAT ayarıyla).
 //   Çekirdek 0: haberleşme görevi. Seri port (ve UART kesmesi) burada; MATLAB
 //               ile paket alışverişi kontrol döngüsünü rahatsız etmez.
 // Yazılım benzetmesi: kontrol görevi bir cron işi değil, bir alarm saatinin
@@ -12,11 +14,14 @@
 // İkisi arasında paylaşılan tek şey kayıt tamponu ve birkaç sayaç.
 //
 // Protokol tanımı: protokol.h. MATLAB tarafı: simulasyon/6_esp32/.
+// PIL / açık döngü eşdeğerlik testi (T_KTL_*): ayrı bir Kontrolcu örneği çekirdek
+// 0'da, MATLAB'ın gönderdiği sensör örnekleriyle adım adım koşar (gerçek zamansız).
 // Bu modda kart açılışta metin basmaz; seri hat yalnız ikili paketler içindir.
 #include <Arduino.h>
 #include <esp_heap_caps.h>
 #include <xtensa/core-macros.h>
 #include "protokol.h"
+#include "kontrol.h"
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 2
@@ -38,6 +43,16 @@ static volatile uint32_t dDurum = 0, dKayitN = 0, dHedefN = 0, dTick = 0,
 static volatile uint32_t dPerMin = 0, dPerMax = 0, dGecMax = 0, dIsMax = 0;
 static volatile bool baslatIstegi = false;
 static volatile uint32_t istenenN = 0, istenenIter = 0;
+
+// Son T_KTL_BASLAT ayarı (haberleşme görevi yazar; kontrol görevi yalnız kayıt
+// başlatılırken, baslatIstegi el sıkışmasıyla okur).
+static kontrol::Ayar sonAyar;
+static volatile bool ayarVar = false;
+static kontrol::Kontrolcu rtKtl;    // çekirdek 1: 1 kHz görevde süre ölçümü
+// baslat() double eşik hesapları yüzünden ~1 ms sürer: haberleşme görevi rtHazir'ı
+// önceden kurar, kontrol görevi kayıt başında yalnız kopyalar (birkaç yüz bayt).
+static kontrol::Kontrolcu rtHazir;
+static kontrol::Kontrolcu pilKtl;   // çekirdek 0: PIL / eşdeğerlik testi
 
 // ---------------------------------------------------------------- çekirdek 1
 static void IRAM_ATTR zamanlayiciKesmesi() {
@@ -64,6 +79,8 @@ static void kontrolGorevFn(void*) {
 
   uint32_t oncekiCyc = 0;
   bool ilk = true;
+  bool gercek = false;   // bu kayıtta gerçek algoritma mı
+  uint32_t rtK = 0;
   for (;;) {
     uint32_t n = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
     uint32_t uyanCyc = XTHAL_GET_CCOUNT();
@@ -76,12 +93,26 @@ static void kontrolGorevFn(void*) {
       dHedefN = istenenN; dYukIter = istenenIter;
       dKayitN = 0; dKacan = 0;
       dPerMin = 0xFFFFFFFF; dPerMax = 0; dGecMax = 0; dIsMax = 0;
+      gercek = dYukIter == 0 && ayarVar;
+      if (gercek) { rtKtl = rtHazir; rtK = 0; }
       dDurum = 1;
       baslatIstegi = false;
     }
 
-    // --- kontrol adımı (adım 4'te gerçek algoritma) ---
-    sahteAdim(dYukIter);
+    // --- kontrol adımı ---
+    if (gercek) {
+      // Sentetik girdi: motor ±64 sayım üçgen dalga (≈ ±0,19° kol tarafı, 2 s
+      // periyot), küçük tork ölçümü. Amaç yalnız hesap süresi; sonuç kullanılmaz.
+      uint32_t f = rtK % 2000;
+      int32_t ofs = f < 1000 ? (int32_t)(f / 8) - 64 : 61 - (int32_t)((f - 1000) / 8);
+      kontrol::Girdi g;
+      g.ham = (uint16_t)(((sonAyar.ilkSayim + ofs) % 4096 + 4096) % 4096);
+      g.v = 0.0f; g.torkOlc = 0.01f;
+      volatile float u = rtKtl.adim(g).u; (void)u;
+      ++rtK;
+    } else {
+      sahteAdim(dYukIter);
+    }
     uint32_t isCyc = XTHAL_GET_CCOUNT() - uyanCyc;
 
     uint32_t per = uyanCyc - oncekiCyc;
@@ -189,6 +220,35 @@ static void paketIsle(uint32_t t0) {
         gonder(tip | 0x80, parca++, &kayitlar[i], (uint8_t)(m * sizeof(prot::Kayit)));
       }
       return;
+    }
+    case prot::T_KTL_BASLAT: {
+      if (ayr.uzunluk() != sizeof(kontrol::Ayar) || dDurum == 1) { gonder(prot::T_HATA, sira, &tip, 1); break; }
+      memcpy(&sonAyar, ayr.yuk(), sizeof(sonAyar));
+      ayarVar = true;
+      pilKtl.baslat(sonAyar);
+      rtHazir = pilKtl;   // dDurum != 1: kontrol görevi şu an rtHazir'ı okumuyor
+      gonder(tip | 0x80, sira, &pilKtl.turetilen(), sizeof(kontrol::Turetilen));
+      break;
+    }
+    case prot::T_KTL_ADIM: {
+      // n örnek arka arkaya (açık döngü eşdeğerlik testinde n = 12, PIL'de n = 1).
+      constexpr uint8_t GB = sizeof(kontrol::Girdi), CB = sizeof(kontrol::Cikti);
+      const uint8_t L = ayr.uzunluk();
+      if (!ayarVar || L == 0 || L % GB != 0 || L / GB > prot::YUK_MAKS / CB) {
+        gonder(prot::T_HATA, sira, &tip, 1); break;
+      }
+      static kontrol::Cikti cik[prot::YUK_MAKS / CB];
+      const uint8_t n = L / GB;
+      for (uint8_t j = 0; j < n; ++j) {
+        kontrol::Girdi g;
+        memcpy(&g, ayr.yuk() + j * GB, GB);
+        uint32_t c0 = XTHAL_GET_CCOUNT();
+        cik[j] = pilKtl.adim(g);
+        uint32_t dc = XTHAL_GET_CCOUNT() - c0;
+        cik[j].cyc = dc > 65535 ? 65535 : (uint16_t)dc;
+      }
+      gonder(tip | 0x80, sira, cik, (uint8_t)(n * CB));
+      break;
     }
     default:
       gonder(prot::T_HATA, sira, &tip, 1);
