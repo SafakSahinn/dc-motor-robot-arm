@@ -48,6 +48,9 @@ paketlik toplu yazımda 448 bayt (14 paket) gelmedi. Sonraki MATLAB koşusunda v
 6 × 2561 pakette yeniden üretilemedi, sebebi bilinmiyor. PIL adım kilitli olduğundan toplu
 yazım yapmaz; kayıt çekmede de her parça CRC + sıra no ile doğrulanır, kayıp sessiz geçmez.
 Uzun PIL koşularında kayıp/zaman aşımı sayacı tutulmalı, gerekirse tekrar istenmeli.
+*Adım 6'da güncelleme:* büyük olasılıkla aynı olay. Adım 6'da ("Seri hatta takılan yanıtlar")
+yeniden üretildi: yanıt PC'ye ancak bir sonraki istekle ulaşıyor, takılma USB / PC yolunda.
+MATLAB tarafı senkronla dayanıklı yapıldı.
 
 ### Üç bulgu
 
@@ -266,3 +269,124 @@ Kart sayaçlarında CRC hatası, sıra atlaması, çöp bayt sıfır. Senaryo ba
 
 Sıradaki: ESP32 kolunda adım 6 (kart içinde gerçek zamanlı ikiz); araştırma kolunda 5b (kayan
 F_c) + 180° deney protokolü. Site Durum satırı 5b yapılınca (5a + 5b + ESP32 birlikte).
+
+## Adım 6: kart içinde gerçek zamanlı ikiz (2026-11-07)
+
+Tesis ikizi de kartta, kontrolcüyle aynı 1 kHz görevde koşar. MATLAB döngüden çıkar: yalnız
+kurar (`T_KTL_BASLAT` + `T_IKIZ_BASLAT`), 8 s bekler, kaydı okur. Gerçek donanımdaki zamanlama
+bütçesinin provası. Yazılım benzetmesi: PIL bir entegrasyon testiydi (her isteği tek tek gönder,
+cevabı bekle). Bu adım, sistemin kendi saatinde koşup sonunda log'unu teslim ettiği bir yük
+testi.
+
+### Sayısal karar: float + hedefe göre fark durumu (ön ölçüm, `firmware/olcum_ikiz/`, 18502f6)
+
+1 ms = 10 RK4 alt adımı = 40 f() değerlendirmesi. Düzenek D, hedef 170°, motor tarafı PD.
+
+| sürüm | ms başına süre | 8 s sonunda double'a göre sapma |
+|---|---:|---:|
+| double, mutlak durum | 2,1 ms (bütçe dışı) | (referans) |
+| float, mutlak durum | ~210 µs | 2e-3 rad: kullanılamaz |
+| **float, fark durumu** | ~210 µs (sürtünmesiz ~104) | **9e-7 rad** |
+
+ESP32'nin FPU'su yalnız tek hassasiyetli: double yazılımla (sin 9,3 µs, tanh 18,6 µs).
+Mutlak açı (≈ 3,14 rad) float'ta 2,4e-7 rad adımla tutulur. RK4 artışları ise ~1e-7 rad, yani
+her adımda yuvarlama artışın kendisi kadar. Durum hedefe göre fark olarak tutulunca
+(eφ = φ − θ_ref, eθ = θ − θ_ref, ~0,02 rad) adım 2e-9 rad'a iner.
+sin θ = s0·cos eθ + c0·sin eθ (s0, c0 baslat'ta double'dan). Kontrolcüdeki "açılar fark
+olarak" kuralının (Adım 4) tesis karşılığı.
+
+### Kod
+- `firmware/src/ikiz.h/.cpp` (saf C++, kontrol.h gibi): `olc()` kontrol örneğinin ölçümünü
+  üretir (φ'yi gecikme halkasına it → AS5600: gecikme gM, gürültü nM, floor nicemleme → INA228:
+  uygulanan torkun en eski tP alt adımının ortalaması, tG gecikmesi, tGur gürültüsü);
+  `ilerle(u)` kalan alt adımları koşar (akım döngüsü ua her alt adımda, tBuf'a it, RK4). Sıra
+  `kol_benzetim.m` ile birebir. Bozucunun açık/kapalı sınırları baslat'ta MATLAB'ın double
+  karşılaştırmasıyla alt adım indisine çevrilir (RK4'ün üç zaman noktası için ayrı ayrı).
+  Bölme yok (tersler baslat'ta). Sıcak yol IRAM'de (`KONTROL_HIZLI`). Gürültü kartın kendi
+  RNG'si (xorshift32 + Box–Muller).
+- `main.cpp`: 1 kHz görevde ikiz kipi `olc → Kontrolcu::adim → ilerle`. Haberleşme görevi
+  (çekirdek 0) ikizi baslat'la kurar, kontrol görevi kayıt başında kopyalar (Adım 4'teki rtHazir
+  deseni). Kayıt bitince ikiz durur.
+- Kayıt: 8000 örnek × (eθ, δ, u: float; s^ + ykF: 1 bayt) = 104 kB. Boş heap 330 kB ama en büyük
+  blok ~110 kB olduğundan alan başına ayrı dizi (32+32+32+8 kB). Adım süresi mevcut zamanlama
+  kaydında (`Kayit`, 80 kB).
+- Protokol: `T_IKIZ_BASLAT` 0x22 (uint32 örnek sayısı + `ikiz::Ayar` 180 B → `Durum`),
+  `T_IKIZ_OKU` 0x23 (paket başına 18 × 13 B). MATLAB: `ikiz_ayar_paketle.m`,
+  `esp32_ikiz_oku.m`, `ikiz_dogrula.m`.
+- `ikiz_dogrula.m`: pil.m'deki 42 senaryo × sürtünmeli/sürtünmesiz, aynı kurulum (INA228 taban,
+  hız = w^). Referans aynı senaryonun yalnız MATLAB koşusu (n = 1, double). B13 kartın s^/ykF/θ
+  kaydından yeniden kurulur. Kurgu referansta `out.yokKol` ile sınandı: fark 0.
+
+### Sonuç: gürültüsüz (nM = 0), birebir karşılaştırma (log `ikiz_dogrula_log.txt`)
+
+| | sürtünmeli | sürtünmesiz |
+|---|---:|---:|
+| H7 kart / referans | 42/42 / 42/42 | 42/42 / 42/42 |
+| en kötü \|e\| kart / ref [°] | 0,177 / 0,176 | 0,002 / 0,002 |
+| B13 en çok kart / ref [°] | 0,324 / 0,324 | 0,299 / 0,295 |
+| ayrık kararlar 8000 örnekte aynı | 15/42 | 20/42 |
+| en büyük \|θ_kart − θ_ref\| / son anda [°] | 0,080 / 9,6e-4 | 0,196 / 1,7e-4 |
+| 1 kHz adım ort / p99 / en uzun [µs] | 186,5 / 202,6 / 581,0 | 80,7 / 82,2 / 118,1 |
+| periyot sapması en çok [µs] / kaçan kesme | 2,0 / 0 | 2,8 / 0 |
+
+**Yorum.**
+- Sonuç ölçütlerinin hepsi aynı (H7, B12, B13 ~0,01° içinde, son 1 s hatası 0,001° içinde).
+- Ayrık kararlar senaryoların yarısından fazlasında bir noktada ayrışıyor. Bunun kaynağı
+  float - double farkı, model hatası değil. j = 1'de |u_kart − u_ref| ilk 186 örnek boyunca
+  ≤ 2e-8 N m (float yuvarlaması), θ farkı tek hassasiyetli kaydın çözünürlüğünün altında.
+  187. örnekte tek adımda 3,8e-3 N m'ye sıçrıyor: bir motor sayımı (qM = 5,1e-5 rad) iki
+  tarafta `floor` sınırının farklı yanına düşüyor, gözlemci bu bir sayımı
+  KV·Ts·l2·qM ≈ 4e-3 N m'ye büyütüyor. Sonra yoklama evre geçişleri 1 örnek kayıyor:
+  |du| = 0,24 N m = 2·yokA (bir örnek boyunca itişin yönü ters). PIL'de (Adım 5) tesis aynı
+  double ikiz olduğu için bu çevrilmeler hiç olmuyordu (84/84 aynı).
+- Zamanlama: ikiz + kontrolcü bütçenin %19'u (sürtünmeli; tanhf + expf her f()'de), sürtünmesiz
+  %8. İlk tur ~580 µs (libm flash'ta, soğuk önbellek), sonra p99 ≤ 203 µs. 168 × 8000 turda
+  kaçan kesme 0. Gerçek sensör sürücüleri (I2C ~100–200 µs) için yer var. Gerekirse tanhf'yi
+  expf ile yazmak ~40 µs kazandırır (ön ölçüm).
+
+### Sonuç: gürültülü (nM = pil.m değeri, kartın RNG'si), istatistiksel (log `ikiz_gurultu_log.txt`)
+
+| | sürtünmeli | sürtünmesiz |
+|---|---:|---:|
+| H7 kart / referans | 42/42 / 42/42 | 42/42 / 42/42 |
+| en kötü \|e\| kart / ref [°] | 0,178 / 0,177 | 0,002 / 0,002 |
+| B13 en çok kart / ref [°] | 0,325 / 0,324 | 0,301 / 0,296 |
+| en büyük \|θ_kart − θ_ref\| / son anda [°] | 0,34 / 5,8e-3 | 1,73 / 8,5e-4 |
+| 1 kHz adım ort / p99 / en uzun [µs] | 188,4 / 203,2 / 696,7 | 82,6 / 86,2 / 122,0 |
+| periyot sapması en çok [µs] / kaçan kesme | 5,4 / 0 | 7,3 / 0 |
+
+Gürültü dizileri farklı olduğundan ayrık kararlar baştan ayrışıyor (beklenen). Ölçütler
+referansla aynı düzeyde. θ farkı (sürtünmesiz 1,7°) iki ayrı gürültü gerçekleşmesinin bozucu
+sırasındaki farkı; son anda 1e-3° içinde. Box–Muller (logf, sqrtf, sinf/cosf) adımı ~2 µs uzatıyor.
+
+### Seri hatta takılan yanıtlar (bulundu; kök neden USB / PC yolunda, MATLAB dayanıklı yapıldı)
+Ne görüldü: bir yanıt (ya da yanıtın sonu) zaman aşımına kadar PC'ye gelmiyor. PC bir
+**sonraki isteği** yazınca hemen geliyor ve o isteğin yanıtı sanıldığı için "bozuk" çıkıyor.
+Yazılım benzetmesi: bir mesaj kuyruğunda ancak arkasından yeni mesaj gelince teslim edilen eski
+mesaj.
+- İlk tam koşu (TX tamponu 0): 66 kB'lık toplu kayıt okumasında 5 kez **tam 384 bayt** eksik.
+  16 kB'lık parçalarla da aynı 384 B (= 3 × 128 B'lık UART TX FIFO'su). Yani PC tamponu taşması
+  değil. Eksik baytlar 6 s içinde kendiliğinden gelmiyor, sonraki istek yazılınca geliyor.
+- Kart: `Serial.setTxBufferSize(4096)`. Sonrasında 168 senaryoda toplu okumada takılma görülmedi,
+  ancak küçük yanıtlarda (32/48 B) 4 kez tüm yanıt takıldı. Karta tek 0x00 yazmak ("dürtme",
+  `copBayt` ile doğrulandı: kart baytı aldı) takılı yanıtı ÇIKARMADI; tam bir istek çıkarıyor.
+- Kart tarafının temiz olduğunu gösteren deney (`tani4`, kayıt bitimine denk gelen sorgu,
+  takılma 3 koşuda 0, 2, 0 kez; seyrek ve kümelenerek): kart MATLAB'ın gönderdiği isteklerin
+  hepsini işlemiş (`paketOk` = gönderilen) ve her yanıttan sonra `uart_wait_tx_done` TX'in
+  boşaldığını bildiriyor. Yeni `Istat.txDurtme` sayacı (boşalmazsa TX kesmesini elle açar)
+  hep 0. Yani bayt kartın UART'ından çıkmış; takılma CP2102 köprüsü, USB ya da Windows sürücüsü
+  / .NET okuma katmanında. Tam yeri ayırmak için USB yakalaması gerekir; bu adımın işi değil.
+- MATLAB tarafı dayanıklılık: `esp32_senkron` (benzersiz yüklü YANKI gönder, kendi yankısını
+  görene dek gelen her şeyi at; yankı da takılırsa yeni yankı onu iter). `ikiz_dogrula` her
+  isteği `dene()` ile çalıştırır: hata → senkron → yalnız o istek tekrar. Toplu okuma ≤ 2000
+  örneklik parçalarla. Başlatma yanıtı kaybolursa durumdan anlar (koşu başladıysa sürer).
+  Böylece 8 s'lik koşu hiç baştan alınmaz. Son iki tam koşuda (168 senaryo, ~1860 istek) 2 takılı
+  yanıt + 1 bozuk toplu paket, hepsi senkronla kurtarıldı; `txDurtme` 0, kart sayaçlarında CRC /
+  sıra hatası 0.
+- Adım 3'teki "bir kez görülen 448 B kaybı" büyük olasılıkla aynı olay.
+- Gerçek donanım için anlamı: kontrol döngüsü kartta kapalı olduğu için etkilenmez. PC'ye giden
+  telemetri ve PC'den gelen komut ise her zaman zaman aşımı + senkronla korunmalı (Adım 5'teki
+  "PC'den gerçek zamanlı komut akışı güvenilir olmaz" sonucunun bir başka yüzü).
+
+Sıradaki: ESP32 kolunda adım 7 (sensör/sürücü kodları, parçalar gelince); araştırma kolunda 5b
+(kayan F_c) + 180° deney protokolü. Site Durum satırı 5b yapılınca.
