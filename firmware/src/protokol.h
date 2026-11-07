@@ -33,6 +33,10 @@ enum Tip : uint8_t {
   // Kontrol algoritması (adım 4–5, kontrol.h)
   T_KTL_BASLAT   = 0x20,  // yük: kontrol::Ayar (180 B) → cevap: kontrol::Turetilen (24 B)
   T_KTL_ADIM     = 0x21,  // yük: n × kontrol::Girdi (10 B, n <= 12) → cevap: n × kontrol::Cikti (20 B)
+  // Kart içi ikiz (adım 6, ikiz.h). Önce T_KTL_BASLAT (kontrolcü ayarı), sonra:
+  T_IKIZ_BASLAT  = 0x22,  // yük: uint32 ornekSayisi + ikiz::Ayar (180 B) → cevap: Durum; 1 kHz
+                          //   görev ikiz + kontrolcüyü koşar, zamanlamayı Kayit'a, durumu IkizKayit'a yazar
+  T_IKIZ_OKU     = 0x23,  // yük: uint32 bas, uint32 adet → art arda ikiz::Kayit paketleri (18'er)
   T_HATA       = 0x7F,  // kart → PC: bilinmeyen tip vb.
 };
 
@@ -43,6 +47,8 @@ struct __attribute__((packed)) Kayit {
   uint16_t isCyc4;      // kontrol adımının süresi / 4 (65535 = 1,09 ms'de doyar)
 };
 constexpr uint8_t KAYIT_PAKET = YUK_MAKS / sizeof(Kayit);  // 30
+constexpr uint8_t IKIZ_KAYIT_B = 13;                       // sizeof(ikiz::Kayit)
+constexpr uint8_t IKIZ_PAKET = YUK_MAKS / IKIZ_KAYIT_B;    // 18
 
 // Döngü durumu (T_DONGU_* cevabı, 40 bayt).
 struct __attribute__((packed)) Durum {

@@ -17,11 +17,14 @@
 // PIL / açık döngü eşdeğerlik testi (T_KTL_*): ayrı bir Kontrolcu örneği çekirdek
 // 0'da, MATLAB'ın gönderdiği sensör örnekleriyle adım adım koşar (gerçek zamansız).
 // Bu modda kart açılışta metin basmaz; seri hat yalnız ikili paketler içindir.
+// Adım 6, kart içi ikiz (T_IKIZ_*): 1 kHz görev her kesmede ikizin ölçümünü üretir, kontrolcü
+// adımını koşar, u'yu ikize uygular (10 RK4 alt adımı). MATLAB yalnız kurar, başlatır, kaydı okur.
 #include <Arduino.h>
 #include <esp_heap_caps.h>
 #include <xtensa/core-macros.h>
 #include "protokol.h"
 #include "kontrol.h"
+#include "ikiz.h"
 
 #ifndef LED_BUILTIN
 #define LED_BUILTIN 2
@@ -30,9 +33,16 @@
 static constexpr uint32_t BAUD_ACILIS = 921600;
 static constexpr uint32_t PERIYOT_US = 1000;     // 1 kHz
 static constexpr uint32_t KAYIT_MAKS = 10000;    // 10 s, 80 kB
+static constexpr uint32_t IKIZ_MAKS = 8000;      // 8 s; 4 ayrı dizi (32+32+32+8 kB): boş heap'in en
+                                                 // büyük bloğu ~110 kB, tek parça 104 kB sınırda kalırdı
 
 // ---------------------------------------------------------------- paylaşılan
 static prot::Kayit* kayitlar = nullptr;
+// İkiz kaydı (yapı dizisi değil, alan başına dizi: her biri küçük blok)
+static float* ikTh = nullptr;      // th - thRef [rad], 1 ms sonunda
+static float* ikDl = nullptr;      // phi - th [rad]
+static float* ikU = nullptr;       // u [N m]
+static uint8_t* ikSY = nullptr;    // bit 0: s^ > 0, bit 1..3: ykF
 static volatile uint32_t isrCyc = 0;   // son kesmenin çevrim sayacı (çekirdek 1)
 static TaskHandle_t kontrolGorevi = nullptr;
 
@@ -43,6 +53,8 @@ static volatile uint32_t dDurum = 0, dKayitN = 0, dHedefN = 0, dTick = 0,
 static volatile uint32_t dPerMin = 0, dPerMax = 0, dGecMax = 0, dIsMax = 0;
 static volatile bool baslatIstegi = false;
 static volatile uint32_t istenenN = 0, istenenIter = 0;
+static volatile bool istenenIkiz = false;
+static volatile bool sonKayitIkiz = false;   // bitmiş kayıt ikiz kaydı mı (T_IKIZ_OKU için)
 
 // Son T_KTL_BASLAT ayarı (haberleşme görevi yazar; kontrol görevi yalnız kayıt
 // başlatılırken, baslatIstegi el sıkışmasıyla okur).
@@ -53,6 +65,8 @@ static kontrol::Kontrolcu rtKtl;    // çekirdek 1: 1 kHz görevde süre ölçü
 // önceden kurar, kontrol görevi kayıt başında yalnız kopyalar (birkaç yüz bayt).
 static kontrol::Kontrolcu rtHazir;
 static kontrol::Kontrolcu pilKtl;   // çekirdek 0: PIL / eşdeğerlik testi
+// İkiz: haberleşme görevi kurar (double işler), kontrol görevi kayıt başında kopyalar.
+static ikiz::Ikiz ikizHazir, rtIkiz;
 
 // ---------------------------------------------------------------- çekirdek 1
 static void IRAM_ATTR zamanlayiciKesmesi() {
@@ -79,7 +93,8 @@ static void kontrolGorevFn(void*) {
 
   uint32_t oncekiCyc = 0;
   bool ilk = true;
-  bool gercek = false;   // bu kayıtta gerçek algoritma mı
+  bool gercek = false;   // bu kayıtta gerçek algoritma mı (sentetik girdi)
+  bool ikizKip = false;  // bu kayıtta kart içi ikiz mi
   uint32_t rtK = 0;
   for (;;) {
     uint32_t n = ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
@@ -93,14 +108,23 @@ static void kontrolGorevFn(void*) {
       dHedefN = istenenN; dYukIter = istenenIter;
       dKayitN = 0; dKacan = 0;
       dPerMin = 0xFFFFFFFF; dPerMax = 0; dGecMax = 0; dIsMax = 0;
-      gercek = dYukIter == 0 && ayarVar;
-      if (gercek) { rtKtl = rtHazir; rtK = 0; }
+      ikizKip = istenenIkiz;
+      gercek = !ikizKip && dYukIter == 0 && ayarVar;
+      if (gercek || ikizKip) { rtKtl = rtHazir; rtK = 0; }
+      if (ikizKip) rtIkiz = ikizHazir;
+      sonKayitIkiz = ikizKip;
       dDurum = 1;
       baslatIstegi = false;
     }
 
     // --- kontrol adımı ---
-    if (gercek) {
+    kontrol::Cikti ikC;
+    if (ikizKip) {
+      // ikiz ölçer → kontrolcü → u ikize (kol_benzetim.m kontrol örneği + 10 alt adım)
+      const kontrol::Girdi g = rtIkiz.olc();
+      ikC = rtKtl.adim(g);
+      rtIkiz.ilerle(ikC.u);
+    } else if (gercek) {
       // Sentetik girdi: motor ±64 sayım üçgen dalga (≈ ±0,19° kol tarafı, 2 s
       // periyot), küçük tork ölçümü. Amaç yalnız hesap süresi; sonuç kullanılmaz.
       uint32_t f = rtK % 2000;
@@ -129,8 +153,15 @@ static void kontrolGorevFn(void*) {
       if (per > dPerMax) dPerMax = per;
       if (gec > dGecMax) dGecMax = gec;
       if (isCyc > dIsMax) dIsMax = isCyc;
+      if (ikizKip) {
+        ikTh[k] = rtIkiz.eTh(); ikDl[k] = rtIkiz.dl(); ikU[k] = ikC.u;
+        ikSY[k] = (uint8_t)((ikC.sh > 0 ? 1 : 0) | ((ikC.ykF & 7) << 1));
+      }
       dKayitN = k + 1;
-      if (dKayitN >= dHedefN) dDurum = 2;
+      if (dKayitN >= dHedefN) {
+        dDurum = 2;
+        if (ikizKip) { ikizKip = false; dYukIter = 0; }   // ikiz durur; görev boşta (sahte yük 0)
+      }
     }
   }
 }
@@ -230,6 +261,44 @@ static void paketIsle(uint32_t t0) {
       gonder(tip | 0x80, sira, &pilKtl.turetilen(), sizeof(kontrol::Turetilen));
       break;
     }
+    case prot::T_IKIZ_BASLAT: {
+      // yük: uint32 N + ikiz::Ayar. Kontrolcü ayarı (T_KTL_BASLAT) önceden gelmiş olmalı.
+      static ikiz::Ayar ia;
+      uint32_t nIs;
+      bool ok = ayr.uzunluk() == 4 + sizeof(ikiz::Ayar) && dDurum != 1 && ayarVar && ikTh;
+      if (ok) {
+        memcpy(&nIs, ayr.yuk(), 4);
+        memcpy(&ia, ayr.yuk() + 4, sizeof(ia));
+        ok = (ia.tOlc != 0) == (sonAyar.torkOlcum != 0) && ikizHazir.baslat(ia);
+      }
+      if (!ok) { gonder(prot::T_HATA, sira, &tip, 1); break; }
+      // rtHazir: son T_KTL_BASLAT'ın taze kopyası (görev onu yalnız kopyalar, değiştirmez)
+      istenenN = nIs > IKIZ_MAKS ? IKIZ_MAKS : (nIs ? nIs : 1);
+      istenenIter = 0;
+      istenenIkiz = true;
+      baslatIstegi = true;
+      while (baslatIstegi) vTaskDelay(1);
+      istenenIkiz = false;
+      durumGonder(tip | 0x80, sira);
+      break;
+    }
+    case prot::T_IKIZ_OKU: {
+      uint32_t v[2];
+      if (ayr.uzunluk() != 8 || dDurum != 2 || !sonKayitIkiz) { gonder(prot::T_HATA, sira, &tip, 1); break; }
+      memcpy(v, ayr.yuk(), 8);
+      uint32_t bas = v[0], son = v[0] + v[1];
+      if (son > dKayitN) son = dKayitN;
+      static ikiz::Kayit pk[prot::IKIZ_PAKET];
+      uint16_t parca = 0;
+      for (uint32_t i = bas; i < son; i += prot::IKIZ_PAKET) {
+        uint32_t m = son - i < prot::IKIZ_PAKET ? son - i : prot::IKIZ_PAKET;
+        for (uint32_t j = 0; j < m; ++j) {
+          pk[j].eTh = ikTh[i + j]; pk[j].dl = ikDl[i + j]; pk[j].u = ikU[i + j]; pk[j].shYk = ikSY[i + j];
+        }
+        gonder(tip | 0x80, parca++, pk, (uint8_t)(m * sizeof(ikiz::Kayit)));
+      }
+      return;
+    }
     case prot::T_KTL_ADIM: {
       // n örnek arka arkaya (açık döngü eşdeğerlik testinde n = 12, PIL'de n = 1).
       constexpr uint8_t GB = sizeof(kontrol::Girdi), CB = sizeof(kontrol::Cikti);
@@ -286,6 +355,11 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
   kayitlar = (prot::Kayit*)heap_caps_malloc(KAYIT_MAKS * sizeof(prot::Kayit),
                                             MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+  ikTh = (float*)heap_caps_malloc(IKIZ_MAKS * 4, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+  ikDl = (float*)heap_caps_malloc(IKIZ_MAKS * 4, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+  ikU = (float*)heap_caps_malloc(IKIZ_MAKS * 4, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+  ikSY = (uint8_t*)heap_caps_malloc(IKIZ_MAKS, MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+  if (!ikDl || !ikU || !ikSY) ikTh = nullptr;   // biri yoksa ikiz modu kapalı (T_IKIZ_BASLAT reddeder)
   xTaskCreatePinnedToCore(kontrolGorevFn, "kontrol", 4096, nullptr,
                           configMAX_PRIORITIES - 1, &kontrolGorevi, 1);
   xTaskCreatePinnedToCore(haberlesmeGorevFn, "haberlesme", 8192, nullptr,
