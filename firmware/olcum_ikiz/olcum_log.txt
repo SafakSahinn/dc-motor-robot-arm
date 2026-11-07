@@ -1,0 +1,25 @@
+=== ikiz olcum basla (cekirdek 1, 240 MHz) ===
+bos heap 330088 B, en buyuk blok 110580 B
+tek fonksiyon (cagri basina):
+  expf       0.560 us
+  tanhf      1.904 us
+  sinf       1.082 us
+  cosf       0.612 us
+  fmul+add   0.050 us
+  fdiv       0.275 us
+  exp        0.786 us
+  tanh      18.646 us
+  sin        9.309 us
+  dmul+add   0.731 us
+  ddiv       2.399 us
+surtunmeli (Fc 0.04, Fs 0.06), thr 170 deg, 8000 ms, ms basina 10 RK4 alt adimi:
+  DBL_MUT  adim ort  2131.3  p99  2527.1  en uzun  2555.0  ilk  2155.8 us
+  FLT_MUT  adim ort   209.7  p99   251.9  en uzun   624.2  ilk   624.2 us  | max|dTh| 1.975e-03  max|dDl| 1.521e-04  son|dTh| 1.975e-03  son|dDl| 4.556e-05 rad
+  FLT_FRK  adim ort   208.3  p99   250.4  en uzun   623.6  ilk   623.6 us  | max|dTh| 9.350e-07  max|dDl| 5.588e-07  son|dTh| 1.229e-07  son|dDl| 1.863e-09 rad
+  DBL_FRK  adim ort  2244.7  p99  2724.1  en uzun  2757.6  ilk  2348.7 us  | max|dTh| 3.712e-09  max|dDl| 1.862e-09  son|dTh| 1.314e-09  son|dDl| 1.748e-09 rad
+surtunmesiz (Fc 0.00, Fs 0.00), thr 170 deg, 8000 ms, ms basina 10 RK4 alt adimi:
+  DBL_MUT  adim ort  1048.4  p99  1369.2  en uzun  1375.8  ilk   847.6 us
+  FLT_MUT  adim ort   104.2  p99   138.4  en uzun   144.1  ilk   144.1 us  | max|dTh| 5.106e-05  max|dDl| 2.248e-05  son|dTh| 9.616e-06  son|dDl| 1.118e-06 rad
+  FLT_FRK  adim ort   102.6  p99   136.9  en uzun   137.5  ilk   106.8 us  | max|dTh| 3.502e-07  max|dDl| 2.747e-07  son|dTh| 2.384e-07  son|dDl| 3.632e-08 rad
+  DBL_FRK  adim ort  1150.6  p99  1574.5  en uzun  1583.0  ilk  1001.8 us  | max|dTh| 3.712e-09  max|dDl| 1.863e-09  son|dTh| 3.443e-10  son|dDl| 7.726e-10 rad
+=== ikiz olcum bitti ===
