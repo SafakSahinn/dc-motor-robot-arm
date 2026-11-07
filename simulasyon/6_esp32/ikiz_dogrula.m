@@ -105,31 +105,75 @@ ist = esp32_istat(sp, siraNo());
 fprintf("kart sayaçları (bu koşu): paketOk %d, crcHata %d, siraAtlama %d, copBayt %d, uzunHata %d\n", ...
     ist.paketOk - ist0.paketOk, ist.crcHata - ist0.crcHata, ist.siraAtlama - ist0.siraAtlama, ...
     ist.copBayt - ist0.copBayt, ist.uzunHata - ist0.uzunHata);
+fprintf("kartta TX dürtmesi (yanıt sonrası TX boşalmadı, kesme elle açıldı): %d\n", ist.txDurtme - ist0.txDurtme);
+sk = senkronSay();  fprintf("PC tarafı senkron (takılı yanıt atıldı, istek tekrarlandı): %d kez, %d B\n", sk(1), sk(2));
 save(ad + ".mat", "S", "hedef", "I", "Y", "B", "nK");
 diary off;
 end
 
 function [Ki, Kz, d] = kartKos(sp, p, thR, x0, c0, kpv, yuz0, N)
-% Kontrolcü + ikiz ayarı, 1 kHz kayıt, bitişi bekle, iki kaydı oku. Tek seferlik aksamaya karşı 3 deneme.
-for dn = 1:3
+% Kontrolcü + ikiz ayarı, 1 kHz kayıt, bitişi bekle, iki kaydı oku. Her istek dene() ile:
+% zaman aşımı / bozuk yanıtta esp32_senkron (eski baytları at), yalnız o isteği tekrarla.
+dene(sp, "T_KTL_BASLAT", @() ktlBaslat(sp, p, thR, c0, kpv, yuz0));
+bas = @() esp32_durum(sp, siraNo(), 34, [typecast(uint32(N), 'uint8'), ikiz_ayar_paketle(p, thR, x0)]);
+try
+    bas();
+catch e
+    % Yanıt kaybolmuş olabilir ama kart başlamış olabilir: durumdan anla.
+    fprintf("   ! T_IKIZ_BASLAT: %s\n", e.message);
+    senkronSay(esp32_senkron(sp, siraNo()));
+    d = dene(sp, "durum", @() esp32_durum(sp, siraNo()));
+    if d.durum == 1 && d.hedefN == N
+        fprintf("     kart başlamış (kayitN %d), sürüyor\n", d.kayitN);
+    else
+        dene(sp, "T_IKIZ_BASLAT", bas);
+    end
+end
+pause(N*p.Ts + 0.05);
+for k = 1:50
+    d = dene(sp, "durum", @() esp32_durum(sp, siraNo()));
+    if d.durum == 2, break; end
+    pause(0.05);
+end
+if d.durum ~= 2 || d.kayitN ~= N, error("esp32:bitmedi", "kayıt bitmedi (%d/%d)", d.kayitN, N); end
+% Kayıt kartta durur (durum 2): okuma parça parça (≤ 2000 örnek), parça başına dene().
+Kz = parcaliOku(@esp32_kayit_oku, sp, N, 2000);
+Ki = parcaliOku(@esp32_ikiz_oku, sp, N, 2000);
+end
+
+function ktlBaslat(sp, p, thR, c0, kpv, yuz0)
+[~, t] = esp32_istek(sp, 32, siraNo(), ktl_ayar_paketle(p, thR, c0, kpv, yuz0), 24);
+if t ~= 160, error("esp32:tip", "T_KTL_BASLAT reddedildi"); end
+end
+
+function varargout = dene(sp, ad, f)
+for dn = 1:4
     try
-        [~, t] = esp32_istek(sp, 32, siraNo(), ktl_ayar_paketle(p, thR, c0, kpv, yuz0), 24);
-        if t ~= 160, error("esp32:tip", "T_KTL_BASLAT reddedildi"); end
-        esp32_durum(sp, siraNo(), 34, [typecast(uint32(N), 'uint8'), ikiz_ayar_paketle(p, thR, x0)]);
-        pause(N*p.Ts + 0.05);
-        for k = 1:50
-            d = esp32_durum(sp, siraNo());
-            if d.durum == 2, break; end
-            pause(0.05);
-        end
-        if d.durum ~= 2 || d.kayitN ~= N, error("esp32:bitmedi", "kayıt bitmedi (%d/%d)", d.kayitN, N); end
-        Kz = esp32_kayit_oku(sp, siraNo(), 0, N);
-        Ki = esp32_ikiz_oku(sp, siraNo(), 0, N);
+        [varargout{1:nargout}] = f();
         return
     catch e
-        fprintf("   ! deneme %d: %s\n", dn, e.message);
-        if dn == 3, rethrow(e); end
-        pause(0.2);  sp.DiscardInBuffer();
+        fprintf("   ! %s deneme %d: %s\n", ad, dn, e.message);
+        if dn == 4, rethrow(e); end
+        senkronSay(esp32_senkron(sp, siraNo()));
+    end
+end
+end
+
+function s = senkronSay(atilan)
+% Senkron sayısı ve atılan bayt toplamı (özet için). senkronSay() okur.
+persistent n b
+if isempty(n), n = 0; b = 0; end
+if nargin > 0, n = n + 1; b = b + atilan; fprintf("     senkron: %d B atıldı\n", atilan); end
+s = [n b];
+end
+
+function K = parcaliOku(fn, sp, N, P)
+K = struct();
+for b = 0:P:N-1
+    m = min(P, N - b);
+    k = dene(sp, sprintf("okuma %d+%d", b, m), @() fn(sp, siraNo(), b, m));
+    for a = string(fieldnames(k))'
+        if isfield(K, a), K.(a) = [K.(a); k.(a)]; else, K.(a) = k.(a); end
     end
 end
 end

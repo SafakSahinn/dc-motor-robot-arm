@@ -64,7 +64,7 @@ struct __attribute__((packed)) Durum {
   uint32_t isMaxCyc;    // en uzun kontrol adımı
 };
 
-// Kart tarafı sayaçlar (T_ISTAT cevabının yükü, 32 bayt).
+// Kart tarafı sayaçlar (T_ISTAT cevabının yükü, 36 bayt).
 struct __attribute__((packed)) Istat {
   uint32_t paketOk;      // CRC'si doğru paketler
   uint32_t crcHata;      // CRC tutmayan paketler
@@ -74,6 +74,7 @@ struct __attribute__((packed)) Istat {
   uint32_t baud;         // şu anki baud
   uint32_t islemMaksUs;  // paket tamamlandı → cevap yazıldı, en uzun süre
   uint32_t calismaMs;    // millis()
+  uint32_t txDurtme;     // yanıt sonrası TX boşalmadı, TX kesmesi elle açıldı (adım 6, esp32.md)
 };
 
 uint16_t crc16(const uint8_t* v, size_t n, uint16_t crc = 0xFFFF);

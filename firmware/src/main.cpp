@@ -21,6 +21,7 @@
 // adımını koşar, u'yu ikize uygular (10 RK4 alt adımı). MATLAB yalnız kurar, başlatır, kaydı okur.
 #include <Arduino.h>
 #include <esp_heap_caps.h>
+#include <driver/uart.h>
 #include <xtensa/core-macros.h>
 #include "protokol.h"
 #include "kontrol.h"
@@ -327,9 +328,25 @@ static void paketIsle(uint32_t t0) {
   if (dt > ist.islemMaksUs) ist.islemMaksUs = dt;
 }
 
+// Yanıtın tamamı hatta çıktı mı? Adım 6'da yanıtın sonu ara sıra kartın TX tamponunda kalıyordu
+// ("TX boşaldı" kesmesi kapalı kalıyor; kart bir sonraki yanıtı yazana dek çıkmıyordu, PC'den
+// gelen bayt açmıyordu). Her paket işlendikten sonra sınırlı bekle; boşalmadıysa kesmeyi aç.
+// 200 ms: 4 kB halka tampon 921600 baud'da ~45 ms'de boşalır.
+static void txBitir() {
+  if (uart_wait_tx_done(UART_NUM_0, pdMS_TO_TICKS(200)) == ESP_OK) return;
+  ist.txDurtme++;
+  uart_enable_tx_intr(UART_NUM_0, 1, 10);
+  uart_wait_tx_done(UART_NUM_0, pdMS_TO_TICKS(200));
+}
+
 static void haberlesmeGorevFn(void*) {
   // Serial.begin burada: UART kesmesi de çekirdek 0'a kurulur.
   Serial.setRxBufferSize(4096);
+  // TX halka tamponu: varsayılan 0'da yazan görev her 128 B'lık FIFO dolumunu kesmeyle bekliyor
+  // ve toplu okumada (T_KAYIT_OKU / T_IKIZ_OKU) ara sıra yanıtın son 384 B'ı (3 FIFO) PC'den
+  // yeni bir bayt gelene dek kartta takılı kalıyordu (adım 6, esp32.md). Halka tamponla yazım
+  // ISR'nin boşalttığı tampona kopyalanır.
+  Serial.setTxBufferSize(4096);
   Serial.setTimeout(100);   // readBytes en fazla 100 ms bekler
   Serial.begin(BAUD_ACILIS);
   ist.baud = BAUD_ACILIS;
@@ -345,7 +362,7 @@ static void haberlesmeGorevFn(void*) {
       m += ek;
     }
     for (size_t i = 0; i < m; ++i)
-      if (ayr.besle(giris[i], ist)) paketIsle(micros());
+      if (ayr.besle(giris[i], ist)) { paketIsle(micros()); txBitir(); }
     // Canlılık: LED her 1024 iyi pakette bir durum değiştirir.
     digitalWrite(LED_BUILTIN, (ist.paketOk >> 10) & 1);
   }
