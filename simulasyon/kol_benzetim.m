@@ -88,6 +88,12 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   out.ktl'ye yazılır (ESP32 açık döngü eşdeğerlik testi, 6_esp32/ktl_esdeger.m). Alanlar (örnek x senaryo):
 %   sayim (motor ölçümü / qM, tamsayı), v (kontrolcünün gördüğü hız), uo (gözlemcinin gördüğü tork),
 %   u, wh, dh, sOf, sh, ykF; ayrıca ilkSayim (gözlemcinin başlangıç phi^'si / qM).
+% p.ktlDis (varsayılan yok; adım kilitli PIL, 6_esp32/pil.m): dış kontrolcü, fonksiyon tutamacı
+%   [u, c] = p.ktlDis(kc, sayim, v, uo, ilkSayim). Her kontrol örneğinde (kc = 1, 2, ...) MATLAB
+%   kontrolcüsü yine hesaplanır (gölge: aynı ölçümleri görür), sonra tesise dış kontrolcünün u'su
+%   uygulanır. sayim, v, uo ktlKayit'teki gibi; c dış kontrolcünün tanı satırı (sayısal, sabit uzunluk).
+%   Yalnız yuzKes açıkken ve tek senaryoda (n = 1); ktlKayit kendiliğinden açılır. out.ktl'ye ek
+%   alanlar: uM (gölge MATLAB u'su; KT.u uygulanan u'dur), kart (örnek x numel(c)).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -180,7 +186,9 @@ aV = 1 - exp(-2*pi*p.fv*p.Ts);                     % filtre katsayısı (fv=Inf 
 Iolu = 0;  if isfield(p,'Iolu'), Iolu = p.Iolu; end
 Isif = isfield(p,'Isifirla') && p.Isifirla;
 e_onc = zeros(1,n);
-ktlK = kesMod > 0 && al(p,'ktlKayit',false);       % kontrol örneklerinin kaydı (ESP32 eşdeğerlik)
+ktlD = isfield(p,'ktlDis') && ~isempty(p.ktlDis);  % dış kontrolcü (PIL)
+if ktlD && (kesMod == 0 || n ~= 1), error('ktlDis yalnız yuzKes açıkken ve n = 1 iken'); end
+ktlK = kesMod > 0 && (al(p,'ktlKayit',false) || ktlD);   % kontrol örneklerinin kaydı (ESP32 eşdeğerlik)
 vKay = al(p,'vKaynak','olcum');                      % kontrolcünün hız kaynağı
 vGoz = strcmp(vKay,'gozlemci');
 if ~vGoz && ~strcmp(vKay,'olcum'), error('bilinmeyen vKaynak: %s', vKay); end
@@ -197,6 +205,7 @@ if ktlK
     nK = ceil(nStep/kCtl);  kc = 0;  bos = zeros(nK,n);
     KT = struct('sayim',bos,'v',bos,'uo',bos,'u',bos,'wh',bos,'dh',bos,'sOf',bos,'sh',bos,'ykF',bos);
     KT.ilkSayim = round(ph/p.qM);
+    if ktlD, KT.uM = bos;  KT.kart = []; end
 end
 
 for i = 0:nStep-1
@@ -299,6 +308,12 @@ for i = 0:nStep-1
         u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
         if ktlK
             kc = kc + 1;
+            if ktlD                                % PIL: tesise dış kontrolcünün u'su
+                KT.uM(kc,:) = u;
+                [u, cK] = p.ktlDis(kc, round(ymot/p.qM), v, uo, KT.ilkSayim);
+                if kc == 1, KT.kart = zeros(nK, numel(cK)); end
+                KT.kart(kc,:) = cK;
+            end
             KT.sayim(kc,:) = round(ymot/p.qM);  KT.v(kc,:) = v;  KT.uo(kc,:) = uo;  KT.u(kc,:) = u;
             KT.wh(kc,:) = wh;  KT.dh(kc,:) = dh;  KT.sOf(kc,:) = sOf;  KT.sh(kc,:) = sh;  KT.ykF(kc,:) = ykF;
         end

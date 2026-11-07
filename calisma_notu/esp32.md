@@ -213,4 +213,56 @@ uzun 37,7 µs (yalnız ilk tur); periyot sapması en çok 1,7 µs, kaçan kesme 
   modla koşulacak** (donanımdaki seçim).
 - Açıya göre kazanç/ofset tablosu kodda değil (hedef başına ayar).
 
-Sıradaki: adım 5, adım kilitli PIL (ikiz MATLAB'da, kart döngüde, `T_KTL_ADIM` n = 1).
+## Adım 5: adım kilitli PIL (2026-11-07)
+
+İkiz MATLAB'da koşar. Her kontrol örneğinde (1 ms) motor ölçümü `T_KTL_ADIM` (n = 1) ile
+karta gider, kartın u'su ikize uygulanır. Kart döngünün içinde ama gerçek zamansız: ikiz
+cevabı bekler (yazılım benzetmesi: canlı sistem yerine, her isteği tek tek gönderip cevabını
+bekleyen bir entegrasyon testi).
+
+### Kod
+- `kol_benzetim.m`: `p.ktlDis` kancası, `[u, c] = p.ktlDis(kc, sayim, v, uo, ilkSayim)`.
+  MATLAB kontrolcüsü yine hesaplanır (**gölge**: aynı ölçümleri görür), ardından tesise dış
+  kontrolcünün u'su uygulanır. Böylece her örnekte kapalı döngüde kart ile MATLAB aynı girdiyle
+  karşılaştırılır. Yalnız yuzKes açıkken ve n = 1 iken; `out.ktl.uM` (gölge u), `out.ktl.kart`
+  (kartın çıktıları). Kanca yokken davranış aynı (gerileme: `belirsiz_bant`,
+  `yuz_kestirici_as5600` loglarında yalnız tarih değişti).
+- `6_esp32/pil.m`: 42 senaryo × sürtünmeli/sürtünmesiz, kurulum "INA228 taban",
+  `vKaynak = 'gozlemci'` (kartta HIZ_GOZLEMCI). Her senaryo iki kez koşar: **referans** (yalnız
+  MATLAB) ve **PIL**. İkisi de n = 1, aynı tohum: enkoder gürültüsü tek `randn` akışından
+  geldiği için 42'lik vektör koşusuyla karşılaştırma adil olmazdı. Kart `kc = 1`'de
+  `T_KTL_BASLAT` ile kurulur (3 deneme).
+
+### Sonuç (log `pil_log.txt`, 84 senaryo, 672 085 paket)
+
+| | sürtünmeli | sürtünmesiz |
+|---|---:|---:|
+| H7 PIL / referans | 42/42 / 42/42 | 42/42 / 42/42 |
+| en kötü \|e\| PIL / ref [°] | 0,178 / 0,177 | 0,002 / 0,002 |
+| B13 en çok PIL / ref [°] | 0,324 / 0,324 | 0,296 / 0,296 |
+| kart ile gölgenin ayrık kararları 8000 örnekte aynı | 42/42 | 42/42 |
+| en büyük \|u_kart − u_gölge\| [N m] | 3,6e-7 | 3,0e-7 |
+| en büyük \|θ_PIL − θ_ref\| [°] | 0,25 | 0,59 |
+| tur (MATLAB gidiş-dönüş) ort / p99 / en uzun [ms] | 0,88 / 1,20 / 5,3 | 0,85 / 0,99 / 65 |
+| kartta adım ort / en uzun [µs] | 3,46 / 9,40 | 3,48 / 9,27 |
+| kayıp örnek | 0 | 0 |
+
+Kart sayaçlarında CRC hatası, sıra atlaması, çöp bayt sıfır. Senaryo başına ~9 s (8 s benzetim).
+
+**Yorum.**
+- Kartın C++ kontrolcüsü kapalı döngüde MATLAB'ınkiyle aynı kararları veriyor. u farkı float
+  yuvarlaması düzeyinde (adım 4'teki açık döngü sonucuyla aynı). Adım 4'teki yoklama `yokOrta`
+  eşitlik durumu bu koşuda görülmedi.
+- θ_PIL − θ_ref farkı (en çok 0,59°, sürtünmesiz "darbe" j17–19) bozucu sırasında geçici: kol
+  boşluktayken 1e-7 N m'lik fark temas anını bir iki örnek kaydırıyor. Son 1 s hatası iki
+  tarafta 0,001° içinde aynı. Bir senaryoda (sürtünmeli j20) yoklama sayısı PIL'de 1,
+  referansta 2; sonuç yine aynı.
+- **Windows/USB takılması:** ilk koşuda bir cevap 218 ms gecikti. Kart örneği almıştı (sayaçlar
+  temiz), gecikme PC tarafındaydı. 200 ms zaman aşımı örneği "kayıp" saydı ve geç gelen cevap
+  bir sonrakini bozdu (o senaryoda tek ayrışma). Zaman aşımı 2 s yapıldı: adım kilitli testte
+  doğru tepki beklemek. Son koşuda bir tur 65 ms sürdü, zararsız. Gerçek zamanlı döngü (adım 6)
+  kartta koşacağı için bu takılmalar oraya taşınmaz; ancak PC'den gerçek zamanlı komut akışı
+  hiçbir zaman güvenilir olmaz.
+
+Sıradaki: ESP32 kolunda adım 6 (kart içinde gerçek zamanlı ikiz); araştırma kolunda 5b (kayan
+F_c) + 180° deney protokolü. Site Durum satırı 5b yapılınca (5a + 5b + ESP32 birlikte).
