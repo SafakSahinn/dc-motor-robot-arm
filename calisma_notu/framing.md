@@ -298,7 +298,31 @@ Betik: `simulasyon/5_planlama/kayan_surtunme.m` (log yanında). İkize `p.FcKay`
   1. **Yanlış yüz** (r ×0,95 + F_c ×1,3): kol 179–179,25°'de üstten gelirken yanlış yüzde kalıyor (e ≈ 3,2°). Yalnız 1–2 senaryoda.
   2. **B13 ihlali** (Ĵ_M ×1,1 + gerçek F_c ×0,7, INA hatası olsun olmasın): H7 42/42 ama yoklama kolu 3,5–3,8° oynatıyor. Motor ısınıp sürtünme düşünce sabit 0,12 N·m'lik yoklama itişi kolu boşluğun karşı yüzüne kadar taşıyor, sonra kontrolcü geri topluyor.
 - **Yorum.** Bu köşeler gerçek tanılama hatalarından çok büyük, bu yüzden "yöntem çalışmıyor" anlamına gelmiyor. Ama zamanla kayan sürtünme ile küçük model hatalarının üst üste binmesi gerçek bir risk. Donanımda da görülürse iki önlem aday: (a) yoklama itişini (`yokA`) ve temas eşiğini sabit değil, son ölçülen sürtünmeye göre ölçeklemek; (b) F̂_c'yi deneyler arasında kısa bir D1 tekrarıyla güncellemek (deney protokolü §5.4'teki kayma sınaması bunu ölçecek). (a) ikizde sınanmadı.
-- **Sınır:** mod 1'in (gerilim sürüşü) zıt EMK'sı burada da yok (5a'daki sınır geçerli).
+- **Sınır:** mod 1'in (gerilim sürüşü) zıt EMK'sı burada da yok (5a'daki sınır geçerli). → İş sırası (5c)'de kapatıldı.
+
+### İş sırası (5c): yüz kestirici mod 1'de, motorun elektrik tarafıyla (8 Kasım 2026)
+
+Soru: D7 mod 1'de (gerilim sürüşü, V = R_a·u/K_m) koşacak. Kestirici şimdiye kadar yalnız tork girişli ikizde sınanmıştı. Mod 1'de tesis torku u − (K_m²/R_a)·φ̇ olur. Zıt EMK ek bir sönüm getirir (K_m²/R_a = 0,0141 N·m·s/rad ≈ 7·b_M), yoklama itişi motor hızlandıkça zayıflar.
+
+- **Model.** `kol_benzetim.m`'ye `p.motorElk` eklendi (varsayılan kapalı). Beşinci durum akım: L_a·di/dt = V − R_a·i − K_m·φ̇, tesis torku K_m·i. Sürücü `blok_surucu.m`'nin vektör yazımı: mod 1 gerilim, mod 2 zıt EMK kompanzasyonu (V'ye K̂_m·v eklenir; `p.elkV = 'gozlemci'` ise v yerine gözlemcinin ŵ'si), mod 3 akım PI'ı (10 kHz, ölçüm bir adım gecikmeli). Ardından DRV8874 akım sınırı (0,43 N·m eşdeğeri) ve ±12 V. Eşdeğer motor `sim_param.m` ile aynı: K_m 0,344 V·s/rad, R_a 8,43 Ω, L_a 2,5 mH. INA228 gerçek akımı (K_m·i) görür. Firmware'in bildiği değerler `p.KmN` ve `p.RaN`.
+- **Gerileme temiz.** `belirsiz_bant` ve `yuz_kestirici_as5600` loglarında yalnız tarih satırı değişti.
+- **Simscape çapraz kontrolü** (`simulink/dogrula_elk.m` → log): `sm_motor_model`'e karşı 30/60/90° × r_gs 0,9 / 1,3, iki sensör düzeyi, mod 1–3 (36 hücre; 30'u ölçütü sağladı). Sönen ve 60–90°'deki salınan hücrelerde sınıf aynı, genlik ve frekans farkı ≤ %0,5 (çoğu ≤ %0,1). Ölçütü sağlamayan hücrelerin hepsi 30°/r_gs 1,3'te; bu hücre kritik sınırın (0,9–1,0) çok üstünde, V zamanın %35–50'sinde doyumda ve rejim düzensiz. Genlik ve frekans yine %0,02–1,8 içinde uyuşuyor, yalnız sınıf etiketi 1/4/5 arasında oynuyor. Aynı hücrede eski `tarama_5b` koşusu da Simscape mod 1'de sınıf 1, mod 2–3'te sınıf 5 vermişti, başlangıç sapmasına göre de değişiyordu. Ayrıca gerçekçi sensörde 60° mod 2'de bir hücre genlik 0,007°'de (eşik 0,05°) sınıf 0/1 ayrımına takıldı, bu nicemleme düzeyi.
+- **Kestirici** (`5_planlama/mod1_kestirici.m` → log): taban kayan_surtunme ile aynı (F̂_c = 0,9 × nominal, gözlemci torku INA228'den), 42 senaryo.
+
+| Durum | tork ref. | mod 1 | mod 2 | mod 2 (ŵ) | mod 3 |
+|---|---|---|---|---|---|
+| Nominal, sürtünmeli | 42/42 | 42/42 | 42/42 | 42/42 | 42/42 |
+| Nominal, sürtünmesiz | 42/42 | 42/42 | 42/42 | — | 42/42 |
+| Gözlemci INA228 yerine komut u'yu görür | 42/42 | 42/42 (sürtünmesiz de) | — | — | — |
+| +INA228 ofseti 0,005 / gürültü 0,003 N·m | — | 42/42 | — | — | 42/42 |
+| Firmware R̂_a eksik (gerçek R_a ×1,25, sargı ısındı) / ×0,9 | — | 42/42 / 42/42 | — | — | — |
+| Gerçekçi köşeler + INA hatası (8 köşe, sıra: r0.95/1.05 × Ĵ_M 0.9/1.1 × F 0.7/1.3) | 37, 40, 42, 41, 40, 42, 42, 42 (toplam 326) | 39, **38**, 42, **37**, **38**, 42, 42, 42 (toplam 320) | — | — | — |
+| F_c ×1,3 köşeleri (r ×0,95, Ĵ_M ×0,9 / 1,1), 3 gürültü tohumu | 40/40/40, 41/41/42 | **38/38/38, 37/38/38** | 40/40/40, 41/41/42 | 40/40/40, 42/40/42 | 40/40/40, 41/41/42 |
+
+- **Mod 1 nominal koşullarda sorunsuz.** Yöntemin sınadığı her durumda 42/42, B13 ≤ 0,5°. Akım tepesi 0,37 A; V hiç doyuma gitmiyor. Gözlemci INA228 yerine komutu görse bile 42/42: zıt EMK farkı (K_m²/R_a)·ŵ gözlemcide d̂'ye karışıyor, ama 179–181°'de motor neredeyse durgun olduğundan bu fark küçük.
+- **Mod 1, kırılgan köşeyi biraz genişletiyor.** 8 gerçekçi köşenin toplamında mod 1, tork girişliye göre 6 senaryo daha kaybediyor (326 → 320 / 336). Kayıp iki yerde toplanıyor: gerçek sürtünme %30 fazla ve boşluk %5 küçükken (2–4 senaryo), bir de r ×1,05, Ĵ_M ×0,9, F ×0,7 köşesinde (2 senaryo). Buna karşılık r ×0,95, Ĵ_M ×0,9, F ×0,7 köşesinde mod 1 iki senaryo daha iyi. Fark üç gürültü tohumunda da aynı, yani şans değil. Yeni kaybedilenler 181°'ye alttan gelişler: 5b'deki "179°'ye üstten gelişte yanlış yüz" belirtisinin dikin öbür tarafındaki aynası. Mod 2 (zıt EMK kompanzasyonu) kaybı tamamen geri getiriyor. Gerçek hız yerine gözlemcinin ŵ'si kullanılınca da geri getiriyor. Demek ki neden zıt EMK sönümü.
+- **Yorum.** Bu köşeler tanılama doğruluğunun 10–25 katı hatalar (5b). Mod 1 D7 için kullanılabilir, ama kırılganlığa biraz katkı yapıyor. Mod 2 (ŵ ile) firmware'de tek satır: V'ye K̂_m·ŵ eklenir, ŵ zaten hesaplanıyor. Mod 3'ün (10 kHz akım döngüsü) donanımda karşılığı yok (deney protokolü §4/1).
+- **Sınır:** PWM anahtarlaması yok (ortalama model). L_a tahmini (2,5 mH), K_m ve R_a veri sayfası eşdeğeri; D1 bunları ölçecek.
 
 ### Kontrolcünün hızı = gözlemcinin w^'si (6 Kasım 2026, ESP32 adım 4'ten sonra)
 

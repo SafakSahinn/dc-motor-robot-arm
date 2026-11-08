@@ -63,7 +63,7 @@ Kayıt bu ölçütü sağlamıyorsa atılır ve tekrarlanır.
 3. ~~**Hız kestirimi.**~~ **Kapandı (2026-11-06).** Gözlemci hızı (w^) ikizde 42 senaryoda ideal hızla aynı sonucu verdi (`hiz_gozlemci.m`); firmware'de `HIZ_GOZLEMCI` olarak yazıldı ve kartta ikizle birebir doğrulandı (`calisma_notu/esp32.md` adım 4–6).
 4. **D5 için kilit parçası.** Motor dişlisini gövdeye sabitleyen pim ya da kelepçe malzeme ve mekanik tasarıma eklenmeli. Kilit, motor dişlisini dönmeyecek kadar sıkı tutmalı ama kola yük bindirmemeli. **Öneri (onay bekliyor):** kaplinin motor tarafındaki göbeğe radyal delik; gövdeye bağlı basılı tutucudan geçen M3 pim. Kol tarafı serbest kalır.
 5. **Mekanik durdurucunun yeri.** `mimari.md` §3 "0° altı ve 180° üstü" diyor; D7 179–181°'de çalıştığı için durdurucu tam 180°'de olamaz. **Öneri (onay bekliyor):** durdurucular −15° ve 195°, yazılım sınırı −5° ve 190°.
-6. **Yüz kestirici mod 1'de.** D7 mod 1'de koşacak, ama kestirici ikizde yalnız tork girişli modelde (ideal ya da 500 Hz akım döngülü) sınandı. Simscape elektrik modelinde (`sm_model_kur(..., 'elektrik')`) 42 senaryo koşulmalı ya da D7 için mod 3 seçilmeli.
+6. ~~**Yüz kestirici mod 1'de.**~~ **Sınandı (2026-11-08), mod seçimi onay bekliyor.** İkize motorun elektrik tarafı eklendi (`p.motorElk`; Simscape `sm_motor_model`'e karşı doğrulandı). 42 senaryo mod 1'de (framing iş sırası 5c): nominal koşullarda ve INA228 hatasında 42/42, sargı ısınmasında (R_a ×1,25) da 42/42. Gerçekçi model hatası köşelerinin toplamında tork girişliden 6 senaryo eksik (320 / 326 / 336). Kayıp zıt EMK sönümünden geliyor: mod 2, yani gözlemcinin ŵ'siyle zıt EMK kompanzasyonu (V = R̂_a·u/K̂_m + K̂_m·ŵ), kaybı geri getiriyor. **Öneri (onay bekliyor):** D7'yi mod 1'de koş; firmware'e mod 2 (ŵ) seçeneğini ekle, 179/181°'de yanlış yüz görülürse D7'yi mod 2'de tekrarla. Mod 3 seçeneği yok (madde 1).
 
 ## 5. D7: 180° çevresinde yüz kestirici (Katkı 1'in donanım sınaması)
 
@@ -79,7 +79,7 @@ Kayıt bu ölçütü sağlamıyorsa atılır ve tekrarlanır.
 | Hedef kaydırma | Tam 180° istekleri kolun geldiği tarafa göre 179,5° / 180,5°'ye kaydırılır | Kullanıcı kararı (a), H7 tanımı |
 | Akım | INA228 sıfırı her koşudan önce (motor kapalıyken 0,5 s ortalama) | Ofset ±0,02 N·m'de bozuluyor (iş sırası 5a) |
 | Isınma | Koşulara başlamadan 5 dk ısınma hareketi; TMP117 motor gövdesi sıcaklığı her koşunun meta verisine | F_c sıcaklıkla kayar; kayma tek başına güvenli, model hatalarıyla birleşince pay daralıyor (iş sırası 5b) |
-| Sürücü modu | §0'daki mod 1 (gerilim) | **Açık nokta:** yüz kestirici ikizde yalnız tork girişli modelde sınandı; mod 1'in zıt EMK'sıyla Simscape modelinde sınanmadı (framing 5a "Sınır") |
+| Sürücü modu | §0'daki mod 1 (gerilim); yedek mod 2 (zıt EMK kompanzasyonu, gözlemcinin ŵ'siyle) | Mod 1 nominal koşullarda 42/42; yalnız büyük model hatası köşelerinde zıt EMK sönümü birkaç senaryo kaybettiriyor, mod 2 bunu geri getiriyor (framing 5c, §4/6; onay bekliyor) |
 
 ### 5.2 Senaryolar
 
