@@ -98,6 +98,18 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   birlikte m(t) = 1 + (FcKay - 1)*min(t/FcKayT, 1) ile çarpılır (t = 0'da 1, FcKayT'de FcKay; sonra
 %   sabit). p.FcKayT varsayılan p.T. Kestiricinin bildiği FcN/FsN değişmez. Sabit bir sapma için
 %   FcKayT çok küçük verilir (ör. 1e-9).
+% p.motorElk (varsayılan 0: tesis torku = komut; iş sırası 5c): motorun elektrik tarafı, simulink/sim_param.m
+%   ve blok_surucu.m ile aynı eşdeğer motor (kol tarafı, Kt = Ke = Km). Beşinci durum akım i:
+%   La di/dt = V - Ra i - Km phi',  tesis torku = Km i. Sürücü her p.dt adımında (Tsur = dt) çalışır:
+%   1 gerilim modu V = RaN u/KmN;  2 zıt EMK kompanzasyonu V = RaN u/KmN + KmN v (v: kontrolcünün hızı;
+%   p.elkV = 'gozlemci' ise tork gözlemcisinin w^'si, yalnız yuzKes açıkken);
+%   3 akım döngüsü i_ref = u/KmN (+-Ilim), PI (Kp = La wi, Ki = Ra wi, wi = 2 pi p.akimBant [Hz], 500),
+%   akım ölçümü bir adım gecikmeli. Ardından DRV8874 akım sınırı |V - Km w| <= Ra Ilim ve besleme +-Vs.
+%   Değerler (varsayılan veri sayfası eşdeğeri): p.Vs 12, p.Km = Vs/w0 (w0 333 rpm), p.Ra = Km Vs/0,49,
+%   p.La 2,5e-3, p.Ilim (2/2,3) Vs/Ra; firmware'in bildikleri p.KmN, p.RaN (varsayılan gerçeği).
+%   p.akimW ile birlikte kullanılamaz. tOlc açıksa INA228 Km i'yi (gerçek akım x gerçek Km) görür.
+%   Çıktı: out.iTepe (tüm süre en büyük |i| [A, eşdeğer]), out.Vdoy (V'nin besleme ya da akım sınırında
+%   kaldığı adımların oranı).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -184,6 +196,19 @@ if tOlc
 end
 fKay = isfield(p,'FcKay') && ~isempty(p.FcKay);   % sürtünme kayması (iş sırası 5b)
 if fKay, fKayK = p.FcKay;  fKayT = al(p,'FcKayT',p.T); end
+elk = al(p,'motorElk',0);                          % motorun elektrik tarafı (iş sırası 5c)
+if elk > 0
+    if ~any(elk == [1 2 3]), error('motorElk 1, 2 ya da 3 olmalı'); end
+    if ~isinf(al(p,'akimW',Inf)), error('motorElk ile akimW birlikte kullanılamaz'); end
+    eVs = al(p,'Vs',12);  eKm = al(p,'Km', eVs/(333*2*pi/60));  eRa = al(p,'Ra', eKm*eVs/0.49);
+    eLa = al(p,'La',2.5e-3);  eIl = al(p,'Ilim', (2/2.3)*eVs/eRa);
+    eKmN = al(p,'KmN',eKm);  eRaN = al(p,'RaN',eRa);
+    ewi = 2*pi*al(p,'akimBant',500);  eKpi = eLa*ewi;  eKii = eRa*ewi;
+    if size(x,1) < 5, x(5,:) = 0; end               % akım (p.x0 4 satırsa 0'dan)
+    elkVg = strcmp(al(p,'elkV','kontrol'), 'gozlemci');
+    if elkVg && kesMod == 0, error('elkV = ''gozlemci'' yalnız yuzKes açıkken'); end
+    eV = zeros(1,n);  eZi = zeros(1,n);  eIadc = x(5,:);  iTepe = zeros(1,n);  eDoy = zeros(1,n);
+end
 gL = 0;  if isfield(p,'gL'), gL = p.gL; end
 thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
 if motorD, qv = p.qM; else, qv = p.qL; end
@@ -324,7 +349,25 @@ for i = 0:nStep-1
             KT.wh(kc,:) = wh;  KT.dh(kc,:) = dh;  KT.sOf(kc,:) = sOf;  KT.sh(kc,:) = sh;  KT.ykF(kc,:) = ykF;
         end
     end
-    if aAk == 1, ua = u; else, ua = ua + aAk*(u - ua); end   % tesise uygulanan tork (akım döngüsü)
+    if elk > 0                                     % sürücü (blok_surucu.m'nin vektör yazımı)
+        ew = x(2,:);
+        if elk == 3
+            ee = min(max(u/eKmN, -eIl), eIl) - eIadc;  eVc = eKpi*ee + eZi;
+        elseif elk == 2
+            if elkVg, eVc = eRaN*u/eKmN + eKmN*wh; else, eVc = eRaN*u/eKmN + eKmN*v; end
+        else
+            eVc = eRaN*u/eKmN;
+        end
+        eV = min(max(eVc, eKm*ew - eRa*eIl), eKm*ew + eRa*eIl);   % DRV8874 akım sınırı
+        eV = min(max(eV, -eVs), eVs);                             % besleme
+        if elk == 3                                               % anti-windup
+            aw = eV == eVc | (eV < eVc & ee < 0) | (eV > eVc & ee > 0);
+            eZi = eZi + eKii*p.dt*ee.*aw;
+        end
+        eDoy = eDoy + (eV ~= eVc);
+        eIadc = x(5,:);  iTepe = max(iTepe, abs(x(5,:)));
+        ua = eKm*x(5,:);                           % adım başındaki tork (INA228 kaydı için)
+    elseif aAk == 1, ua = u; else, ua = ua + aAk*(u - ua); end   % tesise uygulanan tork (akım döngüsü)
     if tOlc, tBuf = [tBuf(2:end,:); ua]; end       % son satır: bu adımda uygulanan tork
     tt = i*p.dt;
     k1 = f(x, tt);  k2 = f(x+0.5*p.dt*k1, tt+0.5*p.dt);  k3 = f(x+0.5*p.dt*k2, tt+0.5*p.dt);
@@ -344,6 +387,7 @@ out.t = t;  out.th = TH;  out.delta = DEL;  out.tau_s = TAU;  out.u = U;
 out.theta0_deg = theta0_deg;  out.wc = wc;
 out.x_son = x;  out.z_son = z;
 if ktlK, out.ktl = KT; end                     % p.x0, p.z0 ile sürdürmek için
+if elk > 0, out.iTepe = iTepe;  out.Vdoy = eDoy/nStep; end
 if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = yz; end
 if kesMod > 0
     out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;
@@ -386,10 +430,12 @@ out.sinif(out.kararsiz) = 4;
         else
             tf = 0;
         end
+        if elk > 0, tm = eKm*x(5,:); else, tm = ua; end   % tesis torku
         dx = [dphi;
-              (ua - p.bM*dphi - tf - ts)/p.JM;
+              (tm - p.bM*dphi - tf - ts)/p.JM;
               dth;
               (ts - p.bL*dth - p.mgl*sin(th) + bozucu(tt))/p.JL];
+        if elk > 0, dx(5,:) = (eV - eRa*x(5,:) - eKm*dphi)/eLa; end
     end
 end
 

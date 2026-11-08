@@ -1,0 +1,63 @@
+=== mod1_kestirici, 2026-11-08 15:26, D, r_gs 0,50, r 1.50°, F_c 0.04, F_s 0.06 N m (nominal)
+Taban kayan_surtunme ile aynı (1 kHz, AS5600 motor milinde, olay+yoklama ayarlı, gözlemci torku INA228 0,54 ms / 0,1 ms, F^c = 0,9 x nominal).
+Motor: tork ref. = tesis torku komutu 500 Hz birinci derece izler; mod 1-3 = kol_benzetim p.motorElk (sim_param eşdeğer motoru,
+  Km 0,344 V s/rad, Ra 8,43 Ohm, La 2,5 mH, akım sınırı 1,24 A (0,43 N m), +-12 V; zıt EMK sönümü Km^2/Ra = 0.0141 N m s/rad = 7.0 b_M).
+"köşe": gerçek r, J^M, gerçek F_c çarpanları + gerçek mgl x1,2, K_s x0,8; +INA: ofset 0,005 N m, gürültü 0,003 N m.
+42 senaryo; H7: son 1 s |e| <= 0,5°, en büyük <= 1°, son yüz doğru (B12). B13: yoklama + 0,3 s kol hareketi (darbesiz).
+
+sürtünme    satır                          | H7 geçen | B12 son yüz | en kötü |e| | ort |e| | B13 en çok | yoklama ort | i tepe [A] | V doyum
+sürtünmeli  tork r0.95 J0.9 F1.3 +INA t1   | 40/42    | 40/42       |   3.18      |  0.37   |  1.39      |  1.4        |     -      |      -
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  tork r0.95 J0.9 F1.3 +INA t2   | 40/42    | 40/42       |   3.18      |  0.36   |  1.39      |  1.4        |     -      |      -
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  tork r0.95 J0.9 F1.3 +INA t3   | 40/42    | 40/42       |   3.18      |  0.36   |  1.39      |  1.4        |     -      |      -
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 1 r0.95 J0.9 F1.3 +INA t1  | 38/42    | 38/42       |   3.18      |  0.50   |  1.13      |  1.3        |  0.62      |  0.00%
+      geçemeyen (e/en büyük): 181.00>181.0 a yok -3.12/3.16; 179.00>179.0 u yok +3.18/3.22; 181.00>181.0 a darbe -3.12/3.16; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 1 r0.95 J0.9 F1.3 +INA t2  | 38/42    | 38/42       |   3.18      |  0.50   |  1.12      |  1.3        |  0.62      |  0.00%
+      geçemeyen (e/en büyük): 181.00>181.0 a yok -3.12/3.16; 179.00>179.0 u yok +3.18/3.22; 181.00>181.0 a darbe -3.12/3.16; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 1 r0.95 J0.9 F1.3 +INA t3  | 38/42    | 38/42       |   3.18      |  0.50   |  1.12      |  1.3        |  0.62      |  0.00%
+      geçemeyen (e/en büyük): 181.00>181.0 a yok -3.12/3.16; 179.00>179.0 u yok +3.18/3.22; 181.00>181.0 a darbe -3.12/3.16; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 r0.95 J0.9 F1.3 +INA t1  | 40/42    | 40/42       |   3.18      |  0.37   |  1.37      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 r0.95 J0.9 F1.3 +INA t2  | 40/42    | 40/42       |   3.18      |  0.36   |  1.37      |  1.4        |  0.62      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 r0.95 J0.9 F1.3 +INA t3  | 40/42    | 40/42       |   3.18      |  0.37   |  1.37      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 3 r0.95 J0.9 F1.3 +INA t1  | 40/42    | 40/42       |   3.18      |  0.37   |  1.85      |  1.4        |  0.73      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 3 r0.95 J0.9 F1.3 +INA t2  | 40/42    | 40/42       |   3.18      |  0.37   |  1.84      |  1.4        |  0.72      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 3 r0.95 J0.9 F1.3 +INA t3  | 40/42    | 40/42       |   3.18      |  0.36   |  1.85      |  1.4        |  0.73      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 w^ r0.95 J0.9 F1.3 +INA t1 | 40/42    | 40/42       |   3.18      |  0.37   |  1.90      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 w^ r0.95 J0.9 F1.3 +INA t2 | 40/42    | 40/42       |   3.18      |  0.37   |  1.90      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 w^ r0.95 J0.9 F1.3 +INA t3 | 40/42    | 40/42       |   3.18      |  0.37   |  1.90      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  tork r0.95 J1.1 F1.3 +INA t1   | 41/42    | 41/42       |   3.19      |  0.30   |  1.42      |  1.4        |     -      |      -
+      geçemeyen (e/en büyük): 179.25>179.2 u yok +3.19/3.23
+sürtünmeli  tork r0.95 J1.1 F1.3 +INA t2   | 41/42    | 41/42       |   3.16      |  0.30   |  1.42      |  1.4        |     -      |      -
+      geçemeyen (e/en büyük): 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  tork r0.95 J1.1 F1.3 +INA t3   | 42/42    | 42/42       |   0.32      |  0.23   |  1.42      |  1.4        |     -      |      -
+sürtünmeli  mod 1 r0.95 J1.1 F1.3 +INA t1  | 37/42    | 37/42       |   3.20      |  0.57   |  1.15      |  1.3        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 181.00>181.0 a yok -3.12/3.16; 179.00>179.0 u yok +3.10/3.15; 179.25>179.2 u yok +3.20/3.23; 181.00>181.0 a darbe -3.12/3.16; 179.00>179.0 u darbe +3.10/3.14
+sürtünmeli  mod 1 r0.95 J1.1 F1.3 +INA t2  | 38/42    | 38/42       |   3.16      |  0.50   |  1.15      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 181.00>181.0 a yok -3.12/3.16; 179.00>179.0 u yok +3.10/3.14; 181.00>181.0 a darbe -3.12/3.16; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 1 r0.95 J1.1 F1.3 +INA t3  | 38/42    | 38/42       |   3.16      |  0.50   |  1.15      |  1.4        |  0.63      |  0.00%
+      geçemeyen (e/en büyük): 181.00>181.0 a yok -3.12/3.16; 179.00>179.0 u yok +3.10/3.15; 181.00>181.0 a darbe -3.12/3.16; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 r0.95 J1.1 F1.3 +INA t1  | 41/42    | 41/42       |   3.19      |  0.30   |  1.41      |  1.4        |  0.64      |  0.00%
+      geçemeyen (e/en büyük): 179.25>179.2 u yok +3.19/3.23
+sürtünmeli  mod 2 r0.95 J1.1 F1.3 +INA t2  | 41/42    | 41/42       |   3.16      |  0.30   |  1.41      |  1.4        |  0.64      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 r0.95 J1.1 F1.3 +INA t3  | 42/42    | 42/42       |   0.32      |  0.23   |  1.40      |  1.5        |  0.64      |  0.00%
+sürtünmeli  mod 3 r0.95 J1.1 F1.3 +INA t1  | 41/42    | 41/42       |   3.18      |  0.30   |  1.88      |  1.4        |  0.74      |  0.00%
+      geçemeyen (e/en büyük): 179.25>179.2 u yok +3.18/3.22
+sürtünmeli  mod 3 r0.95 J1.1 F1.3 +INA t2  | 41/42    | 41/42       |   3.16      |  0.30   |  1.88      |  1.4        |  0.74      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 3 r0.95 J1.1 F1.3 +INA t3  | 42/42    | 42/42       |   0.32      |  0.23   |  1.88      |  1.4        |  0.74      |  0.00%
+sürtünmeli  mod 2 w^ r0.95 J1.1 F1.3 +INA t1 | 42/42    | 42/42       |   0.32      |  0.23   |  1.84      |  1.5        |  0.64      |  0.00%
+sürtünmeli  mod 2 w^ r0.95 J1.1 F1.3 +INA t2 | 40/42    | 40/42       |   3.18      |  0.37   |  1.80      |  1.4        |  0.64      |  0.00%
+      geçemeyen (e/en büyük): 179.00>179.0 u yok +3.18/3.22; 179.00>179.0 u darbe +3.16/3.21
+sürtünmeli  mod 2 w^ r0.95 J1.1 F1.3 +INA t3 | 42/42    | 42/42       |   0.31      |  0.23   |  1.83      |  1.4        |  0.65      |  0.00%
