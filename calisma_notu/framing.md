@@ -323,6 +323,7 @@ Soru: D7 mod 1'de (gerilim sürüşü, V = R_a·u/K_m) koşacak. Kestirici şimd
 - **Mod 1, kırılgan köşeyi biraz genişletiyor.** 8 gerçekçi köşenin toplamında mod 1, tork girişliye göre 6 senaryo daha kaybediyor (326 → 320 / 336). Kayıp iki yerde toplanıyor: gerçek sürtünme %30 fazla ve boşluk %5 küçükken (2–4 senaryo), bir de r ×1,05, Ĵ_M ×0,9, F ×0,7 köşesinde (2 senaryo). Buna karşılık r ×0,95, Ĵ_M ×0,9, F ×0,7 köşesinde mod 1 iki senaryo daha iyi. Fark üç gürültü tohumunda da aynı, yani şans değil. Yeni kaybedilenler 181°'ye alttan gelişler: 5b'deki "179°'ye üstten gelişte yanlış yüz" belirtisinin dikin öbür tarafındaki aynası. Mod 2 (zıt EMK kompanzasyonu) kaybı tamamen geri getiriyor. Gerçek hız yerine gözlemcinin ŵ'si kullanılınca da geri getiriyor. Demek ki neden zıt EMK sönümü.
 - **Yorum.** Bu köşeler tanılama doğruluğunun 10–25 katı hatalar (5b). Mod 1 D7 için kullanılabilir, ama kırılganlığa biraz katkı yapıyor. Mod 2 (ŵ ile) firmware'de tek satır: V'ye K̂_m·ŵ eklenir, ŵ zaten hesaplanıyor. Mod 3'ün (10 kHz akım döngüsü) donanımda karşılığı yok (deney protokolü §4/1).
 - **Sınır:** PWM anahtarlaması yok (ortalama model). L_a tahmini (2,5 mH), K_m ve R_a veri sayfası eşdeğeri; D1 bunları ölçecek.
+- **Karar (8 Kasım, onaylandı):** D7 mod 1'de; sürücü kodunda mod 2 (ŵ) yedek seçenek olarak yer alır, 179/181°'de yanlış yüz görülürse D7 mod 2'de tekrarlanır (`deney_protokolu.md` §4/6).
 
 ### Kontrolcünün hızı = gözlemcinin w^'si (6 Kasım 2026, ESP32 adım 4'ten sonra)
 
