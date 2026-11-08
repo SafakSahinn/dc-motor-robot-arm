@@ -277,6 +277,29 @@ Betik: `simulasyon/5_planlama/akim_gurultu.m` (log yanında). Şimdiye kadar tor
 - **Akım döngüsü yavaşlarsa** (ölçüm değil, tesise giden tork) sürtünmesiz ikizde yoklama bozuluyor: 100 Hz'te B13 0,98°. Mod 3'ün akım döngüsü (500 Hz tasarım) en az 200 Hz olmalı; 100 ile 500 Hz arası sınanmadı.
 - **Sınır (elektrik modeli):** `kol_benzetim` tork girişli (mod 3 ideal + burada eklenen birinci derece akım döngüsü). Mod 1'in (gerilim sürüşü) zıt EMK'sı ve R_a, L_a dinamiği yalnız Simscape modelinde (`sm_model_kur(..., 'elektrik')`). Yüz kestirici mod 1'de çalıştırılacaksa ayrıca Simscape'te sınanmalı; bu turda yapılmadı. Ayrıca PWM dalgalanmasının örtüşmesi (aliasing) beyaz gürültüyle temsil edildi.
 
+### İş sırası (5b): zamanla kayan sürtünme ve birleşik hatalar (8 Kasım 2026)
+
+Betik: `simulasyon/5_planlama/kayan_surtunme.m` (log yanında). İkize `p.FcKay` eklendi: tesisteki F_c ve F_s birlikte m(t) = 1 + (FcKay − 1)·min(t/FcKayT, 1) ile çarpılır; kestiricinin bildiği F̂_c değişmez (varsayılan kapalı, gerileme temiz: `belirsiz_bant` ve `yuz_kestirici_as5600` loglarında yalnız tarih değişti). Taban 5a'nın "INA228 taban" koşulu (1 kHz, AS5600 motor milinde, ayarlı olay+yoklama, gözlemci torku INA228'den). Kestirici iş sırası (4)'ün önerisiyle **F̂_c = 0,9 × nominal**. Aynı 42 senaryo.
+
+| Durum | H7 | B13 en çok | Not |
+|---|---|---|---|
+| F̂_c nominal (×1,0), gerçek nominal | 42/42 | 0,33° | Karşılaştırma |
+| F̂_c ×0,9, gerçek F_c sabit ×0,7 … ×1,3 (7 satır) | 42/42 her satırda | 0,33–0,57° | En kötü \|e\| 0,25° |
+| F̂_c ×0,9, gerçek F_c koşu boyunca rampa 1 → ×0,5 / 0,7 / 1,3 / 1,5 | 42/42 her satırda | 0,34–0,37° | Darbe kaymanın ortasında |
+| ±%10–20 köşeler (gerçek r ×0,9 / 1,1, Ĵ_M ×0,8 / 1,2, gerçek F_c ×0,7 / 1,3; hepsinde gerçek mgl ×1,2, K_s ×0,8), 8 köşe | 21–42/42 (4 köşe 42/42) | 0,35–1,69° | Bozulan köşelerin hepsinde ya gerçek r ×0,9 (boşluk olduğundan büyük biliniyor) ya da Ĵ_M ×0,8 + F_c ×0,7 var |
+| Aynı 8 köşe + INA228 ofseti +0,005 N·m ve gürültü 0,003 N·m | 23–42/42 | 0,35–3,92° | INA hatası tek başına zararsızdı (5a) |
+| **Gerçekçi köşeler** (gerçek r ×0,95 / 1,05, Ĵ_M ×0,9 / 1,1, gerçek F_c ×0,7 / 1,3, mgl ×1,2, K_s ×0,8), 8 köşe | 7 köşe 42/42, 1 köşe 40/42 | 0,38–3,79° | 40/42: r ×0,95, Ĵ_M ×1,1, F_c ×1,3; 179–179,25° üstten, yanlış yüz |
+| Aynı gerçekçi köşeler + INA hatası | 4 köşe 42/42, diğerleri 37–41/42 | 0,38–3,79° | — |
+| Sürtünmesiz ikiz, r ve Ĵ_M ±%10–20 köşeleri | 42/42 her köşede | 0,31–1,09° | — |
+
+- **Kayma tek başına sorun değil.** F̂_c = 0,9 × nominal sabit tutulurken gerçek sürtünme ×0,5 ile ×1,5 arasında (sabit ya da koşu içinde kayarak) değişse de her satır 42/42, B13 ≤ 0,57°. Isınma kaynaklı F_c kaymasının (tipik ±%10–30) payı geniş. İş sırası (4)'te F̂_c'nin %30 fazla bilinmesi yoklamayı bozmuştu; burada gerçek ×0,7 (F̂_c gerçeğin 1,29 katı) zararsız çıktı. Fark: burada F_s de aynı oranda düşüyor ve gözlemci torku INA228'den geliyor. İki durum aynı değil, ikisi de logda.
+- **Hatalar birleşince bozuluyor.** Tek parametre değişiminde güvenli bulunan aralıklar (iş sırası 4: r ×0,9–1,2, Ĵ_M ×0,8–1,3) birlikte uygulanınca bazı köşelerde H7 21/42'ye iniyor. En tehlikeli yön boşluğun olduğundan büyük bilinmesi (gerçek r ×0,9): ofset kolu fazla itiyor, sürtünme yüksekse yanlış yüze düşen kol yakalanmıyor.
+- **Gerçekçi büyüklükte bile pay dar.** Tanılama doğruluğunun (r %0,2, J_M %0,5) 10–25 katı hatalarla (r ±%5, Ĵ_M ±%10) H7 37–42/42. İki ayrı belirti var:
+  1. **Yanlış yüz** (r ×0,95 + F_c ×1,3): kol 179–179,25°'de üstten gelirken yanlış yüzde kalıyor (e ≈ 3,2°). Yalnız 1–2 senaryoda.
+  2. **B13 ihlali** (Ĵ_M ×1,1 + gerçek F_c ×0,7, INA hatası olsun olmasın): H7 42/42 ama yoklama kolu 3,5–3,8° oynatıyor. Motor ısınıp sürtünme düşünce sabit 0,12 N·m'lik yoklama itişi kolu boşluğun karşı yüzüne kadar taşıyor, sonra kontrolcü geri topluyor.
+- **Yorum.** Bu köşeler gerçek tanılama hatalarından çok büyük, bu yüzden "yöntem çalışmıyor" anlamına gelmiyor. Ama zamanla kayan sürtünme ile küçük model hatalarının üst üste binmesi gerçek bir risk. Donanımda da görülürse iki önlem aday: (a) yoklama itişini (`yokA`) ve temas eşiğini sabit değil, son ölçülen sürtünmeye göre ölçeklemek; (b) F̂_c'yi deneyler arasında kısa bir D1 tekrarıyla güncellemek (deney protokolü §5.4'teki kayma sınaması bunu ölçecek). (a) ikizde sınanmadı.
+- **Sınır:** mod 1'in (gerilim sürüşü) zıt EMK'sı burada da yok (5a'daki sınır geçerli).
+
 ### Kontrolcünün hızı = gözlemcinin w^'si (6 Kasım 2026, ESP32 adım 4'ten sonra)
 
 Betik: `simulasyon/5_planlama/hiz_gozlemci.m` (log yanında). Önceki bütün 42 senaryo sonuçlarında `p.fv = Inf` idi, yani P-PI'nin hız terimi motor hızını **hatasız** görüyordu. Donanımda bu hız tork gözlemcisinden gelecek (`mimari.md` §4.1; kartta `kontrol::HIZ_GOZLEMCI`). İkize `p.vKaynak = 'gozlemci'` eklendi (varsayılan eski davranış; gerileme temiz, `belirsiz_bant` ve `yuz_kestirici_as5600` loglarında yalnız tarih değişti). Sıra kartla aynı: v, o örnekte yüz kestirici bloğunda güncellenen w^. Kurulum (5a)'nın INA228 tabanı. Kazançlar (KV, KI, kp = 0,50²·K_s/KV) değişmedi.

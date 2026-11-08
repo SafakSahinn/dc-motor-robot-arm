@@ -94,6 +94,10 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   uygulanır. sayim, v, uo ktlKayit'teki gibi; c dış kontrolcünün tanı satırı (sayısal, sabit uzunluk).
 %   Yalnız yuzKes açıkken ve tek senaryoda (n = 1); ktlKayit kendiliğinden açılır. out.ktl'ye ek
 %   alanlar: uM (gölge MATLAB u'su; KT.u uygulanan u'dur), kart (örnek x numel(c)).
+% p.FcKay (varsayılan yok; iş sırası 5b): gerçek sürtünmenin zamanla kayması. Tesisteki F_c ve F_s
+%   birlikte m(t) = 1 + (FcKay - 1)*min(t/FcKayT, 1) ile çarpılır (t = 0'da 1, FcKayT'de FcKay; sonra
+%   sabit). p.FcKayT varsayılan p.T. Kestiricinin bildiği FcN/FsN değişmez. Sabit bir sapma için
+%   FcKayT çok küçük verilir (ör. 1e-9).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -178,6 +182,8 @@ if tOlc
     tAkis = RandStream('mt19937ar', 'Seed', al(p,'tTohum',2));   % motor gürültüsünden ayrı akış
     tBuf = repmat(u, tG+tP, 1);
 end
+fKay = isfield(p,'FcKay') && ~isempty(p.FcKay);   % sürtünme kayması (iş sırası 5b)
+if fKay, fKayK = p.FcKay;  fKayT = al(p,'FcKayT',p.T); end
 gL = 0;  if isfield(p,'gL'), gL = p.gL; end
 thBuf = repmat(olc(x(3,:), p.qL), gL+1, 1);        % gecikme tamponu (en eski satır kullanılır)
 if motorD, qv = p.qM; else, qv = p.qL; end
@@ -376,6 +382,7 @@ out.sinif(out.kararsiz) = 4;
         ts(sol) = min(p.Ks*(d(sol)+p.r) + p.cs*dd(sol), 0);
         if p.Fc > 0                                % yumuşatılmış Stribeck sürtünmesi
             tf = (p.Fc + (p.Fs-p.Fc)*exp(-(dphi/p.vs).^2)) .* tanh(dphi/p.veps);
+            if fKay, tf = tf*(1 + (fKayK - 1)*min(tt/fKayT, 1)); end
         else
             tf = 0;
         end
