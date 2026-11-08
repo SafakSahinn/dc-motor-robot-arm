@@ -153,7 +153,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <nav aria-label="Bölümler">
   <div class="lbl">Çalışma notu</div>
   <a href="#hedef">Amaç</a>
-  <a href="#cerceve">0 · Güncel çerçeve (5 Kasım)</a>
+  <a href="#cerceve">0 · Güncel çerçeve: yüz kestirici</a>
   <a href="#framing">1 · Framing (ilk çerçeve)</a>
   <a href="#kapsam">2 · Kapsam ve kısıtlar</a>
   <a href="#mimari">3 · Donanım ve yazılım planı</a>
@@ -161,6 +161,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <a href="#duzenek">5 · Düzenek seçenekleri</a>
   <a href="#yontem">6 · Yeniden üretim ve yöntem</a>
   <a href="#tanilama">7 · Dijital ikiz ve tanılama</a>
+  <a href="#kestirici">8 · Yüz kestirici (6–8 Kasım)</a>
   <div class="lbl" style="margin-top:14px">Raporlar</div>
   <a href="#adim4">4. adım · Simülasyon ve doğrulama</a>
   <div class="lbl" style="margin-top:14px">Dayanaklar</div>
@@ -180,7 +181,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <header>
   <div class="kicker">Çalışma notu</div>
   <h1>Yerçekimi etkisindeki dişli boşluklu eklemde salınım sınırı ve açıya göre planlanan kontrol</h1>
-  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı ve bu sınırı kullanarak salınımı önleyen, yük tarafı sensörü gerektirmeyen kontrolcü: güncel çerçeve, araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem, dijital ikiz üzerinde sınanmış sistem tanılama ve deney protokolü.</p>
+  <p>Dişli kutulu, tek eklemli bir robot kolunda dişli boşluğunun yol açtığı kendiliğinden salınımın kol açısına ve kontrol kazancına bağlı sınırı ve bu sınırı kullanarak salınımı önleyen, yük tarafı sensörü gerektirmeyen kontrolcü: güncel çerçeve, araştırma çerçevesi, kapsam, donanım ve yazılım planı, malzeme listeleri, düzenek seçenekleri, literatür sonucunun yeniden üretimi ve önerilen yöntem, dijital ikiz üzerinde sınanmış sistem tanılama ve deney protokolü; güncel çerçevede 180° çevresinde yalnız motor sinyalleriyle çalışan yüz kestirici, ikizde ve ESP32 üzerinde sınanması.</p>
   <div class="meta"><span><a href="https://github.com/SafakSahinn/dc-motor-robot-arm">GitHub reposu</a></span><span><a href="index.html">← Güncel özet (ana sayfa)</a></span></div>
   <div class="note"><b>Ayrıntılı defter</b>Bu sayfa çalışmanın bütün aşamalarının ayrıntılı kaydıdır. Güncel çalışmanın sade özeti <a href="index.html">ana sayfada</a>.</div>
 </header>
@@ -188,14 +189,33 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
 <section id="hedef">
   <div class="top"><div class="kicker">Çalışma notu</div></div>
   <h2>Amaç</h2>
-  <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde, dişli boşluğunun kendiliğinden süren salınıma yol açtığı sınırı kol açısı ve kontrol kazancı cinsinden öngörmek, <b>bu sınırı kullanarak kontrolcüyü ve gözlemciyi kolun açısına göre önceden ayarlayıp salınımı hiç başlatmamak</b>, ve bunu yük tarafı sensörü olmadan, ESP32 üzerinde, düşük maliyetli bir düzenekte deneyle göstermek.</p>
-  <p>5 Kasım 2026'da çalışmanın ağırlığı analizden (sınırı öngörmek) tasarıma (salınımı önlemek) kaydırıldı; ayrıntılar <a href="#cerceve">Güncel çerçeve</a> bölümünde. Analiz atılmadı, ayar tablosunu üreten araç oldu.</p>
-  <p>Not altı bölümden oluşur: framing; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri; düzenek seçenekleri; literatür sonucunun yeniden üretimi ve önerilen yöntem. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
+  <p>Yerçekimi etkisindeki dişli kutulu bir robot ekleminde kontrolcüyü yalnız motor tarafı sinyallerle kurmak ve <b>kol dik yukarıdayken (≈ 180°) yerçekimi ön yükü sıfırlanınca dişlinin boşluğun hangi yüzüne yaslandığını yalnız motor akımı ve motor açısıyla kestirip telafiyi buna göre seçmek</b>; bunu yük tarafı sensörü olmadan, ESP32 üzerinde, düşük maliyetli bir düzenekte deneyle göstermek.</p>
+  <p>Çerçeve iki kez değişti. İlk çerçeve (1. bölüm) salınımın başladığı sınırı açı ve kazanç cinsinden öngörüyordu. 5 Kasım 2026 öğleden sonra ağırlık tasarıma kaydırıldı (açıya göre kazanç planlaması). Aynı akşam konum döngüsü motor tarafına alınınca boşluk salınımı ikizde kayboldu ve bugünkü çerçeve seçildi: 180°'de yüz kestirici (<a href="#cerceve">0. bölüm</a>). Önceki çerçevelerin analizi (DF, dijital ikiz, tanılama) atılmadı; geri dönüş noktası ve altyapı olarak duruyor.</p>
+  <p>Not 0–8 numaralı bölümlerden oluşur: güncel çerçeve; ilk çerçeve; kapsam, kısıtlar ve süre; donanım ve yazılım planı; malzeme listeleri; düzenek seçenekleri; literatür sonucunun yeniden üretimi ve önerilen yöntem; dijital ikiz ve tanılama; yüz kestiricinin ikizde tasarımı ve donanıma hazırlık. "Dayanaklar" başlığı altındaki bölümler bu nota temel olan literatür taraması, simülasyon ve deney planıdır. Ayrıntılı metinler depoda: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/tree/main/calisma_notu"><code>calisma_notu/</code></a>.</p>
 </section>
 
 <section id="cerceve">
-  <div class="top"><div class="kicker">Çalışma notu · 0 · 5 Kasım 2026</div></div>
-  <h2>Güncel çerçeve: analizden tasarıma</h2>
+  <div class="top"><div class="kicker">Çalışma notu · 0 · 5 Kasım 2026 akşamı onaylandı</div></div>
+  <h2>Güncel çerçeve: 180°'de yüz kestirici</h2>
+  <p class="thesis">Ana soru: Kol dik yukarıdayken yerçekimi torku sıfırlanınca kolun dişli boşluğunun hangi yüzüne yaslandığı, yalnız motor sinyalleriyle (akım + motor açısı) kestirilip açıya göre ofset tablosunda doğru işaret seçilebilir mi?</p>
+  <p>Kontrolcü yalnız motor tarafını görür. Hedef açı önce ofset tablosundan geçer: \(\varphi_{ref} = \theta_{ref} + s\,r + mg\ell\sin\theta_{ref}/K_s\), \(s = \pm 1\) kolun yaslandığı yüz. 10–175° arasında \(s\) yerçekiminin işaretinden bellidir; 180° çevresinde belli değildir, orada \(s\)'yi yüz kestirici verir. Kol açısı sensörü (AS5600) yalnız doğrulama için kayıt alır.</p>
+  <div class="tbl"><table>
+    <tr><th>Parça</th><th>Ne</th><th>Literatürde</th><th>Karar</th></tr>
+    <tr><td>Temel</td><td>Kol sensörsüz motor tarafı konum döngüsü (P–PI) + açıya göre ofset tablosu</td><td>Yapılmış: Neubauer ve ark. 2015 aynı kuralı kullanıyor (tork işareti × boşluk + esneme)</td><td>Altyapı, anılır</td></tr>
+    <tr class="sec"><td>Katkı 1</td><td>180° çevresinde yüzü yalnız motor akımı ve motor açısıyla kestirmek: tork gözlemcisi + küçük tork itişiyle etkin yoklama (Gebler–Holtz 1998 fikrinin uyarlaması)</td><td>Doğrudan yapan yok; mevcut kurallar (tork işareti, son hareket yönü) bu bölgede çalışmıyor, yapı taşları biliniyor</td><td><b>Ana katkı</b></td></tr>
+    <tr><td>Katkı 2</td><td>Boşluk ve dişli sertliğini çevrim içi tanılamak</td><td>Kısmen yapılmış (Giovannitti 2022, Li 2026)</td><td>Kapsam dışı: r ve K<sub>s</sub> bir kez ölçülür (7. bölüm)</td></tr>
+  </table></div>
+  <p><b>Neden böyle:</b> amaç EEM alanında bir kontrol algoritması; çevrim içi mekanik parametre tanılaması bu alanın dışında kalıyor. Bilinen birden fazla yöntemi birleştirerek yeni bir sorunu çözmek geçerli bir çalışma biçimi; özgünlük birleşimin çözdüğü köşe durumda (sıfır torkta yüz belirsizliği).</p>
+  <h3>Ölçütler</h3>
+  <ul class="plain">
+    <li><b>H7.</b> |θ − 180°| ≤ 1° bandında, tam 180° istekleri kolun geldiği tarafa göre 179,5° / 180,5°'ye kaydırılarak, yalnız motor sinyalleriyle çalışan yüz kestirici yanlış yüzde kalan kolu yakalayıp düzeltir: kalıcı hata ≈ 3°'den kaydırılmış hedefe göre ≤ 0,5°'ye iner; akımın işaretine bakan edilgen yöntemden anlamlı ölçüde iyidir.</li>
+    <li><b>B12.</b> Her senaryoda son yüz doğru. <b>B13.</b> Yoklama kolu ≤ 0,5° oynatır.</li>
+    <li><b>Senaryolar:</b> 7 istek (179–181°) × 2 geliş yönü × 3 bozucu (yok / kola darbe / yanlış başlangıç yüzü) = 42.</li>
+  </ul>
+  <div class="note"><b>Geri dönüş noktaları</b>(1) Yüz kestirici yalnız motor sinyalleriyle tutmazsa: kol sensörlü geri besleme + açıya göre kazanç planlaması (aşağıdaki ara çerçeve). (2) Deneyde boşluk ya da sertlik zamanla belirgin değişirse: Katkı 2 yeniden açılır. (3) 180° hiçbir yolla düzelmezse "yöntemin sınırı" olarak raporlanır. Durum: (1) gerekmedi, kestirici ikizde tutuyor (<a href="#kestirici">8. bölüm</a>); tam 180° ise yapısal olarak düzelmiyor, istek kaydırması bu yüzden var.</div>
+  <p>Ayrıntılı metin: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing.md"><code>framing.md</code>, 0. bölüm, "Güncel çerçeve kararı"</a>.</p>
+
+  <details><summary>Ara çerçeve (5 Kasım öğleden sonra, arşiv): açıya göre önceden planlanan kontrolcü ve gözlemci</summary>
   <p>İlk çerçeve (1. bölüm) salınımın başladığı sınırı <b>öngörüyordu</b>. Danışmanla yapılan değerlendirmede bu sınırın asıl değerinin onu <b>kullanmak</b> olduğu sonucuna varıldı: sınır biliniyorsa kontrolcü, kolun hangi açıda durduğuna göre önceden ayarlanır ve salınım hiç başlamaz. DF ve dijital ikiz analizi (6. ve 7. bölümler) atılmadı; ayar tablosunu üreten araç oldu. Donanım, düzenek ve deney protokolü değişmedi.</p>
   <p class="thesis">Ana soru: Kontrolcü kazancı ve gözlemci bant genişliği yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanırsa, boşluk kaynaklı salınım tüm çalışma açılarında, yük tarafı sensörü olmadan ve sabit kazançlı en iyi ayardan daha hızlı bir tepkiyle önlenebilir mi?</p>
 
@@ -235,6 +255,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   </table></div>
   <div class="note ok"><b>Sonuç</b>Yerçekimi ön yükünün açıya bağlı değerine göre önceden planlanan kazanç ve gözlemci bant genişliğiyle boşluk kaynaklı salınımı önleyen bir çalışma bulunamadı. Yan kanıt: Ruderman–Iwasaki 2016'da kayan kip ek terimi kol 0°'deyken (yerçekimi torku sıfır) salınım üretiyor, 90°'de üretmiyor.</div>
   <p>Ayrıntılı metin: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing.md"><code>framing.md</code>, 0. bölüm</a>.</p>
+  </details>
 </section>
 
 <section id="framing">
@@ -920,7 +941,7 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <tr><td>Dijital ikiz</td><td>Tesis ve P–PI Simulink'te; mekanik Simscape fiziksel bloklarıyla ve motorun elektrik tarafıyla ikinci kez kuruldu; gerçekçi sensör katmanı ve firmware kaydı</td><td>Simulink tesisi betikle bit düzeyinde aynı; Simscape ile rejim sınıfı 10/10 aynı, genlik farkı %0,3</td><td>Gerçek motorun ve dişlinin modelle ne kadar örtüştüğü ancak deneyle görülecek.</td></tr>
     <tr><td>Sistem tanılama</td><td>Her parametre için ayrı deney, firmware kaydından kestirim; ideal ve gerçekçi sensörle, 3–5 tekrar</td><td>Bütün parametreler %0,1–3,5 içinde (aşağıdaki tablo)</td><td>Yöntemler modelin kendi verisinde sınandı; donanımda tekrar edilebilirlik ayrıca ölçülecek.</td></tr>
     <tr><td>Öngörünün doğrulanması</td><td>Tanılanan değerlerle kurulan ikiz, gerçek tesisin salınım sınırını öngörüyor mu</td><td>Kritik r<sub>gs</sub> en çok bir tarama adımı (0,05) şaşıyor</td><td>Sınırın hemen üstünde tek koşu güvenilir değil; deneyde her nokta üç başlangıç sapmasıyla.</td></tr>
-    <tr><td>Deney protokolü</td><td>D0–D6: sıra, ayarlar, süre, kaydın geçerlilik ölçütü</td><td>Tanılama kayıtları kurulum hariç ≈ 30 dakika; hızlı akım döngüsü gerekmiyor</td><td>Gözlemci firmware'e yazılacak; motor dişlisi için kilit parçası gerekiyor.</td></tr>
+    <tr><td>Deney protokolü</td><td>D0–D6: sıra, ayarlar, süre, kaydın geçerlilik ölçütü</td><td>Tanılama kayıtları kurulum hariç ≈ 30 dakika; hızlı akım döngüsü gerekmiyor</td><td>Gözlemci firmware'e yazıldı ve kartta sınandı (8. bölüm); motor dişlisi için kilit parçası gerekiyor.</td></tr>
   </table></div>
 
   <h3>Parametreler ve doğrulukları</h3>
@@ -965,9 +986,64 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
     <tr><td>D3</td><td>Kol takılı</td><td>90° ± 70° tarama, r<sub>gs</sub> 0,8, 21 s × 5</td><td>K<sub>s</sub>, mgℓ, AS5600 sıfırı</td></tr>
     <tr><td>D4</td><td>Kol takılı</td><td>0° ± 60° tarama, r<sub>gs</sub> 0,5, 21 s × 5</td><td>r</td></tr>
     <tr><td>D5</td><td>Motor dişlisi kilitli</td><td>Kol 90°'de, hafif vuruş × 10</td><td>c<sub>s</sub>, J<sub>L</sub></td></tr>
-    <tr><td>D6</td><td>Asıl deney</td><td>Açı × r<sub>gs</sub> taraması, öngörülen sınırın ±0,15 çevresinde 0,05 adımla, her noktada üç başlangıç sapması</td><td>Ölçülen sınır, öngörüyle karşılaştırma</td></tr>
+    <tr><td>D6</td><td>Salınım sınırı</td><td>Açı × r<sub>gs</sub> taraması, öngörülen sınırın ±0,15 çevresinde 0,05 adımla, her noktada üç başlangıç sapması</td><td>Ölçülen sınır, öngörüyle karşılaştırma</td></tr>
+    <tr class="sec"><td>D7</td><td>Asıl deney (180°)</td><td>Yüz kestiricinin 42 senaryosu × 3 tekrar, ≈ 30 dk; aynı senaryolar edilgen yöntemle de (<a href="#kestirici">8. bölüm</a>)</td><td>H7, B12, B13</td></tr>
   </table></div>
-  <div class="note"><b>Açık kalan</b>Gözlemcinin firmware'e yazılması; D5 için motor dişlisini gövdeye sabitleyen pim ya da kelepçe; kol yatağında Coulomb sürtünmesi varsa vuruş testinin zarfı üstel olmaz (benzetimde yatak sürtünmesi yok, sınanmadı); benzetim akım ölçümünü INA228'den daha gürültülü varsaydı (karamsar taraf, ayrıca sınanmadı).</div>
+  <div class="note"><b>Açık kalan</b>D5 için motor dişlisini gövdeye sabitleyen pim ya da kelepçe; kol yatağında Coulomb sürtünmesi varsa vuruş testinin zarfı üstel olmaz (benzetimde yatak sürtünmesi yok, sınanmadı); tanılama benzetimi akım ölçümünü INA228'den daha gürültülü varsaydı (karamsar taraf; yüz kestirici için INA228 ayrıca sınandı, 8. bölüm).</div>
+</section>
+
+<section id="kestirici">
+  <div class="top"><div class="kicker">Çalışma notu · 8 · 6–8 Kasım 2026</div></div>
+  <h2>Yüz kestirici: ikizde tasarım ve donanıma hazırlık</h2>
+  <p>Güncel çerçevenin (0. bölüm) iş sırası dijital ikizde yürütüldü. Hepsi D düzeneğinde (r 1,5°, mgℓ 0,24 N·m), motor tarafı P–PI ve ofset tablosuyla, sürtünmeli (F<sub>c</sub> 0,04, F<sub>s</sub> 0,06 N·m) ve sürtünmesiz ikizde; ölçüt H7 / B12 / B13, 42 senaryo. Her yeni ikiz seçeneği varsayılanda kapalı eklendi ve eski sonuçların değişmediği her seferinde yeniden koşularak denetlendi. Ayrıntılı metin ve bütün tablolar: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/calisma_notu/framing.md"><code>framing.md</code>, "İş sırası (1)–(5c)"</a>; betikler <code>simulasyon/5_planlama/</code>, firmware <code>firmware/</code>.</p>
+
+  <div class="tbl"><table>
+    <tr><th>İş</th><th>Yapılan</th><th>Sonuç</th></tr>
+    <tr><td>1 · Belirsiz bant</td><td>Sürtünmeli ikizde motor tarafı döngü + ofset tablosu, 170–180° arası 0,25° adımla</td><td>Ofset tablosu sürtünmede de tutuyor (10–170°'de ≤ 0,5°). Kol yanlış yüze yalnız 180°'nin 1°'si içinde düşüyor (hata ≈ 2r ≈ 3,2°). Orada kolu yüzde tutan tork ≤ 0,004 N·m, sürtünmenin onda biri: akımın işareti yüzü söyleyemez. Kolun karşı yüze çarpması ise motor torkunda açık iz bırakıyor.</td></tr>
+    <tr><td>2 · Üst sınır</td><td>Yüz kusursuz bilinseydi (ikizin gerçek yüzüyle ofset)</td><td>Tam 180° düzelmiyor: kolu tutan yüz sign(θ − 180°), hedef tam anahtarlama yüzeyinde. 179–179,5° ve 180,5–181° düzeliyor (≈ 3,2° → ≤ 0,36°). Karar: tam 180° istekleri 179,5° / 180,5°'ye kaydırılır.</td></tr>
+    <tr class="sec"><td>3 · Yüz kestirici</td><td>Tork gözlemcisi ile olay sezme + etken yoklama, ofsette rampa; edilgen sign(u) ve tek başına yöntemlerle karşılaştırma</td><td>Olay + yoklama + rampa, motor açısı ≤ 0,017° çözünürlükle ölçülürse dört koşu türünde 42/42, kalıcı hata ≤ 0,18° (üst sınır düzeyi). Edilgen yöntem sürtünmede 20/42. Motor enkoderi (0,27°) yetmiyor: motor arka miline AS5600 (kol tarafında 0,003°).</td></tr>
+    <tr><td>AS5600, 1 kHz</td><td>Kartın döngüsü, sensör gecikmesi (0,4 ms) ve gürültüsü</td><td>Yoklamanın geri dönüşü ve durgunluk kararı yeniden ayarlandı; 1 ms gecikme ve 3 kat gürültüde bile 10/10 koşu türünde 42/42, B13 ≤ 0,43°.</td></tr>
+    <tr><td>4 · Duyarlılık</td><td>Yük, dişli sertliği, boşluk ve gözlemci parametreleri tek tek</td><td>mgℓ ve K<sub>s</sub> ±%20 etkisiz; r ±%10 güvenli (ölçüm doğruluğu %0,2). F̂<sub>c</sub> %30 fazla bilinirse yoklama temas kaçırıyor; bu yüzden F̂<sub>c</sub> bilerek %10 düşük seçiliyor.</td></tr>
+    <tr><td>5a · Akım ölçümü</td><td>Gözlemcinin torku INA228'den (dönüşüm penceresi, gecikme, ofset, gürültü)</td><td>Beklenen gürültünün ≈ 20 katına kadar 42/42. Asıl risk akım sıfırı ve k<sub>t</sub> hatası (F̂<sub>c</sub> ile aynı mekanizma): akım sıfırı her deneyden önce ölçülecek.</td></tr>
+    <tr><td>Hız = gözlemci</td><td>P–PI'nin hız terimi gerçek hız yerine gözlemcinin ŵ'si</td><td>40 Hz gözlemciyle iki ikizde de 42/42, kazanç ayarı gerekmedi.</td></tr>
+    <tr><td>ESP32</td><td>Kontrolcü, gözlemci ve kestirici C'ye çevrildi; MATLAB ikiziyle adım kilitli sınama; ikizin kendisi de kartta gerçek zamanlı</td><td>Kartta 1 kHz, adım ≈ 4 µs. 84 senaryonun kararları ikizle birebir aynı (gözlemci hızıyla 81'i; kalan 3'ü tek örneklik bir float eşitlik durumu, sonuca etkisi yok). Kartın içindeki ikizle 42/42, döngü bütçesinin %19'u.</td></tr>
+    <tr><td>5b · Isınma ve birleşik hatalar</td><td>Tesisin sürtünmesi sabit ya da koşu içinde ×0,5–1,5 kayar; birkaç model hatası birlikte</td><td>Kayma tek başına zararsız (42/42). Tanılama hatasının 10–25 katı hatalar birlikte uygulanınca 42'de 37–42: üstten gelirken 1–2 senaryoda yanlış yüz; ısınmış motorda yoklama kolu ≈ 3,5° oynatabiliyor.</td></tr>
+    <tr class="sec"><td>5c · Gerilim sürüşü</td><td>İkize motorun elektrik tarafı (sargı direnci, endüktans, zıt EMK, sürücünün akım sınırı); Simscape'e karşı doğrulama; deneylerin modu olan gerilim sürüşünde 42 senaryo</td><td>Simscape ile 36 hücrenin 30'u ölçütte (kalanlar düzensiz salınım ve nicemleme düzeyi). Mod 1 nominalde, INA228 hatasında ve ısınmış sargıda 42/42. Birleşik hata köşelerinde zıt EMK'nın ek frenlemesi birkaç senaryo kaybettiriyor; gözlemcinin hızıyla zıt EMK telafisi (mod 2) geri getiriyor.</td></tr>
+    <tr><td>D7 protokolü</td><td>42 senaryonun donanım deneyine çevrilmesi</td><td>3 tekrar, ≈ 30 dk. Darbe sarkaç vurucuyla (öneri), yanlış başlangıç yüzü yazılımla. H7 / B12 / B13 kol AS5600'ünden. Aynı senaryolar edilgen yöntemle de: fark katkının kanıtı.</td></tr>
+  </table></div>
+
+  <h3>Yöntem: olay + yoklama</h3>
+  <ul class="plain">
+    <li><b>Tork gözlemcisi.</b> Motor tarafı model \(J_M\ddot\varphi = u - b_M\dot\varphi - d\), Luenberger, üçlü kutup 2π·40 rad/s. Sürtünme yalnız bir aralık olarak bilinir; buradan dişli torku için bir aralık çıkar.</li>
+    <li><b>Olay.</b> Dişli torku aralığı sıfırı 10 ms boyunca dışarıda bırakırsa yüz o işarettir. Çarpmayı yakalar, ama kol karşı yüze sessizce konarsa (çarpma yapışma sürtünmesini aşmazsa) göremez.</li>
+    <li><b>Yoklama.</b> Hedef bandın içinde motor 0,5 s durgunsa kontrolcü dondurulur, inanılan boşluğa doğru 0,12 N·m itilir. Gözlemcinin itiş yönündeki dişli torku eşiği aşarsa temas var; motor önce 0,5° serbest yol alırsa yüz doğru. Motor ardından başlangıç açısına döndürülür.</li>
+    <li><b>Rampa.</b> Yüz değişince ofset basamakla değil 0,5 s'lik rampayla değişir; sürtünmesiz ikizde basamak röle benzeri bir salınım üretiyordu (8/42).</li>
+  </ul>
+
+  <h3>Yöntemlerin karşılaştırması</h3>
+  <p>42 senaryoda H7'yi geçen sayısı (10 kHz, motor açısı ölçümü ideal / 0,27°'lik motor enkoderi / motor milinde AS5600).</p>
+  <div class="tbl"><table>
+    <tr><th>Sürtünme</th><th>Ölçüm</th><th>tablo</th><th>edilgen sign(u)</th><th>olay</th><th>yoklama</th><th>olay + yoklama</th><th>üst sınır</th></tr>
+    <tr><td>var</td><td>ideal</td><td class="num">10</td><td class="num">20</td><td class="num">42</td><td class="num">42</td><td class="num"><b>42</b></td><td class="num">42</td></tr>
+    <tr><td>var</td><td>0,27°</td><td class="num">10</td><td class="num">23</td><td class="num">17</td><td class="num">2</td><td class="num">4</td><td class="num">42</td></tr>
+    <tr class="sec"><td>var</td><td>AS5600</td><td class="num">10</td><td class="num">20</td><td class="num">42</td><td class="num">31</td><td class="num"><b>42</b></td><td class="num">42</td></tr>
+    <tr><td>yok</td><td>ideal</td><td class="num">4</td><td class="num">42</td><td class="num">42</td><td class="num">42</td><td class="num"><b>42</b></td><td class="num">4</td></tr>
+    <tr class="sec"><td>yok</td><td>AS5600</td><td class="num">4</td><td class="num">42</td><td class="num">42</td><td class="num">38</td><td class="num"><b>42</b></td><td class="num">4</td></tr>
+  </table></div>
+  <p>"tablo" yüzü hedefin işaretinden alır; "üst sınır" ikizin gerçek yüzünü kullanır ama ofseti basamakla değiştirir (sürtünmesizde bu yüzden 4/42). Edilgen yöntem sürtünmeli ikizde, kolun durduğu bozucusuz senaryoların hiçbirinde tutmuyor: integratör yapışma sürtünmesine yaslanınca u ≈ 0,06 N·m, dişli torku ≈ 0,003 N·m.</p>
+
+  <h3>Gerilim sürüşü (mod 1) ve sürücü modu kararı</h3>
+  <p>Deneyler gerilim sürüşüyle yapılacak (V = R̂<sub>a</sub>·u/K̂<sub>m</sub>). Bu modda tesis torku u − (K<sub>m</sub>²/R<sub>a</sub>)·φ̇ olur: zıt EMK ek bir sönüm getirir (≈ 7·b<sub>M</sub>). Taban 5b'ninki (F̂<sub>c</sub> = 0,9 × nominal, gözlemci torku INA228'den).</p>
+  <div class="tbl"><table>
+    <tr><th>Durum</th><th>tork girişli</th><th>mod 1</th><th>mod 2 (ŵ ile)</th></tr>
+    <tr><td>Nominal, sürtünmeli / sürtünmesiz</td><td class="num">42 / 42</td><td class="num">42 / 42</td><td class="num">42 / —</td></tr>
+    <tr><td>+ INA228 ofseti ve gürültüsü; sargı ısındı (R<sub>a</sub> ×1,25)</td><td class="num">—</td><td class="num">42; 42</td><td class="num">—</td></tr>
+    <tr><td>8 gerçekçi birleşik hata köşesi (toplam / 336)</td><td class="num">326</td><td class="num">320</td><td class="num">—</td></tr>
+    <tr><td>F<sub>c</sub> ×1,3 köşeleri, 3 gürültü tohumu</td><td class="num">40/40/40, 41/41/42</td><td class="num">38/38/38, 37/38/38</td><td class="num">40/40/40, 42/40/42</td></tr>
+  </table></div>
+  <p>Mod 1'in yeni kaybettikleri 181°'ye alttan gelişler; 5b'deki "179°'ye üstten gelişte yanlış yüz" belirtisinin aynası. Fark tohumdan bağımsız, nedeni zıt EMK sönümü: mod 2'de V'ye K̂<sub>m</sub>·ŵ eklenince kayıp geri geliyor. <b>Karar (8 Kasım):</b> D7 mod 1'de koşulur (D1–D6 ile aynı sürüş); sürücü kodunda mod 2 yedek seçenek olarak yer alır, 179/181°'de yanlış yüz görülürse D7 mod 2'de tekrarlanır.</p>
+
+  <div class="note"><b>Açık kalan</b>Birleşik hatalarda pay dar (5b, 5c); aday önlem yoklama itişini ve temas eşiğini son ölçülen sürtünmeye göre ölçeklemek (sınanmadı). Tam 180° yöntemin sınırı. İkizde PWM anahtarlaması, AS5600'ün doğrusal olmama hatası ve I²C okuma hataları yok; INA228 gürültüsü veri sayfasında yalnız grafikte, doğrulanmadı. Sensör ve sürücü kodu (mod 1 + yedek mod 2) henüz yazılmadı.</div>
 </section>
 
 <section id="baslangic">
@@ -1252,12 +1328,11 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
   <div class="top"><div class="kicker">Yol haritası</div></div>
   <h2>Sonraki adımlar</h2>
   <ul class="plain">
-    <li><b>Güncel çerçeve (5 Kasım):</b> açıya göre planlanan kontrolcü ve gözlemci (<a href="#cerceve">0. bölüm</a>). Sıradaki teori işi: DF haritasından açı başına kazanç ve gözlemci bant genişliği tablosunun çıkarılması, dijital ikizde sabit kazançlı ayarla karşılaştırılması; sürtünme katmanı (integratör ölü bandı) eklenmesi; motor tarafı tespit ölçütünün ikizde sınanması.</li>
-    <li><b>Görüşülecek konular:</b> başarı ölçütleri, düzenek seçimi (önerilen D: uç kütlesi 0–150 g değiştirilebilir), siparişin EKOM üzerinden üniversite hesabıyla verilmesi.</li>
-    <li><b>Yöntem tarafında:</b> sistem tanılama planı dijital ikizde sınandı ve deney protokolü yazıldı (<a href="#tanilama">7. bölüm</a>). Donanımdan önce kalan: gözlemcinin firmware'e yazılması, motor dişlisi için kilit parçası. Diğer yöntem işlerinin sırası ve gerekçeleri: <a href="#yontem-sonraki">6. bölüm, Değerlendirme ve sonraki işler</a>.</li>
-    <li><b>Deney tasarımına etkisi:</b> her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm (iki kararlılık); zorlama frekansının çevrim frekansının harmoniklerinden uzak seçilmesi.</li>
-    <li><b>Aynı anda:</b> sipariş (EKOM + yerli kalemler), firmware iskeleti ve MATLAB kayıt betiği, kaplin ve gövde tasarımı.</li>
-    <li><b>Malzeme gelince:</b> kalibrasyon, sistem tanılama, ardından açı × kazanç deneyleri.</li>
+    <li><b>Durum (8 Kasım):</b> siparişten önceki ikiz işleri bitti. Yüz kestirici ikizde gerçekçi sensörler, akım ölçümü ve gerilim sürüşüyle sınandı, ESP32'de 1 kHz'te koşuyor; tanılama ve 180° deney protokolleri yazıldı (<a href="#tanilama">7.</a> ve <a href="#kestirici">8. bölüm</a>).</li>
+    <li><b>Siparişten önce kararlar:</b> gövde (hazır alüminyum profil ya da 3B baskı), siparişin EKOM üzerinden üniversite hesabıyla verilmesi, yedek ESP32 kartı (stokta yok, eldeki kart yetiyor), 12 V adaptörün akım değeri.</li>
+    <li><b>Parçalar yoldayken:</b> mekanik parçaların 3B tasarımı (kaplin, gövde, D5 için motor dişlisi kilidi, durdurucular −15° / 195° önerisi); sensör ve sürücü kodları (sürücüde mod 1 + yedek mod 2); isteğe bağlı olarak yoklama itişinin sürtünmeye göre uyarlanması ikizde.</li>
+    <li><b>Malzeme gelince:</b> D0 kalibrasyon → D1–D5 tanılama (≈ 30 dk kayıt) → D6 salınım sınırı → D7 180° deneyleri, her senaryo edilgen yöntemle de.</li>
+    <li><b>D6 için:</b> her açı × kazanç noktasında küçük ve büyük sarsıntılı iki ölçüm (iki kararlılık). Diğer yöntem işlerinin sırası: <a href="#yontem-sonraki">6. bölüm, Değerlendirme ve sonraki işler</a>.</li>
   </ul>
 </section>
 
@@ -1610,7 +1685,74 @@ mjx-container{max-width:100%; overflow-x:auto; overflow-y:hidden}
         <dt>Neden</dt><dd>Tarama sonucu ve danışmanla değerlendirme.</dd>
         <dt>Ne yaptık</dt><dd>Ana soruyu, bileşenleri, kapsamı (boşluk kaynaklı salınım; sürtünme için ayrı katman), ek hipotezleri ve ölçütleri yazdık. İlk çerçevedeki DF + dijital ikiz analizi 1. bileşenin aracı oldu; donanım ve deney protokolü değişmedi.</dd>
         <dt>Sonuç</dt><dd>Ana katkı: yerçekimi ön yüküne göre önceden planlanan kontrolcü ve gözlemci. Destek: motor tarafı salınım tespiti. Uygulama: ESP32 1 kHz.</dd>
-        <dt>Bağlantı</dt><dd class="link">→ Güncel çerçeve bölümü.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 25 ve "Ara çerçeve" (0. bölüm, arşiv).</dd>
+      </dl>
+    </div></li>
+  </ol>
+
+  <div class="phase">VII. Yüz kestirici</div>
+  <ol class="log" style="counter-reset:adim 24">
+    <li><div class="step">
+      <h4>Çerçeve kararı: 180°'de yüz kestirici</h4>
+      <dl>
+        <dt>Neden</dt><dd>Konum döngüsü motor tarafına alınınca boşluk salınımı ikizde kayboldu; açıya göre kazanç planlamasının gerekçesi zayıfladı.</dd>
+        <dt>Ne yaptık</dt><dd>Üç parçalı çerçeve (temel, Katkı 1, Katkı 2) için hedefli literatür kontrolü (IEEE 15 sorgu, 4 yeni tam metin, 8 özet ve patent); danışmanla değerlendirme.</dd>
+        <dt>Sonuç</dt><dd>Temel: motor tarafı döngü + ofset tablosu (Neubauer 2015). Ana katkı: 180°'de yüzü yalnız motor sinyalleriyle kestirmek. Katkı 2 (çevrim içi tanılama) kapsam dışı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Güncel çerçeve (0. bölüm).</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Belirsiz bant ve üst sınır</h4>
+      <dl>
+        <dt>Neden</dt><dd>Yüz kestirimine nerede gerek olduğunu ve yüz kusursuz bilinse neyin kazanılacağını önce görmek.</dd>
+        <dt>Ne yaptık</dt><dd>Sürtünmeli ikizde 170–185° arası 0,25° adımla tarama; ikizin gerçek yüzüyle ofset seçen "hileli" üst sınır.</dd>
+        <dt>Sonuç</dt><dd>Belirsiz bant ±1°; akımın işareti orada kör. Tam 180° yüz bilinse bile düzelmiyor: istekler 179,5° / 180,5°'ye kaydırılıyor; H7 buna göre yeniden yazıldı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 27.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Yüz kestirici ve motor milinde AS5600</h4>
+      <dl>
+        <dt>Neden</dt><dd>Belirsiz bantta yüzü yalnız motor sinyalleriyle bulmak.</dd>
+        <dt>Ne yaptık</dt><dd>Tork gözlemcisi, olay sezici, etken yoklama ve rampa; edilgen yöntemle karşılaştırma; enkoder çözünürlüğü, 1 kHz döngü, sensör gecikmesi ve gürültüsü.</dd>
+        <dt>Sonuç</dt><dd>Olay + yoklama 42/42 (edilgen 20/42). 0,27°'lik motor enkoderi yetmiyor; motor arka miline AS5600 eklendi. 1 kHz'te iki ayar değişikliğiyle (yoklamanın geri dönüşü, durgunluk süzgeci) 42/42.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ 8. bölüm.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Duyarlılık, akım ölçümü, gözlemci hızı</h4>
+      <dl>
+        <dt>Neden</dt><dd>Donanımda parametreler yalnız ölçüm doğruluğuyla, tork INA228'den, hız gözlemciden gelecek.</dd>
+        <dt>Ne yaptık</dt><dd>Yük, sertlik, boşluk, gözlemci parametreleri tek tek; INA228 penceresi, gecikmesi, ofseti, gürültüsü; P–PI'nin hız teriminde ŵ.</dd>
+        <dt>Sonuç</dt><dd>Güvenli aralıklar tanılama hatalarının 10–50 katı; asimetri F̂<sub>c</sub>'de (fazla bilinirse yoklama bozuluyor, %10 düşük seçiliyor). INA228 gürültüsüne ≈ 20 kat pay. ŵ gerçek hızın yerini tutuyor.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 29.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Algoritma ESP32'de</h4>
+      <dl>
+        <dt>Neden</dt><dd>İkizde gösterilen sonuç ancak firmware ikizle birebir aynıysa donanımda geçerli.</dd>
+        <dt>Ne yaptık</dt><dd>Kontrolcü, gözlemci ve kestirici C'ye çevrildi; MATLAB ikiziyle adım kilitli sınama; ikizin kendisi kartta gerçek zamanlı.</dd>
+        <dt>Sonuç</dt><dd>1 kHz, adım ≈ 4 µs; 84 senaryonun kararları birebir aynı; kart içi ikizle 42/42, bütçenin %19'u.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 30.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Isınma, birleşik hatalar ve D7 protokolü</h4>
+      <dl>
+        <dt>Neden</dt><dd>Sürtünme ısınmayla kayar; tek tek güvenli hatalar birlikte bozabilir. Deney planında 180° deneyi eksikti.</dd>
+        <dt>Ne yaptık</dt><dd>Tesisin sürtünmesini sabit ve koşu içinde kaydırma; ±%5–20'lik birleşik köşeler; 42 senaryonun donanım deneyine çevrilmesi.</dd>
+        <dt>Sonuç</dt><dd>Kayma tek başına zararsız; gerçekçi birleşik hatalarda 42'de 37–42 (izlenecek risk). D7: 3 tekrar, ≈ 30 dk, edilgen yöntemle karşılaştırmalı.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ Adım 31.</dd>
+      </dl>
+    </div></li>
+    <li><div class="step">
+      <h4>Gerilim sürüşü ve sürücü modu kararı</h4>
+      <dl>
+        <dt>Neden</dt><dd>Deneyler gerilim sürüşüyle yapılacak, kestirici ise yalnız tork girişli ikizde sınanmıştı.</dd>
+        <dt>Ne yaptık</dt><dd>İkize motorun elektrik tarafı eklendi ve Simscape modeline karşı doğrulandı (36 hücrenin 30'u ölçütte); 42 senaryo dört sürücü modunda, gerçekçi köşeler üç gürültü tohumuyla.</dd>
+        <dt>Sonuç</dt><dd>Mod 1 nominalde 42/42; köşelerde zıt EMK birkaç senaryo kaybettiriyor, ŵ ile zıt EMK telafisi (mod 2) geri getiriyor. Karar: D7 mod 1'de, mod 2 yedek.</dd>
+        <dt>Bağlantı</dt><dd class="link">→ 8. bölüm; Sonraki adımlar.</dd>
       </dl>
     </div></li>
   </ol>
