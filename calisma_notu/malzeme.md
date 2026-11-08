@@ -2,7 +2,7 @@
 
 Çalışma notunun 3. aşaması. Liste `mimari.md`'deki mimariden türetilmiştir. Her kalemde model, adet, temel özellik, gerekçe, kaynak, fiyat ve stok verilir. Ayrıca uyum, montaj ihtiyaçları, toplamlar ve kritik alternatifler yer alır.
 
-**Fiyat ve stok doğrulaması: 24 Ekim 2026**, satıcıların kendi sayfalarından.
+**Fiyat ve stok doğrulaması: 8 Kasım 2026** (DigiKey, direnc.net, Motorobit), satıcıların kendi sayfalarından. Pazar yeri ve tahmin kalemleri (Hepsiburada, Cimri, baskı hizmeti, hırdavat) 24 Ekim 2026 araştırmasından.
 - TL fiyatları KDV dahildir (satıcı "+ KDV" yazıyorsa %20 eklendi).
 - $ fiyatları DigiKey liste fiyatıdır (1 adet, KDV ve gümrük hariç).
 - "Doğrulanmadı" yazan kalemlerin fiyatı tahmindir; sipariş öncesi kontrol edilmeli.
@@ -40,25 +40,25 @@ Türk elektronik mağazalarında (direnc.net, Robotistan) INA228, TMP117, Adafru
 
 ### 2.1 Dengeli liste: kalem kalem
 
-| # | Kalem (tam model) | Adet | Temel özellik | Seçim gerekçesi | Kaynak | Fiyat | Stok (24.10.2026) |
+| # | Kalem (tam model) | Adet | Temel özellik | Seçim gerekçesi | Kaynak | Fiyat | Stok (08.11.2026) |
 |---|---|---|---|---|---|---|---|
-| E1 | JGB37-520, 12 V, 333 rpm, enkoderli (1:30) | 1 | Durma ≈ 0,49 N·m / 2,3 A; nominal ≈ 0,34 N·m @ 1 A; Hall enkoder 11 darbe/tur → kol tarafında 1320 sayım/tur (0,27°; yüz kestirici için kaba, motor açısını arka mildeki AS5600 ölçer, Hall tur sayımı sağlaması ve yedek); mil 6 mm D | Simülasyon bu sınıfla yapıldı; yurtiçinde hemen alınabilir; parametreler tanılanacak | [direnc.net](https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor) | 639,29 TL | Stokta |
-| E2 | Pololu #4035 (TI DRV8874) | 1 | 2,1 A sürekli / 6 A tepe; 4,5–37 V; mantık 1,8–5 V; akım ölçüm çıkışı (CS); ayarlanabilir akım sınırı | Durma akımı (2,3 A) TB6612'nin önerilen 1,0 A sınırının çok üstünde; donanım akım sınırı salınım deneylerinde motoru korur | [DigiKey](https://www.digikey.com/en/products/detail/pololu/4035/26714680) → EKOM | 11,94 $ | 313 |
-| E3 | Espressif ESP32-DevKitC-32E (WROOM-32E) | 1 | 240 MHz çift çekirdek; PCNT enkoder sayacı; LEDC PWM; iki I²C denetleyicisi; micro-USB | 1 kHz döngü için yeterli; iki I²C hattı TMP117 için gerekli; orijinal kart | [DigiKey](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32E/12091810) → EKOM | 10,00 $ | 731 |
-| E4 | Adafruit AS5600 (#6357), STEMMA QT | 2 | ams AS5600, 12 bit (0,088°), I²C 1 MHz, adres 0x36 (sabit), filtre SF = 11 ile 0,286 ms gecikme; mıknatıs dahil değil | Biri motorun arka mil ucunda (kontrol: kol tarafında 0,0029°, yüz kestiricinin istediği ≤ 0,02°'yi sağlar, `framing.md` iş sırası 3), biri kol milinde (yalnız doğrulama). Adres aynı olduğundan ayrı I²C hatlarında. Orijinal çip, belgeli kart | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/6357/26832926) → EKOM | 5,95 $ × 2 | 527 |
-| E5 | Radial Magnets 8995, NdFeB N35, Ø6 × 2,5 mm, **diametral** | 3 (1 yedek) | Diametral mıknatıslanma; 80 °C | AS5600 diametral mıknatıs ister; Adafruit'in önerdiği disk mıknatıs eksenel, mil ucuna uygun değil | [DigiKey](https://www.digikey.com/en/products/detail/radial-magnets-inc/8995/5126077) → EKOM | 0,40 $ | 34.505 |
-| E6 | Adafruit INA228 (#5832), STEMMA QT | 1 | 20 bit ΔΣ ADC; I²C; 85 V ortak mod; ofset ≤ ±1 µV; kazanç hatası ≤ ±%0,05 | Tork kestirimi ve ısınma izleme; INA219'a göre ≈ 15 $ fark, çok daha yüksek çözünürlük | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/5832/21839815) → EKOM | 14,95 $ | 2.008 |
-| E7 | Adafruit TMP117 (#4821), STEMMA QT | 2 | ±0,1 °C (−20…50 °C); 16 bit; I²C en fazla 400 kHz; adres 0x48 / 0x49 (ADDR köprüsüyle) | Ortam ve motor gövdesi sıcaklığı (tekrarlanabilirlik, B6) | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/4821/13571586) → EKOM | 11,50 $ × 2 | 857 |
-| E8 | Adafruit STEMMA QT / Qwiic kablo, 100 mm (#4210) | 5 | JST SH 4 pin | Sensörleri lehimsiz zincirlemek: I²C-0 ESP32 → motor AS5600 → INA228 (2), I²C-1 ESP32 → kol AS5600 → TMP117 → TMP117 (3) | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/4210/10230021) → EKOM | 0,95 $ × 5 | 17.903 |
+| E1 | JGB37-520, 12 V, 333 rpm, enkoderli (1:30) | 1 | Durma ≈ 0,49 N·m / 2,3 A; nominal ≈ 0,34 N·m @ 1 A; Hall enkoder 11 darbe/tur → kol tarafında 1320 sayım/tur (0,27°; yüz kestirici için kaba, motor açısını arka mildeki AS5600 ölçer, Hall tur sayımı sağlaması ve yedek); mil 6 mm D. **Veri sayfasıyla doğrulandı** ([direnc.net PDF](https://pdf.direnc.net/upload/jgb37-520-datasheet.pdf), 12 V / 333 rpm satırı): oran 1:30; boşta 120 mA; yükte 3,5 kg·cm (0,34 N·m) @ 1 A, 250 rpm; durma 5 kg·cm (0,49 N·m) / 2,3 A; enkoder besleme **3,3–5 V** (ESP32'nin 3,3 V'u doğrudan yeter, seviye çevirici gerekmez); "motor bir turda 11 sinyal" | Simülasyon bu sınıfla yapıldı; yurtiçinde hemen alınabilir; parametreler tanılanacak | [direnc.net](https://www.direnc.net/jgb37-520-12v-330rpm-enkoderli-motor) | 665,41 TL | Stokta |
+| E2 | Pololu #4035 (TI DRV8874) | 1 | 2,1 A sürekli / 6 A tepe; 4,5–37 V; mantık 1,8–5 V; akım ölçüm çıkışı (CS); ayarlanabilir akım sınırı | Durma akımı (2,3 A) TB6612'nin önerilen 1,0 A sınırının çok üstünde; donanım akım sınırı salınım deneylerinde motoru korur | [DigiKey](https://www.digikey.com/en/products/detail/pololu/4035/26714680) → EKOM | 11,94 $ | 288 |
+| E3 | Espressif ESP32-DevKitC-32E (WROOM-32E) | 1 | 240 MHz çift çekirdek; PCNT enkoder sayacı; LEDC PWM; iki I²C denetleyicisi; micro-USB | 1 kHz döngü için yeterli; iki I²C hattı TMP117 için gerekli; orijinal kart | [DigiKey](https://www.digikey.com/en/products/detail/espressif-systems/ESP32-DEVKITC-32E/12091810) → EKOM | 10,00 $ | **0** (tahmini 5 Ağustos 2027). Elde ESP32-S (ESP32-D0WD-V3, aynı çip) var ve tüm firmware onda çalışıyor; E3 yalnız yedek anlamında. Stoktaki tek DevKitC türevi ESP32-DEVKITC-VIE (11,00 $, 202 adet) harici anten konektörlü (IPEX), anteni ayrıca gerekir |
+| E4 | Adafruit AS5600 (#6357), STEMMA QT | 2 | ams AS5600, 12 bit (0,088°), I²C 1 MHz, adres 0x36 (sabit), filtre SF = 11 ile 0,286 ms gecikme; mıknatıs dahil değil | Biri motorun arka mil ucunda (kontrol: kol tarafında 0,0029°, yüz kestiricinin istediği ≤ 0,02°'yi sağlar, `framing.md` iş sırası 3), biri kol milinde (yalnız doğrulama). Adres aynı olduğundan ayrı I²C hatlarında. Orijinal çip, belgeli kart | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/6357/26832926) → EKOM | 5,95 $ × 2 | 414 |
+| E5 | Radial Magnets 8995, NdFeB N35, Ø6 × 2,5 mm, **diametral** | 3 (1 yedek) | Diametral mıknatıslanma; 80 °C | AS5600 diametral mıknatıs ister; Adafruit'in önerdiği disk mıknatıs eksenel, mil ucuna uygun değil | [DigiKey](https://www.digikey.com/en/products/detail/radial-magnets-inc/8995/5126077) → EKOM | 0,40 $ | 57.396 |
+| E6 | Adafruit INA228 (#5832), STEMMA QT | 1 | 20 bit ΔΣ ADC; I²C; 85 V ortak mod; ofset ≤ ±1 µV; kazanç hatası ≤ ±%0,05 | Tork kestirimi ve ısınma izleme; INA219'a göre ≈ 15 $ fark, çok daha yüksek çözünürlük | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/5832/21839815) → EKOM | 14,95 $ | 1.791 |
+| E7 | Adafruit TMP117 (#4821), STEMMA QT | 2 | ±0,1 °C (−20…50 °C); 16 bit; I²C en fazla 400 kHz; adres 0x48 / 0x49 (ADDR köprüsüyle) | Ortam ve motor gövdesi sıcaklığı (tekrarlanabilirlik, B6) | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/4821/13571586) → EKOM | 11,50 $ × 2 | 720 |
+| E8 | Adafruit STEMMA QT / Qwiic kablo, 100 mm (#4210) | 5 | JST SH 4 pin | Sensörleri lehimsiz zincirlemek: I²C-0 ESP32 → motor AS5600 → INA228 (2), I²C-1 ESP32 → kol AS5600 → TMP117 → TMP117 (3) | [DigiKey](https://www.digikey.com/en/products/detail/adafruit-industries-llc/4210/10230021) → EKOM | 0,95 $ × 5 | 28.014 |
 
 ### 2.2 Güç ve elektrik
 
 | # | Kalem | Adet | Özellik | Gerekçe | Kaynak | Fiyat | Stok |
 |---|---|---|---|---|---|---|---|
-| P1 | **Masaüstü 12 V adaptör, ≥ 2 A (tercihen 3 A)**: evde varsa o kullanılır | 1 | 12 V DC, regüleli (anahtarlamalı), 5,5 × 2,1 mm jak | Fişe takılır, şebeke kablolaması gerekmez | Evdeki adaptör; yoksa yerel satıcı | 0 TL (evdeki) / ≈ 250–400 TL. **Pazar araştırması:** direnc.net'te 12 V 3 A seçenekleri bulunuyor; markasız masaüstü adaptörler pazar yerlerinde yaygın. | — |
-| P2 | DC jak, dişi, klemensli (5,5 × 2,1 mm) | 1 | — | Adaptörü DRV8874'ün VM girişine bağlamak | yerel / direnc.net | ≈ 20 TL (doğrulanmadı) | — |
-| P4 | Elektrolitik kondansatör 470 µF 25 V | 2 | 8 × 12 mm | DRV8874 VM girişinde ek dolgu (bulk) kondansatörü; ucuz adaptörün dalgalanmasını da bastırır | [direnc.net](https://www.direnc.net/arama?q=470uf+25v) | 2,32 TL × 2 | Stokta |
-| P5 | CHINT NP2-BE102 acil stop butonu (NC) | 1 | Metal, mantar başlı | 12 V motor hattında yazılımdan bağımsız kesme | [Motorobit](https://www.motorobit.com/arama?q=acil+stop) | 303,00 TL | Stokta |
+| P1 | **Masaüstü 12 V adaptör, ≥ 2 A (tercihen 3 A)**: evde varsa o kullanılır | 1 | 12 V DC, regüleli (anahtarlamalı), 5,5 × 2,1 mm jak | Fişe takılır, şebeke kablolaması gerekmez | Evdeki adaptör; yoksa yerel satıcı | 0 TL (evdeki) / 483,94 TL: direnc.net "12V 3A Adaptör - Masa Tipi" (jak ölçüsü sayfada yazmıyor, 5,5 × 2,1 olduğu sipariş öncesi sorulmalı). Diğerleri: MS-36-12 metal kasa 616,53 TL; Mean Well kapalı tip 769,46 TL | Stokta |
+| P2 | DC jak, dişi, klemensli (5,5 × 2,1 mm) | 1 | — | Adaptörü DRV8874'ün VM girişine bağlamak | yerel / direnc.net | ≈ 20 TL (doğrulanmadı: direnc.net aramasında klemensli dişi jak çıkmadı, 08.11) | — |
+| P4 | Elektrolitik kondansatör 470 µF 25 V | 2 | 8 × 12 mm | DRV8874 VM girişinde ek dolgu (bulk) kondansatörü; ucuz adaptörün dalgalanmasını da bastırır | [direnc.net](https://www.direnc.net/arama?q=470uf+25v) | 2,87 TL × 2 | Stokta |
+| P5 | CHINT NP2-BE102 acil stop butonu (NC) | 1 | Metal, mantar başlı | 12 V motor hattında yazılımdan bağımsız kesme | [Motorobit](https://www.motorobit.com/arama?q=acil+stop) | 306,00 TL (255,00 + KDV) | Stokta |
 | P6 | Breadboard ya da delikli pertinaks, jumper kablo seti, micro-USB veri kablosu, klemens | 1 set | — | Bağlantılar | yerel / direnc.net | ≈ 250 TL (doğrulanmadı) | — |
 
 **Güç kaynağı seçimi neyi değiştirir?**
@@ -73,7 +73,7 @@ Türk elektronik mağazalarında (direnc.net, Robotistan) INA228, TMP117, Adafru
 
 **Sonuç:** evdeki adaptör, etiketinde 12 V ve en az 2 A yazıyorsa kullanılabilir. Bu araştırma sonucunu değiştirmez; yalnız tork payını ve gürültüyü küçük ölçüde etkiler, o da kayıt altına alınır.
 
-**Alternatif (panel tipi, istenirse):** Mean Well LRS-35-12, 12 V 3 A 36 W ([direnc.net](https://www.direnc.net/12v-3a-kapali-tip-switch-mode-adaptor), 739,26 TL, stokta). Klemensleri açık olduğu için Schurter DD11.0111.1111 sigortalı ve anahtarlı IEC giriş ([DigiKey](https://www.digikey.com/en/products/detail/schurter-inc/DD11-0111-1111) → EKOM, 16,04 $, stok 1.173), 1 A gecikmeli sigorta, güç kablosu ve yalıtkan kutu gerekir. İlk seçim olan Mean Well GST36E12-P1J masaüstü adaptör DigiKey'de stokta değil (tahmini 18 Ocak 2027).
+**Alternatif (panel tipi, istenirse):** Mean Well LRS-35-12, 12 V 3 A 36 W ([direnc.net](https://www.direnc.net/12v-3a-kapali-tip-switch-mode-adaptor), 769,46 TL, stokta, 08.11). Klemensleri açık olduğu için Schurter DD11.0111.1111 sigortalı ve anahtarlı IEC giriş ([DigiKey](https://www.digikey.com/en/products/detail/schurter-inc/DD11-0111-1111) → EKOM, 16,04 $, stok 1.173), 1 A gecikmeli sigorta, güç kablosu ve yalıtkan kutu gerekir. İlk seçim olan Mean Well GST36E12-P1J masaüstü adaptör DigiKey'de stokta değil (tahmini 18 Ocak 2027).
 
 ## 3. Mekanik: iki seçenek
 
@@ -85,8 +85,8 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 
 | # | Kalem | Adet | Özellik | Gerekçe | Kaynak | Fiyat | Stok |
 |---|---|---|---|---|---|---|---|
-| M1 | 8 mm krom kaplı indüksiyonlu mil, 500 mm | 1 | Ø8, sertleştirilmiş | Kol mili ≈ 120 mm kesilir; kalan yedek | [Motorobit](https://www.motorobit.com/arama?q=8mm+mil) | 242,40 TL | Stokta (300 / 400 mm boyları tükendi) |
-| M2 | Kol–mil bağlantısı: 8 mm hex göbek (setuskurlu) | 1 | 8 mm deliğe setuskurla sıkılır, kol göbeğe cıvatalanır | Kol–mil arasında ek boşluk olmamalı; düz yüzey açılmış mile iki setuskur | [Motorobit](https://www.motorobit.com/arama?q=kaplin) ("8mm Motor Şaftı ile Uyumlu Hex Tekerlek Kaplini") | 121,20 TL | Stokta |
+| M1 | 8 mm krom kaplı indüksiyonlu mil, 500 mm | 1 | Ø8, sertleştirilmiş | Kol mili ≈ 120 mm kesilir; kalan yedek | [Motorobit](https://www.motorobit.com/arama?q=8mm+mil) | 244,80 TL (204,00 + KDV) | Stokta (300 / 400 mm boyları tükendi) |
+| M2 | Kol–mil bağlantısı: 8 mm hex göbek (setuskurlu) | 1 | 8 mm deliğe setuskurla sıkılır, kol göbeğe cıvatalanır | Kol–mil arasında ek boşluk olmamalı; düz yüzey açılmış mile iki setuskur | [Motorobit](https://www.motorobit.com/arama?q=kaplin) ("8mm Motor Şaftı ile Uyumlu Hex Tekerlek Kaplini") | 122,40 TL (102,00 + KDV) | Stokta |
 | M3 | Ayarlanabilir boşluk kaplini: motor tarafı (6 mm D) + kol tarafı (8 mm) + 4 dil parçası (0 / 1,5 / 3 / 5°) | 1 takım | PETG ya da PA12 baskı; setuskurlar için M3 gömme somun | Boşluk düğmesi (framing'in en güçlü düğmesi); 0° parçası motorun kendi boşluğunu ölçmek için | Baskı hizmeti | B seçeneğinin baskı ücretine dahil; A'da ≈ 150–300 TL (doğrulanmadı) | — |
 | M4 | Mıknatıs tutucu + AS5600 tutucu: kol mili ucu (setuskurla) ve motor arka mili (Hall disk göbeğine takılan ≈ 5 mm uzatma + motor arka kapağına bağlı sensör tutucu) | 2 + 2 | Baskı | Mıknatısı mil ekseninde ortalamak; hava aralığı 0,5–3 mm; motor tarafında Hall halka mıknatısından ≈ 5 mm uzaklık (`mimari.md` §3) | Baskı hizmeti | M3 ile birlikte | — |
 | M5 | Kol: alüminyum lama 20 × 3 mm, ≈ 200 mm | 1 | — | 15 cm etkin boy + göbek ve karşı ağırlık uzantısı | Yerel hırdavat / alüminyumcu | ≈ 50–100 TL. **Pazar araştırması:** Hepsiburada ve Trendyol'da uygun ilan bulunamadı; hırdavat ya da alüminyumcuda boy kesimi. | — |
@@ -99,7 +99,7 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 
 | # | Kalem | Adet | Özellik | Gerekçe | Kaynak | Fiyat | Stok |
 |---|---|---|---|---|---|---|---|
-| A1 | KFL08 yataklı rulman (flanşlı, 8 mm) | 2 | İçinde bilyalı rulman ve setuskur | Kol milini gövdeye yataklar; motor yatağı eğilme yükü taşımaz | [Motorobit](https://www.motorobit.com/kfl08-yatakli-rulman-8mm) | 106,06 TL × 2 | Stokta |
+| A1 | KFL08 yataklı rulman (flanşlı, 8 mm) | 2 | İçinde bilyalı rulman ve setuskur | Kol milini gövdeye yataklar; motor yatağı eğilme yükü taşımaz | [Motorobit](https://www.motorobit.com/kfl08-yatakli-rulman-8mm) | 107,10 TL × 2 (89,25 + KDV) | Stokta (100+) |
 | A2 | 2020 alüminyum sigma profil (6 kanal), ≈ 1 m (3–4 parçaya kesim) | 1 | Rijit gövde (ilk rezonans ≥ 100 Hz hedefi) | Gövde rijitliği; parçalar T-somunla ayarlanabilir | Yerel sigma profil satıcısı (kesimli) | ≈ 300–600 TL. **Pazar araştırması:** Hepsiburada'da 20 × 20 ilanı yok, yalnız 20 × 80 (350 mm, 489,99 TL) ve 30 × 30 (2 × 20 cm, 349,99 TL); Cimri'de 20 × 20 ilanı 319 TL (birim belirtilmemiş). Profil üreticileri 6 m boy satıyor; kesimli parça için yerel bayiden teklif alınmalı. | — |
 | A3 | 2020 köşebent × 8, M5 T-somun × 20, M5 vida × 20 | 1 set | — | Gövde montajı, motor braketi ve KFL08 bağlantısı | Pazar yerleri / profil bayisi | ≈ 640–1.040 TL. **Pazar araştırması:** Cimri'de bağlantı parçaları 49–99 TL/adet, M5 T-somun paketi ≈ 249 TL; Hepsiburada'da M5 T-somun ilanları 189–199 TL; direnc.net'teki M4 T-somun tükendi. Profil bayisinden takım halinde almak daha ucuz olabilir. | — |
 | A4 | 37 mm redüktörlü motor için L tipi metal braket | 1 | 6 × M3 motor deliği (31 mm aralık) | Motoru gövdeye hizalı bağlamak | Yurt dışı (AliExpress) | ≈ 2–5 $. **Pazar araştırması:** Türk pazar yerlerinde 37 mm braket bulunamadı (direnc.net'teki Pololu braketi kaldırılmış; Hepsiburada'daki motor braketleri RS775 gibi farklı ölçüler); Hindistan'da ₹99 + KDV, yani ≈ 1,2 $. | — |
@@ -121,7 +121,7 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 | Motor gerilimi | Motor 12 V; DRV8874 VM 4,5–37 V; adaptör 12 V | ✓ |
 | Akım | Motor durma 2,3 A; DRV8874 2,1 A sürekli / 6 A tepe; akım sınırı ≈ 2 A'e ayarlanır; adaptör ≥ 2 A | ✓ (donanım sınırıyla) |
 | Güç | Adaptör ≥ 24 W (12 V × 2 A); sürücünün akım sınırıyla motor en fazla ≈ 24 W çeker; ESP32 ve sensörler USB'den | ✓ |
-| Mantık seviyesi | ESP32 3,3 V; DRV8874 mantık 1,8–5 V; Adafruit kartları 3,3 V; enkoder 3,3 V ile beslenecek | ✓ (enkoderin 3,3 V'ta çalıştığı montajda doğrulanacak; değilse seviye çevirici) |
+| Mantık seviyesi | ESP32 3,3 V; DRV8874 mantık 1,8–5 V; Adafruit kartları 3,3 V; enkoder 3,3 V ile beslenecek | ✓ (veri sayfası enkoder beslemesini 3,3–5 V veriyor; seviye çevirici gerekmez) |
 | I²C adresleri | Motor AS5600 0x36, INA228 0x40 (I²C-0, 1 MHz); kol AS5600 0x36, TMP117 0x48 ve 0x49 (I²C-1, 400 kHz) | ✓ (iki AS5600 ayrı hatlarda; ikinci TMP117'de ADDR köprüsü) |
 | Mil çapları | Motor 6 mm D → kaplin motor tarafı; kol mili 8 mm → KFL08 / 608 / hex göbek / kaplin kol tarafı | ✓ |
 | Mıknatıs | Ø6 diametral × 2 → kol mili ucundaki ve motor arka milindeki tutucularda; AS5600 hava aralığı 0,5–3 mm | ✓ (tutucular baskı parçası); motor tarafında Hall sayım/tur montajda kontrol edilir |
@@ -146,19 +146,19 @@ Ayarlanabilir boşluklu kaplin (dil ve yuva, 0 / 1,5 / 3 / 5°) hazır satılmı
 
 | Kalem grubu | Türk firmaları (TL) | EKOM teklifine girecek ($, DigiKey liste) |
 |---|---|---|
-| Elektronik ve motor (E1–E8) | 639,29 (E1) | 77,74 (E2–E8, ikinci AS5600 ve yedek mıknatıs dahil) |
-| Güç ve elektrik (P1–P6) | ≈ 580 (evdeki adaptörle) – 980 (yeni adaptörle) | — |
-| **Elektronik + güç toplamı** | **≈ 1.220–1.620 TL** | **77,74 $** + EKOM'un kargo, gümrük ve vergi payı |
+| Elektronik ve motor (E1–E8) | 665,41 (E1) | 77,74 (E2–E8, ikinci AS5600 ve yedek mıknatıs dahil); E3 çıkarılırsa 67,74 |
+| Güç ve elektrik (P1–P6) | ≈ 580 (evdeki adaptörle) – 1.065 (yeni masa tipi adaptörle) | — |
+| **Elektronik + güç toplamı** | **≈ 1.250–1.730 TL** | **77,74 $** (E3'süz 67,74 $) + EKOM'un kargo, gümrük ve vergi payı |
 
-Panel tipi Mean Well seçilirse: + ≈ 790 TL ve + 16,04 $.
+Panel tipi Mean Well seçilirse (masa tipi adaptör yerine): + ≈ 290 TL ve + 16,04 $, ayrıca sigorta, kablo ve kutu.
 
 | Mekanik | A: hazır parçalar | B: baskı hizmeti |
 |---|---|---|
-| Ortak kalemler (M1–M9) | ≈ 1.070–1.570 TL | ≈ 920–1.270 TL (kaplin baskısı B1'e dahil) |
+| Ortak kalemler (M1–M9) | ≈ 1.080–1.580 TL | ≈ 930–1.280 TL (kaplin baskısı B1'e dahil) |
 | Seçeneğe özgü | ≈ 1.150–1.850 TL + braket ≈ 2–5 $ | ≈ 1.470–3.120 TL |
-| **Mekanik toplam** | **≈ 2.220–3.420 TL + ≈ 2–5 $** | **≈ 2.390–4.390 TL** |
+| **Mekanik toplam** | **≈ 2.230–3.430 TL + ≈ 2–5 $** | **≈ 2.400–4.400 TL** |
 
-**Genel toplam (dengeli elektronik + mekanik):** A ile ≈ 3.440–5.040 TL + ≈ 80–83 $; B ile ≈ 3.610–6.010 TL + ≈ 78 $. EKOM'un TL teklifi kargo, gümrük ve vergileri içerdiğinden $ kısmı TL'ye çevrildiğinde liste fiyatından yüksek çıkar.
+**Genel toplam (dengeli elektronik + mekanik):** A ile ≈ 3.480–5.160 TL + ≈ 80–83 $; B ile ≈ 3.650–6.130 TL + ≈ 78 $ (E3 çıkarılırsa $ kısmından 10 $ düşer). EKOM'un TL teklifi kargo, gümrük ve vergileri içerdiğinden $ kısmı TL'ye çevrildiğinde liste fiyatından yüksek çıkar.
 
 Pazar araştırmasından sonra iki seçeneğin maliyeti birbirine yaklaştı: profil aksesuarları beklenenden pahalı, baskı hizmetinin fiyatı ise teklife bağlı. Seçimi rijitlik ve iş yükü belirlemeli: A daha rijit ve sökülüp takılabilir, B daha az parça tedariki gerektirir.
 
@@ -182,4 +182,6 @@ Aralıkla verilen fiyatlar pazar araştırmasına dayalı tahmindir; sipariş ö
 - **Pazar araştırmasıyla netleşenler:** 608-2Z (≈ 160 TL), hassas terazi (260–560 TL), M3 insert (10'lu 280 TL).
 - **EKOM teklifi:** E2–E8 DigiKey sepetine eklenip EKOM'a gönderilecek; TL teklif bu listeye işlenecek. Üniversite kurumsal hesabı kullanılabilir mi, danışmana sorulacak.
 - **Adaptör:** evdeki adaptörün etiketi kontrol edilecek (12 V, ≥ 2 A).
-- **Motor veri sayfası:** direnc.net sayfası dişli oranını ve enkoder ayrıntısını vermiyor; veri sayfasından (ve gelen ürünün etiketinden) 1:30 oranı ve enkoder besleme gerilimi doğrulanacak.
+- ~~**Motor veri sayfası.**~~ **Kapandı (08.11.2026):** direnc.net'in veri sayfası 12 V / 333 rpm için 1:30 oranını, 0,34 / 0,49 N·m'yi ve 3,3–5 V enkoder beslemesini doğruluyor (E1). Gelen ürünün etiketi yine kontrol edilir; ürün sayfasındaki "21KG" ve "0,08–0,15 A" ifadeleri veri sayfasıyla uyuşmuyor, veri sayfası esas alındı.
+- **E3 stokta yok (08.11.2026):** ESP32-DevKitC-32E DigiKey'de 0 adet (tahmini Ağustos 2027). Eldeki ESP32-S yeterli; yedek alınıp alınmayacağı kullanıcı kararı.
+- **Adaptör jak ölçüsü:** direnc.net masa tipi 12 V 3 A adaptörün sayfasında jak ölçüsü yok; yeni adaptör alınırsa sorulacak.
