@@ -109,14 +109,58 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
 </header>
 
 <section>
-  <h2>Kısaca</h2>
+  <h2>Yapılanlar ve elde edilenler</h2>
   <div class="stats">
-    <div class="stat"><b>0 / 114</b><span>açı × kazanç denemesinde boşluk salınımı yok (motor tarafı döngü, dijital ikiz)</span></div>
-    <div class="stat"><b>≤ 0,27°</b><span>kalıcı hata 10–175° arasında, açıya göre ofset tablosuyla (gerçekçi enkoder)</span></div>
-    <div class="stat"><b>180°</b><span>tek açık nokta: yanlış yüz varsayılırsa hata ≈ 3°. Çalışmanın katkısı burada</span></div>
+    <div class="stat"><b>42 / 42</b><span>180° çevresindeki senaryoların hepsinde yüz kestirici kolu doğru yüze getiriyor. Akımın işaretine bakan basit yöntem: 42'de 20</span></div>
+    <div class="stat"><b>3° → 0,2°</b><span>kol yanlış yüzde kaldığında kalıcı hata; yoklama kolu nominal koşullarda en çok ≈ 0,4° oynatıyor</span></div>
+    <div class="stat"><b>0 / 114</b><span>açı × kazanç denemesinde boşluk salınımı yok (motor tarafı döngü)</span></div>
+    <div class="stat"><b>4 µs</b><span>algoritmanın ESP32'de bir adımı; 1 kHz döngüde, kararlar MATLAB ikiziyle birebir aynı</span></div>
   </div>
-  <p>Sonuçlar henüz dijital ikizden (ayrıntılı benzetim modeli). Kontrolcü kol açısını görmüyor; kol sensörü (AS5600) yalnız hakem. Fiziksel düzenek hazırlanıyor.</p>
-  <div class="note"><b>Çerçeve değişti (5 Kasım)</b>Önceki manşetler (kazanç planlamasıyla 3,5× hızlı yerleşme, 10–170° salınımsız) kontrolcü kol açısını görürken alınmıştı. Kol sensörsüz döngüde o salınım zaten çıkmıyor; çalışma bu yüzden yeniden çerçevelendi. Eski sonuçlar 3. ve 4. bölümde arşiv olarak duruyor.</div>
+  <div class="tbl"><table>
+    <tr><th>Yapılan</th><th>Elde edilen</th></tr>
+    <tr><td>Problemin yeri</td><td>Kolun yanlış yüze düştüğü bölge 180°'nin ±1°'si. Orada kolu yüzde tutan tork sürtünmenin onda biri olduğu için akımın işaretine bakmak işe yaramıyor; kolun karşı yüze çarpması ise motor torkunda iz bırakıyor.</td></tr>
+    <tr><td>Üst sınır</td><td>Yüz kusursuz bilinse bile tam 180° düzelmiyor (yerçekiminin işaret değiştirdiği nokta). Tam 180° istekleri kolun geldiği tarafa göre 179,5° / 180,5°'ye kaydırılıyor; yöntem ±0,5–1° bandını düzeltiyor.</td></tr>
+    <tr><td>Yüz kestirici (asıl katkı)</td><td>Tork gözlemcisi çarpmayı yakalıyor; çarpma çok küçükse küçük bir tork itişiyle yoklanıyor; telafi yumuşak geçişle değişiyor. Kolda kontrolcüye giren sensör yok.</td></tr>
+    <tr><td>Donanıma uygunluk</td><td>Motor arka miline AS5600 (kol tarafında 0,003°) seçildi; motorun kendi enkoderi (0,27°) yetmiyor. 1 kHz döngü, sensör gecikmesi ve gürültüsü, INA228 akım ölçümü (beklenen gürültünün ≈ 20 katına kadar pay) ve deneylerin yapılacağı gerilim sürüşüyle 42/42.</td></tr>
+    <tr><td>Dayanıklılık</td><td>Yük ve dişli sertliği ±%20, boşluk ±%10, motor ısınması (sürtünme ×0,5–1,5) tek başına sonucu değiştirmiyor. Birkaç model hatası aynı anda büyük olunca pay daralıyor (42'de 37–42): donanımda izlenecek risk.</td></tr>
+    <tr><td>Doğrulama altyapısı</td><td>Dijital ikiz Simulink/Simscape fiziksel modeliyle karşılaştırıldı; tanılama yöntemleri ikizde %0,1–3,5 doğrulukla sınandı; ikizin kendisi ESP32'de gerçek zamanlı koştu (döngü bütçesinin %19'u).</td></tr>
+    <tr><td>Deney protokolleri</td><td>Tanılama (D0–D5, ≈ 30 dk kayıt), salınım sınırı (D6) ve 180° deneyi (D7: 42 senaryo × 3, ≈ 30 dk, basit yöntemle karşılaştırmalı) yazıldı.</td></tr>
+  </table></div>
+  <p>Bütün sonuçlar dijital ikizden (ayrıntılı benzetim modeli); donanım parçaları henüz sipariş edilmedi. Ayrıntılar: <a href="#durum">Durum</a> ve <a href="defter.html#kestirici">araştırma defteri, 8. bölüm</a>.</p>
+  <div class="note"><b>Çerçeve değişti (5 Kasım)</b>Önceki manşetler (kazanç planlamasıyla 3,5× hızlı yerleşme) kontrolcü kol açısını görürken alınmıştı. Kol sensörsüz döngüde o salınım zaten çıkmıyor; çalışma bu yüzden 180°'deki yüz belirsizliğine yeniden çerçevelendi. Eski sonuçlar 3. ve 4. bölümde arşiv olarak duruyor.</div>
+</section>
+
+<section id="sonraki">
+  <h2>Sonraki adımlar</h2>
+  <p>İkiz tarafında siparişten önce yapılması gereken iş kalmadı. Sıradaki adımlar donanıma bağlı.</p>
+  <h3>1. Siparişten önce: kararlar</h3>
+  <ul>
+    <li><b>Ödeme:</b> EKOM siparişinin üniversitenin kurumsal hesabıyla verilmesi (EKOM üniversitelere vade tanıyor).</li>
+    <li><b>Gövde:</b> hazır alüminyum profil (daha rijit, sökülüp takılabilir) ya da 3B baskı; okulda kullanılabilecek bir 3B yazıcı olup olmadığı.</li>
+    <li><b>Küçük kalemler:</b> yedek ESP32 kartı (stokta yok, eldeki kart aynı çip ve yetiyor), evdeki 12 V adaptörün akım değeri.</li>
+  </ul>
+  <h3>2. Parçalar yoldayken</h3>
+  <ul>
+    <li><b>Mekanik tasarım (3B):</b> ayarlanabilir boşluk kaplini, sensör tutucuları, D5 için motor dişlisini kilitleyen pim, mekanik durdurucular (öneri −15° ve 195°).</li>
+    <li><b>Sensör ve sürücü kodu:</b> iki AS5600, INA228, TMP117 okuma; sürücüde gerilim sürüşü ve yedek olarak zıt EMK telafisi. Kontrol algoritması kartta hazır.</li>
+    <li><b>İsteğe bağlı, ikizde:</b> yoklama itişini ölçülen sürtünmeye göre ayarlamak (birleşik hatalardaki payı genişletmek için aday önlem).</li>
+  </ul>
+  <h3>3. Malzeme gelince: deneyler</h3>
+  <div class="tbl"><table>
+    <tr><th>#</th><th>Deney</th><th>Ne çıkar</th></tr>
+    <tr><td>D0</td><td>Kalibrasyon: sensör yönleri, akım sıfırı, döngü zamanlaması, akım sınırı</td><td>Ölçekler</td></tr>
+    <tr><td>D1–D2</td><td>Kol sökülü: gerilim sinüsü, yavaş tork rampası</td><td>Motor sabiti, sargı direnci, rotor eylemsizliği, sürtünmeler</td></tr>
+    <tr><td>D3–D4</td><td>Kol takılı: 90° ve 0° çevresinde yavaş tarama</td><td>Dişli sertliği, yük, boşluk (ofset tablosu bunlarla kurulur)</td></tr>
+    <tr><td>D5</td><td>Motor dişlisi kilitli, kola hafif vuruş</td><td>Temas sönümü, kol eylemsizliği</td></tr>
+    <tr><td>D6</td><td>Açı × kazanç taraması</td><td>Salınım sınırı, ikizle karşılaştırma</td></tr>
+    <tr><td><b>D7</b></td><td><b>180° deneyi:</b> 42 senaryo × 3 tekrar, aynı senaryolar basit yöntemle de</td><td><b>Katkının kanıtı:</b> yüz kestiricinin başarısı ve basit yönteme göre farkı</td></tr>
+  </table></div>
+  <h3>4. Sonra</h3>
+  <ul>
+    <li>Deney sonuçlarının ikizle karşılaştırılması; gerekirse ikizin ve kestirici ayarlarının güncellenmesi.</li>
+    <li>Yazım: hedef IEEE/ASME TMECH ya da IEEE TIE düzeyinde bir dergi makalesi.</li>
+  </ul>
+  <div class="note"><b>İzlenecek riskler</b>Birkaç model hatası birlikte büyükse pay daralıyor (ikizde 42'de 37–42). Gerilim sürüşünde bu köşelerde birkaç senaryo daha kaybediliyor; o durumda deney zıt EMK telafisiyle tekrarlanacak. Tam 180° yöntemin sınırı olarak yazılacak.</div>
 </section>
 
 <section>
@@ -160,8 +204,8 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   </ul>
   <h3>Kodlama</h3>
   <ul>
-    <li><b>MATLAB:</b> tasarım ve tarama betikleri (yazılıyor).</li>
-    <li><b>ESP32 C/C++ firmware</b> (henüz yazılmadı).</li>
+    <li><b>MATLAB:</b> dijital ikiz, tasarım ve tarama betikleri (yazıldı).</li>
+    <li><b>ESP32 C/C++ firmware:</b> kontrolcü, gözlemci ve yüz kestirici yazıldı ve kartta sınandı; sensör ve sürücü kodu parçalar yoldayken yazılacak.</li>
     <li><b>Veri kayıt ve analiz betikleri:</b> deneyden gelen veriyi ikizle karşılaştırmak için.</li>
   </ul>
   <div class="tbl"><table>
@@ -277,7 +321,7 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   </table></div>
 </section>
 
-<section>
+<section id="durum">
   <h2><span class="no">6</span>Durum</h2>
   <div class="tbl road"><table>
     <tr><td><span class="pill done">Bitti</span></td><td>Modelleme ve dijital ikiz; yerçekimli DF ve benzetimle doğrulanması; sistem tanılama planının ikizde sınanması; literatür taraması (51 tam metin)</td></tr>
@@ -296,8 +340,8 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
     <tr><td><span class="pill done">Bitti</span></td><td>ESP32 (6–7 Kasım): algoritma C'ye çevrildi ve kartta 1 kHz'te koşuyor (adım başına ≈ 4 µs). Önce MATLAB'daki ikizle adım adım (84 senaryoda kararlar birebir aynı), sonra ikizin kendisi de kartın içinde gerçek zamanlı koşturuldu: 42/42, döngü bütçesinin %19'u. Parçalar gelmeden algoritmanın kartta doğru çalıştığı gösterildi</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>180° deney protokolü (8 Kasım): ikizdeki 42 senaryo donanım deneyine çevrildi (3 tekrar, ≈ 30 dk); kol açısı ölçümü yalnız doğrulama için. Aynı senaryolar akımın işaretine bakan basit yöntemle de koşulacak (ikizde 42'de 20), fark katkının kanıtı</td></tr>
     <tr><td><span class="pill done">Bitti</span></td><td>Gerilim sürüşü (8 Kasım): ikize motorun elektrik tarafı eklendi (sargı direnci, endüktans, zıt EMK, sürücünün akım sınırı) ve Simscape modeliyle karşılaştırılarak doğrulandı. Deneylerin yapılacağı basit gerilim sürüşünde 42 senaryonun hepsi geçiyor. Yalnız büyük model hatalarının üst üste bindiği köşelerde zıt EMK'nın ek frenlemesi birkaç senaryo kaybettiriyor; firmware'de tek satırlık zıt EMK telafisi bunu geri getiriyor, yedek olarak eklenecek</td></tr>
-    <tr><td><span class="pill next">Sırada</span></td><td>Sipariş (malzeme listesi güncel, 8 Kasım fiyatlarıyla ≈ 3.500–5.200 TL + ≈ 70–80 $) ve mekanik parçaların 3B tasarımı</td></tr>
-    <tr><td><span class="pill next">Sırada</span></td><td>Donanım: montaj, r ve K<sub>s</sub>'nin bir kez ölçülmesi, 180° çevresi deneyleri; sensör ve sürücü kodları</td></tr>
+    <tr><td><span class="pill done">Karar</span></td><td>Sürücü modu (8 Kasım): 180° deneyleri gerilim sürüşüyle yapılacak, zıt EMK telafisi yedek</td></tr>
+    <tr><td><span class="pill next">Sırada</span></td><td>Sipariş (malzeme listesi güncel, 8 Kasım fiyatlarıyla gövde seçeneğine göre ≈ 3.500–6.100 TL + ≈ 70 $), parçalar yoldayken 3B tasarım ve sensör/sürücü kodu, ardından deneyler: <a href="#sonraki">Sonraki adımlar</a></td></tr>
   </table></div>
   <p>Kapsam notu: integral etkili bir kontrolcüde statik sürtünmenin yol açtığı yapışma–kayma salınımı her kazançta olası (Armstrong ve Amin 1996). Bu yüzden sürtünme için ayrı, bilinen bir önlem (integratör ölü bandı) kullanılıyor.</p>
 </section>
@@ -318,7 +362,7 @@ footer{color:var(--muted); font-size:14.5px; text-align:center}
   <p>Yerçekimi ön yükünün sıfıra indiği bölgede, kolun boşluğun hangi yüzüne yaslandığını yalnız motor sinyalleriyle kestiren bir çalışma bulunamadı. Tam liste: <a href="https://github.com/SafakSahinn/dc-motor-robot-arm/blob/main/literatur/okuma_notlari.md">okuma notları</a>.</p>
 </section>
 
-<footer>Son güncelleme: 5 Kasım 2026 · Önceki aşamaların tamamı (literatür, malzeme, düzenek seçenekleri, tanılama, günlük): <a href="defter.html">ayrıntılı araştırma defteri</a></footer>
+<footer>Son güncelleme: 10 Kasım 2026 · Önceki aşamaların tamamı (literatür, malzeme, düzenek seçenekleri, tanılama, günlük): <a href="defter.html">ayrıntılı araştırma defteri</a></footer>
 </main>
 
 <script>
