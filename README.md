@@ -148,7 +148,12 @@ cd(fullfile(getenv('USERPROFILE'), 'Downloads', 'dc-motor-robot-arm-main', 'simu
 sunum_demo
 ```
 
-Ya da MATLAB'ın sol tarafındaki **Current Folder** panelinde `simulasyon/5_planlama` klasörüne gidip `sunum_demo` yaz.
+> **Windows notu:** "Tümünü ayıkla" ZIP'i çoğu zaman iç içe iki klasöre açar (`dc-motor-robot-arm-main\dc-motor-robot-arm-main\...`). `cd` hata verirse şunu kullan:
+> ```matlab
+> cd(fullfile(getenv('USERPROFILE'), 'Downloads', 'dc-motor-robot-arm-main', 'dc-motor-robot-arm-main', 'simulasyon', '5_planlama'))
+> ```
+
+Ya da MATLAB'ın sol tarafındaki **Current Folder** panelinde `simulasyon/5_planlama` klasörüne gidip `sunum_demo` yaz. Doğru klasörde olduğunu `ls sunum_demo.m` ile kontrol edebilirsin.
 
 **Beklenen çıktı** (≈ 10 sn, her yöntem ≈ 3 sn):
 
