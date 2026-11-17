@@ -1,47 +1,213 @@
-# Dişli DC Motorlu Tek Eklemli Robot Kol
+# Dişli DC Motorlu Robot Kol: 180°'de Boşluk Yüzü Kestirimi
 
-Tek eklemli, dişli DC motorla sürülen bir robot kolunun modellenmesi, simülasyonu ve fiziksel gerçeklenmesi. Proje, kolun doğrusal olmayan durum uzayı modeliyle başladı ve **dişli boşluğunun (backlash) ürettiği sürekli salınımların kolun çalışma açısına nasıl bağlı olduğunu** inceleyen bir araştırmaya dönüştü. **Güncel çerçeve (5 Kasım 2026):** bu açı bağımlılığını kullanarak kontrolcüyü ve gözlemciyi kolun açısına göre önceden ayarlamak ve salınımı yük tarafı sensörü olmadan hiç başlatmamak ([framing.md, 0. bölüm](calisma_notu/framing.md)).
+**Tek cümleyle:** Kol dik yukarıdayken (≈ 180°) dişli boşluğunun hangi yüzüne yaslandığı belirsizleşiyor. Bu çalışmada bu yüzü **kola sensör koymadan, yalnız motor akımı ve motor açısıyla** kestiren bir algoritma tasarlandı. Dijital ikizde 42 senaryonun hepsinde başarılı (basit yöntem 42'de 20), algoritma ESP32'de de çalışıyor.
 
-**Proje sayfası (güncel çalışmanın özeti):** <https://safaksahinn.github.io/dc-motor-robot-arm/> · [ayrıntılı araştırma defteri](https://safaksahinn.github.io/dc-motor-robot-arm/defter.html)
+<p align="center"><img src="sunum/img/yuz_kestirici.gif" width="720" alt="Kol 180 derecede: basit yöntem yanlış yüze düşüp 3 derece sapıyor, yüz kestirici hedefte kalıyor"></p>
 
-**4. adım raporu (simülasyon ve doğrulama, PDF):** [rapor/adim4_simulasyon_ve_dogrulama.pdf](rapor/adim4_simulasyon_ve_dogrulama.pdf) · [içerik ve kaynak](rapor/README.md) · [web sayfası](https://safaksahinn.github.io/dc-motor-robot-arm/adim4.html)
+<p align="center"><i>Kol 180°'de, iki yöntem aynı koşulda. Kırmızı: akımın işaretine bakan basit yöntem, 4,8 s'de yanlış yüze karar verip ≈ 3° sapıyor. Mavi: yüz kestirici hedefte kalıyor. Sapma çizimde 10 kat büyütüldü.</i></p>
 
-**Çalışma notu (hazırlanıyor):** [framing ve kısıtlar](calisma_notu/framing.md) · [donanım ve yazılım planı](calisma_notu/mimari.md) · [malzeme listeleri](calisma_notu/malzeme.md) · [framing adaylarının karşılaştırması](calisma_notu/framing_adaylari.md)
-
-![Robot kolu animasyonu](sekiller/model_animasyon.gif)
-
-*Temel model: motora sabit 4.905 V verildiğinde kolun üç farklı başlangıç açısından (80°, 90°, 100°) davranışı.*
-
----
-
-## İçindekiler
-
-**Bölüm I: Araştırma**
-1. [Araştırma sorusu](#1-araştırma-sorusu)
-2. [Literatür](#2-literatür)
-3. [Simülasyon bulguları](#3-simülasyon-bulguları)
-4. [Donanım](#4-donanım)
-
-**Bölüm II: Temel model**
-
-5. [Fiziksel sistem](#5-fiziksel-sistem)
-6. [Durumlar, giriş ve çıkış](#6-durumlar-giriş-ve-çıkış)
-7. [Hareket denklemleri](#7-hareket-denklemleri)
-8. [Durum uzayı modeli ve parametreler](#8-durum-uzayı-modeli-ve-parametreler)
-9. [Blok diyagram](#9-blok-diyagram)
-10. [Denge noktaları ve 90° doğrusallaştırma](#10-denge-noktaları-ve-90-doğrusallaştırma)
-11. [Açık çevrim simülasyonu](#11-açık-çevrim-simülasyonu)
-
-**Bölüm III**
-
-12. [Dosya yapısı ve çalıştırma](#12-dosya-yapısı-ve-çalıştırma)
-13. [Kaynaklar](#13-kaynaklar)
+| | |
+|---|---|
+| **Proje sayfası** | <https://safaksahinn.github.io/dc-motor-robot-arm/> |
+| **Araştırma defteri** (tüm ayrıntı) | <https://safaksahinn.github.io/dc-motor-robot-arm/defter.html> |
+| **Kendin çalıştır** | [aşağıda, 7. bölüm](#7-kendin-çalıştır-matlab) · tek komut: `sunum_demo` |
+| **Durum (17 Kasım 2026)** | Algoritma dijital ikizde ve ESP32'de hazır; donanım siparişi sırada |
 
 ---
 
-# Bölüm I: Araştırma
+## Sunum akışı (≈ 5 dakika)
 
-## 1. Araştırma sorusu
+1. [Problem](#1-problem-dişli-boşluğu-ve-180) · 2. [Literatür](#2-literatür-ne-taradık-ne-bulduk) · 3. [Boşluk](#3-kapattığımız-boşluk) · 4. [Çözüm](#4-çözüm) · 5. [Sonuçlar](#5-sonuçlar) · 6. [Sırada ne var](#6-riskler-ve-sonraki-adımlar) · 7. [Kendin çalıştır](#7-kendin-çalıştır-matlab) · 8. [Dosya yapısı](#8-dosya-yapısı)
+
+---
+
+## 1. Problem: dişli boşluğu ve 180°
+
+Motor ile kol arasındaki dişlide ≈ 3° boşluk var. Motor yön değiştirdiğinde dişli bu boşluk kadar boşta döner; kol o sırada motoru izlemez. Bu bir **ölü bölge** doğrusalsızlığıdır.
+
+Kol düşey düzlemde döndüğü için yerçekimi torku $mg\ell\sin\theta$ dişliyi sürekli bir yüze bastırır, yani doğal bir **ön gerilim** gibi davranır (AB sınıfı kuvvetlendiricide geçiş bozulmasını gideren ön gerilim gibi):
+
+- **90° (kol yatay):** ön gerilim en büyük, kolun hangi yüzde durduğu belli.
+- **180° (kol dik yukarı):** ön gerilim sıfır. Kol boşluğun iki ucundan birinde olabilir. Kontrolcü yanlış yüzü varsayarsa kol hedeften **≈ 3°** sapar.
+
+<p align="center"><img src="sunum/img/olu_bolge.svg" width="470" alt="Dişlinin aktarım karakteristiği: ölü bölge ve ön gerilim"></p>
+
+<p align="center"><i>Dişlinin aktarım karakteristiği. Yerçekimi çalışma noktasını ölü bölgeden çıkarır (90°); 0° ve 180°'de çalışma noktası ölü bölgenin ortasında kalır.</i></p>
+
+<details>
+<summary><b>Boşluğun etkisi, 3B fiziksel modelde (animasyon)</b></summary>
+
+<p align="center"><img src="sunum/img/bosluk_salinimi.gif" width="560" alt="Simscape Multibody modelinde boşluk salınımı"></p>
+
+<p align="center"><i>Simscape Multibody modeli, kol 90°'de: kontrolcü kol açısını geri beslerse boşluk sürekli bir salınım üretiyor (çevrim ≈ 142 ms). Bu, çalışmanın başlangıç sorusuydu; kontrolcünün yalnız motor tarafını görmesiyle bu salınım kayboluyor ve geriye 180°'deki yüz belirsizliği kalıyor.</i></p>
+</details>
+
+## 2. Literatür: ne taradık, ne bulduk
+
+Beş turda tarandı: **yüzü aşkın sorgu, ≈ 50 makalenin tam metni** (danışman listesindeki 13 kaynak dahil). Her makaleye "ne yapmış, bizden farkı ne" notu düşüldü: [`literatur/okuma_notlari.md`](literatur/okuma_notlari.md).
+
+| Tarih | Kaynak | Ne yapıldı |
+|---|---|---|
+| 18 Ekim | IEEE Xplore (kurum girişi) | 26 sorgu, 130 tekil makale. "Yerçekimi + boşluk + çalışma noktası" sorguları **0 sonuç** ([sorgular](literatur/ieee/ieee_sorgular_2026-10-18.md)) |
+| 18 Ekim | OpenAlex, Semantic Scholar, Crossref, arXiv | IEEE dışı yayınevleri; boşluk derlemesi Nordin–Gutman 2002'ye atıf yapan 497 çalışma süzüldü ([özet](literatur/ieee_disi/tarama_ozeti_2026-10-18.md)) |
+| 22 Ekim | Web of Science Core Collection | ≈ 12 sorgu, 45 kayıt tek tek incelendi ([özet](literatur/wos/wos_tarama_2026-10-22.md)) |
+| 24 Ekim | OpenAlex + web | En yakın 8 makaleye atıf yapan 75 çalışma, 17 hedefli sorgu (13'ü 0 sonuç) ([özet](literatur/son_tarama_2026-10-24.md)) |
+| 5 Kasım | IEEE, WoS, web, patentler | Seçilen çerçevenin kontrolü, 4 tur: IEEE 28, WoS 6, web 16 sorgu; ≈ 12 yeni tam metin ([özet](literatur/kontrol_taramasi/hedefli_tarama_2026-11-05.md)) |
+
+Okunanlar dört gruba ayrılıyor ve aralarındaki bağ boşluğu gösteriyor:
+
+<p align="center"><img src="sunum/img/literatur_gruplari.svg" width="660" alt="Literatürdeki dört grup ve bu çalışmanın yeri"></p>
+
+| Grup | Ne yapıyor | Eksik kalan |
+|---|---|---|
+| **1 · Salınımı inceleyenler**: Ghaffari 2013 (TMECH), Kollár–Stépán 2002 (CDC), Malzahn 2014 | Ön yükün salınımı önlediğini; ters sarkaçta (180°) boşluğun salınım ürettiğini gösteriyor | Sorunu tarif ediyor, çözmüyor |
+| **2 · Gözlemciyle telafi**: DOB / ESO çalışmaları (Wang 2024, LADOB 2023, Horng 2006) | Boşluğu bozucu gözlemcisiyle telafi ediyor | Yerçekimi yok |
+| **3 · Motor sinyaliyle ölçüm**: Gebler–Holtz 1998 (IECON), Ruderman–Iwasaki 2016 (TIE), Giovannitti 2022 (JIM) | Kola sensör koymadan, tork darbesiyle ya da gözlemciyle boşluğu / dişli torkunu kestiriyor | Kolun hangi yüzde durduğunu kestirmiyor |
+| **4 · Kalıcı hatayı düzeltme**: Neubauer 2015 (Mech. Sci.) | Motor torkunun işaretinden yüzü seçip hedefe ofset ekliyor | Tork = 0 iken (tam 180°'de) tanımsız |
+
+**Bağlantı:** 4. grubun kuralı, 1. grubun sorunu gözlediği noktada (180°, tork ≈ 0) çalışmıyor.
+
+## 3. Kapattığımız boşluk
+
+> Kol dik yukarıdayken boşluğun hangi yüzüne yaslandığını **kola sensör koymadan, yalnız motor akımı ve motor açısıyla** bulan bir çalışma bulunamadı. Katkı bu.
+
+Yeni bir parça icat edilmedi; bilinen parçalar birleştirildi: 3. gruptan **tork gözlemcisi** ve **küçük tork darbesi** fikri alınıp 4. grubun kuralının çalışmadığı noktaya uygulandı.
+
+| Parça | Literatürde | Bu çalışmada |
+|---|---|---|
+| Motor tarafı döngü + açıya göre ofset tablosu | Yapılmış (Neubauer 2015) | Temel olarak kullanılıyor, katkı sayılmıyor |
+| 180°'de yüz kestirimi, yalnız motor sinyalleriyle | **Doğrudan yapan yok** | **Ana katkı** |
+| Boşluk ve dişli sertliğinin çevrim içi tanılanması | Kısmen yapılmış (Giovannitti 2022, Li 2026) | Kapsam dışı, bir kez ölçülüyor |
+
+## 4. Çözüm
+
+<p align="center"><img src="sunum/img/cozum_blok.svg" width="900" alt="Blok şema: ofset tablosu, kontrolcü, sürücü, motor, dişli boşluğu, kol; yüz kestirici motor sinyallerinden yüzü kestirip ofset tablosuna veriyor"></p>
+
+<p align="center"><i>Yeşil blok katkı (yüz kestirici). Turuncu blok sorunun kaynağı. Kol açısı sensörü (kesik çizgi) kontrol döngüsünde yok, yalnız doğrulama için.</i></p>
+
+Motorun gideceği açı: $\varphi_{ref} = \theta_{ref} + s\,r + mg\ell\sin\theta_{ref}/K_s$. Burada $s = \pm 1$ kolun yaslandığı yüz. 10–175°'de $s$ yerçekiminin işaretinden belli; 180° çevresinde yüz kestirici seçer:
+
+1. **Olay yakalama:** kol boşluğun öbür yüzüne çarparsa bu çarpma motor torkunda iz bırakır; motor tarafı **tork gözlemcisi** bunu yakalar.
+2. **Yoklama:** çarpma motoru kıpırdatmayacak kadar küçükse motora **küçük bir tork itişi** verilir ve kolun hangi yüzde olduğu yoklanır (yazılım benzetmesiyle: cevap gelmeyince gönderilen "ping").
+3. **Yumuşak geçiş:** ofset yüz değişince basamakla değil rampayla değişir.
+
+Tam 180° istekleri kolun geldiği tarafa göre 179,5° / 180,5°'ye kaydırılır: yüz kusursuz bilinse bile tam 180°'de yerçekimi işaret değiştirdiği için kol karşı yüze düşebiliyor (yöntemin sınırı).
+
+## 5. Sonuçlar
+
+| 42 / 42 | 3° → 0,2° | 0 / 114 | 4 µs |
+|:---:|:---:|:---:|:---:|
+| 180° çevresindeki senaryoların hepsi başarılı (basit yöntem: 42'de 20) | kol yanlış yüzde kaldığında kalıcı hata | açı × kazanç denemesinde boşluk salınımı (motor tarafı döngü) | algoritmanın ESP32'de bir adımı (1 kHz döngü) |
+
+<p align="center"><img src="sunum/img/sonuc_42senaryo.png" width="900" alt="sunum_demo çıktısı: üç senaryoda basit yöntem ve yüz kestirici"></p>
+
+<p align="center"><i><code>sunum_demo</code> çıktısı (gerçekçi koşul: motor milinde AS5600, 1 kHz, sensör gecikmesi ve gürültüsü, sürtünme). Üst: kol açısının hedeften sapması, kırmızı basit yöntem, mavi yüz kestirici, noktalı çizgiler ±0,5° başarı bandı. Alt: gri gerçek temas yüzü (kol sensöründen, yalnız hakem), mavi kestiricinin tahmini.</i></p>
+
+| Yapılan | Elde edilen |
+|---|---|
+| Belirsiz bandın ölçülmesi | Kol yanlış yüze yalnız 180°'nin ±1°'si içinde düşüyor; orada kolu tutan tork sürtünmenin onda biri, bu yüzden akımın işaretine bakmak işe yaramıyor |
+| Donanıma uygunluk | Motor arka miline AS5600 (kol tarafında 0,003°; motorun kendi enkoderi 0,27° yetmiyor); 1 kHz, sensör gecikmesi ve gürültüsü, INA228 akım gürültüsünün ≈ 20 katı, gerilim sürüşü: hepsinde 42/42 |
+| Dayanıklılık | Yük ve dişli sertliği ±%20, boşluk ±%10, sürtünme ×0,5–1,5 tek başına sonucu değiştirmiyor |
+| Doğrulama | Dijital ikiz Simscape fiziksel modeliyle karşılaştırıldı; algoritma C'ye çevrildi, ESP32'de MATLAB'la 84 senaryoda birebir aynı kararlar; ikizin kendisi kartta gerçek zamanlı koştu (döngü bütçesinin %19'u) |
+| Deney protokolleri | Tanılama (D0–D5), salınım sınırı (D6), 180° deneyi (D7: 42 senaryo × 3, basit yöntemle karşılaştırmalı) yazıldı: [`calisma_notu/deney_protokolu.md`](calisma_notu/deney_protokolu.md) |
+
+**Bütün sonuçlar dijital ikizden; donanım henüz sipariş edilmedi.**
+
+## 6. Riskler ve sonraki adımlar
+
+**Riskler**
+- Birkaç model hatası aynı anda büyükse pay daralıyor (ikizde 42'de 37–42). Aday önlem: yoklama itişini ölçülen sürtünmeye göre ayarlamak (henüz sınanmadı).
+- Tam 180° düzelmiyor; yöntem ±0,5–1° bandını düzeltiyor. Yöntemin sınırı olarak yazılacak.
+
+**Sonraki adımlar**
+1. **Sipariş** (≈ 3.500–6.100 TL + ≈ 70 $, gövde seçeneğine göre): [`calisma_notu/malzeme.md`](calisma_notu/malzeme.md)
+2. **Parçalar yoldayken:** 3B mekanik tasarım (boşluk kaplini, sensör tutucuları, kilit pimi, durdurucular); sensör (2 × AS5600, INA228, TMP117) ve sürücü (DRV8874) kodu
+3. **Deneyler:** D0 kalibrasyon → D1–D5 tanılama → D6 salınım sınırı → **D7 180° deneyi (katkının kanıtı)**
+4. **Sonra:** deney–ikiz karşılaştırması; hedef IEEE/ASME TMECH ya da IEEE TIE düzeyinde dergi makalesi
+
+---
+
+## 7. Kendin çalıştır (MATLAB)
+
+**Gereken:** MATLAB (R2026b ile denendi). `sunum_demo` ve `sunum_animasyon` için ek araç kutusu gerekmez. Simulink modellerini açmak için Simulink + Simscape (+ Simscape Multibody) gerekir.
+
+### Adım 1: Repoyu indir
+
+- **ZIP ile:** bu sayfanın üstündeki yeşil **Code** düğmesi → **Download ZIP** → ZIP'i aç. Klasörün adı `dc-motor-robot-arm-main` olur.
+- **Git ile:**
+  ```bash
+  git clone https://github.com/SafakSahinn/dc-motor-robot-arm.git
+  ```
+
+### Adım 2: MATLAB'da çalıştır
+
+Komut penceresine (yolu kendi indirdiğin yere göre değiştir; örnek: ZIP İndirilenler klasörüne açıldıysa):
+
+```matlab
+cd(fullfile(getenv('USERPROFILE'), 'Downloads', 'dc-motor-robot-arm-main', 'simulasyon', '5_planlama'))
+sunum_demo
+```
+
+Ya da MATLAB'ın sol tarafındaki **Current Folder** panelinde `simulasyon/5_planlama` klasörüne gidip `sunum_demo` yaz.
+
+**Beklenen çıktı** (≈ 10 sn, her yöntem ≈ 3 sn):
+
+```text
+=== Yüz kestirici gösterimi: 42 senaryo, AS5600 + 1 kHz + gecikme + gürültü, sürtünmeli ikiz
+  Basit yöntem (akımın işareti)    : 20 / 42 senaryo geçti   (en kötü kalıcı hata 3.24°, 3 s)
+  Yüz kestirici (olay + yoklama)   : 42 / 42 senaryo geçti   (en kötü kalıcı hata 0.21°, 3 s)
+  Ölçüt (H7): son 1 s ortalama |hata| <= 0,5°, en büyük <= 1°, kol doğru yüzde.
+```
+
+ve [5. bölümdeki](#5-sonuçlar) 6 grafikli şekil açılır.
+
+### Sunumda açılabilecek diğer dosyalar
+
+| Ne | Dosya | Nasıl |
+|---|---|---|
+| Canlı gösterim (yukarıda) | [`simulasyon/5_planlama/sunum_demo.m`](simulasyon/5_planlama/sunum_demo.m) | `sunum_demo` |
+| README görsellerini yeniden üret | [`simulasyon/5_planlama/sunum_animasyon.m`](simulasyon/5_planlama/sunum_animasyon.m) | `sunum_animasyon` (≈ 1 dk; `sunum/img/` üzerine yazar) |
+| Simscape fiziksel modeli | [`simulasyon/simulink/sm_kol_model.slx`](simulasyon/simulink/sm_kol_model.slx) | `open('../simulink/sm_kol_model.slx')` (yalnız göster) |
+| Elektrik taraflı model (gerilim sürüşü) | [`simulasyon/simulink/sm_motor_model.slx`](simulasyon/simulink/sm_motor_model.slx) | `open('../simulink/sm_motor_model.slx')` |
+| Dijital ikizin çekirdeği | [`simulasyon/kol_benzetim.m`](simulasyon/kol_benzetim.m) | `edit ../kol_benzetim.m` |
+| Ayrıntılı sonuç logları | [`yuz_kestirici_as5600_log.txt`](simulasyon/5_planlama/yuz_kestirici_as5600_log.txt) · [`mod1_kestirici_log.txt`](simulasyon/5_planlama/mod1_kestirici_log.txt) · [`dogrula_elk_log.txt`](simulasyon/simulink/dogrula_elk_log.txt) | GitHub'da tıkla ya da `edit` |
+| ESP32 C kodu | [`firmware/src/kontrol.cpp`](firmware/src/kontrol.cpp) | kontrolcü, gözlemci, yüz kestirici |
+
+> **Not:** `belirsiz_bant`, `yuz_kestirici`, `mod1_kestirici`, `dogrula_elk` gibi asıl araştırma betikleri uzun sürer ve log dosyalarının üstüne yazar. Gösterim için yalnız `sunum_demo` kullan; o hiçbir dosya yazmaz.
+
+## 8. Dosya yapısı
+
+```
+dc-motor-robot-arm/
+├── README.md                    # bu sayfa (sunum)
+├── sunum/img/                   # README görselleri (sunum_animasyon.m üretir)
+├── simulasyon/
+│   ├── kol_benzetim.m           # dijital ikiz: iki kütle + boşluk + yerçekimi + kontrol + sensörler
+│   ├── 4a_ghaffari/             # literatür sonucunun yeniden üretimi, düzenek seçenekleri (secenek_duzenek.m)
+│   ├── 5_planlama/              # yüz kestirici: belirsiz bant, üst sınır, kestirici, duyarlılık, mod 1
+│   │   ├── sunum_demo.m         # ← canlı gösterim
+│   │   └── sunum_animasyon.m    # ← README görselleri
+│   ├── 6_esp32/                 # ESP32 ile MATLAB arasındaki seri protokol ve kart üstü doğrulama
+│   └── simulink/                # Simulink / Simscape modelleri ve doğrulama betikleri
+├── firmware/src/                # ESP32 C++ kodu (kontrolcü, gözlemci, yüz kestirici, protokol)
+├── calisma_notu/                # çerçeve, deney protokolü, malzeme, mimari
+├── literatur/                   # sorgu listeleri, tarama özetleri, okuma notları
+├── donanim/                     # alışveriş listesi, tasarım kararları
+├── rapor/                       # 4. adım raporu (PDF) ve görselleri
+├── site/ → docs/                # proje sayfası ve araştırma defteri (GitHub Pages)
+├── matlab/, sekiller/, latex/   # temel model (aşağıda, Ek)
+```
+
+---
+
+## Ek A: İlk çerçeve (arşiv, 18 Ekim – 5 Kasım 2026)
+
+<details>
+<summary>İlk araştırma sorusu, ilk literatür özeti, salınım haritası ve donanım karşılaştırması (güncel çerçeveden önce)</summary>
+
+> Bu bölüm kontrolcünün kol açısını gördüğü önceki çerçeveye ait. Motor tarafı döngüyle boşluk salınımı ortadan kalkınca çalışma 180°'deki yüz belirsizliğine yeniden çerçevelendi (5 Kasım 2026). Geri dönüş noktası olarak duruyor.
+
+### A.1 Araştırma sorusu
 
 Ucuz dişli motorlarda dişliler arasında bir boşluk vardır. Konum kontrolünde bu boşluk, kolun hedef etrafında durmadan salınmasına (limit cycle) yol açabilir. Literatürde bu konu geniş biçimde çalışılmış, ama neredeyse her zaman **yatay** düzeneklerde: iki kütleli tahrikler, takım tezgâhları, döner tablalar.
 
@@ -65,7 +231,7 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 - Açıya göre ayarlanan bir bozucu gözlemci.
 - Erişilebilir bir düzenekte (dişli DC motor, ESP32, manyetik açı sensörü, 20 bit akım ölçümü) deneysel doğrulama; ortam ve motor sıcaklığı her deneyle birlikte kaydedilir.
 
-## 2. Literatür
+### A.2 Literatür
 
 - IEEE Xplore'da 26 sorgu (130 sonuç), IEEE dışında OpenAlex ile başlık+özet araması, Web of Science Core Collection'da 12 sorgu (44 kayıt) ve en yakın makalelere atıf yapan çalışmaların taranması.
 - 37 makalenin tam metni okundu. Notlar: [`literatur/okuma_notlari.md`](literatur/okuma_notlari.md); tarama özetleri: [`literatur/ieee_disi/tarama_ozeti_2026-10-18.md`](literatur/ieee_disi/tarama_ozeti_2026-10-18.md), [`literatur/wos/wos_tarama_2026-10-22.md`](literatur/wos/wos_tarama_2026-10-22.md).
@@ -73,7 +239,7 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 - En yakın çalışma Sun ve ark. (2023, IEEE TIE). Düşey düzlemde salınan bir kolu modelliyorlar ($M_L\sin\theta_L$ terimiyle) ve 90°'de yüksek kazançta salınım gözlüyorlar. Ama yerçekiminin etkisini incelemiyorlar ve tek bir açıda çalışıyorlar.
 - "Yerçekimi dişliye ön yük gibi davranır" fikri, endüstriyel robotlarda statik boşluk telafisi için biliniyor (Ahmad 1985; Karim ve ark. 2018). 7 eksenli D-Arm kolunda, bağ dik konumdan geçerken yerçekimi torkunun yön değiştirip dişliyi karşı yüze çarptırdığı gözlenmiş (Xu ve ark. 2023, IEEE RA-L), ama analiz edilmemiş. Kapalı çevrim kararlılığına bağlanmamış.
 
-## 3. Simülasyon bulguları
+### A.3 Simülasyon bulguları
 
 İki kütleli model kuruldu: motor ve kol, arada dişli sertliği ve boşluk; kolda yerçekimi; PID kontrol. Üç model seviyesinde çalışıldı: ideal; Coulomb ve yapışma sürtünmeli; gerçekçi (12 bit açı sensörü, enkoder nicemlemesi, 1 kHz kontrol, sürücü ölü bandı). Kod: [`simulasyon/`](simulasyon/), ayrıntılı sonuçlar: [`simulasyon/sonuclar_2026-10-18.md`](simulasyon/sonuclar_2026-10-18.md).
 
@@ -89,7 +255,7 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 
 <p align="center"><img src="simulasyon/boyutsuz_sinir_gercekci.png" width="640" alt="Boyutsuz sınır eğrileri"></p>
 
-## 4. Donanım
+### A.4 Donanım
 
 Malzeme üç düzeyde değerlendirildi: en ucuz ilk liste, maxon motorlu üst sınıf liste ve ikisinin arasındaki **dengeli liste (seçilen)**. Motor ilk listedeki gibi kaldı; ucuz ama kritik parçalar bilinen üreticilerden alındı.
 
@@ -112,7 +278,7 @@ Bütün adaylar (motorlar, geliştirme kartları, sürücüler, sensörler), fiy
 
 Hedef çalışma bölgesi: toplam boşluk ≈ 3°, kapalı çevrim hızı $\omega_c \approx 30$–60 rad/s ($r_s \approx 0{,}25$–$0{,}40$); JGB37-520 ile $\omega_c \approx 35$ rad/s.
 
-### Geliştirme yönleri
+#### Geliştirme yönleri
 
 Ana çalışma (hipotezin deneyle doğrulanması ve açıya bağlı gözlemci) bittikten sonra:
 
@@ -128,13 +294,13 @@ Ana çalışma (hipotezin deneyle doğrulanması ve açıya bağlı gözlemci) b
 | 8 | Açık kaynaklı, ucuz kontrol eğitim düzeneği | Belgelendirme |
 | 9 | Açıya göre ayarı öğrenen ya da uyarlamalı kontrolcü | Yazılım ağırlıklı |
 
----
+</details>
 
-# Bölüm II: Temel model
+## Ek B: Temel model (projenin başlangıcı)
 
 Projenin başlangıç noktası: dişli kutusu olmayan, tek eklemli bir kolun doğrusal olmayan durum uzayı modeli. Motor değerleri CTMS kılavuzundaki örnek motordan alındı.
 
-## 5. Fiziksel sistem
+### B.5 Fiziksel sistem
 
 Sistem iki kısımdan oluşuyor: motorun **elektrik devresi** ve motor miline bağlı **kol**. İki kısım motor üzerinden birbirine bağlı: akım $i$ milde $K i$ torkunu üretiyor, mil döndükçe de devrede $K\dot\theta$ zıt EMK'sı oluşuyor.
 
@@ -142,7 +308,7 @@ Sistem iki kısımdan oluşuyor: motorun **elektrik devresi** ve motor miline ba
 
 Açı $\theta$ **dik aşağıdan** ölçülüyor: $\theta = 0$ kol aşağı sarkık, $\theta = 90^\circ$ kol yatay, $\theta = 180^\circ$ kol dik yukarı.
 
-## 6. Durumlar, giriş ve çıkış
+### B.6 Durumlar, giriş ve çıkış
 
 | Sembol | Anlamı | Birim | Tür |
 |---|---|---|---|
@@ -155,7 +321,7 @@ Açı $\theta$ **dik aşağıdan** ölçülüyor: $\theta = 0$ kol aşağı sark
 - **Neden 3 durum?** Kolun nereye gideceğini tahmin etmek için açıyı ve hızı bilmek gerekiyor (mekanik kısım). Akım ise motor sargısının "hafızası": bobinden geçen akım bir anda değişemiyor, bu yüzden o da ayrı bir durum.
 - **Sistem tipi:** 3 durum, 1 giriş, 1 çıkış → **SISO**, **doğrusal olmayan** ($\sin\theta$ terimi yüzünden), **zamanla değişmeyen**.
 
-## 7. Hareket denklemleri
+### B.7 Hareket denklemleri
 
 **Mekanik kısım:** motor torku kolu döndürüyor, sürtünme ve yerçekimi karşı koyuyor:
 
@@ -182,7 +348,7 @@ Hespanha'daki mekanik sistem kalıbıyla (2.7) karşılaştırma, $M(q)\ddot q +
 | $G(q)$ | $mg\ell\sin\theta$ | yerçekimi torku |
 | $F$ | $K i$ | motor torku |
 
-## 8. Durum uzayı modeli ve parametreler
+### B.8 Durum uzayı modeli ve parametreler
 
 Mekanik denklemi $J$'ye, elektrik denklemini $L$'ye bölünce:
 
@@ -212,7 +378,7 @@ $$\dot x_1 = x_2, \qquad \dot x_2 = 0.952\,x_3 - 9.52\,x_2 - 4.67\sin x_1, \qqua
 
 12 V'luk bir besleme bunu rahatça karşılıyor; motor kolu her açıda tutabiliyor.
 
-## 9. Blok diyagram
+### B.9 Blok diyagram
 
 ![Blok diyagram](sekiller/model_blok_diyagram.png)
 
@@ -220,7 +386,7 @@ $$\dot x_1 = x_2, \qquad \dot x_2 = 0.952\,x_3 - 9.52\,x_2 - 4.67\sin x_1, \qqua
 - **Üstteki geri dönüşler:** sargı direnci ($R/L = 2$) ve yerçekimi ($\sin$ → 4.67).
 - **Alttaki geri dönüşler:** sürtünme (9.52) ve zıt EMK (0.02). Zıt EMK hızdan akıma geri dönüyor: motor hızlandıkça akım azalıyor.
 
-## 10. Denge noktaları ve 90° doğrusallaştırma
+### B.10 Denge noktaları ve 90° doğrusallaştırma
 
 Dengede bütün değişim hızları sıfır:
 
@@ -238,7 +404,7 @@ $$A = \begin{bmatrix} 0 & 1 & 0\\ 0 & -9.52 & 0.952\\ 0 & -0.02 & -2\end{bmatrix
 
 $A$'nın ilk sütunu sıfır: bu noktada yerçekiminin kolu geri iten etkisi kayboluyor. Özdeğerler (`eig(A)`): $0$, $-9.5213$, $-2.0025$.
 
-## 11. Açık çevrim simülasyonu
+### B.11 Açık çevrim simülasyonu
 
 Motora sabit denge gerilimi ($u = R\,mg\ell/K = 4.905$ V) verilip kol 80°, 90° ve 100°'den bırakıldı; `ode45` ile 60 s.
 
@@ -258,48 +424,15 @@ Motorun torku sabit ($0.049$ N·m); yerçekimi bu değere tam 90°'de ulaşıyor
 
 **Sonuç:** Sabit gerilim kolu 90°'de güvenle tutmaya yetmiyor; geri besleme gerekiyor. Gerçek düzenekte motor dişli kutulu olacağı için model, araştırma bölümündeki iki kütleli modele genişletildi.
 
----
-
-# Bölüm III
-
-## 12. Dosya yapısı ve çalıştırma
-
-```
-dc-motor-robot-arm/
-├── README.md
-├── docs/                     # araştırma defteri (GitHub Pages)
-├── donanim/                  # alışveriş listesi, tasarım kararları
-├── literatur/                # okuma notları, sorgu listeleri, tarama özetleri (makale PDF'leri yok)
-├── simulasyon/               # araştırma simülasyonları (MATLAB)
-│   ├── parametreler.m        # düzenek parametreleri; seviye: 'ideal' | 'surtunme' | 'gercekci'
-│   ├── kol_benzetim.m        # iki kütle + boşluk + yerçekimi + PID; vektörel RK4
-│   ├── tek_deneme.m          # beş açıda zaman yanıtları
-│   ├── harita.m              # açı × kapalı çevrim hızı haritası
-│   ├── ince_tarama.m         # 0° ve 180° civarında 1° adımlı tarama
-│   ├── duyarlilik.m          # boşluk, dişli sertliği, uç kütlesi duyarlılığı
-│   ├── motor_kontrol.m       # motor tork yeterliliği
-│   ├── boyutsuz_harita.m     # 24 düzenek, (γ, r_s) düzlemi
-│   ├── boyutsuz_sinir.m      # sınır eğrileri ve düzenekler arası dağılım
-│   └── sonuclar_2026-10-18.md
-├── matlab/                   # temel model
-│   ├── acik_cevrim.m         # ode45 açık çevrim simülasyonu + özdeğerler
-│   ├── animasyon.m           # 2D kol animasyonu → model_animasyon.gif
-│   └── filmseridi.m          # θ(0)=100° karelerinden film şeridi
-├── sekiller/                 # temel model şekilleri
-└── latex/                    # fiziksel şema ve blok diyagram kaynakları
-```
-
-**MATLAB** (ek araç kutusu gerekmiyor; R2026b ile test edildi):
+### Temel modeli çalıştırma
 
 ```matlab
-cd simulasyon
-tek_deneme                    % beş açı, üç model seviyesi
-harita                        % açı × kazanç haritası (birkaç dakika)
-duyarlilik('bosluk')          % 'kutle' | 'bosluk' | 'sertlik'
-boyutsuz_harita('gercekci'); boyutsuz_sinir('gercekci')
+cd matlab
+acik_cevrim      % ode45 açık çevrim simülasyonu + özdeğerler
+animasyon        % 2D kol animasyonu -> sekiller/model_animasyon.gif
 ```
 
-## 13. Kaynaklar
+## Kaynaklar
 
 1. B. Messner, D. Tilbury, R. Hill, *Control Tutorials for MATLAB and Simulink*, "DC Motor Speed: System Modeling", University of Michigan. <https://ctms.engin.umich.edu/CTMS/index.php?example=MotorSpeed&section=SystemModeling>
 2. J. P. Hespanha, *Linear Systems Theory*, Princeton University Press, 2009.

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 250" width="940" height="250">
+<style>
+text{font-family:Consolas,"DejaVu Sans Mono","Courier New",monospace;fill:#18231f}
+.b{fill:#ffffff;stroke:#2d6a5a;stroke-width:1.5}
+.b-new{fill:#e2efea;stroke:#2d6a5a;stroke-width:1.8}
+.b-nl{fill:#f8eddc;stroke:#9a5b12;stroke-width:1.5}
+.w{stroke:#5b6a64;stroke-width:1.5;fill:none}
+.w-d{stroke:#5b6a64;stroke-width:1.3;fill:none;stroke-dasharray:5 4}
+.ah{fill:#5b6a64}
+.t-lbl{font-size:13px;font-weight:500}
+.t-sm{font-size:11.5px;fill:#5b6a64}
+</style>
+<rect x="0" y="0" width="940" height="250" fill="#ffffff"/>
+<defs><marker id="ok" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="ah"/></marker></defs>
+      <text class="t-lbl" x="6" y="104">θ_ref</text>
+      <line class="w" x1="46" y1="100" x2="58" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="60" y="80" width="130" height="40" rx="6"/><text class="t-lbl" x="125" y="98" text-anchor="middle">Ofset tablosu</text><text class="t-sm" x="125" y="113" text-anchor="middle">φ_ref(θ_ref, s)</text>
+      <line class="w" x1="190" y1="100" x2="201" y2="100" marker-end="url(#ok)"/>
+      <circle cx="215" cy="100" r="12" class="b"/><text class="t-sm" x="215" y="104" text-anchor="middle">Σ</text>
+      <line class="w" x1="227" y1="100" x2="238" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="240" y="80" width="114" height="40" rx="6"/><text class="t-lbl" x="297" y="98" text-anchor="middle">Kontrolcü</text><text class="t-sm" x="297" y="113" text-anchor="middle">P–PI, 1 kHz</text>
+      <line class="w" x1="354" y1="100" x2="382" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="384" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="434" y="98" text-anchor="middle">Sürücü</text><text class="t-sm" x="434" y="113" text-anchor="middle">DRV8874</text>
+      <line class="w" x1="484" y1="100" x2="512" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="514" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="564" y="98" text-anchor="middle">DC motor</text><text class="t-sm" x="564" y="113" text-anchor="middle">+ redüktör</text>
+      <line class="w" x1="614" y1="100" x2="642" y2="100" marker-end="url(#ok)"/>
+      <rect class="b-nl" x="644" y="80" width="110" height="40" rx="6"/><text class="t-lbl" x="699" y="98" text-anchor="middle">Dişli boşluğu</text><text class="t-sm" x="699" y="113" text-anchor="middle">ölü bölge</text>
+      <line class="w" x1="754" y1="100" x2="782" y2="100" marker-end="url(#ok)"/>
+      <rect class="b" x="784" y="80" width="100" height="40" rx="6"/><text class="t-lbl" x="834" y="98" text-anchor="middle">Kol</text><text class="t-sm" x="834" y="113" text-anchor="middle">J, mgℓ·sin θ</text>
+      <line class="w" x1="884" y1="100" x2="912" y2="100" marker-end="url(#ok)"/><text class="t-lbl" x="916" y="104">θ</text>
+      <line class="w" x1="564" y1="120" x2="564" y2="150"/><line class="w" x1="564" y1="150" x2="215" y2="150"/>
+      <line class="w" x1="215" y1="150" x2="215" y2="114" marker-end="url(#ok)"/>
+      <text class="t-sm" x="390" y="144" text-anchor="middle">motor milinde AS5600 (θ_m / N)</text>
+      <rect class="b-new" x="280" y="180" width="230" height="44" rx="6"/><text class="t-lbl" x="395" y="199" text-anchor="middle">Yüz kestirici</text><text class="t-sm" x="395" y="215" text-anchor="middle">akım + enkoder, tork darbesi</text>
+      <line class="w" x1="564" y1="150" x2="564" y2="202"/><line class="w" x1="564" y1="202" x2="512" y2="202" marker-end="url(#ok)"/>
+      <line class="w" x1="280" y1="202" x2="125" y2="202"/><line class="w" x1="125" y1="202" x2="125" y2="122" marker-end="url(#ok)"/>
+      <text class="t-sm" x="140" y="195">yüz s = ±1</text>
+      <line class="w-d" x1="834" y1="120" x2="834" y2="190"/>
+      <rect x="769" y="190" width="130" height="40" rx="6" fill="none" stroke="#5b6a64" stroke-dasharray="5 4"/>
+      <text class="t-lbl" x="834" y="208" text-anchor="middle">AS5600 (kol)</text><text class="t-sm" x="834" y="223" text-anchor="middle">yalnız hakem</text>
+</svg>

@@ -1,5 +1,6 @@
-function sunum_demo
+function S = sunum_demo
 % SUNUM_DEMO  Danışman sunumu için tek komutluk gösterim (11 Kasım 2026).
+% S = sunum_demo da çağrılabilir: S benzetim çıktılarını taşır (sunum_animasyon.m kullanır).
 % yuz_kestirici_as5600.m'nin gerçekçi koşusu (AS5600 motor milinde, 1 kHz, 0,4 ms gecikme,
 % veri sayfası gürültüsü, sürtünmeli ikiz): 42 senaryo, iki yöntem:
 %   edilgen      : motor durunca yüz = sign(u)  ("akımın işaretine bak", basit yöntem)
@@ -88,5 +89,9 @@ for k = 1:3
     xlabel(ax, 't [s]');  xlim(ax, [0 o.t(end)]);
     if k == 1, legend(ax, {'gerçek temas (kol sensörü, yalnız hakem)', 'kestiricinin tahmini'}, 'Location', 'best'); end
     title(ax, sprintf('kalıcı hata: basit %.2f°, kestirici %.2f°', E(1,j), E(2,j)), 'FontWeight', 'normal');
+end
+if nargout > 0
+    S = struct('O', {O}, 'ac', ac, 'istek', I, 'Y', Y, 'B', B, 's0', s0, 'H7', H7, 'E', E, ...
+               'sec', sec, 'ad', {ad}, 'r', p0.r, 'sekil', f);
 end
 end

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 470 230" width="470" height="230">
+<style>
+text{font-family:Consolas,"DejaVu Sans Mono","Courier New",monospace;fill:#18231f}
+.b{fill:#ffffff;stroke:#2d6a5a;stroke-width:1.5}
+.b-new{fill:#e2efea;stroke:#2d6a5a;stroke-width:1.8}
+.b-nl{fill:#f8eddc;stroke:#9a5b12;stroke-width:1.5}
+.w{stroke:#5b6a64;stroke-width:1.5;fill:none}
+.w-d{stroke:#5b6a64;stroke-width:1.3;fill:none;stroke-dasharray:5 4}
+.ah{fill:#5b6a64}
+.t-lbl{font-size:13px;font-weight:500}
+.t-sm{font-size:11.5px;fill:#5b6a64}
+</style>
+<rect x="0" y="0" width="470" height="230" fill="#ffffff"/>
+<line class="w" x1="30" y1="120" x2="410" y2="120"/><line class="w" x1="215" y1="20" x2="215" y2="215"/>
+      <text class="t-sm" x="404" y="138" text-anchor="end">açı farkı</text>
+      <text class="t-sm" x="222" y="30">dişli torku</text>
+      <polyline points="40,215 165,120 265,120 390,25" fill="none" stroke="#2a78d6" stroke-width="2.4"/>
+      <rect x="165" y="112" width="100" height="16" fill="#f8eddc" opacity=".9"/>
+      <text class="t-sm" x="215" y="150" text-anchor="middle">ölü bölge (boşluk)</text>
+      <circle cx="215" cy="120" r="6" fill="#9a5b12"/>
+      <text class="t-sm" x="34" y="86" style="fill:#9a5b12">0° / 180°:</text>
+      <text class="t-sm" x="34" y="100" style="fill:#9a5b12">ön gerilim yok</text>
+      <circle cx="335" cy="67" r="6" fill="#2d6a5a"/>
+      <text class="t-sm" x="345" y="94" style="fill:#2d6a5a">90°: τ_g ile</text>
+      <text class="t-sm" x="345" y="108" style="fill:#2d6a5a">ön gerilimli</text>
+</svg>
