@@ -10,14 +10,14 @@
 |---|---|
 | **Proje sayfası** | <https://safaksahinn.github.io/dc-motor-robot-arm/> |
 | **Araştırma defteri** (tüm ayrıntı) | <https://safaksahinn.github.io/dc-motor-robot-arm/defter.html> |
-| **Kendin çalıştır** | [aşağıda, 7. bölüm](#7-kendin-çalıştır-matlab) · tek komut: `sunum_demo` |
+| **Kendin çalıştır** | [aşağıda, 8. bölüm](#8-kendin-çalıştır-matlab) · tek komut: `sunum_demo` |
 | **Durum (17 Kasım 2026)** | Algoritma dijital ikizde ve ESP32'de hazır; donanım siparişi sırada |
 
 ---
 
 ## Sunum akışı (≈ 5 dakika)
 
-1. [Problem](#1-problem-dişli-boşluğu-ve-180) · 2. [Literatür](#2-literatür-ne-taradık-ne-bulduk) · 3. [Boşluk](#3-kapattığımız-boşluk) · 4. [Çözüm](#4-çözüm) · 5. [Sonuçlar](#5-sonuçlar) · 6. [Sırada ne var](#6-riskler-ve-sonraki-adımlar) · 7. [Kendin çalıştır](#7-kendin-çalıştır-matlab) · 8. [Dosya yapısı](#8-dosya-yapısı)
+1. [Problem](#1-problem-dişli-boşluğu-ve-180) · 2. [Literatür](#2-literatür-ne-taradık-ne-bulduk) · 3. [Boşluk](#3-kapattığımız-boşluk) · 4. [Çözüm](#4-çözüm) · 5. [Sonuçlar](#5-sonuçlar) · 6. [Tasarımlar](#6-tasarımlar-matlab-simulink-simscape) · 7. [Sırada ne var](#7-riskler-ve-sonraki-adımlar) · 8. [Kendin çalıştır](#8-kendin-çalıştır-matlab) · 9. [Dosya yapısı](#9-dosya-yapısı)
 
 ---
 
@@ -113,7 +113,73 @@ Tam 180° istekleri kolun geldiği tarafa göre 179,5° / 180,5°'ye kaydırıl�
 
 **Bütün sonuçlar dijital ikizden; donanım henüz sipariş edilmedi.**
 
-## 6. Riskler ve sonraki adımlar
+## 6. Tasarımlar: MATLAB, Simulink, Simscape
+
+Dijital ikiz dört ayrı modelle kuruldu ve birbiriyle karşılaştırıldı: MATLAB betiği (`kol_benzetim.m`), Simulink blok modeli, Simscape fiziksel modeli (elektrik tarafıyla birlikte) ve Simscape Multibody 3B modeli. Her görselin altında MATLAB'da nasıl açılacağı yazıyor (komutlar `simulasyon/simulink` klasöründe).
+
+### 6.1 Mekanik yapı (Simscape Multibody, 3B)
+
+<p align="center"><img src="rapor/img/mb_3b_gorunum.png" width="560" alt="Simscape Multibody 3B görünüm: motor gövdesi, rotor, kol ve uç kütlesi"></p>
+
+<p align="center"><i>Motor gövdesi, rotor (motor açısı φ), 15 cm kol ve uç kütlesi; yerçekimi aşağı. Açı tanımı: 0° kol sarkık, 90° yatay, 180° dik yukarı. Dişli boşluğu rotor ile kol eklemi arasında.</i></p>
+
+<p align="center"><img src="rapor/img/mb_me_kareler.png" width="900" alt="Mechanics Explorer kareleri: boşluk salınımının bir çevrimi"></p>
+
+<p align="center"><i>Mechanics Explorer'dan bir salınım çevrimi (142 ms). Başlıklardaki φ − θ dişli boşluğunun içindeki konum: kol boşluğun iki yüzü arasında gidip geliyor.</i></p>
+
+**MATLAB'da:** `open('mb_kol_model.slx')` blok şemayı açar. 3B koşu için arayüzlü MATLAB'da `mb_animasyon(5)` (Mechanics Explorer açılır; `rapor/img/mb_animasyon.mp4` ve `mb_me_kareler.png` dosyalarını yeniden yazar).
+
+<details>
+<summary><b>Multibody modelinin blok şeması</b></summary>
+
+<p align="center"><img src="sunum/img/mb_kol_model__ust.png" width="900" alt="mb_kol_model blok şeması"></p>
+
+<p align="center"><i>Alt kısım 3B mekanizma: dünya çerçevesi, iki döner eklem (eklem_m: rotor, eklem_L: kol), rotor diski, kol çubuğu, uç kütlesi, gövde. Ortada yeşil 1B mekanik ağ: dişli boşluğu (dis), sönümler (bM, bL), tork kaynakları; ara_m / ara_L iki dünyayı bağlıyor. Sağ üstte kontrolcü (ayrık zamanlı, sensör modeliyle) ve yük bloğu.</i></p>
+</details>
+
+### 6.2 Fiziksel model (Simscape)
+
+<p align="center"><img src="rapor/img/sm_kol_model__ust.png" width="900" alt="sm_kol_model: Simscape fiziksel modeli"></p>
+
+<p align="center"><i>Yeşil çizgiler mekanik bağlantılar: JM motor rotoru, <b>dis</b> dişli boşluğu (sert durdurucu: boşluk + dişli sertliği + temas sönümü), JL kol, bM / bL sürtünme ve sönüm, olc_m / olc_L açı ölçerler. Sağda kontrolcü ve yük (yerçekimi torku) blokları.</i></p>
+
+**MATLAB'da:** `open('sm_kol_model.slx')`
+
+### 6.3 Elektrik tarafı (Simscape, gerilim sürüşü)
+
+<p align="center"><img src="rapor/img/sm_motor_model__ust.png" width="900" alt="sm_motor_model: motorun elektrik tarafı eklenmiş Simscape modeli"></p>
+
+<p align="center"><i>Aynı model, motorun elektrik devresiyle: mavi çizgiler elektrik (kaynak → akım ölçer → DC motor: sargı direnci, endüktans, zıt EMK). Sağ altta sürücü (DRV8874 akım sınırıyla gerilim sürüşü) ve gürültülü akım ölçümü (INA228 modeli). Deneylerin yapılacağı gerilim sürüşü kararı bu modelle verildi.</i></p>
+
+**MATLAB'da:** `open('sm_motor_model.slx')`
+
+### 6.4 Blok modeli (Simulink)
+
+<p align="center"><img src="rapor/img/kol_model__ust.png" width="820" alt="kol_model: Simulink blok modeli"></p>
+
+<p align="center"><i>Tesis (iki kütle + boşluk + yerçekimi), sensör (nicemleme, gecikme, gürültü) ve kontrolcü ayrı bloklar. Betikle aynı denklemleri ve aynı çözücüyü kullanıyor.</i></p>
+
+**MATLAB'da:** `open('kol_model.slx')`
+
+### 6.5 Modeller birbirini doğruluyor
+
+<p align="center"><img src="rapor/img/ust_uste.png" width="900" alt="Betik, Simulink ve Simscape modellerinin üst üste zaman yanıtları"></p>
+
+<p align="center"><i>Aynı iki koşulda betik, Simulink ve Simscape eğrileri üst üste. Alt satır farkı gösteriyor: Simulink − betik tam sıfır, Simscape − betik en çok 0,89° (8 s sonunda, kalıcı salınımda) ve 0,029°.</i></p>
+
+### 6.6 İkizde sanal deney: dişli sertliğinin ölçülmesi (D3)
+
+<p align="center"><img src="rapor/img/D3_Ks.png" width="900" alt="D3 deneyi ikizde: kol taraması, dişli sapması ve sapma-tork ilişkisi"></p>
+
+<p align="center"><i>Donanımda yapılacak D3 tanılama deneyi ikizde koşuldu: kol 20–160° arasında yavaşça taranıyor, yerçekimi torku değiştikçe dişli sapması (φ − θ) değişiyor. Sapma–tork ilişkisinin eğiminden dişli sertliği, kaymasından boşluk çıkıyor; gerçekçi sensörle dişli sertliği ≈ %1 hatayla bulunuyor. Diğer tanılama deneyleri (D2 sürtünme, D4 boşluk, D5 temas sönümü) aynı biçimde sınandı: <code>rapor/img/D2_Fs.png</code>, <code>D4_r.png</code>, <code>D5_cs.png</code>.</i></p>
+
+### 6.7 Donanım mimarisi
+
+<p align="center"><img src="docs/img/mimari_donanim.svg" width="900" alt="Donanım mimarisi: güç ve mekanik yol, ölçüm, kontrol ve kayıt"></p>
+
+<p align="center"><i>Üst sıra güç ve mekanik yol (adaptör → DRV8874 → INA228 → motor → boşluk kaplini → kol mili → kol). Orta sıra ölçüm: motor arka milinde AS5600 (kontrolcünün gördüğü), TMP117 sıcaklık, kol milinde AS5600 (yalnız doğrulama). Alt sıra ESP32 1 kHz kontrol döngüsü ve bilgisayar.</i></p>
+
+## 7. Riskler ve sonraki adımlar
 
 **Riskler**
 - Birkaç model hatası aynı anda büyükse pay daralıyor (ikizde 42'de 37–42). Aday önlem: yoklama itişini ölçülen sürtünmeye göre ayarlamak (henüz sınanmadı).
@@ -127,7 +193,7 @@ Tam 180° istekleri kolun geldiği tarafa göre 179,5° / 180,5°'ye kaydırıl�
 
 ---
 
-## 7. Kendin çalıştır (MATLAB)
+## 8. Kendin çalıştır (MATLAB)
 
 **Gereken:** MATLAB (R2026b ile denendi). `sunum_demo` ve `sunum_animasyon` için ek araç kutusu gerekmez. Simulink modellerini açmak için Simulink + Simscape (+ Simscape Multibody) gerekir.
 
@@ -180,7 +246,7 @@ ve [5. bölümdeki](#5-sonuçlar) 6 grafikli şekil açılır.
 
 > **Not:** `belirsiz_bant`, `yuz_kestirici`, `mod1_kestirici`, `dogrula_elk` gibi asıl araştırma betikleri uzun sürer ve log dosyalarının üstüne yazar. Gösterim için yalnız `sunum_demo` kullan; o hiçbir dosya yazmaz.
 
-## 8. Dosya yapısı
+## 9. Dosya yapısı
 
 ```
 dc-motor-robot-arm/
