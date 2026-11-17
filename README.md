@@ -85,7 +85,7 @@ Yeni bir parça icat edilmedi; bilinen parçalar birleştirildi: 3. gruptan **to
 
 <p align="center"><i>Yeşil blok katkı (yüz kestirici). Turuncu blok sorunun kaynağı. Kol açısı sensörü (kesik çizgi) kontrol döngüsünde yok, yalnız doğrulama için.</i></p>
 
-Motorun gideceği açı: $\varphi_{ref} = \theta_{ref} + s\,r + mg\ell\sin\theta_{ref}/K_s$. Burada $s = \pm 1$ kolun yaslandığı yüz. 10–175°'de $s$ yerçekiminin işaretinden belli; 180° çevresinde yüz kestirici seçer:
+Motorun gideceği açı: $\varphi_{ref} = \theta_{ref} + s \cdot r + mg\ell\sin\theta_{ref}/K_s$. Burada $s = \pm 1$ kolun yaslandığı yüz. 10–175°'de $s$ yerçekiminin işaretinden belli; 180° çevresinde yüz kestirici seçer:
 
 1. **Olay yakalama:** kol boşluğun öbür yüzüne çarparsa bu çarpma motor torkunda iz bırakır; motor tarafı **tork gözlemcisi** bunu yakalar.
 2. **Yoklama:** çarpma motoru kıpırdatmayacak kadar küçükse motora **küçük bir tork itişi** verilir ve kolun hangi yüzde olduğu yoklanır (yazılım benzetmesiyle: cevap gelmeyince gönderilen "ping").
@@ -224,7 +224,7 @@ Düşey düzlemde çalışan bir kolda durum farklıdır. Yerçekimi torku $mg\e
 **Hipotez.** Boşluk, dişlinin ilettiği tork sıfırdan geçtiğinde devreye girer. Kolda bu tork, sabit yerçekimi torku ile salınımlı dinamik torkun toplamıdır. Yerçekimi bu sıfır geçişlerini açıya göre engeller ya da serbest bırakır. Dolayısıyla boşluk kaynaklı salınımın var olup olmadığı **çalışma açısı ile kontrolcü kazancının birlikte** belirlediği bir haritaya göre değişir.
 
 **Hedeflenen katkılar (güncel, 5 Kasım 2026 akşam):**
-- **Temel (bilinen, anılır):** kol sensörsüz motor tarafı konum döngüsü + açıya göre ofset tablosu ($\varphi_{ref} = \theta_{ref} + s\,r + mg\ell\sin\theta_{ref}/K_s$; Neubauer ve ark. 2015). Dijital ikizde 0–180°'de boşluk salınımı yok, 10–175°'de kalıcı hata ≤ 0,27°.
+- **Temel (bilinen, anılır):** kol sensörsüz motor tarafı konum döngüsü + açıya göre ofset tablosu ($\varphi_{ref} = \theta_{ref} + s \cdot r + mg\ell\sin\theta_{ref}/K_s$; Neubauer ve ark. 2015). Dijital ikizde 0–180°'de boşluk salınımı yok, 10–175°'de kalıcı hata ≤ 0,27°.
 - **Ana katkı:** 180° çevresinde, yerçekimi ön yükü sıfıra inince kolun boşluğun hangi yüzüne yaslandığını ($s$) **yalnız motor akımı ve enkoderle** kestirmek (tork gözlemcisi + küçük tork darbesiyle aktif yoklama). Belirsiz bandın tanımı ve gözlenebilirlik sınırı dahil.
 - **Uygulama:** ESP32 üzerinde 1 kHz gömülü gerçekleme.
 - **Kapsam dışı:** $r$ ve $K_s$'nin çevrim içi tanılanması (bir kez, bilinen yöntemle ölçülür). Sürtünme kaynaklı yapışma–kayma salınımı için ayrı bir katman (integratör ölü bandı; Armstrong ve Amin 1996).
