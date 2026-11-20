@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Birleşik Rapor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Adım 4 raporunun (rapor/rapor.html) stili; iskelet için .plan, .sekil ve .yeni eklendi */
+:root{--ink:#18231f; --muted:#5b6a64; --line:#d8e1dd; --accent:#2d6a5a; --soft:#e2efea; --warn:#9a5b12; --wsoft:#f8eddc; --bg:#f4f6f5;
+  --display:"Bricolage Grotesque","Segoe UI",sans-serif; --body:"Source Sans 3","Segoe UI",sans-serif; --mono:"JetBrains Mono",Consolas,monospace}
+@page{size:A4; margin:14mm 13mm 15mm}
+html{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+*{box-sizing:border-box}
+body{margin:0; background:#fff; color:var(--ink); font:10.5pt/1.45 var(--body)}
+h1{font:700 22pt/1.1 var(--display); margin:0 0 8px}
+h2{font:700 17pt/1.2 var(--display); margin:0 0 6px; padding-top:2px}
+h3{font:600 10pt var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--accent); margin:14px 0 4px; break-after:avoid}
+p{margin:6px 0 0}
+ul{margin:6px 0 0; padding-left:1.2em}
+li{margin:2px 0}
+code{font:.86em var(--mono)}
+.kicker{font:500 9pt var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
+section{break-before:page}
+.lead{font-size:10.5pt; color:var(--muted); max-width:62ch}
+table{border-collapse:collapse; width:100%; font-size:9.2pt; margin-top:6px}
+th,td{text-align:left; vertical-align:top; padding:4px 6px; border-bottom:1px solid var(--line)}
+th{font:500 8pt var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
+td.n{font-family:var(--mono); white-space:nowrap}
+tr{break-inside:avoid}
+.note{margin-top:10px; background:var(--wsoft); border-radius:8px; padding:8px 12px; break-inside:avoid}
+.note b.t{display:block; font:500 8.5pt var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--warn)}
+.note.ok{background:var(--soft)} .note.ok b.t{color:var(--accent)}
+.meta td:first-child{font-weight:600; width:150px}
+.toc ol{columns:2; margin:6px 0 0; padding-left:1.4em; font-size:9.4pt}
+/* iskelet */
+.plan{margin-top:6px; border:1px dashed var(--line); border-radius:8px; padding:6px 12px 8px; color:var(--muted); font-size:9.6pt; break-inside:avoid}
+.plan b.t{display:block; font:500 8pt var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+.plan ul{margin-top:3px}
+table.sekil{font-size:8.6pt} table.sekil td:first-child{width:34px; font-family:var(--mono)}
+table.sekil td:last-child{width:34%; font:7.8pt var(--mono); color:var(--muted); word-break:break-all}
+.yeni{display:inline-block; font:500 7.4pt var(--mono); letter-spacing:.05em; color:var(--warn); background:var(--wsoft); border-radius:4px; padding:0 5px; margin-right:4px}
+.var{display:inline-block; font:500 7.4pt var(--mono); letter-spacing:.05em; color:var(--accent); background:var(--soft); border-radius:4px; padding:0 5px; margin-right:4px}
+.kaynak{margin-top:4px; font-size:8.4pt; color:var(--muted)} .kaynak code{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<div>
+  <div class="kicker">Birleşik rapor · EEM5507 Doğrusal Sistemler · İSKELET (taslak)</div>
+  <h1>Dişli DC motorlu tek eklemli robot kol: doğrusal modelden 180°'de boşluk yüzü kestirimine</h1>
+  <p class="lead">[Yazılacak: 4–5 cümlelik giriş paragrafı. KT1'deki 3 durumlu modelden başlayan, dişli boşluğu + yerçekimi araştırmasına uzanan, 5 Kasım'da analizden tasarıma dönen ve 180°'de boşluk yüzü kestiricisiyle sonuçlanan çalışmanın tamamı. Bütün sonuçların dijital ikizden geldiği, donanımın henüz sipariş edilmediği burada söylenecek.]</p>
+  <table class="meta" style="margin-top:16px">
+    <tr><td>Hazırlayan</td><td>Şafak Şahin</td></tr>
+    <tr><td>Ders</td><td>EEM5507 Doğrusal Sistemler</td></tr>
+    <tr><td>Dönem</td><td>11 Ekim – 18 Kasım 2026 (153 commit)</td></tr>
+    <tr><td>Depo (GitHub)</td><td><code>https://github.com/SafakSahinn/dc-motor-robot-arm</code></td></tr>
+    <tr><td>Önceki ara rapor</td><td><code>rapor/adim4_simulasyon_ve_dogrulama.pdf</code> (49 sayfa, ilk çerçeve)</td></tr>
+  </table>
+  <div class="note ok" style="margin-top:14px"><b class="t">İskelet hakkında</b>Bu belge raporun 2. adımıdır: bölüm başlıkları, her bölümde ne yazılacağı ve şekil listesi. <span class="var">MEVCUT</span> işaretli şekiller depoda hazır. <span class="yeni">YENİ</span> işaretliler yeni hesap ya da çizim gerektirir (çoğu Bölüm 3'ün MATLAB betiğinden gelecek). Yazım sırası: Bölüm 3 hesapları → 1, 2, 4 → 5, 7 → 6, 8 → kontrol.</div>
+  <div class="toc"><h3>İçindekiler</h3><ol start="0">
+    <li>Özet</li>
+    <li>Giriş: KT1'den araştırmaya</li>
+    <li>Sistem modeli</li>
+    <li>Doğrusal sistem analizi</li>
+    <li>İlk çerçeve: salınım sınırının öngörüsü</li>
+    <li>Neden döndük</li>
+    <li>Güncel çalışma: 180°'de boşluk yüzü kestirimi</li>
+    <li>Hatalar ve düzeltmeler</li>
+    <li>Sınırlar ve sonraki adımlar</li>
+    <li style="list-style:none; margin-left:-1.4em">Kaynaklar</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek A: KT1 temel modeli</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek B: Bölüm 3'ün MATLAB betiği</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek C: Dijital ikiz ve tanılama özeti</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek D: Deney protokolleri D0–D7</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek E: Kronoloji ve dosya dizini</li>
+  </ol></div>
+</div>
+
+
+<!-- 0 -->
+<section>
+  <div class="kicker">0</div>
+  <h2>Özet</h2>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>Bir sayfa. Problem (boşluklu dişli + yerçekimi, 180°'de ön yükün sıfırlanması), yöntem (doğrusal analiz → DF ve ikiz → motor tarafı döngü + ofset tablosu + yüz kestirici), sonuç.</li>
+    <li>Sayı kutuları (adım 4 raporundaki <code>.stats</code>): <b>42/42</b> senaryo (basit yöntem 20/42) · <b>3° → 0,2°</b> kalıcı hata · <b>0/114</b> boşluk salınımı · <b>3,5 µs</b> ESP32 adım süresi.</li>
+    <li>Ana köprü cümlesi: boşlukta kol, motor ölçümünden gözlenemez; 180°'deki yüz belirsizliği bu gözlenemezliğin kendisidir.</li>
+    <li>"Bütün sonuçlar dijital ikizden" sınır notu.</li>
+  </ul></div>
+  <div class="kaynak">Kaynak: <code>README.md</code> §5, <code>01_envanter.md</code></div>
+</section>
+
+
+<!-- 1 -->
+<section>
+  <div class="kicker">1</div>
+  <h2>Giriş: KT1'den araştırmaya</h2>
+  <h3>1.1 Başlangıç: ders projesi (KT1)</h3>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>DC motorlu tek eklemli kol, 3 durum (θ, ω, i), CTMS parametreleri, 90°'de doğrusallaştırma, özdeğerler 0 / −9,52 / −2. Ayrıntı Ek A'ya.</li>
+    <li>KT1 modelinin neyi göstermediği: dişli ideal (boşluksuz, rijit), sürtünme yok. Gerçek dişli DC motorda bu varsayım nerede bozulur?</li>
+  </ul></div>
+  <h3>1.2 Problem: dişli boşluğu ve yerçekimi</h3>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>Boşluk nedir, limit cycle nedir (yazılım benzetmesi: ölü bölgeli geri besleme).</li>
+    <li>Yerçekimi dişliyi bir yüze bastırır (ön yük); ön yük mgℓ sin θ ile değişir, 180°'de sıfırdır.</li>
+  </ul></div>
+  <h3>1.3 Literatür taraması</h3>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>IEEE + IEEE dışı tarama, Web of Science (boşluk + yerçekimi + DF = 0 kayıt), 75 ileriye atıf, 17 sorgu.</li>
+    <li>Gruplar: DF ile limit cycle analizi, boşluk kompanzasyonu, ofset tabloları (Neubauer 2015), tork gözlemcileri. Bulunan açık: sıfır ön yükte yüz kestirimi.</li>
+  </ul></div>
+  <h3>1.4 Raporun düzeni</h3>
+  <div class="plan">Bölümlerin kısa yol haritası; Bölüm 3'ün ders kısmı olduğu ve Bölüm 4–6'ya köprü kurduğu belirtilecek.</div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil</th><th>Dosya</th></tr>
+    <tr><td>1.1</td><td><span class="var">MEVCUT</span>Boşluk salınımı animasyonu (bir kare ya da film şeridi olarak)</td><td>sunum/img/bosluk_salinimi.gif</td></tr>
+    <tr><td>1.2</td><td><span class="var">MEVCUT</span>Literatür grupları</td><td>sunum/img/literatur_gruplari.svg</td></tr>
+    <tr><td>1.3</td><td><span class="var">MEVCUT</span>Ölü bölge (boşluk) şeması</td><td>sunum/img/olu_bolge.svg</td></tr>
+  </table>
+  <div class="kaynak">Kaynak: <code>README.md</code> §1–3, <code>literatur/</code>, <code>calisma_notu/framing.md</code> §1–4, kt1.tex</div>
+</section>
+
+
+<!-- 2 -->
+<section>
+  <div class="kicker">2</div>
+  <h2>Sistem modeli</h2>
+  <h3>2.1 Fiziksel düzenek</h3>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>JGB37 dişli motor, kol, uç kütle (düzenek D: ağır uç, R = J<sub>L</sub>/J<sub>M</sub> ≈ 1), sensörler: motor arka milinde AS5600, kolda AS5600 (yalnız hakem), INA228 akım, ESP32-S.</li>
+  </ul></div>
+  <h3>2.2 İki kütleli model</h3>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>Durumlar φ, ω<sub>M</sub>, θ, ω<sub>L</sub> (+ i elektrik modeli varsa). Kol tarafına indirgeme. δ = φ − θ, boşluk yarı genişliği r.</li>
+    <li>Temas torku: ölü bölgeli yay + sönüm (K<sub>s</sub>, c<sub>s</sub>). Yerçekimi mgℓ sin θ. Coulomb + viskoz sürtünme (F<sub>c</sub>, F<sub>s</sub>, b).</li>
+    <li>Motor elektrik modeli (R<sub>a</sub>, L<sub>a</sub>, K<sub>m</sub>): gerilim sürüşü (5c).</li>
+  </ul></div>
+  <h3>2.3 Parametre tablosu</h3>
+  <div class="plan">Değer, birim, kaynak (veri sayfası / tahmin / ikizde tanılandı). <code>simulasyon/parametreler.m</code>, <code>motor_jgb37.m</code>.</div>
+  <h3>2.4 Kontrolcü ve sensör modeli</h3>
+  <div class="plan">P–PI kaskat yapısı, 1 kHz örnekleme, AS5600 SF = 11 gecikmesi (0,286 ms), nicemleme ve gürültü.</div>
+  <h3>2.5 Model ailesi: betik, Simulink, Simscape</h3>
+  <div class="plan">Aynı modelin üç kez kurulduğu ve birbirini doğruladığı (bit düzeyinde aynı / ≤ %0,3). Ayrıntı Ek C.</div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil</th><th>Dosya</th></tr>
+    <tr><td>2.1</td><td><span class="var">MEVCUT</span>Simscape Multibody 3B görünüm</td><td>rapor/img/mb_3b_gorunum.png</td></tr>
+    <tr><td>2.2</td><td><span class="yeni">YENİ</span>İki kütleli model şeması (J<sub>M</sub>, boşluk, K<sub>s</sub>/c<sub>s</sub>, J<sub>L</sub>, mgℓ), SVG</td><td>—</td></tr>
+    <tr><td>2.3</td><td><span class="var">MEVCUT</span>Temas torku: ölü bölge karakteristiği</td><td>sunum/img/olu_bolge.svg</td></tr>
+    <tr><td>2.4</td><td><span class="var">MEVCUT</span>Simulink blok modeli (üst seviye)</td><td>rapor/img/kol_model__ust.png</td></tr>
+    <tr><td>2.5</td><td><span class="var">MEVCUT</span>Simscape mekanik ve elektrik modelleri</td><td>rapor/img/sm_kol_model__ust.png, sm_motor_model__ust.png</td></tr>
+    <tr><td>2.6</td><td><span class="var">MEVCUT</span>Donanım mimarisi</td><td>docs/img/mimari_donanim.svg</td></tr>
+  </table>
+  <div class="kaynak">Kaynak: adım 4 raporu §2 ve §9, <code>README.md</code> §6</div>
+</section>
+
+
+<!-- 3 -->
+<section>
+  <div class="kicker">3</div>
+  <h2>Doğrusal sistem analizi</h2>
+  <div class="note"><b class="t">Ders kısmı · hesaplar yeni</b>Bu bölümün bütün sayıları ve grafikleri yeni bir MATLAB betiğinden gelecek (iş sırası 3. adım, kullanıcıyla adım adım). Betik Ek B'de. Symbolic Toolbox kullanılmayacak; Jacobian elle türetilip sayısal sağlanacak.</div>
+  <h3>3.1 Durum uzayı modeli</h3>
+  <div class="plan">KT1'in 3 durumlu modeli ẋ = Ax + Bu, y = Cx. İki kütleli modelin (temas hâlinde, boşluk yokmuş gibi) 4–5 durumlu doğrusal biçimi. Durum, giriş, çıkış seçimleri ve gerekçesi.</div>
+  <h3>3.2 Denge noktaları ve Jacobian: θ<sub>0</sub> = 0°, 90°, 180°</h3>
+  <div class="plan">Denge koşulu (gereken tutma torku ∝ mgℓ sin θ<sub>0</sub>). A = ∂f/∂x her açıda; yerçekimi teriminin türevi mgℓ cos θ<sub>0</sub> → 0°'de geri getirici, 90°'de sıfır, 180°'de itici. Üç A matrisi tablo hâlinde.</div>
+  <h3>3.3 Özdeğerlerin açıya göre değişimi</h3>
+  <div class="plan">Açık çevrim (ve kapalı çevrim) özdeğerleri θ<sub>0</sub> = 0…180°. 180°'de açık çevrimde pozitif reel özdeğer (ters sarkaç). Dişli rezonansı (≈ 18,7 Hz) ile B1 kararsızlığının ilişkisi.</div>
+  <h3>3.4 Transfer fonksiyonu ve frekans yanıtı</h3>
+  <div class="plan">Gerilim/tork → motor açısı ve → kol açısı. Rezonans/anti-rezonans çifti. Motor tarafı ölçüm ile kol tarafı ölçümün farkı (eşyerleşimli / eşyerleşimsiz).</div>
+  <h3>3.5 Kontrol edilebilirlik ve gözlenebilirlik <em>(raporun ana köprüsü)</em></h3>
+  <div class="plan"><ul>
+    <li>Temas hâlinde: (A, C<sub>motor</sub>) gözlenebilir, kolun durumu motor ölçümünden çıkarılabilir.</li>
+    <li>Boşlukta: motor ile kol arasındaki bağ kopar, A blok köşegen olur; kol durumları C<sub>motor</sub>'dan gözlenemez (gözlenebilirlik matrisinin rankı düşer).</li>
+    <li>180°'de ön yük sıfır → kol boşluğun içinde kalabilir → hangi yüze dayandığı motor ölçümünden bilinemez. <b>Yüz belirsizliği bu gözlenemezliğin kendisidir.</b> Çözüm (Bölüm 6) neden aktif yoklama: sistemi gözlenebilir bölgeye taşımak.</li>
+  </ul></div>
+  <h3>3.6 Ayrıklaştırma: c2d, T<sub>s</sub> = 1 ms</h3>
+  <div class="plan">ZOH ile A<sub>d</sub> = e<sup>AT<sub>s</sub></sup>; özdeğer eşlemesi z = e<sup>sT<sub>s</sub></sup>; 1 kHz'in rezonansa göre yeterliliği; ESP32 1 kHz görev döngüsü ile bağ.</div>
+  <h3>3.7 Luenberger gözlemcisi</h3>
+  <div class="plan">Koddaki tork/hız gözlemcisinin (ŵ, bozucu tork kestirimi) Luenberger biçiminde yazılması: genişletilmiş durum, L kazancı, gözlemci özdeğerleri. Hız için periyot kestirimi yerine neden gözlemci (C6, D5).</div>
+  <h3>3.8 Doğrusal olmayana uzanma: tanımlama fonksiyonu</h3>
+  <div class="plan">Boşluk doğrusal değildir; DF ile eşdeğer kazanç N(A). Limit cycle koşulu G(jω) = −1/N(A). Yerçekimli iki girişli DF'ye geçiş (Bölüm 4'e köprü).</div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil / tablo</th><th>Dosya</th></tr>
+    <tr><td>3.1</td><td><span class="yeni">YENİ</span>Üç açıda A matrisleri ve özdeğerler (tablo)</td><td>Bölüm 3 betiği</td></tr>
+    <tr><td>3.2</td><td><span class="yeni">YENİ</span>Özdeğerler – θ<sub>0</sub> (kök yer eğrisi benzeri, karmaşık düzlem)</td><td>Bölüm 3 betiği</td></tr>
+    <tr><td>3.3</td><td><span class="yeni">YENİ</span>Bode: motor → motor açısı ve motor → kol açısı</td><td>Bölüm 3 betiği</td></tr>
+    <tr><td>3.4</td><td><span class="yeni">YENİ</span>Gözlenebilirlik matrisinin rankı / tekil değerleri: temas ve boşluk</td><td>Bölüm 3 betiği</td></tr>
+    <tr><td>3.5</td><td><span class="yeni">YENİ</span>s-düzlemi → z-düzlemi özdeğer eşlemesi (c2d)</td><td>Bölüm 3 betiği</td></tr>
+    <tr><td>3.6</td><td><span class="yeni">YENİ</span>Gözlemci hata yakınsaması (benzetim)</td><td>Bölüm 3 betiği</td></tr>
+    <tr><td>3.7</td><td><span class="var">MEVCUT</span>Ghaffari DF blok diyagramı / frekans–kazanç</td><td>rapor/img/sekil04_blok_diyagram.png, sekil11_frekans_kazanc.png</td></tr>
+  </table>
+  <div class="kaynak">Kaynak: <code>01_envanter.md</code> §4 (ders bağlantı tablosu), KT1, Hespanha</div>
+</section>
+
+
+<!-- 4 -->
+<section>
+  <div class="kicker">4</div>
+  <h2>İlk çerçeve: salınım sınırının öngörüsü</h2>
+  <div class="plan"><b class="t">Yazılacak (adım 4 raporunun özeti, 3–5 sayfa)</b><ul>
+    <li>4.1 Araştırma sorusu ve hipotezler (18–24 Ekim); iki eksenli (θ<sub>0</sub>, K<sub>p</sub>) harita.</li>
+    <li>4.2 İlk benzetimler ve boyutsuz harita (γ<sub>sınır</sub> ≈ 3ρ³).</li>
+    <li>4.3 Ghaffari 2013'ün yeniden üretimi (%20,2 / %22,1; makalede %19,6 / %21,4).</li>
+    <li>4.4 Yerçekimli iki girişli DF (kritik kazanç hatası %19, Ghaffari %81) ve kök neden sınaması.</li>
+    <li>4.5 Düzenek seçimi (D), dijital ikiz, sanal tanılama (%0,1–3,5), deney protokolü D0–D6.</li>
+    <li>Ayrıntılar için adım 4 raporuna atıf; bu raporda yalnız sonuçlar ve sonraki bölümlere taşınanlar.</li>
+  </ul></div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil</th><th>Dosya</th></tr>
+    <tr><td>4.1</td><td><span class="var">MEVCUT</span>Açı × kazanç salınım haritası</td><td>rapor/img/sim_harita.png</td></tr>
+    <tr><td>4.2</td><td><span class="var">MEVCUT</span>Boyutsuz sınır (gerçekçi)</td><td>rapor/img/sim_boyutsuz_sinir_gercekci.png</td></tr>
+    <tr><td>4.3</td><td><span class="var">MEVCUT</span>Ghaffari Şekil 7/8 kalibre yeniden üretim</td><td>rapor/img/sekil78_kalibre.png</td></tr>
+    <tr><td>4.4</td><td><span class="var">MEVCUT</span>Döner tabla karşılaştırması</td><td>rapor/img/tabla_karsilastirma.png</td></tr>
+    <tr><td>4.5</td><td><span class="var">MEVCUT</span>Kritik kazanç – açı (yerçekimli DF / benzetim)</td><td>rapor/img/kritik_kazanc.png</td></tr>
+    <tr><td>4.6</td><td><span class="var">MEVCUT</span>Betik / Simulink / Simscape θ(t) üst üste</td><td>rapor/img/ust_uste.png</td></tr>
+    <tr><td>4.7</td><td><span class="var">MEVCUT</span>İkizde K<sub>s</sub> tanılaması (D3)</td><td>rapor/img/D3_Ks.png</td></tr>
+  </table>
+  <div class="kaynak">Kaynak: <code>rapor/adim4_simulasyon_ve_dogrulama.pdf</code> §1–16, <code>README.md</code> Ek A</div>
+</section>
+
+
+<!-- 5 -->
+<section>
+  <div class="kicker">5</div>
+  <h2>Neden döndük</h2>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>Envanterdeki 7 madde anlatı olarak: danışman değerlendirmesi (5 Kas) → kazanç planlaması denendi, 180°'yi düzeltmedi → ilke çelişkisi (ikiz konum hatasını kol açısından hesaplıyordu, A6/B8) → motor tarafı döngü: salınım 10/114 → 0/114, yerine kalıcı hata ≈ r + mgℓ sin θ / K<sub>s</sub> → ofset tablosu 10–175°'de ≤ 0,27° → 180° tek açık nokta (yanlış yüz → 2r ≈ 3°) → literatür kontrolü.</li>
+    <li>"İlk çerçeveden kalan / arşive giden" tablosu.</li>
+    <li>Bölüm 3.5 ile bağ: motor tarafı döngüde kol "görülmüyor"; 180°'deki sorun gözlenebilirlik sorunu.</li>
+  </ul></div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil</th><th>Dosya</th></tr>
+    <tr><td>5.1</td><td><span class="yeni">YENİ</span>Kol tarafı / motor tarafı döngü karşılaştırması (salınım haritası iki panel)</td><td>simulasyon/5_planlama/konum_kaynagi_karsilastir.m çıktısından</td></tr>
+    <tr><td>5.2</td><td><span class="yeni">YENİ</span>Ofset tablosu öncesi/sonrası kalıcı hata – açı</td><td>simulasyon/5_planlama/ofset_tablosu.m çıktısından</td></tr>
+  </table>
+  <div class="kaynak">Kaynak: <code>01_envanter.md</code> §2, <code>calisma_notu/framing.md</code> §0</div>
+</section>
+
+
+<!-- 6 -->
+<section>
+  <div class="kicker">6</div>
+  <h2>Güncel çalışma: 180°'de boşluk yüzü kestirimi</h2>
+  <h3>6.1 Güncel soru ve üç bileşen</h3>
+  <div class="plan">Motor tarafı konum döngüsü + ofset tablosu + yüz kestirici. Sensör kararı: θ<sub>d</sub> ölçülmez, kestirilir.</div>
+  <h3>6.2 Belirsiz bant ve üst sınır</h3>
+  <div class="plan">Kol yanlış yüze yalnız 180°'nin ±1°'si içinde düşüyor; tutma torku ≈ F<sub>c</sub>/10 → akım işareti kör (C8). Üst sınır testi: yüz kusursuz bilinse bile 180°'ye tam ulaşılamıyor (A7) → hedef kaydırma 180 ∓ 0,5°.</div>
+  <h3>6.3 Yüz kestirici</h3>
+  <div class="plan">Tork gözlemcisi (Bölüm 3.7) + olay yakalama + aktif yoklama + rampa. Algoritmanın durum makinesi. H7/B12/B13.</div>
+  <h3>6.4 Sonuçlar: 42/42</h3>
+  <div class="plan">42 senaryo (basit yöntem 20/42), 3° → 0,2°. Gerçekçi koşullar: AS5600 motor milinde, 1 kHz, gecikme, gürültü, INA228'den tork (5a).</div>
+  <h3>6.5 Dayanıklılık</h3>
+  <div class="plan">Yük ve K<sub>s</sub> ±%20, r ±%10, sürtünme ×0,5–1,5 (iş 4); kayan sürtünme ve birleşik hatalar (5b); gerilim sürüşü (5c).</div>
+  <h3>6.6 ESP32 gerçeklemesi</h3>
+  <div class="plan">Protokol, 1 kHz görev, C++ algoritma 3,5 µs/adım; MATLAB ile 84/84 eşdeğer; PIL 84/84; kart üstü gerçek zamanlı ikiz (float, %19 bütçe, 42/42); <code>sunum_esp32</code> canlı ölçüm. C9 (serialport → .NET), C10 (double → float).</div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil</th><th>Dosya</th></tr>
+    <tr><td>6.1</td><td><span class="var">MEVCUT</span>Çözüm blok şeması</td><td>sunum/img/cozum_blok.svg</td></tr>
+    <tr><td>6.2</td><td><span class="yeni">YENİ</span>Belirsiz bant: yanlış yüz olasılığı – açı</td><td>simulasyon/5_planlama/belirsiz_bant.mat'tan</td></tr>
+    <tr><td>6.3</td><td><span class="yeni">YENİ</span>Yüz kestiricinin durum makinesi</td><td>—</td></tr>
+    <tr><td>6.4</td><td><span class="var">MEVCUT</span>Yüz kestirici animasyonu (kare)</td><td>sunum/img/yuz_kestirici.gif</td></tr>
+    <tr><td>6.5</td><td><span class="var">MEVCUT</span>42 senaryo: basit yöntem / yüz kestirici</td><td>sunum/img/sonuc_42senaryo.png</td></tr>
+    <tr><td>6.6</td><td><span class="var">MEVCUT</span>Yazılım mimarisi</td><td>docs/img/mimari_yazilim.svg</td></tr>
+    <tr><td>6.7</td><td><span class="var">MEVCUT</span>ESP32 döngü ölçümü ve seri gecikme</td><td>simulasyon/6_esp32/dongu_olcum.png, seri_olcum.png</td></tr>
+  </table>
+  <div class="kaynak">Kaynak: <code>calisma_notu/framing.md</code> iş sırası 1–5c, <code>simulasyon/5_planlama/</code>, <code>simulasyon/6_esp32/</code>, <code>README.md</code> §4–5</div>
+</section>
+
+
+<!-- 7 -->
+<section>
+  <div class="kicker">7</div>
+  <h2>Hatalar ve düzeltmeler</h2>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>Giriş paragrafı: hataların saklanmadan yazılmasının nedeni; çoğunun nasıl yakalandığı (çapraz doğrulama, ilkeyle karşılaştırma, yeniden kontrol).</li>
+    <li>Tek ortak tablo biçimi: <b>hata / nasıl fark edildi / etkisi / düzeltme / ders</b>.</li>
+    <li>7.1 Yorum ve iddia hataları (A1–A7) · 7.2 Model ve benzetim hataları (B1, B3–B8) · 7.3 Denenip işe yaramayan yöntemler (C1–C10) · 7.4 Tasarım belgesi hataları (D1–D6).</li>
+    <li>"Ders" sütunu yeni yazılacak (envanterde yok).</li>
+    <li>Kapanış: en pahalı hata A6/B8 (ana iddiayı geçersiz kıldı) ve çerçeve değişimine katkısı.</li>
+  </ul></div>
+  <div class="kaynak">Kaynak: <code>01_envanter.md</code> §3</div>
+</section>
+
+
+<!-- 8 -->
+<section>
+  <div class="kicker">8</div>
+  <h2>Sınırlar ve sonraki adımlar</h2>
+  <div class="plan"><b class="t">Yazılacak</b><ul>
+    <li>8.1 Sınırlar: bütün sonuçlar dijital ikizden; K<sub>s</sub>, c<sub>s</sub>, J<sub>M</sub> tahmin; tanılama ikizin kendi verisinde sınandı; donanım sipariş edilmedi.</li>
+    <li>8.2 Kapsam dışı: çevrim içi r/K<sub>s</sub> tanılaması.</li>
+    <li>8.3 Sonraki adımlar: sipariş ve mekanik kararlar, D0–D7 deneyleri, ikizin gerçek veriyle güncellenmesi. Ertelenmiş işler listesi (uyarlamalı yoklama, OpenSCAD, ESP32 adım 7) yalnız ad olarak.</li>
+    <li>8.4 Riskler ve B planları.</li>
+  </ul></div>
+  <div class="kaynak">Kaynak: <code>README.md</code> §7, <code>calisma_notu/framing.md</code> §8</div>
+</section>
+
+
+<!-- Kaynaklar -->
+<section>
+  <div class="kicker">Kaynaklar</div>
+  <h2>Kaynaklar</h2>
+  <div class="plan">Hespanha (ders kitabı), CTMS, Ghaffari ve Mohammadiasl 2013, Sun 2023 TIE, Wang 2024, Neubauer 2015, danışman listesindeki 5 kaynak, veri sayfaları (JGB37, AS5600, INA228, TMP117, ESP32-S). <code>README.md</code> "Kaynaklar" ve adım 4 raporu §16'dan birleştirilecek.</div>
+</section>
+
+
+<!-- Ekler -->
+<section>
+  <div class="kicker">Ekler</div>
+  <h2>Ekler</h2>
+  <h3>Ek A: KT1 temel modeli</h3>
+  <div class="plan">Hareket denklemleri, durum uzayı, parametreler, denge noktaları, 90° doğrusallaştırma, açık çevrim simülasyonu.</div>
+  <table class="sekil">
+    <tr><th>#</th><th>Şekil</th><th>Dosya</th></tr>
+    <tr><td>A.1</td><td><span class="var">MEVCUT</span>Fiziksel şema</td><td>sekiller/model_sema.png</td></tr>
+    <tr><td>A.2</td><td><span class="var">MEVCUT</span>Blok diyagram</td><td>sekiller/model_blok_diyagram.png</td></tr>
+    <tr><td>A.3</td><td><span class="var">MEVCUT</span>Açık çevrim cevabı</td><td>sekiller/model_acik_cevrim.png</td></tr>
+    <tr><td>A.4</td><td><span class="var">MEVCUT</span>Film şeridi</td><td>sekiller/model_filmseridi.png</td></tr>
+  </table>
+  <h3>Ek B: Bölüm 3'ün MATLAB betiği</h3>
+  <div class="plan">Yeni betiğin tam metni ve çıktı logu. Ayrıca PDF'e gömülü dosya olarak (<code>pdf_yap.py</code> benzeri).</div>
+  <h3>Ek C: Dijital ikiz ve tanılama özeti</h3>
+  <div class="plan">Simulink/Simscape modellerinin kısa özeti, tanılanan parametreler tablosu (K<sub>m</sub>, R<sub>a</sub>, J<sub>M</sub>, b<sub>M</sub>, F<sub>c</sub>, K<sub>s</sub>, r, c<sub>s</sub>, mgℓ, F<sub>s</sub>, J<sub>L</sub>). Ayrıntılar adım 4 raporu Ek A–B'de.</div>
+  <h3>Ek D: Deney protokolleri D0–D7</h3>
+  <div class="plan">Tanılama D0–D5, salınım sınırı D6, 180° deneyi D7 (42 senaryo × 3). Özet tablo; tam metin <code>calisma_notu/deney_protokolu.md</code>.</div>
+  <h3>Ek E: Kronoloji ve dosya dizini</h3>
+  <div class="plan">Envanter §1 kronoloji tablosu; raporda geçen her betik ve logun yolu.</div>
+</section>
+
+</body>
+</html>
