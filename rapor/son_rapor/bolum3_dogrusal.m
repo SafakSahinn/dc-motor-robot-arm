@@ -106,7 +106,7 @@ for k = 1:3
         Asag = tek_yonlu(@(x) f_dogrusalOlmayan(x, u0, p, 'tam'), x0, h, +1);
         Asol = tek_yonlu(@(x) f_dogrusalOlmayan(x, u0, p, 'tam'), x0, h, -1);
         yaz('    Ölü bölgeli gerçek f, delta0 = r kenarında (phi yönünde tek yönlü fark):\n');
-        yaz('      dw_M''/dphi temas yönü = %9.1f, boşluk yönü = %9.1f  -> Jacobian tanımsız\n', Asag(2,1) + 0, Asol(2,1) + 0);
+        yaz('      dw_M''/dphi temas yönü = %9.1f, boşluk yönü = %9.1f  -> Jacobian tanımsız\n', round(Asag(2,1), 1) + 0, round(Asol(2,1), 1) + 0);
         yaz('      boşluk tarafında A blok köşegen: motor [phi w_M] ile kol [theta w_L] arasında terim yok (bkz. 3.5)\n');
     end
     yaz('\n');

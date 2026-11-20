@@ -96,7 +96,7 @@ theta0 = 180°:
     max |A_elle - A_sonlu fark| = 3.88e-07  (bağıl 1.40e-10)
     özdeğerler: -5.941, -5.703+74.09j, -5.703-74.09j, 5.652
     Ölü bölgeli gerçek f, delta0 = r kenarında (phi yönünde tek yönlü fark):
-      dw_M'/dphi temas yönü =   -2777.8, boşluk yönü =      -0.0  -> Jacobian tanımsız
+      dw_M'/dphi temas yönü =   -2777.8, boşluk yönü =       0.0  -> Jacobian tanımsız
       boşluk tarafında A blok köşegen: motor [phi w_M] ile kol [theta w_L] arasında terim yok (bkz. 3.5)
 
 KT1 (3 durum) aynı açılarda: A(2,1) = -mgl cos(theta0)/J
