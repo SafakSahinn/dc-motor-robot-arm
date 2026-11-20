@@ -1,4 +1,4 @@
-=== bolum3_dogrusal, 2026-11-20 14:00
+=== bolum3_dogrusal, 2026-11-20 14:10
 
 --- 3.1 Durum uzayı modeli ---
 
@@ -57,4 +57,50 @@
     Rezonans  sqrt(K_s (J_M+J_L)/(J_M J_L)) = 74.5 rad/s = 11.86 Hz
     Anti-rez. sqrt(K_s/J_L)                  = 52.7 rad/s = 8.39 Hz
     (Not: eski JGA25 parametreleriyle (parametreler.m) rezonans 18.57 Hz; belgelerdeki "≈ 18,7 Hz" o düzeneğe ait.)
+
+--- 3.2 Denge noktaları ve Jacobian ---
+
+Denge koşulu: tau_m0 = mgl sin(theta0), delta0 = r + mgl sin(theta0)/K_s
+  theta0 | tau_m0 [N m] |   delta0 [°] |  mgl cos [N m] | yerçekimi etkisi
+      0° |       0.0000 |       1.5000 |         0.2403 | geri getirici (yay gibi)
+     90° |       0.2403 |       2.8771 |         0.0000 | yok (nötr)
+    180° |       0.0000 |       1.5000 |        -0.2403 | itici (negatif yay)
+
+theta0 = 0°:
+    A (elle) =
+                0           1           0           0 
+            -2778      -6.111        2778       5.556 
+                0           0           0           1 
+             2778       5.556       -2845      -5.583 
+    max |A_elle - A_sonlu fark| = 2.78e-09  (bağıl 9.77e-13)
+    özdeğerler: -5.7+74.54j, -5.7-74.54j, -0.1476+5.758j, -0.1476-5.758j
+    Ölü bölgeli gerçek f, delta0 = r kenarında (phi yönünde tek yönlü fark):
+      dw_M'/dphi temas yönü =   -2777.8, boşluk yönü =       0.0  -> Jacobian tanımsız
+      boşluk tarafında A blok köşegen: motor [phi w_M] ile kol [theta w_L] arasında terim yok (bkz. 3.5)
+
+theta0 = 90°:
+    A (elle) =
+                0           1           0           0 
+            -2778      -6.111        2778       5.556 
+                0           0           0           1 
+             2778       5.556       -2778      -5.583 
+    max |A_elle - A_sonlu fark| = 2.29e-07  (bağıl 8.23e-11)
+    özdeğerler: -5.701+74.32j, -5.701-74.32j, -0.2917, 0
+
+theta0 = 180°:
+    A (elle) =
+                0           1           0           0 
+            -2778      -6.111        2778       5.556 
+                0           0           0           1 
+             2778       5.556       -2711      -5.583 
+    max |A_elle - A_sonlu fark| = 3.88e-07  (bağıl 1.40e-10)
+    özdeğerler: -5.941, -5.703+74.09j, -5.703-74.09j, 5.652
+    Ölü bölgeli gerçek f, delta0 = r kenarında (phi yönünde tek yönlü fark):
+      dw_M'/dphi temas yönü =   -2777.8, boşluk yönü =      -0.0  -> Jacobian tanımsız
+      boşluk tarafında A blok köşegen: motor [phi w_M] ile kol [theta w_L] arasında terim yok (bkz. 3.5)
+
+KT1 (3 durum) aynı açılarda: A(2,1) = -mgl cos(theta0)/J
+    0°: A(2,1) =  -4.6714, özdeğerler: -9.002, -2.004, -0.518
+   90°: A(2,1) =   0.0000, özdeğerler: -9.521, -2.003, 0
+  180°: A(2,1) =   4.6714, özdeğerler: -9.989, -2.002, 0.4672
 
