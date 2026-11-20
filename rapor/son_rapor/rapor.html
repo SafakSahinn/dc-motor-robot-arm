@@ -23,6 +23,7 @@ code{font:.86em var(--mono)}
 .kicker{font:500 9pt var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--accent)}
 section{break-before:page}
 .lead{font-size:10.5pt; color:var(--muted); max-width:70ch}
+.lead.kapak{font-size:13.5pt; line-height:1.72; color:#2f3b36; max-width:none; margin-top:12px}
 table{border-collapse:collapse; width:100%; font-size:9.2pt; margin-top:6px}
 th,td{text-align:left; vertical-align:top; padding:4px 6px; border-bottom:1px solid var(--line)}
 th{font:500 8pt var(--mono); letter-spacing:.05em; text-transform:uppercase; color:var(--muted)}
@@ -45,7 +46,9 @@ figcaption{font-size:9pt; color:var(--muted); margin-top:3px}
 .dosya{margin-top:8px; font-size:8.6pt; color:var(--muted); border-top:1px dashed var(--line); padding-top:4px}
 .dosya code{color:var(--ink)}
 .meta td:first-child{font-weight:600; width:150px}
-.toc ol{columns:2; margin:6px 0 0; padding-left:1.4em; font-size:9.4pt}
+.toc ol{columns:2; margin:6px 0 0; padding-left:1.4em; font-size:12pt}
+.toc li{margin:8px 0}
+table.meta.kapak{font-size:11pt} table.meta.kapak td{padding:7px 6px}
 .denk{margin:6px 0 0 14px; font-size:10.5pt}
 .denk div{margin:2px 0}
 table.mat{width:auto; display:inline-table; vertical-align:middle; margin:2px 6px; font:8.6pt var(--mono); border-left:1.5px solid var(--ink); border-right:1.5px solid var(--ink)}
@@ -64,8 +67,8 @@ table.kucuk{font-size:8.6pt}
 <div>
   <div class="kicker">EEM5507 Doğrusal Sistemler · Dönem projesi raporu</div>
   <h1>Dişli DC motorlu tek eklemli robot kol: doğrusal modelden 180°'de boşluk yüzü kestirimine</h1>
-  <p class="lead">Bu rapor, üç durumlu doğrusal bir kol modelinden başlayan çalışmanın tamamını anlatıyor. Kol modeline dişli boşluğu ve yerçekimi eklendi; önce boşluk kaynaklı salınımın sınırı öngörüldü (ilk çerçeve). Ardından ağırlık analizden tasarıma kaydı: konum döngüsü motor tarafına alındı, kalıcı hata açıya göre bir ofset tablosuyla giderildi ve geriye tek açık nokta kaldı. Kol dik yukarıdayken (180°) yerçekiminin dişliyi bastırması sıfırlanıyor ve kolun boşluğun hangi yüzüne yaslandığı belirsizleşiyor. Bu yüzü kola sensör koymadan, yalnız motor akımı ve motor açısıyla kestiren bir algoritma tasarlandı ve ESP32'ye taşındı. Bölüm 3, ders konularını (durum uzayı, Jacobian, özdeğer, transfer fonksiyonu, gözlenebilirlik, ayrıklaştırma, Luenberger gözlemcisi) bu düzenek üzerinde uyguluyor ve sonraki bölümlere köprü kuruyor. <b>Bütün sonuçlar dijital ikizden (benzetim modelleri) geliyor; donanım deneyleri henüz yapılmadı.</b></p>
-  <table class="meta" style="margin-top:14px">
+  <p class="lead kapak">Bu rapor, üç durumlu doğrusal bir kol modelinden başlayan çalışmanın tamamını anlatıyor. Kol modeline dişli boşluğu ve yerçekimi eklendi; önce boşluk kaynaklı salınımın sınırı öngörüldü (ilk çerçeve). Ardından ağırlık analizden tasarıma kaydı: konum döngüsü motor tarafına alındı, kalıcı hata açıya göre bir ofset tablosuyla giderildi ve geriye tek açık nokta kaldı. Kol dik yukarıdayken (180°) yerçekiminin dişliyi bastırması sıfırlanıyor ve kolun boşluğun hangi yüzüne yaslandığı belirsizleşiyor. Bu yüzü kola sensör koymadan, yalnız motor akımı ve motor açısıyla kestiren bir algoritma tasarlandı ve ESP32'ye taşındı. Bölüm 3, ders konularını (durum uzayı, Jacobian, özdeğer, transfer fonksiyonu, gözlenebilirlik, ayrıklaştırma, Luenberger gözlemcisi) bu düzenek üzerinde uyguluyor ve sonraki bölümlere köprü kuruyor. <b>Bütün sonuçlar dijital ikizden (benzetim modelleri) geliyor; donanım deneyleri henüz yapılmadı.</b></p>
+  <table class="meta kapak" style="margin-top:18px">
     <tr><td>Hazırlayan</td><td>Şafak Şahin</td></tr>
     <tr><td>Ders</td><td>EEM5507 Doğrusal Sistemler</td></tr>
     <tr><td>Dönem</td><td>2026–2027 Güz dönemi</td></tr>
@@ -152,10 +155,8 @@ table.kucuk{font-size:8.6pt}
 
   <h3>2.1 Fiziksel düzenek</h3>
   <p>Düzenek bir JGB37-520 dişli DC motor (12 V, 1:30, durma torku 0,49 N·m), boşluğu ayarlanabilir bir kaplin (toplam 1,5 / 3 / 5°), 15 cm'lik alüminyum kol ve değiştirilebilir bir uç kütlesinden oluşuyor. İlk çerçevede beş düzenek seçeneği karşılaştırıldı ve <b>D düzeneği</b> seçildi: ağır uç kütlesi (≈ 153 g) ile kolun eylemsizliği motorun kola yansıyan eylemsizliğine eşitlenir (R = J<sub>L</sub>/J<sub>M</sub> ≈ 1). Algılama: motorun arka miline takılan AS5600 manyetik açı sensörü (kontrolcünün gördüğü tek konum, kol tarafında ≈ 0,003°), kol milinde ikinci bir AS5600 (yalnız doğrulama, kontrolcü görmez), INA228 akım ölçer, iki TMP117 sıcaklık sensörü. Sürücü DRV8874, denetleyici ESP32-S (1 kHz kontrol döngüsü).</p>
-  <div class="ikili">
-    <figure><img src="../img/mb_3b_gorunum.png" alt="Multibody 3B görünüm"><figcaption><b>Şekil 2.1.</b> Simscape Multibody 3B modeli: motor gövdesi, rotor (φ), kol ve uç kütlesi. Açı tanımı: 0° sarkık, 90° yatay, 180° dik yukarı.</figcaption></figure>
-    <figure><img src="../../docs/img/mimari_donanim.svg" alt="Donanım mimarisi"><figcaption><b>Şekil 2.2.</b> Donanım mimarisi. Üst sıra güç ve mekanik yol, orta sıra ölçüm (kol milindeki AS5600 yalnız doğrulama), alt sıra ESP32 1 kHz döngüsü.</figcaption></figure>
-  </div>
+  <figure style="width:42%; margin-left:auto; margin-right:auto"><img src="../img/mb_3b_gorunum.png" alt="Multibody 3B görünüm"><figcaption><b>Şekil 2.1.</b> Simscape Multibody 3B modeli: motor gövdesi, rotor (φ), kol ve uç kütlesi. Açı tanımı: 0° sarkık, 90° yatay, 180° dik yukarı.</figcaption></figure>
+  <figure style="width:92%; margin-left:auto; margin-right:auto"><img src="../../docs/img/mimari_donanim.svg" alt="Donanım mimarisi"><figcaption><b>Şekil 2.2.</b> Donanım mimarisi. Üst sıra güç ve mekanik yol, orta sıra ölçüm (kol milindeki AS5600 yalnız doğrulama), alt sıra ESP32 1 kHz döngüsü.</figcaption></figure>
 
   <h3>2.2 İki kütleli model</h3>
   <p>Motor (eylemsizlik J<sub>M</sub>, açı φ) ile kol (J<sub>L</sub>, θ) arasında boşluklu ve esnek bir dişli var. Bütün büyüklükler dişli çıkışına, yani kol tarafına indirgenmiş: motorun rotor eylemsizliği N² ile çarpılır (J<sub>M</sub> = J<sub>rot</sub>·N²), motor açısı N'ye bölünür. Dişli sapması δ = φ − θ, boşluğun yarı genişliği r.</p>
