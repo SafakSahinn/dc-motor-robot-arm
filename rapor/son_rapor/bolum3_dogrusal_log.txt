@@ -1,0 +1,60 @@
+=== bolum3_dogrusal, 2026-11-20 14:00
+
+--- 3.1 Durum uzayı modeli ---
+
+(a) KT1, 3 durum [theta omega i], giriş V, çıkış theta; theta0 = 90°:
+    A =
+                0           1           0 
+                0      -9.524      0.9524 
+                0       -0.02          -2 
+    B =
+                0 
+                0 
+                2 
+    C =
+                1           0           0 
+    özdeğerler: -9.521, -2.003, 0
+
+(b) Düzenek D parametreleri (kol tarafı):
+    J_M = 0.0036 kg m^2, J_L = 0.0036 kg m^2 (J_L = J_M), mgl = 0.2403 N m
+    K_s = 10 N m/rad, c_s = 0.02 N m s/rad, b_M = 0.002, b_L = 0.0001 N m s/rad, r = 1.5°
+    K_m = 0.3441 V s/rad (= N m/A), R_a = 8.427 Ohm, L_a = 0.0025 H
+
+(b1) İki kütle, 4 durum [phi w_M theta w_L], giriş tau_m; theta0 = 90° (yerçekimi türevi 0):
+    A =
+                0           1           0           0 
+            -2778      -6.111        2778       5.556 
+                0           0           0           1 
+             2778       5.556       -2778      -5.583 
+    B =
+                0 
+            277.8 
+                0 
+                0 
+    C_motor =
+                1           0           0           0 
+    C_kol =
+                0           0           1           0 
+    özdeğerler: -5.701+74.32j, -5.701-74.32j, -0.2917, 0
+
+(b2) İki kütle, 5 durum [phi w_M theta w_L i], giriş V; theta0 = 90°:
+    A =
+                0           1           0           0           0 
+            -2778      -6.111        2778       5.556       95.59 
+                0           0           0           1           0 
+             2778       5.556       -2778      -5.583           0 
+                0      -137.6           0           0       -3371 
+    B =
+                0 
+                0 
+                0 
+                0 
+              400 
+    özdeğerler: -3367, -6.681+74.22j, -6.681-74.22j, -2.247, 0
+    elektrik kutbu ~ -R_a/L_a = -3371 rad/s (537 Hz): mekanik kutuplardan çok hızlı;
+    akım döngüsü (500 Hz) torku izlediği için bundan sonra 4 durumlu model kullanılır.
+
+    Rezonans  sqrt(K_s (J_M+J_L)/(J_M J_L)) = 74.5 rad/s = 11.86 Hz
+    Anti-rez. sqrt(K_s/J_L)                  = 52.7 rad/s = 8.39 Hz
+    (Not: eski JGA25 parametreleriyle (parametreler.m) rezonans 18.57 Hz; belgelerdeki "≈ 18,7 Hz" o düzeneğe ait.)
+
