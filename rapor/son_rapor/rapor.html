@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<title>Birleşik Rapor</title>
+<title>Robot Kol Raporu</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Adım 4 raporunun (rapor/rapor.html) stili; .mat, .denk, .sema bu rapor için eklendi */
@@ -62,29 +62,28 @@ table.kucuk{font-size:8.6pt}
 <body>
 
 <div>
-  <div class="kicker">Birleşik rapor · EEM5507 Doğrusal Sistemler</div>
+  <div class="kicker">EEM5507 Doğrusal Sistemler · Dönem projesi raporu</div>
   <h1>Dişli DC motorlu tek eklemli robot kol: doğrusal modelden 180°'de boşluk yüzü kestirimine</h1>
-  <p class="lead">Bu rapor, ders projesinde (KT1) kurulan üç durumlu doğrusal kol modelinden başlayan çalışmanın tamamını anlatıyor. Kol modeline dişli boşluğu ve yerçekimi eklendi; önce boşluk kaynaklı salınımın sınırı öngörüldü (ilk çerçeve). 5 Kasım'da ağırlık analizden tasarıma kaydı: konum döngüsü motor tarafına alındı, kalıcı hata açıya göre bir ofset tablosuyla giderildi ve geriye tek açık nokta kaldı. Kol dik yukarıdayken (180°) yerçekiminin dişliyi bastırması sıfırlanıyor ve kolun boşluğun hangi yüzüne yaslandığı belirsizleşiyor. Bu yüzü kola sensör koymadan, yalnız motor akımı ve motor açısıyla kestiren bir algoritma tasarlandı ve ESP32'ye taşındı. Bölüm 3, ders konularını (durum uzayı, Jacobian, özdeğer, transfer fonksiyonu, gözlenebilirlik, ayrıklaştırma, Luenberger gözlemcisi) bu düzenek üzerinde uyguluyor ve sonraki bölümlere köprü kuruyor. <b>Bütün sonuçlar dijital ikizden geliyor; donanım henüz sipariş edilmedi.</b></p>
+  <p class="lead">Bu rapor, üç durumlu doğrusal bir kol modelinden başlayan çalışmanın tamamını anlatıyor. Kol modeline dişli boşluğu ve yerçekimi eklendi; önce boşluk kaynaklı salınımın sınırı öngörüldü (ilk çerçeve). Ardından ağırlık analizden tasarıma kaydı: konum döngüsü motor tarafına alındı, kalıcı hata açıya göre bir ofset tablosuyla giderildi ve geriye tek açık nokta kaldı. Kol dik yukarıdayken (180°) yerçekiminin dişliyi bastırması sıfırlanıyor ve kolun boşluğun hangi yüzüne yaslandığı belirsizleşiyor. Bu yüzü kola sensör koymadan, yalnız motor akımı ve motor açısıyla kestiren bir algoritma tasarlandı ve ESP32'ye taşındı. Bölüm 3, ders konularını (durum uzayı, Jacobian, özdeğer, transfer fonksiyonu, gözlenebilirlik, ayrıklaştırma, Luenberger gözlemcisi) bu düzenek üzerinde uyguluyor ve sonraki bölümlere köprü kuruyor. <b>Bütün sonuçlar dijital ikizden (benzetim modelleri) geliyor; donanım deneyleri henüz yapılmadı.</b></p>
   <table class="meta" style="margin-top:14px">
     <tr><td>Hazırlayan</td><td>Şafak Şahin</td></tr>
     <tr><td>Ders</td><td>EEM5507 Doğrusal Sistemler</td></tr>
-    <tr><td>Dönem</td><td>11 Ekim – 20 Kasım 2026</td></tr>
+    <tr><td>Dönem</td><td>2026–2027 Güz dönemi</td></tr>
     <tr><td>Depo (GitHub)</td><td><code>https://github.com/SafakSahinn/dc-motor-robot-arm</code></td></tr>
-    <tr><td>Önceki ara rapor</td><td><code>rapor/adim4_simulasyon_ve_dogrulama.pdf</code> (49 sayfa, ilk çerçeve)</td></tr>
     <tr><td>Bu raporun hesapları</td><td><code>rapor/son_rapor/bolum3_dogrusal.m</code> (Bölüm 3, Ek B), <code>sekil_5_6.py</code> (Şekil 5.1, 5.2, 6.2)</td></tr>
   </table>
   <div class="toc"><h3>İçindekiler</h3><ol start="0">
     <li>Özet</li>
-    <li>Giriş: KT1'den araştırmaya</li>
+    <li>Giriş</li>
     <li>Sistem modeli</li>
     <li>Doğrusal sistem analizi</li>
     <li>İlk çerçeve: salınım sınırının öngörüsü</li>
     <li>Neden döndük</li>
     <li>Güncel çalışma: 180°'de boşluk yüzü kestirimi</li>
     <li>Hatalar ve düzeltmeler</li>
-    <li>Sınırlar ve sonraki adımlar</li>
+    <li>Sınırlar ve riskler</li>
     <li style="list-style:none; margin-left:-1.4em">Kaynaklar</li>
-    <li style="list-style:none; margin-left:-1.4em">Ek A: KT1 temel modeli</li>
+    <li style="list-style:none; margin-left:-1.4em">Ek A: Dişlisiz temel model</li>
     <li style="list-style:none; margin-left:-1.4em">Ek B: Bölüm 3'ün MATLAB betiği ve logu</li>
     <li style="list-style:none; margin-left:-1.4em">Ek C: Dijital ikiz ve tanılama özeti</li>
     <li style="list-style:none; margin-left:-1.4em">Ek D: Deney protokolleri D0–D7</li>
@@ -98,7 +97,7 @@ table.kucuk{font-size:8.6pt}
   <div class="kicker">0</div>
   <h2>Özet</h2>
   <p><b>Problem.</b> Dişli DC motorla sürülen, düşey düzlemde dönen tek eklemli bir kolda motor ile kol arasında yaklaşık 3°'lik bir dişli boşluğu var. Boşluk bir ölü bölge doğrusalsızlığıdır: motor yön değiştirince dişli bu aralığı boşta geçer, kol o sırada motoru izlemez. Yerçekimi torku mgℓ sin θ dişliyi bir yüze bastırarak doğal bir ön yük gibi davranır. Bu ön yük 90°'de en büyük, 0° ve 180°'de sıfırdır. Kol dik yukarıdayken (180°) kolun boşluğun hangi yüzüne yaslandığı belirsizleşir. Kontrolcü yanlış yüzü varsayarsa kol hedeften yaklaşık 2r ≈ 3° sapar.</p>
-  <p><b>Yöntem.</b> Çalışma iki evreden geçti. İlk çerçevede (18 Ekim – 5 Kasım) boşluk kaynaklı salınımın açı × kazanç düzlemindeki sınırı öngörüldü: en yakın literatür sonucu (Ghaffari ve Mohammadiasl 2013) yeniden üretildi, yerçekimini hesaba katan iki girişli bir tanımlama fonksiyonu (DF) geliştirildi, Simulink/Simscape dijital ikizi kuruldu ve donanımda yapılacak tanılama deneyleri ikizde sınandı. 5 Kasım'da ağırlık analizden tasarıma kaydı. Konum döngüsü motor tarafına alınınca boşluk salınımı kayboldu, yerine öngörülebilir bir kalıcı hata geldi. Bu hata açıya göre bir ofset tablosuyla giderildi. Geriye tek açık nokta kaldı: 180°. Burada kolun yüzünü yalnız motor akımı ve motor açısıyla kestiren bir algoritma tasarlandı. Algoritma bir tork gözlemcisi, çarpma olayını yakalama, küçük bir tork itişiyle aktif yoklama ve rampalı ofset geçişinden oluşuyor.</p>
+  <p><b>Yöntem.</b> Çalışma iki evreden geçti. İlk çerçevede boşluk kaynaklı salınımın açı × kazanç düzlemindeki sınırı öngörüldü: en yakın literatür sonucu (Ghaffari ve Mohammadiasl 2013) yeniden üretildi, yerçekimini hesaba katan iki girişli bir tanımlama fonksiyonu (DF) geliştirildi, Simulink/Simscape dijital ikizi kuruldu ve donanımda yapılacak tanılama deneyleri ikizde sınandı. Ardından ağırlık analizden tasarıma kaydı. Konum döngüsü motor tarafına alınınca boşluk salınımı kayboldu, yerine öngörülebilir bir kalıcı hata geldi. Bu hata açıya göre bir ofset tablosuyla giderildi. Geriye tek açık nokta kaldı: 180°. Burada kolun yüzünü yalnız motor akımı ve motor açısıyla kestiren bir algoritma tasarlandı. Algoritma bir tork gözlemcisi, çarpma olayını yakalama, küçük bir tork itişiyle aktif yoklama ve rampalı ofset geçişinden oluşuyor.</p>
   <div class="stats">
     <div class="stat"><b>42 / 42</b><span>180° çevresindeki senaryoların hepsi başarılı (akım işaretine bakan basit yöntem: 20 / 42)</span></div>
     <div class="stat"><b>3° → 0,2°</b><span>kol yanlış yüzde kaldığında kalıcı hata (en kötü senaryo ≤ 0,21°)</span></div>
@@ -106,18 +105,18 @@ table.kucuk{font-size:8.6pt}
     <div class="stat"><b>3,5 µs</b><span>algoritmanın ESP32'de bir adımı (1 kHz döngünün %0,4'ü)</span></div>
   </div>
   <p><b>Doğrusal sistem analizinin katkısı (Bölüm 3).</b> İki kütleli model temas hâlinde doğrusallaştırıldığında motor ölçümünden kolun durumu gözlenebilir (gözlenebilirlik matrisinin rankı 4). Kol boşluktayken motor ile kol arasındaki bağ kopar, A matrisi blok köşegen olur ve rank 2'ye düşer: kolun iki durumu motor ölçümünde hiç görünmez. 180°'de ön yük sıfır olduğu için kol boşlukta kalabilir. <b>Yüz belirsizliği bu gözlenemezliğin kendisidir.</b> Önerilen çözüm, tork itişiyle kolu bir an gözlenebilir bölgeye (temasa) taşıyarak bilgiyi geri kazanıyor. Aynı bölümde 180°'deki açık çevrim kararsızlığı (pozitif reel özdeğer +5,65 1/s), eşyerleşimsiz ölçümün ek −180° fazı (ilk benzetimlerdeki B1 kararsızlığının nedeni), 1 ms örneklemenin yeterliliği ve koddaki tork gözlemcisinin Luenberger biçimi sayısal olarak gösteriliyor.</p>
-  <div class="note"><b class="t">Sonuçların sınırı</b>Bütün sayılar dijital ikizden: MATLAB betiği, Simulink ve Simscape modelleri birbirini doğruluyor, algoritma ESP32 üzerinde aynı kararları veriyor. Dişli sertliği K<sub>s</sub>, temas sönümü c<sub>s</sub>, sürtünme ve rotor eylemsizliği tahmin. Tanılama yöntemleri ikizin kendi verisinde sınandı. Donanım henüz sipariş edilmedi; deney protokolleri (D0–D7) hazır.</div>
+  <div class="note"><b class="t">Sonuçların sınırı</b>Bütün sayılar dijital ikizden: MATLAB betiği, Simulink ve Simscape modelleri birbirini doğruluyor, algoritma ESP32 üzerinde aynı kararları veriyor. Dişli sertliği K<sub>s</sub>, temas sönümü c<sub>s</sub>, sürtünme ve rotor eylemsizliği tahmin. Tanılama yöntemleri ikizin kendi verisinde sınandı. Donanım deneyleri henüz yapılmadı; deney protokolleri (D0–D7) hazır (Ek D).</div>
 </section>
 
 
 <!-- 1 -->
 <section>
   <div class="kicker">1</div>
-  <h2>Giriş: KT1'den araştırmaya</h2>
+  <h2>Giriş</h2>
 
-  <h3>1.1 Başlangıç: ders projesi (KT1)</h3>
+  <h3>1.1 Başlangıç: dişlisiz temel model</h3>
   <p>Proje, dişli kutusu olmayan tek eklemli bir kolun doğrusal olmayan durum uzayı modeliyle başladı. Durum x = [θ, ω, i]: kol açısı (dik aşağıdan ölçülür), açısal hız ve motor akımı. Giriş motor gerilimi, çıkış kol açısı. Motor değerleri CTMS kılavuzundaki örnek motordan alındı (J<sub>m</sub> = 0,01 kg·m², b = 0,1 N·m·s, K = 0,01 N·m/A, R = 1 Ω, L = 0,5 H), kolun ucuna 0,05 kg kütle ve 0,1 m uzunluk seçildi. Model 90°'de doğrusallaştırıldı; özdeğerler 0, −2,00 ve −9,52 1/s. Sıfır özdeğer, yatayda yerçekimi torkunun türevinin sıfır olmasından gelir: kol bu açıda ne geri çekilir ne itilir. Ayrıntılar Ek A'da.</p>
-  <p>KT1 modeli iki şeyi göstermez. Birincisi dişli: motor ile kol arasında rijit, boşluksuz bir bağ varsayılır. İkincisi sürtünme. Gerçek bir dişli DC motorda (bu çalışmada JGB37-520, 1:30) dişliler arasında boşluk ve esneklik vardır. Rijit bağ varsayımı, motor yön değiştirdiğinde ve kolun yükü küçüldüğünde bozulur. Bu çalışmanın araştırma kısmı tam bu iki koşulun buluştuğu yere, 180°'ye uzandı.</p>
+  <p>Temel model iki şeyi göstermez. Birincisi dişli: motor ile kol arasında rijit, boşluksuz bir bağ varsayılır. İkincisi sürtünme. Gerçek bir dişli DC motorda (bu çalışmada JGB37-520, 1:30) dişliler arasında boşluk ve esneklik vardır. Rijit bağ varsayımı, motor yön değiştirdiğinde ve kolun yükü küçüldüğünde bozulur. Bu çalışmanın araştırma kısmı tam bu iki koşulun buluştuğu yere, 180°'ye uzandı.</p>
 
   <h3>1.2 Problem: dişli boşluğu ve yerçekimi</h3>
   <p>Boşluk, girişin ±r aralığında çıkış üretmediği bir ölü bölgedir. Motor açısı φ ile kol açısı θ arasındaki fark δ = φ − θ bu aralıktayken dişliler değmez ve kol motoru izlemez. Kapalı çevrimde bu ölü bölge kendiliğinden salınım (limit cycle) üretebilir: kontrolcü hatayı görüp motoru sürer, dişli boşluğu geçip çarpar, kol hedefi aşar, kontrolcü ters yöne sürer ve döngü kendini tekrarlar. Elektronikteki karşılığı, ölü bölgeli bir geri besleme döngüsünde ortaya çıkan kalıcı osilasyondur.</p>
@@ -130,19 +129,19 @@ table.kucuk{font-size:8.6pt}
   <h3>1.3 Literatür taraması</h3>
   <p>Literatür beş turda tarandı: yüzü aşkın sorgu, yaklaşık 50 makalenin tam metni (danışman listesindeki kaynaklar dahil). Her makaleye "ne yapmış, bizden farkı ne" notu düşüldü (<code>literatur/okuma_notlari.md</code>).</p>
   <table class="kucuk">
-    <tr><th>Tarih</th><th>Kaynak</th><th>Ne yapıldı</th></tr>
-    <tr><td class="n">18 Eki</td><td>IEEE Xplore</td><td>26 sorgu, 130 tekil makale. "Yerçekimi + boşluk + çalışma noktası" sorguları 0 sonuç.</td></tr>
-    <tr><td class="n">18 Eki</td><td>OpenAlex, Semantic Scholar, Crossref, arXiv</td><td>IEEE dışı yayınevleri; boşluk derlemesi Nordin–Gutman 2002'ye atıf yapan 497 çalışma süzüldü.</td></tr>
-    <tr><td class="n">22 Eki</td><td>Web of Science</td><td>≈ 12 sorgu, 45 kayıt tek tek incelendi. Boşluk + yerçekimi + DF birleşimi 0 kayıt.</td></tr>
-    <tr><td class="n">24 Eki</td><td>OpenAlex + web</td><td>En yakın 8 makaleye atıf yapan 75 çalışma, 17 hedefli sorgu (13'ü 0 sonuç). Doğrudan rakip yok.</td></tr>
-    <tr><td class="n">5 Kas</td><td>IEEE, WoS, web, patentler</td><td>Yeni çerçevenin kontrolü, 4 tur (IEEE 28, WoS 6, web 16 sorgu), ≈ 12 yeni tam metin.</td></tr>
+    <tr><th>Kaynak</th><th>Ne yapıldı</th></tr>
+    <tr><td>IEEE Xplore</td><td>26 sorgu, 130 tekil makale. "Yerçekimi + boşluk + çalışma noktası" sorguları 0 sonuç.</td></tr>
+    <tr><td>OpenAlex, Semantic Scholar, Crossref, arXiv</td><td>IEEE dışı yayınevleri; boşluk derlemesi Nordin–Gutman 2002'ye atıf yapan 497 çalışma süzüldü.</td></tr>
+    <tr><td>Web of Science</td><td>≈ 12 sorgu, 45 kayıt tek tek incelendi. Boşluk + yerçekimi + DF birleşimi 0 kayıt.</td></tr>
+    <tr><td>OpenAlex + web</td><td>En yakın 8 makaleye atıf yapan 75 çalışma, 17 hedefli sorgu (13'ü 0 sonuç). Doğrudan rakip yok.</td></tr>
+    <tr><td>IEEE, WoS, web, patentler</td><td>Yeni çerçevenin kontrolü, 4 tur (IEEE 28, WoS 6, web 16 sorgu), ≈ 12 yeni tam metin.</td></tr>
   </table>
   <p>Okunanlar dört gruba ayrılıyor. (1) Salınımı inceleyenler (Ghaffari 2013, Kollár–Stépán 2002, Malzahn 2014): ön yükün salınımı önlediğini ve ters sarkaçta boşluğun salınım ürettiğini gösteriyor, sorunu çözmüyor. (2) Gözlemciyle telafi edenler (DOB/ESO çalışmaları, Wang 2024): yerçekimi yok. (3) Motor sinyaliyle ölçenler (Gebler–Holtz 1998, Ruderman–Iwasaki 2016, Giovannitti 2022): kola sensör koymadan boşluğu ya da dişli torkunu kestiriyor, ama kolun hangi yüzde durduğunu kestirmiyor. (4) Kalıcı hatayı düzeltenler (Neubauer 2015): motor torkunun işaretinden yüzü seçip hedefe ofset ekliyor; tork sıfırken, yani tam 180°'de, kural tanımsız. <b>Bağlantı:</b> 4. grubun kuralı, 1. grubun sorunu gözlediği noktada çalışmıyor. Bu çalışmanın güncel katkısı bu boşluğu dolduruyor: 180°'de yüz kestirimi, yalnız motor sinyalleriyle.</p>
   <figure><img src="../../sunum/img/literatur_gruplari.svg" alt="Literatür grupları" style="width:82%"><figcaption><b>Şekil 1.3.</b> Literatürdeki dört grup ve bu çalışmanın yeri.</figcaption></figure>
 
   <h3>1.4 Raporun düzeni</h3>
-  <p>Bölüm 2 sistem modelini ve dijital ikizi tanıtıyor. Bölüm 3 dersin konularını bu modele uyguluyor; sonuçları sonraki bölümlerin dayanağı: özdeğerler 180°'nin neden özel olduğunu, gözlenebilirlik analizi yüz belirsizliğinin ne olduğunu, gözlemci de çözümün hangi parçasıyla çalıştığını açıklıyor. Bölüm 4 ilk çerçeveyi (adım 4 raporu) özetliyor, Bölüm 5 çerçevenin neden değiştiğini, Bölüm 6 güncel çalışmayı anlatıyor. Bölüm 7 süreç boyunca yapılan hataları ve düzeltmeleri, Bölüm 8 sınırları ve sonraki adımları veriyor.</p>
-  <div class="dosya">Kaynak: <code>README.md</code> §1–3, <code>literatur/</code>, <code>calisma_notu/framing.md</code> §1–4, <code>ozel/ders_raporu/kt1.tex</code></div>
+  <p>Bölüm 2 sistem modelini ve dijital ikizi tanıtıyor. Bölüm 3 dersin konularını bu modele uyguluyor; sonuçları sonraki bölümlerin dayanağı: özdeğerler 180°'nin neden özel olduğunu, gözlenebilirlik analizi yüz belirsizliğinin ne olduğunu, gözlemci de çözümün hangi parçasıyla çalıştığını açıklıyor. Bölüm 4 ilk çerçeveyi özetliyor, Bölüm 5 çerçevenin neden değiştiğini, Bölüm 6 güncel çalışmayı anlatıyor. Bölüm 7 süreç boyunca yapılan hataları ve düzeltmeleri, Bölüm 8 sınırları ve riskleri veriyor.</p>
+  <div class="dosya">Kaynak: <code>README.md</code> §1–3, <code>literatur/</code>, <code>calisma_notu/framing.md</code> §1–4</div>
 </section>
 
 
@@ -206,7 +205,7 @@ table.kucuk{font-size:8.6pt}
     <div>τ<sub>s</sub> = 0 (|δ| ≤ r);&nbsp; max(K<sub>s</sub>(δ − r) + c<sub>s</sub>δ̇, 0) (δ &gt; r);&nbsp; min(K<sub>s</sub>(δ + r) + c<sub>s</sub>δ̇, 0) (δ &lt; −r)</div>
     <div>τ<sub>f</sub> = [F<sub>c</sub> + (F<sub>s</sub> − F<sub>c</sub>) e<sup>−(φ̇/v<sub>s</sub>)²</sup>] tanh(φ̇/v<sub>ε</sub>) &nbsp;(Stribeck sürtünmesi, yalnız sürtünmeli koşularda)</div>
   </div>
-  <p>Motorun elektrik tarafı gerektiğinde beşinci durum olarak eklenir: L<sub>a</sub> di/dt = V − R<sub>a</sub> i − K<sub>m</sub> φ̇, τ<sub>m</sub> = K<sub>m</sub> i. Gerilim sürüşüyle yapılacak deneyler (iş sırası 5c) bu modelle sınandı. Bölüm 3.1'de elektrik kutbunun mekanik kutuplardan yaklaşık 45 kat hızlı olduğu gösteriliyor; bu yüzden analizlerin çoğu torkla sürülen dört durumlu modelle yapıldı.</p>
+  <p>Motorun elektrik tarafı gerektiğinde beşinci durum olarak eklenir: L<sub>a</sub> di/dt = V − R<sub>a</sub> i − K<sub>m</sub> φ̇, τ<sub>m</sub> = K<sub>m</sub> i. Gerilim sürüşüyle yapılacak deneyler bu modelle sınandı. Bölüm 3.1'de elektrik kutbunun mekanik kutuplardan yaklaşık 45 kat hızlı olduğu gösteriliyor; bu yüzden analizlerin çoğu torkla sürülen dört durumlu modelle yapıldı.</p>
 
   <h3>2.3 Parametre tablosu (D düzeneği)</h3>
   <table class="kucuk">
@@ -233,7 +232,7 @@ table.kucuk{font-size:8.6pt}
   <h3>2.5 Model ailesi: betik, Simulink, Simscape</h3>
   <p>Açı × kazanç taramaları binlerce koşu gerektirdiği için vektörize bir MATLAB betiğiyle (<code>kol_benzetim.m</code>, sabit adımlı RK4, 0,1 ms) yapıldı. Aynı model Simulink'te blok olarak, Simscape'te fiziksel bloklarla (elektrik tarafı dahil) ve Simscape Multibody'de 3B olarak yeniden kuruldu. Simulink betikle bit düzeyinde aynı sonucu veriyor. Simscape'te rejim sınıfı 10/10 hücrede aynı, genlik farkı ≤ %0,3. Elektrik modelinde 36 hücrenin 30'u ölçütü sağladı; kalan 6'sı kritik sınırın çok üstünde, gerilimin doyumda olduğu düzensiz bir hücrede (Ek C).</p>
   <figure><img src="../img/ust_uste.png" alt="Betik Simulink Simscape üst üste" style="width:86%"><figcaption><b>Şekil 2.4.</b> İki referans hücrede kol açısı: betik, Simulink ve Simscape üst üste. Alt panel Simscape − betik farkı (log ölçek). Simulink − betik farkı tam sıfır olduğu için çizilmedi.</figcaption></figure>
-  <div class="dosya">Kaynak: adım 4 raporu §2 ve §9, <code>README.md</code> §6, <code>simulasyon/simulink/</code></div>
+  <div class="dosya">Kaynak: <code>README.md</code> §6, <code>simulasyon/simulink/</code></div>
 </section>
 
 
@@ -245,7 +244,7 @@ table.kucuk{font-size:8.6pt}
 
   <h3>3.1 Durum uzayı modeli</h3>
   <p>Durum, bir sonraki anı hesaplamak için saklanması gereken en küçük değişken kümesidir. Bir kütleyi tarif etmek için konumu ve hızı gerekir (tork ivmeyi değiştirir, konumu değil); bir bobinin hafızası akımdır, çünkü akım bir anda sıçrayamaz. Doğrusal hâlde model ẋ = Ax + Bu, y = Cx biçimine iner.</p>
-  <h4>(a) KT1: üç durum</h4>
+  <h4>(a) Dişlisiz temel model: üç durum</h4>
   <p>x = [θ, ω, i]<sup>T</sup>, giriş V, çıkış θ. θ<sub>0</sub> = 90°'de:</p>
   <div class="matsatir">A =
     <table class="mat"><tr><td>0</td><td>1</td><td>0</td></tr><tr><td>0</td><td>−9,524</td><td>0,9524</td></tr><tr><td>0</td><td>−0,02</td><td>−2</td></tr></table>
@@ -277,7 +276,7 @@ table.kucuk{font-size:8.6pt}
     <tr><td class="n">90°</td><td class="n">0,240</td><td class="n">2,88</td><td class="n">0</td><td class="n">−2778</td><td class="n">−5,70 ± 74,3j, −0,29, 0</td><td>nötr</td></tr>
     <tr class="vurgu"><td class="n">180°</td><td class="n">0</td><td class="n">1,50</td><td class="n">−0,240</td><td class="n">−2711</td><td class="n">−5,70 ± 74,1j, −5,94, <b>+5,65</b></td><td>itici (negatif yay)</td></tr>
   </table>
-  <p><b>Sağlama.</b> Doğrusal olmayan f'nin (<code>kol_benzetim.m</code>'deki model, temas kopmuyor varsayımıyla) merkezi sonlu farkı h = 10⁻⁶ ile alındı. Elle türetilen A ile en büyük bağıl fark üç açıda da ≤ 1,4·10⁻¹⁰. 0°'deki yavaş karmaşık çift kolun sarkaç gibi ~0,92 Hz'de salınıp yavaşça sönmesi; 180°'deki pozitif reel özdeğer ters sarkaçtır. KT1 modelinde de aynı tablo var: A<sub>21</sub> = −mgℓ cos θ<sub>0</sub>/J, yavaş özdeğer 0°'de −0,52, 180°'de +0,467.</p>
+  <p><b>Sağlama.</b> Doğrusal olmayan f'nin (<code>kol_benzetim.m</code>'deki model, temas kopmuyor varsayımıyla) merkezi sonlu farkı h = 10⁻⁶ ile alındı. Elle türetilen A ile en büyük bağıl fark üç açıda da ≤ 1,4·10⁻¹⁰. 0°'deki yavaş karmaşık çift kolun sarkaç gibi ~0,92 Hz'de salınıp yavaşça sönmesi; 180°'deki pozitif reel özdeğer ters sarkaçtır. Dişlisiz temel modelde de aynı tablo var: A<sub>21</sub> = −mgℓ cos θ<sub>0</sub>/J, yavaş özdeğer 0°'de −0,52, 180°'de +0,467.</p>
   <p><b>0° ve 180°'de Jacobian aslında tanımsız.</b> Bu iki açıda tutma torku sıfır, denge tam boşluk kenarına (δ<sub>0</sub> = r) düşer. Ölü bölgeli gerçek modelde motor açısını kenardan temas yönüne itince ∂ω̇<sub>M</sub>/∂φ = −2778, boşluk yönüne itince 0 çıkıyor (tek yönlü farklar, Ek B logu). Fonksiyon kenarda dal değiştirdiği için tek bir türev yok. Tablodaki 0° ve 180° satırları kolun bir yüze dayalı kaldığı varsayımına göre. Boşluk tarafındaki matriste motor ile kolu bağlayan terimlerin hepsi sıfır, yani A blok köşegen: 3.5'teki gözlenemezliğin ilk izi.</p>
 
   <h3>3.3 Özdeğerlerin açıya göre değişimi</h3>
@@ -329,8 +328,8 @@ table.kucuk{font-size:8.6pt}
 
   <h3>3.8 Doğrusal olmayana uzanma: tanımlama fonksiyonu</h3>
   <p>Boşluk doğrusal değildir; Bölüm 3.2'de görüldüğü gibi δ = r kenarında Jacobian yoktur. Salınım (limit cycle) incelemesinin ders araçlarına en yakın yolu tanımlama fonksiyonudur (DF). Ölü bölgeye A sin ωt girdiğinde çıkışın birinci harmoniği N(A)·A sin ωt olarak yazılır. N(A), genliğe bağlı eşdeğer bir kazançtır: büyük genlikte 1'e, A → r'de 0'a gider. Döngünün geri kalanı G(jω) ise kalıcı salınım koşulu G(jω) = −1/N(A)'dır. Nyquist diyagramında G'nin −1/N eğrisini kestiği nokta salınımın genliğini ve frekansını verir. Ghaffari 2013 bu yöntemi simetrik (yerçekimsiz) bir servo eksende kullanıyor.</p>
-  <p>Yerçekimli kolda dişli sapmasının ortalaması sıfır değildir: δ = B + A sin ωt. İlk çerçevenin yöntem katkısı bu iki girişli DF'dir. İki koşul birlikte çözülür. Birincisi DC dengesi: dişlinin ilettiği ortalama tork yükü taşır, n<sub>0</sub>(a, b) = γ. İkincisi birinci harmonik: n<sub>1</sub>(a, b)·L(jω) = −1. Tek açı parametresi γ = mgℓ sin θ<sub>0</sub>/(K<sub>s</sub>r), yük torkunun boşluğu kapatan yay torkuna oranıdır. 0° ve 180°'de γ = 0 olur ve Ghaffari'nin DF'si birebir geri gelir; Jacobian'ın tanımsız olduğu iki nokta (3.2) DF'nin de "ön yüksüz" sınırıdır. Yöntem ve sonuçları Bölüm 4.4'te, hesapların tamamı adım 4 raporunun 5. bölümünde.</p>
-  <div class="dosya">Kaynak: <code>rapor/son_rapor/bolum3_dogrusal.m</code> ve <code>bolum3_dogrusal_log.txt</code> (Ek B), <code>01_envanter.md</code> §4, Hespanha 2009, adım 4 raporu §5</div>
+  <p>Yerçekimli kolda dişli sapmasının ortalaması sıfır değildir: δ = B + A sin ωt. İlk çerçevenin yöntem katkısı bu iki girişli DF'dir. İki koşul birlikte çözülür. Birincisi DC dengesi: dişlinin ilettiği ortalama tork yükü taşır, n<sub>0</sub>(a, b) = γ. İkincisi birinci harmonik: n<sub>1</sub>(a, b)·L(jω) = −1. Tek açı parametresi γ = mgℓ sin θ<sub>0</sub>/(K<sub>s</sub>r), yük torkunun boşluğu kapatan yay torkuna oranıdır. 0° ve 180°'de γ = 0 olur ve Ghaffari'nin DF'si birebir geri gelir; Jacobian'ın tanımsız olduğu iki nokta (3.2) DF'nin de "ön yüksüz" sınırıdır. Yöntem ve sonuçları Bölüm 4.4'te.</p>
+  <div class="dosya">Kaynak: <code>rapor/son_rapor/bolum3_dogrusal.m</code> ve <code>bolum3_dogrusal_log.txt</code> (Ek B), <code>01_envanter.md</code> §4, Hespanha 2009</div>
 </section>
 
 
@@ -338,7 +337,7 @@ table.kucuk{font-size:8.6pt}
 <section>
   <div class="kicker">4</div>
   <h2>İlk çerçeve: salınım sınırının öngörüsü</h2>
-  <p class="lead">18 Ekim – 5 Kasım arasındaki çalışmanın özeti. Ayrıntılar adım 4 raporunda (<code>rapor/adim4_simulasyon_ve_dogrulama.pdf</code>, 49 sayfa); burada yalnız sonuçlar ve sonraki bölümlere taşınanlar var.</p>
+  <p class="lead">Çalışmanın ilk evresinin özeti: sonuçlar ve sonraki bölümlere taşınanlar.</p>
 
   <h3>4.1 Araştırma sorusu ve hipotezler</h3>
   <p>İlk soru şuydu: yerçekiminin açıya bağlı ön yükü, boşluk kaynaklı kendiliğinden salınımın oluşup oluşmadığını nasıl belirler ve bu sınır öngörülebilir mi? İlk hipotez "90°'de salınım olmaz" idi. Sun 2023'te 90°'de yüksek kazançta salınım raporlandığı görülünce (A2) hipotez iki eksenli hâle getirildi: sınır, yerçekimi torkunun dinamik torka oranına bağlıdır, yani açı ve kazanç birlikte. Bu yüzden bütün sonuçlar açı × kazanç haritası olarak üretildi.</p>
@@ -362,7 +361,7 @@ table.kucuk{font-size:8.6pt}
   <p>Beş düzenek seçeneği (A, B1, B2, C, D) ideal, sensörlü ve sürtünmeli haritalarda karşılaştırıldı; D (ağır uç, R ≈ 1) önerildi, C elendi, hız kestiriminin sonucu belirlediği görüldü. Ardından dijital ikiz kuruldu (Bölüm 2.5) ve donanımda gerekecek her parametre için ayrı bir deney tasarlanıp ikizde, yalnız sanal firmware kaydından kestirildi. Bütün parametreler %0,1–3,5 içinde bulundu; tanılanan ikiz kritik r<sub>gs</sub>'yi gerçek tesisten en çok bir tarama adımı (0,05) farklı öngördü. Bu iş sırasında iki model hatası bulundu ve düzeltildi (B3–B6). Deney protokolü D0–D6 yazıldı (Ek D).</p>
   <figure><img src="../img/D3_Ks.png" alt="D3 Ks tanılaması" style="width:82%"><figcaption><b>Şekil 4.5.</b> Donanımda yapılacak D3 deneyi ikizde: kol 20–160° arasında yavaşça taranıyor, sapma–tork ilişkisinin eğiminden K<sub>s</sub>, kaymasından boşluk çıkıyor. Gerçekçi sensörle K<sub>s</sub> ≈ %1 hatayla bulunuyor.</figcaption></figure>
   <div class="note"><b class="t">Bölüm 5'e taşınan</b>Bu bölümün harita ve hız sonuçlarının bir kısmı (sitedeki "3,5× daha hızlı", "10–170° salınımsız") kontrolcü kol açısını geri beslerken elde edilmişti. Bu, sonradan "kontrolcü kolu görmez" ilkesiyle çelişti (A6/B8). Model, ikiz, tanılama yöntemleri ve deney protokolü bu çelişkiden etkilenmedi.</div>
-  <div class="dosya">Kaynak: <code>rapor/adim4_simulasyon_ve_dogrulama.pdf</code> §1–16, <code>README.md</code> Ek A, <code>simulasyon/</code>, <code>simulasyon/4a_ghaffari/</code>, <code>simulasyon/simulink/</code></div>
+  <div class="dosya">Kaynak: <code>README.md</code> Ek A, <code>simulasyon/</code>, <code>simulasyon/4a_ghaffari/</code>, <code>simulasyon/simulink/</code></div>
 </section>
 
 
@@ -563,7 +562,7 @@ table.kucuk{font-size:8.6pt}
 <!-- 8 -->
 <section>
   <div class="kicker">8</div>
-  <h2>Sınırlar ve sonraki adımlar</h2>
+  <h2>Sınırlar ve riskler</h2>
   <h3>8.1 Sınırlar</h3>
   <ul>
     <li><b>Bütün sonuçlar dijital ikizden.</b> Dört model (betik, Simulink, Simscape, Multibody) birbirini doğruluyor ve algoritma ESP32'de aynı kararları veriyor, ama gerçek düzenekle karşılaştırma yapılmadı.</li>
@@ -574,15 +573,7 @@ table.kucuk{font-size:8.6pt}
   </ul>
   <h3>8.2 Kapsam dışı</h3>
   <p>Boşluğun ve dişli sertliğinin çevrim içi tanılanması (Giovannitti 2022, Li 2026 kısmen yapmış). Bu çalışmada bir kez ölçülüp tabloya yazılıyor. Kapsam dışı bırakılmasının gerekçesi, çalışmanın amacının EEM alanında bir kontrol ve kestirim algoritması olması.</p>
-  <h3>8.3 Sonraki adımlar</h3>
-  <ol>
-    <li><b>Sipariş</b> (≈ 3.500–6.100 TL + ≈ 70 $, gövde seçeneğine göre; <code>calisma_notu/malzeme.md</code>).</li>
-    <li><b>Parçalar yoldayken:</b> 3B mekanik tasarım (boşluk kaplini, sensör tutucuları, kilit pimi, durdurucular), sensör ve sürücü kodu (2 × AS5600, INA228, TMP117, DRV8874).</li>
-    <li><b>Deneyler:</b> D0 kalibrasyon → D1–D5 tanılama (≈ 30 dakika kayıt) → D6 salınım sınırı → D7 180° deneyi (42 senaryo × 3, edilgen yöntemle karşılaştırmalı; katkının kanıtı).</li>
-    <li><b>İkizin gerçek veriyle güncellenmesi</b> ve deney–ikiz karşılaştırması; hedef dergi makalesi (IEEE/ASME TMECH ya da IEEE TIE düzeyi).</li>
-  </ol>
-  <p>Ertelenmiş işler (adlarıyla): uyarlamalı yoklama (itişi ölçülen sürtünmeye göre ölçeklemek), OpenSCAD mekanik tasarım, ESP32 adım 7.</p>
-  <h3>8.4 Riskler ve B planları</h3>
+  <h3>8.3 Riskler ve B planları</h3>
   <table class="kucuk">
     <tr><th>Risk</th><th>Belirti</th><th>B planı</th></tr>
     <tr><td>Kayan sürtünme + model hatası üst üste biner</td><td>D7'de yanlış yüz ya da B13 ihlali</td><td>Yoklama itişini son ölçülen sürtünmeye göre ölçeklemek; deneyler arasında kısa D1 tekrarı</td></tr>
@@ -625,7 +616,7 @@ table.kucuk{font-size:8.6pt}
 <!-- Ekler -->
 <section>
   <div class="kicker">Ek A</div>
-  <h2>Ek A: KT1 temel modeli</h2>
+  <h2>Ek A: Dişlisiz temel model</h2>
   <p>Dişlisiz tek eklemli kol. Mekanik denklem J θ̈ = K i − b θ̇ − mgℓ sin θ, elektrik denklemi L di/dt = V − R i − K θ̇ (K<sub>t</sub> = K<sub>e</sub> = K). J'ye ve L'ye bölünüp durum x = [θ, ω, i] ile yazılınca:</p>
   <div class="denk">
     <div>ẋ<sub>1</sub> = x<sub>2</sub>, &nbsp; ẋ<sub>2</sub> = (K x<sub>3</sub> − b x<sub>2</sub> − mgℓ sin x<sub>1</sub>)/J, &nbsp; ẋ<sub>3</sub> = (u − R x<sub>3</sub> − K x<sub>2</sub>)/L, &nbsp; y = x<sub>1</sub></div>
@@ -649,7 +640,7 @@ table.kucuk{font-size:8.6pt}
     <figure><img src="../../sekiller/model_acik_cevrim.png" alt="Açık çevrim"><figcaption><b>Şekil A.3.</b> Açık çevrim cevabı, u = u<sub>0</sub> sabit.</figcaption></figure>
     <figure><img src="../../sekiller/model_filmseridi.png" alt="Film şeridi"><figcaption><b>Şekil A.4.</b> θ(0) = 100°: kol tepeden geçip (t = 22 s) tam tur atıyor.</figcaption></figure>
   </div>
-  <div class="dosya">Kaynak: <code>matlab/acik_cevrim.m</code>, <code>animasyon.m</code>, <code>filmseridi.m</code>, <code>README.md</code> Ek B, <code>ozel/ders_raporu/kt1.tex</code></div>
+  <div class="dosya">Kaynak: <code>matlab/acik_cevrim.m</code>, <code>animasyon.m</code>, <code>filmseridi.m</code>, <code>README.md</code> Ek B</div>
 </section>
 
 <section>
@@ -683,7 +674,7 @@ table.kucuk{font-size:8.6pt}
     <tr><td>r</td><td>D4</td><td>Kol asılı, iki yüz kümesi</td><td>%0,2</td></tr>
     <tr><td>c<sub>s</sub>, J<sub>L</sub></td><td>D5</td><td>Motor kilitli vuruş, sönümlü sinüs uydurması</td><td>%3,5, %0,5</td></tr>
   </table>
-  <p>Tanılanan değerlerle kurulan ikiz, kritik r<sub>gs</sub>'yi gerçek tesisten en çok bir tarama adımı (0,05) farklı öngördü. Ayrıntılar adım 4 raporunun 9–10. bölümleri ve Ek A–B'sinde.</p>
+  <p>Tanılanan değerlerle kurulan ikiz, kritik r<sub>gs</sub>'yi gerçek tesisten en çok bir tarama adımı (0,05) farklı öngördü.</p>
 </section>
 
 <section>
@@ -709,27 +700,27 @@ table.kucuk{font-size:8.6pt}
   <h2>Ek E: Kronoloji ve dosya dizini</h2>
   <table class="kucuk">
     <tr><th>Tarih</th><th>Evre</th><th>Ne yapıldı</th></tr>
-    <tr><td class="n">11–13 Eki</td><td>KT1</td><td>3 durumlu model, CTMS parametreleri, 90° doğrusallaştırma, ode45 açık çevrim, animasyon</td></tr>
+    <tr><td class="n">11–13 Eki</td><td>Temel model</td><td>3 durumlu model, CTMS parametreleri, 90° doğrusallaştırma, ode45 açık çevrim, animasyon</td></tr>
     <tr><td class="n">17–18 Eki</td><td>Araştırma başlangıcı</td><td>Konu seçimi, IEEE ve IEEE dışı tarama, 1. düzeltme turu (A1, A2)</td></tr>
     <tr><td class="n">22 Eki</td><td>Tarama + malzeme</td><td>Web of Science, üç seviye malzeme listesi</td></tr>
     <tr><td class="n">24 Eki</td><td>İlk çerçeve</td><td>Danışman kaynakları, son tarama, çalışma notu, 2. düzeltme turu (D1–D4)</td></tr>
-    <tr><td class="n">30 Eki</td><td>Adım 4a–4b</td><td>Ghaffari yeniden üretimi, rejim sınıflandırıcı, düzenek seçimi (D), yerçekimli DF</td></tr>
+    <tr><td class="n">30 Eki</td><td>Model ve analiz</td><td>Ghaffari yeniden üretimi, rejim sınıflandırıcı, düzenek seçimi (D), yerçekimli DF</td></tr>
     <tr><td class="n">31 Eki</td><td>Kök neden + ikiz</td><td>DF/benzetim uyuşmazlığı, Simulink ve Simscape modelleri</td></tr>
     <tr><td class="n">1–2 Kas</td><td>Sanal tanılama</td><td>11 parametre ikizde, D0–D6</td></tr>
-    <tr><td class="n">3 Kas</td><td>Adım 4 raporu</td><td>49 sayfalık PDF, Multibody 3B modeli</td></tr>
+    <tr><td class="n">3 Kas</td><td>İlk çerçevenin kapanışı</td><td>Sonuçların toplanması, Multibody 3B modeli</td></tr>
     <tr class="vurgu"><td class="n">5 Kas</td><td>Dönüm noktası</td><td>Analizden tasarıma; motor tarafı döngü, ofset tablosu, 180° açık nokta, literatür kontrolü</td></tr>
     <tr><td class="n">6 Kas</td><td>Yüz kestirici</td><td>Belirsiz bant, üst sınır, kestirici, AS5600 motor milinde, duyarlılık, INA228; ESP32 adım 1–4</td></tr>
     <tr><td class="n">7 Kas</td><td>ESP32 5–6</td><td>PIL 84/84, kart içi gerçek zamanlı ikiz</td></tr>
     <tr><td class="n">8 Kas</td><td>5b, 5c, D7</td><td>Kayan sürtünme, birleşik hatalar, gerilim sürüşü, 180° deney protokolü</td></tr>
     <tr><td class="n">10–18 Kas</td><td>Sunum</td><td>Ana sayfa, <code>sunum_demo</code>, README, <code>sunum_esp32</code></td></tr>
-    <tr><td class="n">20 Kas</td><td>Birleşik rapor</td><td>Hata envanteri, Bölüm 3 hesapları, bu rapor</td></tr>
+    <tr><td class="n">20 Kas</td><td>Rapor</td><td>Hata envanteri, Bölüm 3 hesapları, bu rapor</td></tr>
   </table>
   <h3>Dosya dizini (depo köküne göre)</h3>
   <table class="kucuk">
     <tr><th>Bölüm</th><th>Kod</th><th>Kayıt / sonuç</th></tr>
     <tr><td>2, model</td><td><code>simulasyon/kol_benzetim.m</code>, <code>parametreler.m</code>, <code>4a_ghaffari/secenek_duzenek.m</code></td><td>—</td></tr>
     <tr><td>3, doğrusal analiz</td><td><code>rapor/son_rapor/bolum3_dogrusal.m</code></td><td><code>bolum3_dogrusal_log.txt</code>, <code>img/b3_*.png</code></td></tr>
-    <tr><td>4, ilk çerçeve</td><td><code>simulasyon/</code>, <code>4a_ghaffari/</code>, <code>simulink/</code></td><td><code>rapor/adim4_simulasyon_ve_dogrulama.pdf</code></td></tr>
+    <tr><td>4, ilk çerçeve</td><td><code>simulasyon/</code>, <code>4a_ghaffari/</code>, <code>simulink/</code></td><td><code>simulasyon/*_log.txt</code></td></tr>
     <tr><td>5, dönüş</td><td><code>5_planlama/konum_kaynagi_karsilastir.m</code>, <code>ofset_tablosu.m</code>, <code>inceleme_180*.m</code>, <code>olu_bant_180.m</code></td><td><code>*_log.txt</code>; <code>rapor/son_rapor/img/b5_*.png</code></td></tr>
     <tr><td>6.2</td><td><code>5_planlama/belirsiz_bant.m</code>, <code>ust_sinir.m</code></td><td><code>*_log.txt</code>, <code>*.mat</code>; <code>img/b6_belirsiz_bant.png</code></td></tr>
     <tr><td>6.3–6.4</td><td><code>5_planlama/yuz_kestirici.m</code>, <code>yuz_kestirici_as5600.m</code>, <code>hiz_gozlemci.m</code>, <code>sunum_demo.m</code></td><td><code>*_log.txt</code></td></tr>
