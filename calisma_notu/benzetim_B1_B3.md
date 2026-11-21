@@ -84,3 +84,97 @@ Her senaryoda 14 koşu (7 istek × 2 yön, tohum 1), PIL ve yalnız MATLAB (n = 
 **Karşılaştırma (iki yol).** Kartın kestiricisi altı senaryonun hepsinde yalnız MATLAB'la aynı sonucu veriyor: H7 aynı, B12 üç basamağa kadar aynı, ayrık kararlar (yüz, yoklama evresi) kayıpsız koşularda örnek örnek aynı. Yani B1'deki "önerilen 210/210" yalnız benzetim kodunun değil, karta gömülen C++ kodunun da sonucu. 42 koşuluk vektör sonuçla (yol 1) PIL'in tek tohumluk sonucu arasında da fark yok.
 
 **Sonraki.** B2 (yay ön yüklü ikiz + açı × ön yük haritası) planı ve onayı.
+
+## B2. Mekanik ön yük (makas dişli) ile yazılım kestiricisi: açı × ön yük haritası ve bedel (2026-11-21)
+
+**Soru.** Endüstri (Toyoda 1993, Lenze 2019, Panasonic WO2026074901A1) boşluğu yazılımla düzeltmeyi seçmiş. Mekanik ön yük (hocanın örneği yaylı ikinci dişli) yüz belirsizliğini bizim düzenekte ne ölçüde kaldırıyor, bedeli ne? Hocanın dişlisi yalnız örnek; amaç, mekanik çözümün sınırını ve bedelini sayıyla göstermek.
+
+**Model** (`kol_benzetim.m`, `p.onYuk`, varsayılan kapalı). Makas dişli tek yönlü: asıl yarı A, δ = +r'de sert temas (K_s). Yaylı yarı B pinyonu öbür yüzden τ_p ön yükle A'ya bastırır. B'nin yayı K_p = 0,1 K_s = 1 N·m/rad; 2r sıkışınca B, A'nın dayanağına oturur (δ = −r'de K_s).
+
+τ_s = max(K_s(δ−r) + c_s δ̇, 0)[δ>r] − max(τ_p + K_p(r−δ), 0) + min(K_s(δ+r) + c_s δ̇, 0)[δ<−r]
+
+Durağan eğri tekdüze:
+- τ > −τ_p: kol A yüzünde, boşluk yok, sertlik K_s + K_p.
+- −τ_p − 2rK_p < τ < −τ_p: tork yumuşak B yayından geçer.
+- Daha küçük τ: B dayanağına oturur.
+
+Ön yükün sürtünme bedeli: F_c, F_s += μ_p τ_p. Bizim dişli için kaynak sayısı yok; μ_p ∈ {0; 0,25; 0,5} taranıyor (0,5 ≈ Roozing 2025'teki "sürtünme 2 kata kadar" üst ucu). `p.taupFn` (zamanla gevşeyen ön yük) B3 için hazır. Ek kayıt `p.kayitEk` (motor hızı, akım, gerilim). Gerileme: HEAD sürümüyle beş yapılandırmada (kanonik olay+yok, tablo, ust_sinir, mod1, edilgen) θ ve u farkı 0; taup = Kp = 0 iken açık bayrak da birebir aynı.
+
+**Düzen.** B1 kanonik ayarı: D, P–PI r_gs 0,5, 1 kHz, AS5600 motor milinde (0,4 ms gecikme, 0,043° RMS gürültü), akım döngüsü 500 Hz.
+
+| Eksen | Değerler |
+|---|---|
+| Hedef açı | 90–357,5°, adım 2,5° (108 açı; 180 = dik yukarı, 360 = dik aşağı) |
+| τ_p | {0; 0,03; 0,06; 0,12; 0,18; 0,24; 0,36; 0,48} N·m. 0 = dişlisiz, saf boşluk. mgℓ = 0,24, F_s = 0,06 |
+| Geliş yönü × tohum | 2 × 3 |
+| Taban sürtünme × μ_p | {sürtünmeli, sürtünmesiz} × 3 |
+| Senaryolar | B1'in genellemesi; bozucu, kolu durağan yüzünden öbür yüze iten yönde: temel, a1 darbe, a2 yük 0,02, a2 yük 0,06, b salınım, c yaklaşma, d yön değiştirme |
+
+Toplam 6 ortam × 7 senaryo × 3 kontrolcü, ~200 bin koşu.
+
+Kontrolcüler:
+- **Dişli + tablo:** ofset dişlinin durağan eğrisinin tersi. τ_p, K_p, r, K_s, mgℓ bilinir; dış yük bilinmez. Ön yüklü dişliyle yazılabilecek en iyi kestiricisiz kod; τ_p = 0'da B1 tablosu.
+- **Kestirici:** olay+yoklama, kanonik ayar. Ön yükü bilmez, anlamlı satırı τ_p = 0.
+- **Üst sınır:** ikizin gerçek yüzü, yalnız τ_p = 0.
+
+H7 burada konum ölçütü: son 1 s ortalama |e| ≤ 0,5° ve en büyük ≤ 1°. Yanlış yüz ~3° hata verdiği için yüz kontrolünü kapsar. Toplam, b hariç 6 senaryo: 3888 koşu.
+
+Bedel ayrı betikte: motorElk 3 (akım döngüsü, DRV8874 sınırı, 12 V). Profiller P1 30° basamak, P2 30° rampa (10°/s), P3 c yaklaşma. Açılar {135, 200, 225, 270}° × 2 yön × 3 tohum.
+
+Kod `simulasyon/7_karsilastirma/b2/`:
+- `b2_kurulum.m`, `b2_harita.m` (6 süreç paralel, 42 parça), `b2_birlestir.m` → `b2_log.txt`
+- `b2_bedel.m`, `b2_bedel_ozet.m` → `b2_bedel_log.txt`
+- `b2_sekil.m` → `b2_harita.png`, `b2_disliz.png`, `b2_bedel_surtunmeli.png`, `b2_bedel_surtunmesiz.png`
+
+**Sonuç 1: harita (H7 / 3888).**
+
+| Kontrolcü | τ_p | Sürtünmeli μ_p 0 | μ_p 0,25 | μ_p 0,5 | Sürtünmesiz μ_p 0 | μ_p 0,25 | μ_p 0,5 |
+|---|---|---|---|---|---|---|---|
+| Dişlisiz + tablo (B1) | 0 | 3726 | 3726 | 3726 | 3720 | 3720 | 3720 |
+| **Dişlisiz + kestirici** | 0 | **3879** | **3879** | **3879** | **3873** | **3873** | **3873** |
+| Üst sınır | 0 | 3888 | 3888 | 3888 | 3843 | 3843 | 3843 |
+| Dişli + tablo | 0,03 | 3639 | 3642 | 3639 | 3636 | 3636 | 3642 |
+| Dişli + tablo | 0,06 | 3606 | 3591 | 3591 | 3603 | 3609 | 3612 |
+| Dişli + tablo | 0,12 | 3561 | 3528 | 3492 | 3522 | 3558 | 3555 |
+| Dişli + tablo | 0,18 | 3411 | 3384 | 3072 | 3396 | 3402 | 3405 |
+| Dişli + tablo | 0,24 | 3636 | 3636 | 3105 | 3642 | 3639 | 3615 |
+| Dişli + tablo | 0,36 | 3888 | 3528 | 2289 | 3888 | 3888 | 3006 |
+| Dişli + tablo | 0,48 | 3888 | 3276 | 1041 | 3888 | 3849 | 2088 |
+
+**Yorum.**
+1. **Ön yük belirsizliği yok etmiyor, taşıyor (Verl–Engelberth 2018'in bizim düzenekteki karşılığı).** Kayıp bandı, durağan yüz değişimi θ* (mgℓ sin θ* = −τ_p) çevresinde. τ_p büyüdükçe 180° ve 360°'den 270°'ye (yatay) doğru kayıyor (şekil `b2_harita.png`, siyah çizgiler). Bandın genişliği |mgℓ sin θ + τ_p| < d kestirimiyle örtüşüyor; d bilinmeyen dış yük. Örnek, sürtünmeli, a2 0,06: τ_p 0'da 165–195°, τ_p 0,12'de 195–250° ve 292,5–342,5°.
+2. **İkinci kayıp mekanizması: yumuşak yay bölgesi** (önceden öngörülmemişti). τ_g < −τ_p olan açılarda kol B yayının üstünde duruyor. Sertlik K_p = 1 N·m/rad, yani 0,02 N·m'lik yük 1,1° kaydırıyor. τ_p 0,18'de bu bölge 228,5–311,5°; a2 0,02'de 232,5–307,5° kaybediliyor. Küçük ve orta ön yük bu yüzden dişlisizden de kötü: τ_p 0,03–0,24'te 3411–3642, dişlisiz tablo 3726.
+3. **Mekanik çözümün tutması için τ_p > mgℓ + d_en büyük gerekiyor.** Burada 0,24 + 0,06 = 0,30; τ_p 0,36 ve 0,48 sürtünme bedeli yokken (μ_p 0) 3888/3888. Yani ön yük, kolun en büyük yerçekimi torkundan ve bilinmeyen yükten büyük seçilmeli. Bu, endüstrideki "anma torkunun %10–30'u" kuralından (Steinle 2025) çok daha büyük: bizde anma torkunun (0,49) %73'ü ve üstü.
+4. **Sürtünme bedeli bunu bozuyor.** μ_p 0,25'te τ_p 0,48 3276; μ_p 0,5'te τ_p 0,36 2289, 0,48 1041. Kayıplar sürtünmeden doğan kalıcı konum hatası: μ_p 0,25, τ_p 0,48, a2 0,02'de e ≈ +0,58°; μ_p 0,5, τ_p 0,48, temel'de |e| ort 1,2°. Sürtünmeli tabanda ve μ_p > 0'da hiçbir ön yük, dişlisiz kestiricinin 3879'una ulaşmıyor; en iyisi 3642.
+5. **Dişlisiz kestirici:** sürtünmeli 3879/3888, sürtünmesiz 3873/3888; tablo 3726/3720. Kestiricinin ön yüklü satırları (τ_p > 0'da 0–1710) anlamsız: model simetrik boşluk varsayıyor ve ön yükü bilmiyor. Sadece "yazılım ile mekanik ön yük birlikte kullanılacaksa kestirici ön yükü bilmeli" diye not edilir.
+
+**Kestiricinin dürüst açıkları (B1'in 179–181° penceresinde görülmemişti).**
+- **Dik aşağı (360°) çevresi:** yoklama yalnız |θ_ref − 180°| ≤ 1° bandında. c yaklaşma 357,5°'de kol boşlukta kalıyor (e +2,5°, 3 koşu). a2 0,06, 347,5°'de olay modu yüz değişimini yakalamıyor (e −1,9°, 6 koşu). 360° yerçekimi torkunun yine sıfır olduğu ikinci nokta; yoklama bandı oraya da uygulanmalı.
+- **Sürtünmesizde 175° ve 185°, a2 0,02:** 12 koşuda 7,2° tepeden tepeye limit cycle. Yük, yerçekimini neredeyse dengeliyor. Sürtünme yokken kestirici ile kontrolcü arasında yüz avlanması gibi duruyor; nedeni ayrıca incelenmeli.
+- b salınım 180°'de 6 koşu (H7 toplamına girmiyor; B1'de de son yüz tanımsızdı).
+
+**Sonuç 2: bedel** (`b2_bedel_log.txt`, 24 koşu ortalaması; E = sürücüden çekilen enerji, hareket penceresinde).
+
+| Sürtünmeli, P2 rampa 30° | RMS akım hareket [A] | RMS akım tutma [A] | E [J] | H7 |
+|---|---|---|---|---|
+| Dişlisiz + kestirici | 0,494 | 0,483 | 10,07 | 24/24 |
+| Dişli τ_p 0,36, μ_p 0 | 0,498 | 0,483 | 10,02 | 24/24 |
+| Dişli τ_p 0,36, μ_p 0,25 | 0,563 | 0,488 | 15,18 (+51 %) | 24/24 |
+| Dişli τ_p 0,36, μ_p 0,5 | 0,709 | 0,635 | 23,50 (+133 %) | 15/24 |
+| Dişli τ_p 0,48, μ_p 0,5 | 0,805 | 0,690 | 27,11 (+169 %) | 9/24 |
+
+Sürtünmesiz tabanda aynı eğilim: τ_p 0,36'da E 8,89 → 12,15 J (μ_p 0,25) ve 19,23 J (μ_p 0,5). τ_p 0,48, μ_p 0,5'te P1 ve P2'de H7 3/24. μ_p 0'da ön yükün akım ve enerji bedeli yok: iç kuvvet motor torkuna binmiyor. Bedel tamamen ön yüke bağlı sürtünmeden geliyor; Du 2025 ve Roozing 2025 bunun gerçekte var olduğunu gösteriyor. Enerjinin çoğu yerçekimini tutmanın bakır kaybı (her ortamda aynı); hareketteki artış oranı bu yüzden tabloda olduğundan daha büyük. Ayrıca θ* çevresindeki açılarda (ör. 200°, τ_p 0,06) yay bölgesinde 1–1,6° tepeden tepeye salınım çıkıyor (`b2_bedel_*.png`, alt satır).
+
+**Kanıt zincirine katkı.** (4. halka) Bizim düzenekte mekanik ön yük:
+- (i) küçük/orta değerde belirsizliği taşıyor ve yumuşak yay bölgesi yüzünden dişlisiz tablodan da kötü;
+- (ii) ancak τ_p > mgℓ + d (anma torkunun ~%73'ü) olunca tutuyor;
+- (iii) o değerde ön yüke bağlı sürtünme varsa hareket enerjisi %51–169 artıyor ve konum hatası geri geliyor.
+
+Dişlisiz kestirici aynı haritada 3879/3888.
+
+**Sınırlar.**
+- μ_p, K_p ve "ön yük sürtünmesi doğrusal" varsayımı kaynaktan değil, taranarak seçildi.
+- Makas dişlinin tek yönlü modeli bir temsilci; elektriksel (çift motorlu) ön yük ayrıca modellenmedi.
+- Bedel 4 açıda ölçüldü.
+- Simscape ikizi henüz koşulmadı (sırada).
+- Donanım D7'de.

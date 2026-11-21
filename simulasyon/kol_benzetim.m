@@ -126,6 +126,17 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   Kontrolcü ve (yuzKes/yuzKural açıksa) ofsetin yerçekimi terimi bunu kullanır; başlangıç durumu
 %   refYol(0) - p.adim. theta0_deg yine son hedeftir (analiz ve yoklama bandı ona göre).
 % p.dB (varsayılan 0; skaler ya da her benzetim için bir değer) [N m]: kola sabit yük, p.dBT0 <= t < p.dBT1.
+% p.onYuk (varsayılan 0/kapalı; B2, mekanik ön yük): makas (anti-backlash) dişli. Asıl yarı A, delta = +r'de
+%   sert temas (K_s); yaylı yarı B pinyonu öbür yüzden A'ya doğru p.taup [N m] ön yükle bastırır, B'nin
+%   yayı p.Kp [N m/rad] (2r sıkışınca B, A'nın dayanağına oturur: delta = -r'de sert temas, K_s):
+%     tau_s = max(K_s(d - r) + c_s d', 0)[d > r] - max(taup + Kp (r - d), 0) + min(K_s(d + r) + c_s d', 0)[d < -r]
+%   Durağan: tau > -taup iken kol A yüzünde (boşluk yok, sertlik K_s + Kp); tau < -taup iken yay esner,
+%   yüz değişir. taup = Kp = 0 eski modelle birebir aynıdır. taup, Kp skaler ya da her benzetim için bir
+%   değer. p.taupFn (isteğe bağlı, B3) t [s] -> çarpan: ön yük taup*taupFn(t) (yay gevşemesi).
+%   Ön yükün sürtünme bedeli: tesisteki F_c ve F_s'ye p.muP*taup(t) eklenir (varsayılan muP 0).
+%   Kestiricinin bildiği FcN/FsN değişmez. out.tau_s net dişli torkudur (A - B).
+% p.kayitEk = true (varsayılan kapalı; B2 bedel): out.w motor hızı [rad/s, kol tarafı]; motorElk açıksa
+%   out.i akım [A, eşdeğer] ve out.V sürücü gerilimi [V] (aynı kayıt aralığı p.dec).
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -235,6 +246,14 @@ if tOlc
 end
 fKay = isfield(p,'FcKay') && ~isempty(p.FcKay);   % sürtünme kayması (iş sırası 5b)
 if fKay, fKayK = p.FcKay;  fKayT = al(p,'FcKayT',p.T); end
+onY = al(p,'onYuk',0) ~= 0;                       % makas dişli ön yükü (B2)
+if onY
+    oTp = p.taup(:)'.*ones(1,n);  oKp = p.Kp(:)'.*ones(1,n);  oMu = al(p,'muP',0);
+    oFn = isfield(p,'taupFn') && ~isempty(p.taupFn);
+    surVar = p.Fc > 0 || (oMu > 0 && any(oTp > 0));
+else
+    surVar = p.Fc > 0;
+end
 elk = al(p,'motorElk',0);                          % motorun elektrik tarafı (iş sırası 5c)
 if elk > 0
     if ~any(elk == [1 2 3]), error('motorElk 1, 2 ya da 3 olmalı'); end
@@ -271,6 +290,8 @@ nRec  = floor((nStep-iAn)/p.dec);
 TH = zeros(nRec,n);  DEL = zeros(nRec,n);  TAU = zeros(nRec,n);  U = zeros(nRec,n);
 if kesMod > 0, SH = zeros(nRec,n);  DH = zeros(nRec,n); end
 if kurMod > 0, SH = zeros(nRec,n); end
+kEk = al(p,'kayitEk',false);                       % ek kayıt (B2 bedel)
+if kEk, WR = zeros(nRec,n);  if elk > 0, IR = zeros(nRec,n);  VR = zeros(nRec,n); end, end
 k = 0;
 if ktlK
     nK = ceil(nStep/kCtl);  kc = 0;  bos = zeros(nK,n);
@@ -451,6 +472,7 @@ for i = 0:nStep-1
         TH(k,:) = x(3,:);  DEL(k,:) = x(1,:)-x(3,:);  TAU(k,:) = ts;  U(k,:) = u;
         if kesMod > 0, SH(k,:) = sh;  DH(k,:) = dh; end
         if kurMod > 0, SH(k,:) = sh; end
+        if kEk, WR(k,:) = x(2,:);  if elk > 0, IR(k,:) = x(5,:);  VR(k,:) = eV; end, end
     end
 end
 
@@ -460,6 +482,7 @@ out.theta0_deg = theta0_deg;  out.wc = wc;
 out.x_son = x;  out.z_son = z;
 if ktlK, out.ktl = KT; end                     % p.x0, p.z0 ile sürdürmek için
 if elk > 0, out.iTepe = iTepe;  out.Vdoy = eDoy/nStep; end
+if kEk, out.w = WR;  if elk > 0, out.i = IR;  out.V = VR; end, end
 if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = yz; end
 if kurMod > 0, out.shat = SH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh; end
 if kesMod > 0
@@ -497,8 +520,15 @@ out.sinif(out.kararsiz) = 4;
         sag = d >  p.r;  sol = d < -p.r;
         ts(sag) = max(p.Ks*(d(sag)-p.r) + p.cs*dd(sag), 0);
         ts(sol) = min(p.Ks*(d(sol)+p.r) + p.cs*dd(sol), 0);
-        if p.Fc > 0                                % yumuşatılmış Stribeck sürtünmesi
-            tf = (p.Fc + (p.Fs-p.Fc)*exp(-(dphi/p.vs).^2)) .* tanh(dphi/p.veps);
+        if onY                                     % makas dişli: B yarısının yay kuvveti
+            if oFn, tp = oTp*p.taupFn(tt); else, tp = oTp; end
+            ts = ts - max(tp + oKp.*(p.r - d), 0);
+            fc = p.Fc + oMu*tp;  fs = p.Fs + oMu*tp;
+        else
+            fc = p.Fc;  fs = p.Fs;
+        end
+        if surVar                                  % yumuşatılmış Stribeck sürtünmesi
+            tf = (fc + (fs-fc).*exp(-(dphi/p.vs).^2)) .* tanh(dphi/p.veps);
             if fKay, tf = tf*(1 + (fKayK - 1)*min(tt/fKayT, 1)); end
         else
             tf = 0;
