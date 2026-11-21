@@ -51,7 +51,7 @@ En yakın yeni bulgular:
 
 | Çalışma | Durum | Ne yapıyor | Bizden farkı |
 |---|---|---|---|
-| **Ruderman, Fridman 2019 *IEEE TCST*** "Model-free sliding-mode-based detection and estimation of backlash in drives with single encoder" (10.1109/TCST.2019.2956914) | Ö | **Yalnız eyleyici tarafındaki enkoderle** kayan kipli türevleyici kullanıyor. Farklı boşluk kiplerinin (temas / serbest) farklı bozucu dinamiği var. Çarpma anında sınırsız, dürtü biçiminde bir bozucu oluşuyor. Bu, kayan kipin kısa süreliğine kaybolmasına yol açıyor, yani **çarpmanın gerçekleştiği an saptanabiliyor**. Boşluk büyüklüğü kestiriliyor. İki ataletli düzenekte deney var | Motor tarafından **kip geçişi / çarpma anı** sezmek yapılmış. Ancak yerçekimi yok, kolun **hangi yüzde durduğu** (özellikle dururken, tork sıfırken) kestirilmiyor, hedef boşluk büyüklüğü. Rapordaki 3. gruba (motor sinyaliyle ölçenler) eklenmeli. **Tam metin okunmalı** (IEEE, kurum erişimi) |
+| **Ruderman, Fridman 2019 *IEEE TCST*** 28(2):812–818, "Model-free sliding-mode-based detection and estimation of backlash in drives with single encoder" (10.1109/TCST.2019.2956914, arnumber 8935531) | **TM** (aşağıda 1.4a) | **Yalnız eyleyici tarafındaki enkoderle** kayan kipli türevleyici kullanıyor. Farklı boşluk kiplerinin (temas / serbest) farklı bozucu dinamiği var. Çarpma anında sınırsız, dürtü biçiminde bir bozucu oluşuyor. Bu, kayan kipin kısa süreliğine kaybolmasına yol açıyor, yani **çarpmanın gerçekleştiği an saptanabiliyor**. Boşluk büyüklüğü kestiriliyor. İki ataletli düzenekte deney var | Motor tarafından **kip geçişi / çarpma anı** sezmek yapılmış. Ancak yerçekimi yok, kolun **hangi yüzde durduğu** (özellikle dururken, tork sıfırken) kestirilmiyor, hedef boşluk büyüklüğü. Rapordaki 3. gruba (motor sinyaliyle ölçenler) eklenmeli. **Tam metin okunmalı** (IEEE, kurum erişimi) |
 | Papageorgiou, Blanke, Niemann, Richter 2017 IFAC (10.1016/j.ifacol.2017.08.621) | Ö | Kayan kipli gözlemci ile uyarlamalı kestirici, ölü bölge genişliği | Boyut kestirimi, yüz yok. Notlarımızda kaynakça olarak geçiyordu |
 | Ruderman, Iwasaki 2015 ICM (10.1109/ICMECH.2015.7084054) | Ö | Sensörsüz burulma kontrolünde histerezisli kayıp hareket. İki uç durum karşılaştırılıyor: en büyük kalıcı yük ve yerçekiminden gelen yük | Yerçekimi var, ama yüz kestirimi yok. Ruderman 2016 TIE'nin öncülü |
 | Reddy ve ark. 2022 *IEEE TMECH* (10.1109/TMECH.2021.3137461) | Ö | Taşıt aktarma organında Kalman ile boşluk **büyüklüğü** (CAN hız ve tork) | Boyut kestirimi, tekerlek hızı yük tarafı ölçüsü |
@@ -59,13 +59,28 @@ En yakın yeni bulgular:
 | Capito ve ark. 2023 SAE (10.4271/2023-01-0454) | Ö | Taşıtta tork sıfırdan geçerken tork değişim hızını boşluk bölgesinde düşürüyor | "Sıfır geçişinde boşluk" mühendislik pratiği. Kestirim yok, yüzün nerede olduğu tork işaretinden varsayılıyor |
 | Awan, Khan 2024 *Eng. Proc.* (10.3390/engproc2024075032) | Ö | Ters sarkaçta iki motorlu (drive–anti drive) boşluk giderme, yalnız benzetim | Soru 2 için çift motor örneği |
 
+### 1.4a Ruderman–Fridman 2019, tam metin (İstinye OpenAthens, IEEE)
+
+- Kurulum: iki ataletli sistem, yalnız motor tarafında enkoder, model yok. Yalnız ikinci mertebe eyleyici dinamiği, tork sabiti, sınırlar, sönüm ve atalet varsayılıyor. Kipler: "engagement" (iki yüz temasta), "gap" (boşlukta), "impact" (bir yönlü geçiş).
+- Yöntem: ikinci mertebe süper-burulma (STA) türevleyicisi. Bozucu terimin üst sınırı L, temas ve boşluk kiplerini ayıracak biçimde seçiliyor (`U_max K_m + G < L`). Çarpma anında sınırsız, dürtü biçiminde bir bozucu oluşuyor ve kestirim hatası belirgin bir tepe yapıyor. Bu tepelerin zamanları ile motor açısından boşluk büyüklüğü çıkarılıyor.
+- **Kestirim adımları S1–S3:** *"Fed the motor with u(t) = U sin(ωt)… sufficient for inducing a periodic motion"*. Yöntem motorun **sürekli, periyodik hareketini** gerektiriyor. Durağan konumda ya da sıfır torkta çalışmıyor.
+- Yerçekimi yok. Kolun dururken hangi yüzde olduğu sorulmuyor. Amaç yalnız boşluk **büyüklüğü**.
+- Gelecek çalışma (Sonuç, aynen): *"sensitivity analysis of the proposed method, in regard to lower sampling and quantization of the actuator signals and evaluation with other application cases."*
+- **Bizim için:** Rakip değil. Rapordaki 3. grupta (motor sinyaliyle ölçenler) anılmalı. Fark tek cümleyle: onlar periyodik uyarımla boşluğun **büyüklüğünü** buluyor, biz dururken ve yerçekimi torku sıfırken kolun **hangi yüzde** olduğunu buluyoruz. Kaynakçasındaki Merzouki–Davila–Fridman–Cadiou 2007 *CEP* (kayan kipli boşluk gözlemi, iki taraf ölçüsü gerekiyor) ve Villwock–Pacas 2009 *TIE* (elektrik tahriklerinde boşluğun zaman alanında saptanması) da 3. gruba eklenebilir.
+
+### 1.4b Gattringer ve ark. 2017 RAAD (tam metin erişilemedi)
+
+- İstinye aboneliği bu Springer kitabını kapsamıyor. Sayfa satın alma gösteriyor, açık kopya yok (OpenAlex: kapalı, depolarda tam metin yok).
+- Springer sayfasında okunan tam özet: 30 kalibrasyon parametresi (uzunluk, eksen kayıklığı, **gear backlash**, eklem ofseti). Ek olarak motor ile kol açısı arasındaki esnek sapma da modelde var. Lazer işaretçi ve kamera kullanılıyor, 83 en uygun duruş, Levenberg–Marquardt. Sonuç lazer izleyiciyle benzer doğrulukta.
+- Kaynakçasında Neubauer 2015 var. Bu çalışma Neubauer 2015'in boşluk ve esneklik modelini düşük maliyetli ölçümle kullanıyor. Sıfır tork durumunu ele aldığına dair bir işaret yok, ama **tam metin görülmeden kesin değil**.
+
 ### 1.5 Soru 1 sonucu
 
 - **Kapatılmamış.** Neubauer ekibi konuya dönmemiş, sonradan atıf yapan çalışmalar da açığı kapatmamış. Literatürde boşluk yüzü için hâlâ iki kaba kural var: tork işareti (Neubauer 2015) ve yaklaşma yönü (Yao 2025/2026). İkisi de tork sıfırken ve kol devrilebilir durumdayken (180°) belirsiz kalıyor.
 - **Kısmen yakın tek çizgi:** Ruderman–Fridman 2019. Bu çalışma yalnız motor tarafındaki ölçüyle **çarpma / kip geçişi anını** saptıyor. Bizim yöntem de dolaylı olarak bir geçişe dayanıyor (küçük itiş sonrası temas). Bu yüzden ilişki rapora açıkça yazılmalı: onlar "geçiş ne zaman oldu ve boşluk ne kadar büyük" sorusunu cevaplıyor, biz "kol şu an hangi yüzde, yerçekimi bunu belirlemiyorken" sorusunu cevaplıyoruz.
-- **Açık kalan iki kontrol** (tam metin gerekiyor, ikisi de kurum erişimiyle okunabilir):
-  1. Gattringer ve ark. 2017 RAAD: boşluk yüzü kuralı yine `sign(M)` mi?
-  2. Ruderman–Fridman 2019 TCST: dururken ya da sıfır torkta yüz bilgisi çıkarıyorlar mı?
+- **Kontroller (21 Kasım):**
+  1. Ruderman–Fridman 2019 TCST: tam metin okundu. Dururken ve sıfır torkta yüz bilgisi **çıkarmıyorlar**: yöntem periyodik sinüs uyarımı gerektiriyor, amaç boşluk büyüklüğü (1.4a).
+  2. Gattringer ve ark. 2017 RAAD: tam metne erişilemedi. Özet ve kaynakça Neubauer 2015 çizgisinin devamı olduğunu gösteriyor (1.4b). Tek açık nokta bu, düşük risk.
 - Rapordaki "doğrudan rakip yok" iddiası (rapor 1.3 ve yaklaşık satır 380) şimdilik geçerli. Ruderman–Fridman 2019 3. gruba eklenmeli.
 
 ---
@@ -79,7 +94,7 @@ En yakın yeni bulgular:
 | **Steinle, Leipe, Lechler, Verl 2025 *Prod. Eng.* 19:419–427** (10.1007/s11740-024-01318-7, açık erişim) | **TM** | Kremayer–pinyonda **elektriksel ön yük** (iki motor). Endüstride ön yük devreye almada anma torkunun %10–30'u olarak sabit seçiliyor ve kalıcı bırakılıyor. Sürekli ön yük *"leads to significant energy consumption, increased friction and wear of the mechanics"*. Alt sınır `τ_p > τ_fr,s` koşulu (iki tahrik zincirinde aynı anda boşluk oluşmasını önler, kaynak Verl–Engelberth 2018). Üst sınır motorların sürekli torku. Ön yük yükseldikçe sertlik ve doğal frekans artıyor, sönüm azalıyor. **Yöntem:** ön yük torku `τ_p,a = K_a·|d e_x/dt|`, kayan ortalama filtreden geçiriliyor ve sınırlanıyor. **Sonuç:** benzer doğrulukta, en yüksek ön yüke göre ortalama **%77 daha az ön yük torku**. Dururken ön yük düşüyor |
 | Verl, Engelberth 2018 *CIRP Annals* 67(1):369 (10.1016/j.cirp.2018.03.006) | B | "Adaptive preloading for rack-and-pinion drive systems". En küçük ön yük koşulu. Okunmalı |
 | Engelberth ve ark. 2015 *Prod. Eng.* 9(2):269 (10.1007/s11740-015-0601-3) | B | Elektriksel ön yüklü kremayer tahriklerinin özellikleri |
-| Du, Yang, Wang, Chen, Fang 2025 *Actuators* 14(4):173 (10.3390/act14040173) | Ö (MDPI erişimi engelledi) | Ön yüklü esnek taşıyıcılı boşluksuz 3K planet redüktör. **Ön yük arttıkça hem ileri hem geri verim düşüyor**, yük torku arttıkça artıyor. Ön yük en çok güneş–planet kavramasını etkiliyor. Dört prototipte model hatası %2,3 / %4,0 |
+| Du, Yang, Wang, Chen, Fang 2025 *Actuators* 14(4):173 (10.3390/act14040173) | **TM** (Chrome üzerinden) | Ön yüklü esnek taşıyıcılı boşluksuz 3K planet redüktör. Ön yük, iki komşu planet dişlisini merkez dişlilere sırt sırta yaslayarak boşluğu gideriyor. **Ön yük arttıkça hem ileri hem geri verim düşüyor, "especially under the light-load condition"**. Yük torku arttıkça verim hızla artıyor, çünkü esnek taşıyıcı yükle geri esniyor ve ters kavrama kuvvetleri azalıyor. Ek kayıp ters kavrama kuvvetlerinden geliyor ve en çok güneş–planet çiftinde. En yüksek ön yüklü prototip (D) "hardly practical". Dört prototipte model hatası %2,30 / %4,01 |
 | Du, Zhang, Yang, Chen, Wang 2023 *Mech. Mach. Theory* (10.1016/j.mechmachtheory.2023.105495) | B | Kobotlar için esnek, boşluk gideren taşıyıcılı 3K planet dişli |
 | Du, Wang, Tu, Chen, Lu 2025 ICIEA (10.1109/ICIEA65512.2025.11148910) | Ö | Çift motor ve çift taşıyıcıyla bileşik planet redüktör. İki motorun bias torku dişleri karşı yüzlere yaslıyor, ağır yükte bile boşluk gideriliyor (benzetim) |
 | Li, Yang, Teng, Cui, Chen 2024 ICRCA (10.1109/ICRCA60878.2024.10649134) | Ö | Taşlama robotu ekleminde **ek bir dişli çiftiyle** boşluk giderme, sonlu elemanlarla analiz. Boşluk temas basıncını az, gerilmeyi çok etkiliyor. Hocanın önerisinin endüstrideki bir örneği |
@@ -94,9 +109,14 @@ En yakın yeni bulgular:
 2. **Ön yükün literatürde açıkça yazılı üç bedeli var:** verim kaybı (Du 2025), sürtünme ve aşınma artışı, sürekli enerji tüketimi (Steinle 2025). Ayrıca ön yükün bir tork sınırı var: iletilen tork aşınca boşluk geri geliyor ve sistem kararsızlaşabiliyor (Ghaffari 2013).
 3. **Steinle 2025'in mantığı bizim mantığımızla aynı yönde:** ön yükü yalnız gerektiğinde uygulamak. Onlar bunu iki motor ve yük tarafı ölçüsüyle (doğrusal ölçek) yapıyor. Bizim tek motorlu sistemimizde yerçekimi zaten "bedava" bir ön yük. Yalnız 180° civarında bu ön yük kayboluyor, sorun da tam orada başlıyor.
 4. **Bu sorunun cevabı tezi güçlendirebilir:** "Mekanik ön yük sorunu ortadan kaldırır, ama bedelli. Ön yükü sürekli yüksek tutmak yerine, yerçekiminin yetmediği yerde ve gerektiği kadar uygulamak için kolun hangi yüzde olduğunu bilmek gerekir. Mekanik ön yük olan sistemde de aynı kestirim ön yükün hâlâ çalışıp çalışmadığını izler."
-5. Yay ön yükünü açıya göre boyutlandırma ve ön yük kaybını yalnız motor sinyalleriyle sezme konusunda doğrudan bir kaynak bulunamadı. Bu da olası bir katkı alanı.
+5. **Du 2025'ten çıkan ek argüman:** ön yükün verim bedeli **hafif yükte** en büyük. Bizim kolda 180° civarında yerçekimi torku sıfıra iner, yani eklem hafif yükte çalışır. Sabit bir yay ön yükü bu yüzden bedelini en çok tam ihtiyaç duyulduğu bölgede öder, 90° civarında ise gereksiz kalır (orada yerçekimi zaten ön yük).
+6. Yay ön yükünü açıya göre boyutlandırma ve ön yük kaybını yalnız motor sinyalleriyle sezme konusunda doğrudan bir kaynak bulunamadı. Bu da olası bir katkı alanı.
 
 ### 2.3 Eksik kalanlar
 
 - **Patent taraması yapılmadı.** Anti-backlash gear, scissor gear ve spring preload konularında patent çok. Google Patents ya da Espacenet, Chrome üzerinden taranacak.
-- Kurum erişimiyle okunacak tam metinler: Verl–Engelberth 2018 CIRP, Du 2025 *Actuators* (MDPI), Gnad 2025 ASME, Li 2024 ICRCA.
+- Tam metin durumu (21 Kasım, İstinye OpenAthens):
+  - Ruderman–Fridman 2019 ve Du 2025 okundu. PDF'ler `literatur/genisletme/pdf/` içinde, depoda değil.
+  - Gattringer 2017 (Springer) ve Gnad 2025 (ASME) aboneliğin dışında.
+  - Verl–Engelberth 2018 (ScienceDirect) CAPTCHA'ya takıldı.
+  - Li 2024 ICRCA henüz denenmedi.
