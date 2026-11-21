@@ -92,7 +92,7 @@ En yakın yeni bulgular:
 | Çalışma | Durum | Bulgu |
 |---|---|---|
 | **Steinle, Leipe, Lechler, Verl 2025 *Prod. Eng.* 19:419–427** (10.1007/s11740-024-01318-7, açık erişim) | **TM** | Kremayer–pinyonda **elektriksel ön yük** (iki motor). Endüstride ön yük devreye almada anma torkunun %10–30'u olarak sabit seçiliyor ve kalıcı bırakılıyor. Sürekli ön yük *"leads to significant energy consumption, increased friction and wear of the mechanics"*. Alt sınır `τ_p > τ_fr,s` koşulu (iki tahrik zincirinde aynı anda boşluk oluşmasını önler, kaynak Verl–Engelberth 2018). Üst sınır motorların sürekli torku. Ön yük yükseldikçe sertlik ve doğal frekans artıyor, sönüm azalıyor. **Yöntem:** ön yük torku `τ_p,a = K_a·|d e_x/dt|`, kayan ortalama filtreden geçiriliyor ve sınırlanıyor. **Sonuç:** benzer doğrulukta, en yüksek ön yüke göre ortalama **%77 daha az ön yük torku**. Dururken ön yük düşüyor |
-| Verl, Engelberth 2018 *CIRP Annals* 67(1):369 (10.1016/j.cirp.2018.03.006) | B | "Adaptive preloading for rack-and-pinion drive systems". En küçük ön yük koşulu. Okunmalı |
+| **Verl, Engelberth 2018 *CIRP Annals* 67(1):369–372** (10.1016/j.cirp.2018.03.006) | **TM** (aşağıda 2.1a) | Çift motorlu elektriksel ön yükte, ön yükü referans torka göre azaltan karakteristik eğri. En küçük ön yükün gerekçesi sürtünme |
 | Engelberth ve ark. 2015 *Prod. Eng.* 9(2):269 (10.1007/s11740-015-0601-3) | B | Elektriksel ön yüklü kremayer tahriklerinin özellikleri |
 | Du, Yang, Wang, Chen, Fang 2025 *Actuators* 14(4):173 (10.3390/act14040173) | **TM** (Chrome üzerinden) | Ön yüklü esnek taşıyıcılı boşluksuz 3K planet redüktör. Ön yük, iki komşu planet dişlisini merkez dişlilere sırt sırta yaslayarak boşluğu gideriyor. **Ön yük arttıkça hem ileri hem geri verim düşüyor, "especially under the light-load condition"**. Yük torku arttıkça verim hızla artıyor, çünkü esnek taşıyıcı yükle geri esniyor ve ters kavrama kuvvetleri azalıyor. Ek kayıp ters kavrama kuvvetlerinden geliyor ve en çok güneş–planet çiftinde. En yüksek ön yüklü prototip (D) "hardly practical". Dört prototipte model hatası %2,30 / %4,01 |
 | Du, Zhang, Yang, Chen, Wang 2023 *Mech. Mach. Theory* (10.1016/j.mechmachtheory.2023.105495) | B | Kobotlar için esnek, boşluk gideren taşıyıcılı 3K planet dişli |
@@ -102,6 +102,22 @@ En yakın yeni bulgular:
 | Sun, Liang, Fang 2019 *Industrial Robot* (10.1108/IR-06-2018-0124) | Ö | Delme robotunda ön yüklü çift somun ve çift motorla boşluk giderme |
 | Su ve ark. 2021 IJCNN (10.1109/IJCNN52387.2021.9534277) | Ö | Fazla eyleyicili paralel robotta iç ön yükün çok amaçlı en iyilenmesi (güç, anahtarlama kaybı) |
 | Notlarımızdan: Ghaffari 2013 TMECH, Sun 2023, Xu 2023 RA-L, Karim 2018 | TM (önceden) | Tork ön yükü aştığında kararsızlık (Ghaffari). Anma akımını aşan çift motorlu ön yük (Sun). Servo çatışması (Xu). Dış tork mekanik ön yük gibi davranıyor (Karim) |
+
+### 2.1a Verl–Engelberth 2018, tam metin (İstinye OpenAthens, ScienceDirect)
+
+- Ön yük tanımı: `τ_p = K_w,1 τ_ref,1 − K_w,2 τ_ref,2`. Endüstride kullanılan "torque balancing" denetleyicisi (Siemens, Heidenhain).
+- Sabit ön yükün bedeli: en büyük ilerleme torku `2(τ_max − τ_p,c)`'ye düşüyor.
+- **Kritik cümle:** *"Despite preloading, backlash still occurs. In static state… backlash occurs during sign change of the torque of one motor."* Ön yük boşluğu ortadan kaldırmıyor. Yüz değişimini yalnız iki zincirden birine kaydırıyor. Avantajı: *"backlash never occurs simultaneously in both drive trains… the machine table is never in an undefined state"*.
+- En küçük ön yük: `τ_p,0 > max(τ_s,1; τ_s,2)`, yani sürtünmeyi (stiction) aşmalı. Kapatma eşiği: `τ_off > max(τ_s,1; τ_s,2) + τ_s,t`. Yüz değişim bölgesi `2τ_p,0 < τ_ref,B < 2τ_off`.
+- Sonuçlar:
+  - Literatür ön yük için gerekçe vermeden anma torkunun yaklaşık %20'sini öneriyor. Bu çalışmada %4 yetiyor.
+  - Boşluk 30 µm'den 9 µm'ye iniyor, sıfırlanmıyor, çünkü sürtünme tahrik zincirini elastik olarak deforme ediyor. Aşırı ön yükle (12,5 N·m) bile 4 µm kalıyor.
+  - Ortalama ön yükü %20'den %10'a indirmek toplam enerjiyi %3 azaltıyor.
+- Sınırlar: *"the detection of these modes is not subject of the presented concept"* (ön yükün ne zaman gerektiğini sezmek kapsam dışı). Dinamik hareketteki etki ve kararlılık kanıtı sonraya bırakılmış.
+- **Bizim için:**
+  1. Ön yük **yüz belirsizliğini yok etmiyor, nereye taşınacağını seçiyor.** Hocanın yaylı dişlisi de böyle çalışır: ön yük aşılınca yüz yine değişir.
+  2. En küçük ön yük sürtünmeyle belirleniyor. Ucuz ve sürtünmesi yüksek dişlide yay ön yükü büyük olmak zorunda, bu da Du 2025'teki verim kaybını büyütür.
+  3. "Ön yükün ne zaman gerektiğini sezmek" bu çalışmada açıkça kapsam dışı. Kolun hangi yüzde olduğunu kestirmek tam olarak bu boşluğu dolduruyor. Tezde Steinle 2025 ve Verl–Engelberth 2018 birlikte anılabilir: "uyarlamalı ön yük endüstride var, ama durumu sezen kısım ya yük tarafı ölçüsüne dayanıyor ya da kapsam dışı bırakılmış".
 
 ### 2.2 Soru 2 için ara değerlendirme (tartışmaya açık)
 
@@ -118,5 +134,5 @@ En yakın yeni bulgular:
 - Tam metin durumu (21 Kasım, İstinye OpenAthens):
   - Ruderman–Fridman 2019 ve Du 2025 okundu. PDF'ler `literatur/genisletme/pdf/` içinde, depoda değil.
   - Gattringer 2017 (Springer) ve Gnad 2025 (ASME) aboneliğin dışında.
-  - Verl–Engelberth 2018 (ScienceDirect) CAPTCHA'ya takıldı.
+  - Verl–Engelberth 2018 (ScienceDirect): kullanıcı CAPTCHA'yı geçti, tam metin okundu ve PDF indirildi (2.1a).
   - Li 2024 ICRCA henüz denenmedi.

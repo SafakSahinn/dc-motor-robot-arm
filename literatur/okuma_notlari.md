@@ -676,3 +676,20 @@ Tam metin okundu (açık erişim, CC BY) · DOI 10.1007/s11740-024-01318-7 · IS
 - Yöntem: `τ_p,a = K_a·|d e_x/dt|` (P kuralı, kayan ortalama filtresi, sınırlama). Ön yük yalnız konum hatası hızla değişirken artıyor.
 - Sonuç: benzer doğrulukta, en yüksek ön yüke göre ortalama **%77 daha az ön yük torku**. Dururken ön yük düşüyor.
 - **Bizim için (Soru 2, hocanın yaylı dişlisi):** "ön yükü yalnız gerektiğinde uygula" fikrinin endüstrideki karşılığı. Mekanik ya da elektriksel ön yükün bedelini (enerji, sürtünme, aşınma) açıkça gösteren bir kaynak. Bizde ise yerçekimi "bedava" ön yük ve 180°'de kayboluyor. Sabit yay ön yükü bu yüzden ya her yerde gereğinden büyük ya da 180° civarında yetersiz kalıyor.
+
+## Verl, Engelberth — Adaptive preloading for rack-and-pinion drive systems (CIRP Annals 67(1):369–372, 2018)
+
+Tam metin okundu (21 Kasım 2026; İstinye OpenAthens → ScienceDirect, PDF `genisletme/pdf/` içinde) · DOI 10.1016/j.cirp.2018.03.006 · PII S0007850618300064 · ISW Stuttgart
+
+- Çift motorlu elektriksel ön yük, "torque balancing" denetleyicisi. Ön yük referans torka bağlı bir eğriyle azaltılıyor: en küçük ön yük `τ_p,0 > max(τ_s,1; τ_s,2)` (sürtünme), kapatma eşiği `τ_off > max(τ_s) + τ_s,t`.
+- *"Despite preloading, backlash still occurs… during sign change of the torque of one motor."* Ön yük yüz değişimini iki zincirden birine kaydırıyor, ama tablayı hiçbir zaman belirsiz durumda bırakmıyor.
+- Sonuçlar: %20 yerine anma torkunun %4'ü yetiyor. Boşluk 30 µm'den 9 µm'ye iniyor, sıfırlanmıyor. Ortalama ön yükü %20'den %10'a indirmek toplam enerjiyi %3 azaltıyor. Ön yükün ne zaman gerektiğini sezmek kapsam dışı bırakılmış.
+- **Bizim için (Soru 2):** ön yük yüz belirsizliğini yok etmiyor, yalnız nereye taşınacağını seçiyor. En küçük ön yük sürtünmeyle belirleniyor, ucuz dişlide yay ön yükü büyük olmak zorunda. "Ön yükün ne zaman gerektiğini sezmek" açıkça kapsam dışı bırakılmış ve bizim kestirim bu boşluğu dolduruyor. Ayrıntı: `genisletme_2026-11-21.md` 2.1a.
+
+## Ruderman, Fridman — Model-free sliding-mode-based detection and estimation of backlash in drives with single encoder (IEEE TCST 28(2):812–818, 2020; çevrim içi 2019)
+
+Tam metin okundu (21 Kasım 2026; İstinye OpenAthens → IEEE, PDF `genisletme/pdf/` içinde) · DOI 10.1109/TCST.2019.2956914 · arnumber 8935531
+
+- Yalnız motor tarafında enkoder, model yok. Süper-burulma (STA) türevleyicisi. Temas ve boşluk kipleri için ayrı bozucu sınırları kullanılıyor. Çarpma anında kestirim hatası tepe yapıyor ve bu tepelerin zamanlarından boşluk **büyüklüğü** çıkarılıyor.
+- Kestirim adımı S1: motor `u = U sin(ωt)` ile sürekli, periyodik hareket ettiriliyor. Durağan konumda ya da sıfır torkta çalışmıyor. Yerçekimi yok.
+- **Bizim için:** rakip değil, 3. grup (motor sinyaliyle ölçenler). Onlar periyodik uyarımla boşluğun büyüklüğünü buluyor, biz dururken ve yerçekimi torku sıfırken kolun hangi yüzde olduğunu buluyoruz. Ayrıntı: `genisletme_2026-11-21.md` 1.4a.
