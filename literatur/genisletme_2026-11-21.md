@@ -244,3 +244,53 @@ Kullanıcının isteği: açığın kapanmadığından emin olmak. Karşılaşt�
 2. Bunların hiçbiri **yerçekimi ön yükünün sıfır olduğu bölgede, çalışma sırasında, yalnız motor akımı ve açısıyla o anki yüzü kestirip denetimde (ofset işareti) kullanmıyor.** Hepsi ya çıkış tarafı ölçümü ister, ya ayrı test duruşu / çevrimdışı test yapar, ya da yalnız büyüklük veya aşınma ölçer.
 3. Katkı tanımı bu yüzden daha keskin yazılmalı: "yeni olan yerçekimini kullanmak ya da motor sinyaliyle boşluk ölçmek değil; ikisinin birleşimi ve tam olarak bilinen yöntemlerin çalışmadığı noktada (yerçekimi ön yükü sıfır) çevrim içi yüz kestirimi."
 4. "Uyarlamalı ön yük tetikleyici" rolü için Samsung US11724390B2 anılmalı. O rol kestirim yöntemimizin bir **kullanımı** olarak sunulmalı, kendi başına yeni bir fikir olarak değil.
+
+### 2.6 Espacenet taraması ve en yakın yeni patentler (21 Kasım, üçüncü tur)
+
+Kullanıcı Cloudflare doğrulamasını geçti. Espacenet'te CQL sorguları (`ctxt` = başlık + özet + istem, `cpc=`) atıldı:
+- E0 backlash preload + detect/monitor/diagnosis (63)
+- E1 B25J9/1641 + backlash gravity (7)
+- E2 G05B2219/41059 + backlash motor current + estimate (3)
+- E4 backlash gravity motor + robot + current/torque + estimate (31)
+- E5 anti-backlash spring + failure/fatigue/degradation/monitor (62)
+- F1 F16H55/18 + monitor/detect/diagnosis/abnormal (10)
+- F2 preload backlash + decrease/loss/abnormal + current/torque + motor (66)
+- F3 backlash contact state + estimate/observer (347, ilk 20)
+- F4 backlash gravity + zero/reversal/sign + joint/arm (114, ilk 20)
+- H1 backlash correction gravity torque (28)
+- H3 backlash gravity torque + small/zero/vicinity/balance (136, ilk 20)
+
+Çince anahtar kelimeyle Espacenet sorgusu 0 döndü (yalnız İngilizce çeviri dizinleniyor). Çince patentler İngilizce çevirileri üzerinden yakalandı.
+
+**Bize en yakın: yerçekimine bağlı boşluk düzeltmesi**
+
+| Patent | Sahip, öncelik | Durum | Öz | Fark |
+|---|---|---|---|---|
+| **JPH07200018A** | Toyoda Machine Works, 1993 | İ | Mafsallı robotta, mevcut ve hedef konumdaki yerçekimi torkunun işaretine bakarak boşluk düzeltmesi. Hedefte \|τ_g\| eşikten büyük ve işaret değişiyorsa düzelt. Küçükse dönüş yönüne göre karar ver | **"Yerçekimi işaretiyle yüz seç, yerçekimi küçükse hareket yönüne bak" kuralı 1993'ten beri patentli.** Raporda "ofset tablosu bilinen yöntem" dememizi güçlendiriyor (Neubauer 2015'ten önce). Yüz ölçülmüyor, komuttan varsayılıyor |
+| **WO2026074901A1** | Panasonic, 2024 (yayın 2026-04) | İ (5 istemin hepsi) | Eklemde yerçekimi torkunu hesapla, hız bileşeninin işaretini belirle. Düzeltme = işaret(hız) × k_gc. **k_gc, \|τ_g\| eşiğin altındayken 1, üstünde doğrusal olarak 0'a iniyor.** Açıklamada kol, gittiği yönde hedefin gerisinde duruyor (kayıp hareket) | Sorunumuzu (yerçekimi küçükken boşluk etkisi tam) ve bölgemizi doğrudan tanıyan en yeni patent. Ama yüzü **yaklaşma yönünden varsayıyor**, ölçülen sinyalden kestirmiyor. Hız ≈ 0'da (180° tutma, bozucu, salınım) işaret tanımsız. Bu Neubauer'in `sign(0)` açığının aynısı |
+| WO2020008751A1 | Panasonic, 2018 | İ | Komut hızının dönüş anı ve dinamik model torkundan boşluk düzeltme miktarı | Komut ve model tabanlı |
+| US12145275B2 | Panasonic | İ | Dönüşten önce duruş varsa (durma bayrağı) düzeltmenin frekansını düşürme | Komut tabanlı |
+| **JP2009198203A** | Yaskawa, 2008 | İ | Düşey kremayer–pinyonda hareketli gövdeyi alttaki sabit tabana bırakıp yerçekimi yükünü kaldırıyor. Tork ters dönene kadar motor çevrilip **yalnız motor kodlayıcısı darbeleriyle** boşluk miktarı hesaplanıyor | Yalnız motorla ölçüm, ama çevrimdışı ve mekanik dayanakla. Yüz kestirimi yok |
+| CN202646656U | PLA 63636, 2012 | Ö | Radar servosunda kasıtlı yerçekimi dengesizliği ile boşluk giderme (yerçekimi = mekanik ön yük) | "Yerçekimi bedava ön yük" fikrinin mekanik kullanımı. Sıfıra indiği bölgeyi ele almıyor |
+
+**Diğer yeni okunanlar**
+
+| Patent | Sahip, öncelik | Durum | Öz | Fark |
+|---|---|---|---|---|
+| CN122569605A | Dongguan Abasi, 2026 | İ (kısmen) | İnsansı robot eklem servo modülü: motor kodlayıcısı, **eklem çıkış açısı**, motor faz akımı, gövde duruşu, ayak teması → yerçekimi, eylemsizlik ve komşu eklem kompanzasyon torkları, "komütasyon öngörü penceresi" | Çıkış açısı ölçülüyor |
+| CN123025288A | Guangzhou Jieningyue, 2026-08 | Ö (Espacenet özeti) | İnsansı robot uzaktan arıza bakımı: eklem anormalliğinde çok frekanslı mikro tedirgin tork, **motor ucu açısı + redüktör çıkış açısı + iç tork algılayıcısı** → aktarım boşluk açısı çözümleniyor | Aktif yoklama var, ama çıkış açısı ve tork algılayıcısı şart, çevrimdışı tanı |
+| WO2025256084A1 | Chongqing Jinshan Medical, 2024 | İ (kısmen) | Robot kolu güç eklem modülü. En az iki dişli çifti. Duruştan harekete ya da yön değişiminde iki çifte zıt yönlü bias tork | B grubu (çift yollu ön yük) |
+| CN119188753A | Guangzhou Keyi, 2024 | İ | Dinamik modelden beklenen tork ile gerçek tork farkı PID ile kompanze | Genel tork kompanzasyonu |
+| CN120056110A | Shanghai Jiao Tong, 2025 | İ | Uyarım deneyinde eklem açısı, hızı ve akımından dinamik artık. Boşluk hata modeli PINN ile kompanze | Uyarım deneyi + öğrenme, yüz durumu yok |
+| CN122577720A | Southeast Univ., 2026 | İ | Motor–redüktör boşluk histerezisini dikkat mekanizmalı ağla öngörüp kompanze | **Çıkış açısı, hızı ve ivmesi** girdi |
+| WO2025234218A1 | Mitsubishi Electric, 2024 | İ | Redüktörün giriş ve çıkış motoru kodlayıcı darbeleriyle boşluk ölçümü | Üretim testi, iki kodlayıcı |
+| CN122100237A | Chengdu Hangtian Kaite, 2026 | İ (kısmen) | Tork komutu, kodlayıcı hızı, sıcaklık ve titreşimden eklem modülü sağlık izleme | Genel sağlık izleme |
+| CN108608462A | Suzhou Shangxian, 2018 | İ (kısmen) | Ağır yük kolunda dört aşamalı doğruluk kompanzasyonu: boşluk, model, yerçekimi, sapma | Kalibrasyon tabanlı |
+| CN123047288A | Shenzhen Hengjiefeng, 2026 | Ö | Hassas işleme tezgahında sıcaklık ve **servo akımından vida ön yük bozulması** ve ters boşluk eşleşmesi | Bilyalı vida (dişli değil). Motor akımıyla **ön yük bozulması izleme fikrinin** en yakın örneği, tezde anılmalı |
+
+**Sonuç (Espacenet dahil, 21 Kasım):**
+1. **Ofset tablosunun "yerçekimi işaretine göre yüz seç" kuralı 1993'ten beri patentli** (Toyoda). Yerçekimi küçükken boşluk düzeltmesini tam uygulayıp yüzü hareket yönünden seçmek 2024'te patentlendi (Panasonic). Raporda bu kısmı zaten "bilinen yöntem" diye sunuyoruz. Doğru.
+2. **Açık hâlâ açık, ama sınırı artık çok net:** yerçekimi torku küçükken bilinen bütün çözümler yüzü ya **komuttan** (hareket ya da yaklaşma yönü, dönüş anı: Toyoda, Panasonic, Neubauer) varsayıyor, ya da **ölçüyor ama çıkış tarafı algılayıcısı ya da ayrı ve çevrimdışı bir test** gerektiriyor (Yaskawa, KUKA, Canon, Sumitomo, Mitsubishi, CN123025288A). Hız ≈ 0 iken, bozucu altında ya da salınımda gerçek yüzü **çalışma sırasında, yalnız motor akımı ve açısıyla** kestiren bir patent ya da makale bulunamadı.
+3. Katkının en keskin cümlesi (öneri): "Komutla varsayılan yüz, yerçekimi ön yükü sıfırken ve hız sıfıra yakınken gerçek yüzden ayrılabilir. Biz gerçek yüzü yalnız motor sinyalleriyle kestiriyoruz." Bunu kanıtlamak için benzetimde **komut tabanlı kural (Toyoda/Panasonic türü) ile kestiricinin karşılaştırılması** gerekir.
+4. Ön yük kaybını motor akımıyla izleme: yalnız bilyalı vida için bir örnek var (CN123047288A, 2026). Dişli ön yükü (yaylı ya da makaslı) için bulunamadı.
+5. Kalan risk: JP, CN ve KR patentlerinin özgün dildeki tam metinleri taranmadı (makine çevirisi). 2026'nın son aylarında yayımlanmamış başvurular doğal olarak görülemez (18 ay gizlilik).
