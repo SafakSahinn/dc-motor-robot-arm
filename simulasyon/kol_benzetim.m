@@ -110,6 +110,22 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   p.akimW ile birlikte kullanılamaz. tOlc açıksa INA228 Km i'yi (gerçek akım x gerçek Km) görür.
 %   Çıktı: out.iTepe (tüm süre en büyük |i| [A, eşdeğer]), out.Vdoy (V'nin besleme ya da akım sınırında
 %   kaldığı adımların oranı).
+% p.yuzKural (varsayılan yok/kapalı; B1 karşılaştırması, 7_karsilastirma/): KOMUT TABANLI TABAN KURALLAR.
+%   Ofset = s_of*r + mgl sin(th_ref)/Ks (yuzKes ile aynı tablo, aynı p.yuzRampa, p.rN/p.KsN/p.mglN);
+%   yalnız s'yi seçen kural farklı. tau_g = mglN sin(th_ref(t)).
+%   'panasonic' : (WO2026074901A1 türü) yön = sign(hız komutu), hız komutu P-PI'nin wcmd'si (bir önceki
+%                 örnek); |wcmd| < p.kuralV iken yön tutulur. k = 1 (|tau_g| <= p.kuralT1), p.kuralT2'de 0'a
+%                 doğrusal iner: s = k*yön + (1-k)*sign(tau_g). Yalnız p.kontrol = 'PPI'.
+%   'toyoda'    : (JPH07200018A türü) |tau_g| > p.kuralT1 ise s = sign(tau_g), değilse dönüş yönü =
+%                 sign(kontrolcünün gördüğü motor hızı v); |v| < p.kuralV iken tutulur.
+%   'lenze'     : (US12259034B2 türü, tork sıfır geçişi) s = sign(u) (bir önceki örnekte uygulanan tork),
+%                 |u| < p.kuralU iken tutulur (histerezis).
+%   Varsayılanlar: kuralV 0,05 rad/s, kuralT1 0,02, kuralT2 0,04, kuralU 0,01 N m. Başlangıç yüzü p.yuz0.
+%   Çıktı: out.shat (sign(s), 0 ise önceki), out.yuzDegis, out.yuzDegisAn, out.yuzSon.
+% p.refYol (varsayılan yok: referans sabit th_ref): fonksiyon tutamacı, t [s] -> 1 x n referans [rad].
+%   Kontrolcü ve (yuzKes/yuzKural açıksa) ofsetin yerçekimi terimi bunu kullanır; başlangıç durumu
+%   refYol(0) - p.adim. theta0_deg yine son hedeftir (analiz ve yoklama bandı ona göre).
+% p.dB (varsayılan 0; skaler ya da her benzetim için bir değer) [N m]: kola sabit yük, p.dBT0 <= t < p.dBT1.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -120,6 +136,11 @@ if isfield(p,'dA'), dA = p.dA;  df = p.df; end
 if isfield(p,'dT'), dT = p.dT; end
 if isfield(p,'dT0'), dT0 = p.dT0; end
 bozucu = @(tt) dA*sin(2*pi*df*(tt-dT0))*(tt >= dT0 && tt < dT);
+if isfield(p,'dB') && any(p.dB(:) ~= 0)          % sabit yük basamağı (B1)
+    dB = p.dB(:)';  dBT0 = al(p,'dBT0',0);  dBT1 = al(p,'dBT1',Inf);
+    bozucu = @(tt) dA*sin(2*pi*df*(tt-dT0))*(tt >= dT0 && tt < dT) + dB*(tt >= dBT0 && tt < dBT1);
+end
+refY = isfield(p,'refYol') && ~isempty(p.refYol);   % zamanla değişen referans (B1)
 wc     = wc(:)';
 n      = numel(th_ref);
 J      = p.JM + p.JL;
@@ -171,10 +192,28 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     ykSon = -Inf(1,n);  ykSay = zeros(1,n);  ykTemas = zeros(1,n);  ykTh0 = zeros(1,n);
     ykIzBit = -Inf(1,n);  ykKol = zeros(1,n);
 end
+kurMod = 0;                                        % 0 kapalı, 1 panasonic, 2 toyoda, 3 lenze (B1)
+if isfield(p,'yuzKural') && ~isempty(p.yuzKural)
+    if kesMod > 0 || yuzMod > 0, error('yuzKural, yuzKes ve ofsetYuz ile birlikte kullanılamaz'); end
+    kurMod = find(strcmp(p.yuzKural, {'panasonic','toyoda','lenze'}));
+    if isempty(kurMod), error('bilinmeyen yuzKural: %s', p.yuzKural); end
+    if kurMod == 1 && ~ppi, error('yuzKural = ''panasonic'' yalnız PPI ile (hız komutu)'); end
+    sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
+    sh(sh == 0) = 1;  sOf = sh;  kYon = sh;  kS = sh;
+    rN = al(p,'rN', p.r);  rampa = al(p,'yuzRampa', 0.5);
+    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf*rN + ofsG;
+    kuralV = al(p,'kuralV', 0.05);  kuralT1 = al(p,'kuralT1', 0.02);  kuralT2 = al(p,'kuralT2', 0.04);
+    kuralU = al(p,'kuralU', 0.01);
+    yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
+end
+if refY                                            % ofsetin yerçekimi katsayısı (yuzKes/yuzKural)
+    ofsGk = al(p,'mglN', p.mgl)/al(p,'KsN', p.Ks);
+end
+wKom = zeros(1,n);                                 % son hız komutu (P-PI wcmd; panasonic)
 
 % Başlangıç: kol hedefin p.adim derece altında, durgun, dişli boşluğun ortasında
 x = zeros(4,n);
-x(3,:) = th_ref - deg2rad(p.adim);
+if refY, x(3,:) = p.refYol(0) - deg2rad(p.adim); else, x(3,:) = th_ref - deg2rad(p.adim); end
 x(1,:) = x(3,:);
 z = zeros(1,n);  u = zeros(1,n);
 if isfield(p,'x0'), x = p.x0;  z = p.z0; end        % önceki benzetimin son durumundan sürdür
@@ -231,6 +270,7 @@ iAn   = round((p.T-p.Tan)/p.dt);
 nRec  = floor((nStep-iAn)/p.dec);
 TH = zeros(nRec,n);  DEL = zeros(nRec,n);  TAU = zeros(nRec,n);  U = zeros(nRec,n);
 if kesMod > 0, SH = zeros(nRec,n);  DH = zeros(nRec,n); end
+if kurMod > 0, SH = zeros(nRec,n); end
 k = 0;
 if ktlK
     nK = ceil(nStep/kCtl);  kc = 0;  bos = zeros(nK,n);
@@ -251,6 +291,12 @@ for i = 0:nStep-1
             if motorD, yv = ymot; else, yv = olc(x(3,:), qv); end
             vhat = vhat + aV*((yv - yv_prev)/p.Ts - vhat);
             yv_prev = yv;  v = vhat;
+        end
+        if refY                                    % zamanla değişen referans
+            thr = p.refYol(i*p.dt);
+            if kesMod > 0 || kurMod > 0, ofsG = ofsGk*sin(thr); end
+        else
+            thr = th_ref;
         end
         if yuzMod > 0                              % üst sınır: yüz ikizin gerçek deltasından
             dl = x(1,:) - x(3,:);  tm = abs(dl) >= p.r;
@@ -318,9 +364,34 @@ for i = 0:nStep-1
             end
             ofs = sOf*rN + ofsG;
         end
+        if kurMod > 0                              % komut tabanlı taban kurallar (B1)
+            shOnc = sh;
+            if kurMod == 3                         % lenze: tork işareti, histerezisli
+                kS(u > kuralU) = 1;  kS(u < -kuralU) = -1;
+            else
+                if kurMod == 1, wy = wKom; else, wy = v; end   % panasonic: hız komutu, toyoda: dönüş
+                kYon(wy > kuralV) = 1;  kYon(wy < -kuralV) = -1;
+                tg = al(p,'mglN', p.mgl)*sin(thr);  sg = sign(tg);  sg(sg == 0) = kYon(sg == 0);
+                if kurMod == 1
+                    kk = min(max((kuralT2 - abs(tg))/(kuralT2 - kuralT1), 0), 1);
+                    kS = kk.*kYon + (1 - kk).*sg;
+                else
+                    kS = kYon;  bg = abs(tg) > kuralT1;  kS(bg) = sg(bg);
+                end
+            end
+            sh(kS ~= 0) = sign(kS(kS ~= 0));
+            dg = sh ~= shOnc;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
+            if rampa > 0
+                adm = 2*p.Ts/rampa;  sOf = sOf + max(min(kS - sOf, adm), -adm);
+            else
+                sOf = kS;
+            end
+            ofs = sOf*rN + ofsG;
+        end
         if vGoz, v = wh; end                       % hız = bu örnekte güncellenmiş w^ (kart: HIZ_GOZLEMCI)
-        e  = th_ref + ofs - thm;
+        e  = thr + ofs - thm;
         if ppi
+            wKom = kpP.*e;                         % hız komutu (panasonic kuralı bir sonraki örnekte kullanır)
             ev = kpP.*e - v;                       % hız hatası (kol tarafı)
             u0 = KV.*ev + KI.*z;
             iz = ev;
@@ -379,6 +450,7 @@ for i = 0:nStep-1
         [~,ts] = f(x, tt+p.dt);
         TH(k,:) = x(3,:);  DEL(k,:) = x(1,:)-x(3,:);  TAU(k,:) = ts;  U(k,:) = u;
         if kesMod > 0, SH(k,:) = sh;  DH(k,:) = dh; end
+        if kurMod > 0, SH(k,:) = sh; end
     end
 end
 
@@ -389,6 +461,7 @@ out.x_son = x;  out.z_son = z;
 if ktlK, out.ktl = KT; end                     % p.x0, p.z0 ile sürdürmek için
 if elk > 0, out.iTepe = iTepe;  out.Vdoy = eDoy/nStep; end
 if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = yz; end
+if kurMod > 0, out.shat = SH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh; end
 if kesMod > 0
     out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;
     if kesMod >= 3, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
