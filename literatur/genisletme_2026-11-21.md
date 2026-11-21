@@ -130,9 +130,67 @@ En yakın yeni bulgular:
 
 ### 2.3 Eksik kalanlar
 
-- **Patent taraması yapılmadı.** Anti-backlash gear, scissor gear ve spring preload konularında patent çok. Google Patents ya da Espacenet, Chrome üzerinden taranacak.
+- ~~Patent taraması yapılmadı.~~ Google Patents taraması yapıldı (2.4). Espacenet taranmadı.
 - Tam metin durumu (21 Kasım, İstinye OpenAthens):
   - Ruderman–Fridman 2019 ve Du 2025 okundu. PDF'ler `literatur/genisletme/pdf/` içinde, depoda değil.
   - Gattringer 2017 (Springer) ve Gnad 2025 (ASME) aboneliğin dışında.
   - Verl–Engelberth 2018 (ScienceDirect): kullanıcı CAPTCHA'yı geçti, tam metin okundu ve PDF indirildi (2.1a).
   - Li 2024 ICRCA henüz denenmedi.
+
+### 2.4 Patent taraması (Google Patents, 21 Kasım 2026)
+
+**Yöntem.** Chrome üzerinden patents.google.com arama sayfası. Her sorguda en alakalı ilk 20 sonuç listelendi. Serbest metin sorguları çok gürültülü çıktı (cerrahi alet, taşıt aksı, şırınga pompası gibi), bu yüzden CPC sınıflarıyla daraltıldı:
+- F16H55/18 (boşluksuz dişliler), F16H57/12 (boşluk alma düzenleri)
+- B25J9/1641 (eklemde boşluk, sürtünme, esneklik telafisi)
+- G05B2219/41059 (boşluk telafisi), G01M13/021 (dişli testi)
+
+Sorgu konuları: yaylı / makaslı / bölünmüş dişli ön yükü, çift motorlu ön yük, ön yük kaybı ya da yay bozulması sezimi, motor akımı ve kodlayıcıyla boşluk ya da temas yüzü kestirimi, yerçekimi ile boşluk ilişkisi.
+
+İşaretler: **İ** = 1. istem (ve gerekirse bağımlı istemler) okundu, **Ö** = yalnız özet, **B** = yalnız başlık. Sahip ve öncelik yılı arama listesinden alındı. JP ve CN patentlerinde Google'ın makine çevirisi okundu.
+
+#### A. Mekanik ön yük ve boşluk giderme (hocanın önerisine yakın)
+
+| Patent | Sahip, öncelik | Durum | Öz | Bizimle farkı |
+|---|---|---|---|---|
+| US20120017717A1 | Hon Hai, 2010 | Ö | Çıkış milinde iki ayar dişlisi, giriş dişlisinin iki diş yüzüne ayrı ayrı yaslanıyor. Robot kolunda kullanım | Saf mekanik çözüm. Sezme ya da izleme yok |
+| EP2735767B1 | maxon motor, 2012 | B | Taşıyıcıları birbirine göre ön gerilmeli, boşluksuz planet dişli | Aynı |
+| KR101855712B1 | Mintrobot, 2017 | B | Boşluksuz sikloid redüktör | Aynı |
+| JP2020116677A | FANUC, 2019 | İ | Motor + motor dişlisi + yardımcı yatak tek birim. Birim, karşı dişliye yaklaşacak biçimde radyal kaydırılıp vidayla sabitleniyor (yay değil, ayar). **Açıklamada:** düşey eksen etrafında dönen eklemlerde (dikey mafsallı robotun 4–6. eksenleri, SCARA) *yerçekimi dişliye etki etmeyebiliyor*, bu yüzden boşluk yörünge doğruluğunu bozuyor | Yerçekiminin "doğal ön yük" olduğu ve onun olmadığı yerde sorunun başladığı fikrinin endüstri tarafından da kabul edildiğini gösteriyor. Çözümü montajda sabit ayar, durum sezimi yok |
+
+#### B. Elektriksel / çift motorlu ön yük
+
+| Patent | Sahip, öncelik | Durum | Öz | Bizimle farkı |
+|---|---|---|---|---|
+| US8436565B2 (CN101794136B) | FANUC, 2009 | İ | Bir gövdeyi süren iki motor (tandem). Hız denetleyicisinin integral çıkışı paylaşılıyor, iki tork komutuna zıt yönlü ön yük ekleniyor | İki motor şart. Ön yükün sağlığı izlenmiyor |
+| US10700623B2 | EGT Eppinger, 2015 | İ | İki adım motoru mekanik bağlaşımla çıkışı sürüyor. Merkezi birim, konum referansının yanında ayrı bir **gerdirme (ön yük) referansı** ile iki sürücüye komut üretiyor | Aynı |
+| US8686680B2 | Rethink Robotics, 2011 | Ö | Çift motorlu seri elastik eyleyici. Her motor bir dönüş yönünde dişler arası boşluğu kapatacak biçimde ön yüklü | Aynı |
+| US10081102B1 | X Development, 2016 | İ | Yön değişiminde boşluk ölü bandının bir kısmını ana motor, kalanını küçük oranlı ikinci motor çıkış milinden geçiriyor ve iletimi yeni yöne yaslıyor | Yön değişim anını komuttan biliyor, kestirmiyor |
+| CN122559963A | Danobat, 2025 | İ | Robot kolu ekleminde tahrik dişlisine iki motor pinyonu, ikinci motor birinciye zıt tork uyguluyor | Steinle 2025 ile aynı fikrin robot kolu patenti. Durum sezimi istemlerde yok |
+
+#### C. Boşluk ölçme, izleme ve telafi
+
+| Patent | Sahip, öncelik | Durum | Öz | Bizimle farkı |
+|---|---|---|---|---|
+| **US11602838B2** | Comau, 2019 | İ | Endüstriyel robot ekleminde dişli boşluğunu **yalnız motor kodlayıcısıyla, ek algılayıcı olmadan** izleme. Hareket sırasında kodlayıcı sinyalinde karakteristik bir salınım eğrisi aranıyor, genliğinden boşluk durumu (aşınma) çıkarılıyor | Bize en yakın "yalnız motor sinyali" patenti. Ama boşluğun **büyüklüğünü / aşınmasını** izliyor. Hangi yüzde temas olduğunu, yerçekimini ve ön yükü konu etmiyor |
+| **US12259034B2** | Lenze, 2019 | İ | Elektrik motoruyla sürülen dişli kutusunda, **motor torkunun sıfırdan geçtiği yük değişimleri** motor ya da denetleyici büyüklükleriyle izleniyor. Yük çevrimi sayısı eşiği aşınca kritik durum bildiriliyor | Torkun sıfır geçişini (yani yüz değişimini) olay olarak kullanan tek patent. Ama yalnız **sayıyor** (aşınma ömrü). Yüz kestirimi, açı bağımlılığı ya da ön yük yok |
+| **JP6881886B2** (US10259121B2) | Canon, 2015 | İ | Kolu, **yerçekimi momentinin eklem sürtünmesinden küçük olduğu** bir duruşa getirip giriş ve çıkış açı algılayıcılarıyla kayıp hareketi (lost motion) ölçüyor. Sonuçla eklem ömrü teşhisi | Yerçekiminin boşluğu gizlediğini ve ölçüm için onun küçük olduğu duruşun seçilmesi gerektiğini kabul ediyor. Bizim tersimiz: **çıkış algılayıcısı şart** ve ölçüm ayrı bir test duruşunda. Biz çalışma sırasında, yalnız motor tarafıyla kestiriyoruz |
+| JP6053424B2 | Canon, 2012 | İ (kısmen) | Giriş kodlayıcısı + çıkışta iki ayrı kodlayıcı ile eklem açısı denetimi | Çıkış algılayıcısına dayanıyor |
+| US9645565B2 (EP2911832B1) | Cognibotics, 2012 | İ | Eklemi kenetleyip hareketini kısıtlıyor, tahrik zincirini sürerken tork ve konum büyüklüklerini izleyip eklem özelliğini (boşluk, esneklik) çıkarıyor | Kenetleme gerektiren çevrimdışı tanılama |
+| US10919150B2 | Kawasaki, 2017 | İ | Redüktör açısal iletim hatasını kestirip hız komutunu düzeltiyor | Boşluk değil iletim hatası. Yüz durumu yok |
+| US11148287B1 | Orangewood Labs, 2020 | İ | Her eklemde iki kodlayıcı (giriş, çıkış) ve boşluk modeli. Gelecekteki boşluk hatası öngörülüp telafi ediliyor | Çıkış kodlayıcısı şart |
+| US20240085221A1 | Honeywell, 2022 | İ | Eyleyicide uç durdurucular ve iki konum algılayıcısıyla gömülü test, boşluk miktarı ölçümü | Çevrimdışı, iki algılayıcı |
+| CN110822073A | STEP (Shanghai), 2019 | İ | Girişi ters çevirip giriş ve çıkış açı eğrilerinden çıkışın durma süresini, oradan boşluğu hesaplıyor | Çevrimdışı, çıkış algılayıcısı şart |
+| US9205560B1 | Redwood Robotics, 2013 | İ | İki eşdeğer olmayan algılayıcıdan eyleyicinin iç durumunu ayrı ayrı kestirip farkı eşikle karşılaştırarak arıza sezimi | Genel bir arıza sezimi çerçevesi. Boşluk ya da ön yüke özgü değil |
+| WO2024088465A1 | Schaeffler, 2022 | Ö | Harmonik redüktörde esnek halkadan ölçülen torkla diş atlama arızasını sezip telafi etme | Farklı redüktör, tork algılayıcısı şart |
+
+#### Sonuç (21 Kasım)
+
+1. **Hocanın önerisinin (yaylı / ikinci dişli ile mekanik ön yük) patent tarafı kalabalık** (A ve B grupları). Bu, 2.2'deki "iyi bilinen yöntem" değerlendirmesini destekliyor. Bizim katkımız bu patentlerle yarışmıyor.
+2. **"Ön yük kaybını ya da yay bozulmasını motor sinyaliyle sezme" için patent bulunamadı.** F16H55/18 ve G05B2219/41059 sınıflarında ön yük + izleme / kayıp + motor akımı sorguları ya yalnız mekanik tasarımlar ya da FANUC tandem patentini döndürdü.
+3. **Tek motorlu, yerçekimi yüklü eklemde hangi diş yüzünde temas olduğunu yalnız motor akımı ve motor kodlayıcısıyla, çalışma sırasında kestiren bir patent bulunamadı.** En yakın üç patent katkımızın sınırlarını çiziyor, tezde anılmalı:
+   - Comau US11602838B2: yalnız motor kodlayıcısı, ama boşluk büyüklüğü / aşınma.
+   - Lenze US12259034B2: motor torku sıfır geçişi olay olarak, ama yalnız sayım.
+   - Canon JP6881886B2: yerçekiminin boşluğu gizlediği kabul ediliyor, ama çıkış algılayıcısı ve ayrı test duruşu.
+4. FANUC JP2020116677A açıklaması, "yerçekimi dişliye etki etmeyince boşluk sorun olur" fikrini endüstri dilinde söylüyor. 2.2'deki 3. ve 5. maddelere dayanak olarak kullanılabilir.
+
+**Sınırlar.** Bu bir serbestlik (FTO) analizi değil, yalnız yenilik yönünde bir ön tarama. Sorgu başına ilk 20 sonuç okundu. Anahtar kelimeler İngilizce, JP/CN/DE patentleri Google'ın İngilizce çevirisi üzerinden yakalandı. Espacenet ve sınıf içi tam tarama yapılmadı. Bulunamaması yokluğun kanıtı değil.
