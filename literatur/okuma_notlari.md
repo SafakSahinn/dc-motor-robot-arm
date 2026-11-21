@@ -658,3 +658,21 @@ Tam metin okundu (açık erişim, CC BY) · DOI 10.1109/ACCESS.2025.3643729 · a
 6b. ~~Esbrook–Tan–Khalil 2014, Horng 2006~~ OKUNDU. ~~Olsson–Åström 2001, Fischer–Tomizuka 1996~~ OKUNDU. ~~Armstrong & Amin 1996 Automatica, Han 2016 Nonlinear Dyn., Weigand 2021 RCIM, Ruderman–Iwasaki 2016 TIE~~ OKUNDU (5 Kasım). Ahangarian Abhari 2019 TIMC: yalnız özet (SAGE erişimi yok). Kalan yeni hedefler: Brandenburg–Schäfer 1987 EPE (iki kütlede boşluk + Coulomb birlikte; Armstrong–Amin'den); ~~Gebler–Holtz 1998 IECON~~ OKUNDU (5 Kasım akşam; ayrıca Márton–Lantos 2009 ICAR, Neubauer 2015 Mech. Sci., Yao 2026 Access); Hensen ve ark. 2003 Automatica (LuGre vs anahtarlamalı sürtünme modeliyle avlanma LC'si); Armstrong-Hélouvry ve ark. 1994 Automatica (sürtünme anketi, ScienceDirect → kampüste); Wallenborg, Åström 1988 (robot tahrikinde limit cycle); Atherton 1975 kitabı (kaymalı DF); Mees, Bergen 1975 TAC ve Bergen ve ark. 1982 (tanımlama fonksiyonunun geçerliliği/hata sınırları); Ghaffari, Tomizuka, Soltan 2008 Nonlinear Dyn. (limit cycle kararlılığı); kaymalı (bias) tanımlama fonksiyonu için bir ders kitabı kaynağı (Gelb & Vander Velde 1968 "Multiple-Input Describing Functions", ya da Khalil'in kitabı)
 8. WoS okumalarından çıkan yeni hedefler (22 Ekim): Wang ve ark. 2016 IECON "Analysis of limit cycle mechanism for two-mass system with backlash nonlinearity" (sertlik oranı r_s, IEEE); Yang ve ark. 2016 TMECH, mil torku sınırlama (Sun 2023 listesinde de var); Awan ve ark. 2024 Appl. Sci. (açık erişim, sarkaç + çift DC motor); Robertz ve ark. 2010 ICRA "Precise robot motions using dual motor control" (endüstriyel robotta çift motor).
 7. Springer referans listesinden eklenecek IEEE makaleleri: Wang ve ark. 2017 IEEE TIE (limit cycle, transmission backlash, 10.1109/TIE.2017.2711564); Villwock ve Pacas 2009 IEEE TIE (boşluk tanılama); Merzouki ve ark. 2007 CEP (boşluk gözlemi)
+
+## Ziegler, Rameder, Gattringer, Müller — An approach for combining transparency and motion assistance of a lower body exoskeleton (Mech. Mach. Sci., 2023; arXiv 2510.25335)
+
+Tam metin okundu (arXiv) · DOI 10.1007/978-3-031-32606-6_28 · JKU Linz Robotik Enstitüsü (Neubauer 2015 ekibi)
+
+- Alt beden dış iskeleti, planet dişli (oran 448/3), motor içinde artımlı enkoder ve **dişli çıkışında mutlak enkoder** var.
+- Şeffaf mod: boşluk içinde (yaklaşık ±0,5°) çıkış tarafı motoru döndürmeden hareket edebiliyor. Sanal yay torku `τ = K_T (q_j − q_M,j)`. Ataleti ve sürtünmeyi kullanıcıdan gizliyor. Boşluk sınırlı olduğu için tork da sınırlı kalıyor.
+- **Bizim için:** rakip değil, çünkü kol tarafında sensör var. Ekibin 2015 sonrasında "backlash" geçen iki işinden biri. Boşluk yüzünü kestirmiyorlar, boşluğu algılayıcı gibi kullanıyorlar. Soru 1 taraması: `genisletme_2026-11-21.md`.
+
+## Steinle, Leipe, Lechler, Verl — Automatic preload adaptation for rack-and-pinion drives to maximize performance and energy efficiency (Production Engineering 19:419–427, 2025)
+
+Tam metin okundu (açık erişim, CC BY) · DOI 10.1007/s11740-024-01318-7 · ISW Stuttgart
+
+- Çift motorlu, **elektriksel ön yüklü** kremayer–pinyon tahriki (Wittenstein, Siemens). Ön yük endüstride devreye almada anma torkunun %10–30'u olarak sabit seçiliyor. Kalıcı ön yük *"significant energy consumption, increased friction and wear"*.
+- Sınırlar: alt sınır `τ_p > τ_fr,s` (iki zincirde aynı anda boşluk oluşmasını önleyen koşul, Verl–Engelberth 2018 CIRP). Üst sınır motorun sürekli torku. Ön yük arttıkça sertlik ve doğal frekans artıyor, sönüm azalıyor.
+- Yöntem: `τ_p,a = K_a·|d e_x/dt|` (P kuralı, kayan ortalama filtresi, sınırlama). Ön yük yalnız konum hatası hızla değişirken artıyor.
+- Sonuç: benzer doğrulukta, en yüksek ön yüke göre ortalama **%77 daha az ön yük torku**. Dururken ön yük düşüyor.
+- **Bizim için (Soru 2, hocanın yaylı dişlisi):** "ön yükü yalnız gerektiğinde uygula" fikrinin endüstrideki karşılığı. Mekanik ya da elektriksel ön yükün bedelini (enerji, sürtünme, aşınma) açıkça gösteren bir kaynak. Bizde ise yerçekimi "bedava" ön yük ve 180°'de kayboluyor. Sabit yay ön yükü bu yüzden ya her yerde gereğinden büyük ya da 180° civarında yetersiz kalıyor.
