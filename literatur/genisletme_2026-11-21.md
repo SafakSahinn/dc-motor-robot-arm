@@ -194,3 +194,53 @@ Sorgu konuları: yaylı / makaslı / bölünmüş dişli ön yükü, çift motor
 4. FANUC JP2020116677A açıklaması, "yerçekimi dişliye etki etmeyince boşluk sorun olur" fikrini endüstri dilinde söylüyor. 2.2'deki 3. ve 5. maddelere dayanak olarak kullanılabilir.
 
 **Sınırlar.** Bu bir serbestlik (FTO) analizi değil, yalnız yenilik yönünde bir ön tarama. Sorgu başına ilk 20 sonuç okundu. Anahtar kelimeler İngilizce, JP/CN/DE patentleri Google'ın İngilizce çevirisi üzerinden yakalandı. Espacenet ve sınıf içi tam tarama yapılmadı. Bulunamaması yokluğun kanıtı değil.
+
+### 2.5 Açık hâlâ açık mı? Ek tarama (21 Kasım, ikinci tur)
+
+Kullanıcının isteği: açığın kapanmadığından emin olmak. Karşılaştırma ölçütü raporun katkı tanımı (rapor satır ~406): **180° çevresinde yerçekimi ön yükü sıfırken kolun hangi yüze yaslandığını, kola sensör koymadan, yalnız motor akımı ve motor açısıyla, çalışma sırasında kestirmek** (gerekirse itişle kolu temasa taşımak) ve ofset işaretini buna göre seçmek.
+
+**Yapılanlar:**
+1. En yakın patentlerin **ileri atıfları** (Google Patents "Cited By"): Comau US11602838B2 (4), Lenze US12259034B2 (8), Canon US10259121B2 / JP6881886B2 (45), Cognibotics US9645565B2 (42), FANUC tandem US8436565B2 (21). Konuyla ilgili satırlar süzülüp okundu.
+2. **Çince ve Japonca anahtar kelimelerle** Google Patents: 齿隙/回差 + 重力 + 电机电流 + 关节; 消隙 + 弹簧 + 预紧 + 失效/检测; 双电机 + 消隙 + 预紧力矩 + 自适应; 啮合面/接触状态 + 电流 + 编码器; バックラッシュ + 重力 + モータ電流 + 推定. Sonuçların çoğu gürültü (cerrahi alet, mikroakışkan). İlgili olanlar aşağıda.
+3. **Makale tarafı yeniden** (OpenAlex `search=`; eski `filter=title_and_abstract.search` sözdizimi artık 0 döndürüyor). 8 sorgu, ilk 10 sonuç.
+4. **Espacenet:** Cloudflare bot doğrulaması çıktı, ajan geçmiyor. Kullanıcı geçince yapılacak.
+
+**Yeni bulunan ve okunan patentler:**
+
+| Patent | Sahip, öncelik | Durum | Öz | Katkımızla ilişkisi |
+|---|---|---|---|---|
+| **JP7674132B2** | Sumitomo Heavy Ind., 2021 | İ | Robot redüktörü durum izleme. Kollar arası bağıl konum ölçülüyor. **Yerçekiminin redüktöre ileri yönde moment uyguladığı bir duruş ile ters yönde uyguladığı ikinci bir duruş** seçiliyor ve her birinde bağıl konum değişimi referansla karşılaştırılıyor | Yerçekimiyle yüzü bilerek değiştirme fikri burada **var**. Ama çıkış tarafı (kollar arası) ölçümü şart, ayrı test duruşları kullanılıyor, amaç aşınma izleme. Yerçekiminin sıfır olduğu bölgede yüz kestirimi yok. Tezde mutlaka anılmalı (Canon ile birlikte) |
+| **DE102017211549A1** | KUKA, 2017 | İ (kısmen) | Robot eklemini belirli bir eksen açısına getirip dişliye **art arda en az iki farklı (bağımlı istem: zıt yönlü) tork yükü** uygulama. Tahrik tarafı ve/veya çıkış tarafı açıları kaydedilip aşınma durumu çıkarılıyor | Motor torkuyla aktif yoklama ve yalnız tahrik tarafı açısı **mümkün** sayılmış. Bizim "itiş" fikrimize en yakın patent. Fark: çevrimdışı test, aşınma büyüklüğü ölçüyor. O anki yüzü kestirip denetimde kullanmıyor |
+| **US11724390B2** | Samsung, 2021 | İ | Hedef boşluk ya da hedef ön yük ile ölçülen değer karşılaştırılıyor. Hata eşiği aşınca **ön yük eyleyicisi sürücü dişlinin eksenini kaydırıyor** (kapalı döngü ön yük). Açıklamada ölçüm, iki dişlideki kodlayıcıların gecikmesinden yapılıyor (motor akımı da olası algılayıcılar arasında sayılmış) | **Uyarlamalı ön yük + ölçüm** fikri patentli. 1. istem ölçüm yöntemini açık bırakıyor. "Kestirimle ön yükü tetikleme" rolünü tezde sunarken bu patent anılmalı. Bizim kestirim yöntemimiz bu istemde yok |
+| US20230400384A1 (TWI922516B) | FANUC, 2020 | İ | Redüktör giriş ve çıkışında iki kodlayıcı, açı farkından arıza sezimi | Çıkış kodlayıcısı şart |
+| US9709158B2 | Raytheon, 2012 | İ | İki motora zıt bias, sürüş komutu bias'a toplanıyor (çift motor ön yük denetimi) | B grubu, sezim yok |
+| US20180126552A1 | ABB, 2015 | İ | Paralel iki motorlu dişli dizisi. Konuma göre deneysel boşluk tablosundan iki motor için telafi | Boşluk konuma bağlı tablo. Yüz kestirimi yok |
+| JP5698777B2 | FANUC, 2013 | İ (kısmen) | Tandem iki motor, ön yük torkunu motor ivmesine göre üretiyor | Uyarlamalı elektriksel ön yük (Steinle 2025'in patent karşılığı gibi). Sezim yok |
+| US20220090985A1 | Schlumberger, 2020 | İ (kısmen) | Eyleyiciyi çıkış hareket edene kadar sürüp ölçümler arasındaki farktan boşluk bulma | Çevrimdışı, boşluk büyüklüğü |
+| DE102021205346A1 | ZF, 2021 | İ | Yük değişimi başlatılıp **akustik algılayıcıyla** darbe anı saptanıyor, aradaki süreden boşluk | Ek algılayıcı |
+| EP4253798B1 | ABB, 2022 | İ (kısmen) | Elektrikli güç aktarımında dişli aşınması izleme (Lenze'ye atıf yapıyor) | Taşıt / genel tahrik, aşınma |
+| CN121245854B | Chongqing Xiaokang, 2025 | İ (kısmen) | Robot eklem modülünde mekanik arıza olayının düzeyine göre tork denetimini ayarlama (Comau'ya atıf yapıyor) | Arıza düzeyine göre denetim, yüz kestirimi yok |
+| CN120601776A | Wuhan Huazhiyang, 2025 | İ (kısmen) | Çift motorlu dişli sisteminde boşluk giderme denetim yöntemi | B grubu |
+| CN102878279B | Chongqing Univ., 2012 | Ö | Elektrik denetimli, değişken diş kalınlıklı boşluk giderme dişli çifti | Mekanik ön yükün ayarlanabilir biçimi |
+
+**Makale tarafında yeni (notlarımızda yoktu):**
+
+| Çalışma | Durum | Öz | İlişki |
+|---|---|---|---|
+| Roozing, Volbeda 2025 *IEEE RA-L* (10.1109/lra.2025.3619805) | Ö | Sikloid redüktörlü robot eyleyicileri için iki boşluk giderme mekanizması. Değişen ön yükte boşluk **2–3 kat azalıyor**, bedeli sürtünme artışı (< 2 kat) | Mekanik ön yük bedeline sayısal dayanak (Du 2025, Steinle 2025 ile aynı grup) |
+| Kiuichi, Fujimoto, Tsuji 2025 *Advanced Robotics* (10.1080/01691864.2025.2496677) | Ö | Redüktörlü motorda burulma açısal hızından boşluğu tanımlayıp burulma torku kestiriminden çıkarma, ölü bölge parametrelerini çevrim içi güncelleme | İki kodlayıcı (burulma açısı) gerekiyor. Yerçekimi ve yüz kestirimi yok |
+| Noba ve ark. 2023 JSME Robomec (10.1299/jsmermd.2023.2a2-i20) | Ö | Çift kodlayıcılı motor, boşluk modeliyle burulma torku kestirimi | Çift kodlayıcı |
+| Kotov 2026 *HardwareX* (10.1016/j.ohx.2026.e00767) | Ö | Ucuz UART servolarda boşluk ölçüm test düzeneği | Çevrimdışı ölçüm |
+
+Önceden notlarımızda olanlar yeniden çıktı (kontrol amaçlı): "A virtual sensor for backlash in robotic manipulators" 2022 (10.1007/s10845-022-01934-z), dual-motor backlash elimination 2024 *Actuators*.
+
+**Ara sonuç (Espacenet hariç):**
+1. Açık **daraldı ama kapanmadı.** Parçaları ayrı ayrı biliniyor:
+   - yerçekimiyle yüzü bilerek değiştirme (Sumitomo, Canon),
+   - motor torkuyla aktif yoklama ve yalnız tahrik tarafı açısı (KUKA),
+   - yalnız motor kodlayıcısıyla boşluk izleme (Comau),
+   - tork sıfır geçişini olay olarak kullanma (Lenze),
+   - ölçüme göre kapalı döngü ön yük (Samsung).
+2. Bunların hiçbiri **yerçekimi ön yükünün sıfır olduğu bölgede, çalışma sırasında, yalnız motor akımı ve açısıyla o anki yüzü kestirip denetimde (ofset işareti) kullanmıyor.** Hepsi ya çıkış tarafı ölçümü ister, ya ayrı test duruşu / çevrimdışı test yapar, ya da yalnız büyüklük veya aşınma ölçer.
+3. Katkı tanımı bu yüzden daha keskin yazılmalı: "yeni olan yerçekimini kullanmak ya da motor sinyaliyle boşluk ölçmek değil; ikisinin birleşimi ve tam olarak bilinen yöntemlerin çalışmadığı noktada (yerçekimi ön yükü sıfır) çevrim içi yüz kestirimi."
+4. "Uyarlamalı ön yük tetikleyici" rolü için Samsung US11724390B2 anılmalı. O rol kestirim yöntemimizin bir **kullanımı** olarak sunulmalı, kendi başına yeni bir fikir olarak değil.
