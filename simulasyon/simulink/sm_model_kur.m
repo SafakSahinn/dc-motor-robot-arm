@@ -1,4 +1,4 @@
-function sm_model_kur(ad, motor)
+function sm_model_kur(ad, motor, onyuk)
 % SM_MODEL_KUR  Kolun mekaniğini Simscape fiziksel bloklarıyla kurar (kol_model'den bağımsız çapraz kontrol).
 %
 % Fiziksel ağ (Simscape, mekanik dönel alan):
@@ -16,8 +16,14 @@ function sm_model_kur(ad, motor)
 %                    kontrollü gerilim kaynağı (DRV8874 ortalama modeli) + akım sensörü (IPROPI);
 %                    tork komutu -> gerilim çevrimi blok_surucu'da (S.mot = 1, 2, 3), örnekleme Tsur.
 %                    Ek çıkışlar: 3 = akım i [A], 4 = gerilim V [V]. Ek değişken: Tsur.
+% onyuk = true (varsayılan false; B2): makas dişlinin yaylı yarısı. yuk bloğu blok_yuk_onyuk.m olur:
+%   B kolunun torku max(taup + Kp(r - δ), 0) kola eksi, motora artı (mevcut tork kaynaklarıyla), A teması
+%   ve -r dayanağı ağdaki Hard Stop'ta. Sürtünme bedeli sim_param'da S.Fc, S.Fs'ye eklenir.
+%   (Simscape Rotational Spring yerine tork yazımı: denklem kol_benzetim'le aynı, ön yük ve B'nin pinyondan
+%   ayrılması max(., 0) ile birebir.)
 if nargin < 1, ad = 'sm_kol_model'; end
 if nargin < 2, motor = 'ideal'; end
+if nargin < 3, onyuk = false; end
 elk = strcmp(motor, 'elektrik');
 kok = fileparts(mfilename('fullpath'));
 if bdIsLoaded(ad), close_system(ad, 0); end
@@ -63,7 +69,8 @@ add_block('simulink/Discrete/Unit Delay', [ad '/durum'], 'Position', [1200 320 1
           'InitialCondition', 'S.st0', 'SampleTime', 'Ts');
 add_block('simulink/Sinks/Out1', [ad '/x_out'], 'Position', [1000 360 1030 380], 'Port', '1');
 add_block('simulink/Sinks/Out1', [ad '/u_out'], 'Position', [1360 240 1390 260], 'Port', '2');
-kod_yaz([ad '/yuk'],       fullfile(kok, 'blok_yuk.m'),       '');
+if onyuk, yukDosya = 'blok_yuk_onyuk.m'; else, yukDosya = 'blok_yuk.m'; end
+kod_yaz([ad '/yuk'],       fullfile(kok, yukDosya),           '');
 kod_yaz([ad '/kontrolcu'], fullfile(kok, 'blok_ayrik.m'),     'Ts');   % sensör + kontrolcü, durumlar Unit Delay'de
 
 % --- fiziksel bağlantılar ---

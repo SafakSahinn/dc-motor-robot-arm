@@ -176,5 +176,12 @@ Dişlisiz kestirici aynı haritada 3879/3888.
 - μ_p, K_p ve "ön yük sürtünmesi doğrusal" varsayımı kaynaktan değil, taranarak seçildi.
 - Makas dişlinin tek yönlü modeli bir temsilci; elektriksel (çift motorlu) ön yük ayrıca modellenmedi.
 - Bedel 4 açıda ölçüldü.
-- Simscape ikizi henüz koşulmadı (sırada).
+- Simscape çapraz kontrolü kol tarafı geri beslemeli kontrolcüyle yapıldı (Simulink kontrol bloğunda motor tarafı ofset ve kestirici yok). Haritanın kendisi Simscape'te koşulmadı.
 - Donanım D7'de.
+
+**Simscape çapraz kontrolü** (`simulasyon/simulink/dogrula_b2.m`, `sm_model_kur(..., 'ideal', true)`, `blok_yuk_onyuk.m`).
+- Kurulum: A teması ve −r dayanağı Simscape Hard Stop'ta; B kolunun torku, yerçekimi ve sürtünmeyle aynı tork kaynaklarından.
+- Hücreler: 5 açı × τ_p {0,06; 0,24; 0,48} × μ_p {0; 0,5} × bozucu {yok, 0,05 N·m 1 Hz}.
+- Sonuç: 60/60 hücrede rejim sınıfı aynı, salınan hücrelerde genlik ve frekans farkı < %1, en büyük |Δθ| 0,03°.
+- 200° / τ_p 0,06'da (yumuşak yay bölgesi, θ* = 194,5°'nin hemen ötesi) kol tarafı geri beslemeyle 1,43° genlikli 2,5 Hz çevrim çıkıyor. İki modelde de aynı, adım boyutu 4 kat küçülünce değişmiyor. Bu, yay bölgesinin yalnız yükle kaymaya değil, kendi başına limit cycle'a da yol açtığını gösteriyor (bedel şekillerindeki τ_p 0,06 tepesinin kaynağı).
+- Not: ilk koşuda yay sertliği `sim_param`'da PID kazancı `S.Kp` ile aynı adı taşıdığı için yanlış değer aldı (22/60). `S.KpB` olarak düzeltildi; sonuçlar düzeltilmiş koşudan.

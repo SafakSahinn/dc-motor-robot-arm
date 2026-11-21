@@ -5,6 +5,13 @@ function S = sim_param(p, theta0_deg, wc)
 S.r = p.r;  S.Ks = p.Ks;  S.cs = p.cs;
 S.JM = p.JM;  S.JL = p.JL;  S.bM = p.bM;  S.bL = p.bL;  S.mgl = p.mgl;
 S.Fc = p.Fc;  S.Fs = p.Fs;  S.vs = p.vs;  S.veps = p.veps;
+S.KpB = 0;  S.taup = 0;                                    % makas dişli (sm_model_kur(..., onyuk), B2; S.Kp PID kazancı)
+if isfield(p,'onYuk') && p.onYuk
+    if ~isscalar(p.taup) || isfield(p,'taupFn'), error('sim_param: onYuk yalnız sabit, skaler taup'); end
+    S.KpB = p.Kp;  S.taup = p.taup;
+    mu = 0;  if isfield(p,'muP'), mu = p.muP; end
+    S.Fc = p.Fc + mu*p.taup;  S.Fs = p.Fs + mu*p.taup;      % ön yükün sürtünme bedeli (kol_benzetim ile aynı)
+end
 S.Tmax = p.Tmax;  S.olu = p.olu;  S.Ts = p.Ts;
 S.qL = p.qL;  S.qM = p.qM;
 S.fv_inf = double(isinf(p.fv));
