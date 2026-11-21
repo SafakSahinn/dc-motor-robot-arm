@@ -390,3 +390,11 @@ mesaj.
 
 Sıradaki: ESP32 kolunda adım 7 (sensör/sürücü kodları, parçalar gelince); araştırma kolunda 5b
 (kayan F_c) + 180° deney protokolü. Site Durum satırı 5b yapılınca.
+
+## Ek (2026-11-21): zamanla değişen referanslı PIL paketi
+
+`T_KTL_ADIM_REF` (0x24): yük double referans [rad] + `kontrol::Girdi` (18 B), cevap `kontrol::Cikti` (20 B).
+Kart önce `Kontrolcu::hedefAyarla(thRef)` (hedef sayım/kesir + ofsetin yerçekimi terimi mglN/KsN sin thRef),
+sonra `adim()` koşar. Yoklama bandı `T_KTL_BASLAT`'taki son hedefe göre kalır (ikizdeki p.refYol ile aynı).
+Eski paketler değişmedi; eski PIL ilk 4 senaryo yeni firmware'le 8/8, |du| <= 3e-7. Kullanım:
+`simulasyon/7_karsilastirma/pil_b1_yol.m` (B1 c/d), sonuçlar `calisma_notu/benzetim_B1_B3.md`.

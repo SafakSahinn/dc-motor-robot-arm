@@ -105,6 +105,10 @@ class Kontrolcu {
  public:
   void baslat(const Ayar& a);
   Cikti adim(const Girdi& g);
+  // Zamanla değişen referans (B1 c/d, ikizde p.refYol): hedefi ve ofsetin yerçekimi terimini
+  // yeniler (MATLAB: thr = refYol(t), ofsG = mglN/KsN sin(thr)). Yoklama bandı (yokEtkin)
+  // baslat()'taki son hedefe göre kalır. adim()'dan ÖNCE çağrılır.
+  void hedefAyarla(double thRef);
   const Turetilen& turetilen() const { return t_; }
   int32_t sayim() const { return sayim_; }
   int32_t yokSay() const { return ykSay_; }

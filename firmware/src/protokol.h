@@ -37,6 +37,8 @@ enum Tip : uint8_t {
   T_IKIZ_BASLAT  = 0x22,  // yük: uint32 ornekSayisi + ikiz::Ayar (180 B) → cevap: Durum; 1 kHz
                           //   görev ikiz + kontrolcüyü koşar, zamanlamayı Kayit'a, durumu IkizKayit'a yazar
   T_IKIZ_OKU     = 0x23,  // yük: uint32 bas, uint32 adet → art arda ikiz::Kayit paketleri (18'er)
+  T_KTL_ADIM_REF = 0x24,  // yük: double thRef [rad] + kontrol::Girdi (18 B) → cevap: kontrol::Cikti (20 B);
+                          // önce hedefAyarla(thRef), sonra adim() (zamanla değişen referanslı PIL)
   T_HATA       = 0x7F,  // kart → PC: bilinmeyen tip vb.
 };
 

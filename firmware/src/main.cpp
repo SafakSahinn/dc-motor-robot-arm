@@ -320,6 +320,22 @@ static void paketIsle(uint32_t t0) {
       gonder(tip | 0x80, sira, cik, (uint8_t)(n * CB));
       break;
     }
+    case prot::T_KTL_ADIM_REF: {
+      // Zamanla değişen referanslı PIL (B1 c/d): tek örnek, önce hedef sonra adım.
+      constexpr uint8_t GB = sizeof(kontrol::Girdi);
+      if (!ayarVar || ayr.uzunluk() != 8 + GB) { gonder(prot::T_HATA, sira, &tip, 1); break; }
+      double thr;
+      kontrol::Girdi g;
+      memcpy(&thr, ayr.yuk(), 8);
+      memcpy(&g, ayr.yuk() + 8, GB);
+      uint32_t c0 = XTHAL_GET_CCOUNT();
+      pilKtl.hedefAyarla(thr);
+      kontrol::Cikti c = pilKtl.adim(g);
+      uint32_t dc = XTHAL_GET_CCOUNT() - c0;
+      c.cyc = dc > 65535 ? 65535 : (uint16_t)dc;
+      gonder(tip | 0x80, sira, &c, sizeof(c));
+      break;
+    }
     default:
       gonder(prot::T_HATA, sira, &tip, 1);
       break;

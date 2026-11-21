@@ -86,6 +86,13 @@ void Kontrolcu::baslat(const Ayar& a) {
   k_ = 0;
 }
 
+void Kontrolcu::hedefAyarla(double thRef) {
+  ofsG_ = (float)((double)a_.mglN / (double)a_.KsN * sin(thRef));   // MATLAB: ofsGk*sin(thr)
+  const double rc = floor(thRef / a_.qM);
+  t_.refC = (int32_t)rc;
+  t_.refF = (float)(thRef - rc * a_.qM);
+}
+
 KONTROL_HIZLI Cikti Kontrolcu::adim(const Girdi& g) {
   const Ayar& a = a_;
   const int mod = a.kesMod;

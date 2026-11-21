@@ -59,4 +59,28 @@ Senaryo başına (sürtünmeli):
 
 **Sınırlar.** Taban kurallar patent metinlerinden yeniden kuruldu, ürün kodları değil; eşik ve ölü bant sayıları patentlerde yok, taranarak kural lehine seçildi. Sonuçlar ikizde; donanım D7'de doğrulanacak.
 
-**Sonraki.** B1'in önerilen yöntem kısmı ESP32 PIL'de (yeni senaryolar a2, b, c, d) koşulacak; taban kurallar firmware'e yazılmayacak (gerek yok, karşılaştırma tesis tarafında). Sonra B2.
+### B1 PIL: kartın kestiricisi yeni senaryolarda (2026-11-21)
+
+Kullanıcı kararı: iki yol da denenip karşılaştırılsın. (1) Yalnız MATLAB (yukarıdaki 42 koşu/senaryo, vektör koşusu). (2) Adım kilitli PIL: kartın C++ kontrolcüsü (`firmware/src/kontrol.cpp`, olay + yoklama) ikizi sürer, MATLAB kontrolcüsü gölge olarak aynı ölçümlerle koşar. Taban kurallar firmware'e yazılmadı; karşılaştırma tesis tarafında, PIL yalnız önerilen yöntemin kartta aynı çalıştığını gösterir.
+
+- a2 ve b (sabit hedef): mevcut firmware'le, `simulasyon/7_karsilastirma/pil_b1.m`.
+- c ve d (zamanla değişen referans): firmware'de hedef yalnız başlatmada geliyordu. Yeni paket `T_KTL_ADIM_REF` (0x24: double referans + ölçüm, cevap aynı) ve `Kontrolcu::hedefAyarla()` (hedef + ofsetin yerçekimi terimi) eklendi; eski paketler değişmedi. `pil_b1_yol.m`. Yeni firmware'le eski PIL'in ilk 4 senaryosu yeniden koşuldu: 8/8, kart-gölge kararları aynı, |du| ≤ 3e-7 N·m (gerileme yok).
+
+Her senaryoda 14 koşu (7 istek × 2 yön, tohum 1), PIL ve yalnız MATLAB (n = 1, aynı tohum) yan yana:
+
+| Senaryo | Sürtünme | H7 PIL / MATLAB | B12 PIL / MATLAB | Kart-gölge kararları aynı | En büyük \|du\| [N·m] |
+|---|---|---|---|---|---|
+| a2 yük | sürtünmeli | 14/14 / 14/14 | 0,996 / 0,996 | 14/14 | 3,8e-7 |
+| a2 yük | sürtünmesiz | 14/14 / 14/14 | 0,996 / 0,996 | 12/14 | 5,0e-3 * |
+| b salınım | sürtünmeli | — | 0,959 / 0,959 | 13/14 | 3,9e-3 * |
+| b salınım | sürtünmesiz | — | 0,941 / 0,941 | 13/14 | 2,6e-3 * |
+| c yaklaşma | sürtünmeli | 14/14 / 14/14 | — | 14/14 | 3,2e-7 |
+| c yaklaşma | sürtünmesiz | 14/14 / 14/14 | — | 13/14 | 5,5e-4 * |
+| d yön değ. | sürtünmeli | 14/14 / 14/14 | — | 14/14 | 4,0e-7 |
+| d yön değ. | sürtünmesiz | 14/14 / 14/14 | — | 14/14 | 3,0e-7 |
+
+\* Ayrışmaların hepsi PC tarafındaki Windows/USB takılmasından: 896 bin pakette 5 kez cevap 2 s'de gelmedi, kart o örnekte son torku tuttu (adım kilitli düzende "kayıp" sayılır). Kartta CRC, sıra ya da uzunluk hatası 0. Hiçbir senaryonun H7/B12 sonucunu değiştirmedi. Kart adımı ort. 3,5 µs, en uzun ~9 µs (1 ms bütçe).
+
+**Karşılaştırma (iki yol).** Kartın kestiricisi altı senaryonun hepsinde yalnız MATLAB'la aynı sonucu veriyor: H7 aynı, B12 üç basamağa kadar aynı, ayrık kararlar (yüz, yoklama evresi) kayıpsız koşularda örnek örnek aynı. Yani B1'deki "önerilen 210/210" yalnız benzetim kodunun değil, karta gömülen C++ kodunun da sonucu. 42 koşuluk vektör sonuçla (yol 1) PIL'in tek tohumluk sonucu arasında da fark yok.
+
+**Sonraki.** B2 (yay ön yüklü ikiz + açı × ön yük haritası) planı ve onayı.
