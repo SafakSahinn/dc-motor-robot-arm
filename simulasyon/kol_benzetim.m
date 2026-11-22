@@ -67,6 +67,12 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %               oturunca yeniden yoklanır (en çok p.yokMaks); ayrıca p.yokPer s'de bir (varsayılan Inf).
 %               'olay+yoklama'da yoklama torku olay sayılmaz.
 %   'olay+yoklama': ikisi birlikte.
+%   p.yokBolge (yoklamanın etkin olduğu bölge; varsayılan '180'):
+%     '180'     : |th_ref - 180°| <= p.yokBant (eski davranış)
+%     '180+360' : ayrıca |th_ref - 360°| <= p.yokBant (dik aşağı; yerçekimi torku orada da sıfır)
+%     'tork'    : '180' bandı YA DA durgunken kestirilen dişli torku belirsiz: |d^| <= FsN + p.yokTorkEsik
+%                 (sürtünme aralığı sıfırı içeriyor; yerçekimi + dış yükün net durağan torku küçük).
+%                 Her kontrol örneğinde yeniden değerlendirilir. p.yokTorkEsik [N m], varsayılan mglN sin 1°.
 %   Ofsetteki r, K_s, mgl kestiricinin bildiği değerlerdir: p.rN, p.KsN, p.mglN (varsayılan: ikizin gerçeği).
 %   Çıktı: out.shat (s^ kaydı), out.dhat, out.yuzDegis, out.yuzDegisAn, out.yuzSon,
 %   out.yokSay (yoklama sayısı), out.yokKol (yoklama + 0,3 s içinde kolun en büyük hareketi [rad],
@@ -195,6 +201,13 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     aDur = 1 - exp(-2*pi*vDurF*p.Ts);  whF = zeros(1,n);   % durgunluk kararı için süzülmüş w^ (Inf: süzgeç yok)
     l1 = 3*wo;  l2 = 3*wo^2;  l3 = JMN*wo^3;
     yokEtkin = (kesMod >= 3) & abs(th_ref - pi) <= yokBant + 1e-12;
+    ybMod = find(strcmp(al(p,'yokBolge','180'), {'180','180+360','tork'}));
+    if isempty(ybMod), error('bilinmeyen yokBolge: %s', p.yokBolge); end
+    if ybMod == 2
+        yokEtkin = yokEtkin | ((kesMod >= 3) & abs(mod(th_ref + pi, 2*pi) - pi) <= yokBant + 1e-12);
+    end
+    yokEtkin0 = yokEtkin;
+    yokTE = al(p,'yokTorkEsik', al(p,'mglN',p.mgl)*sin(deg2rad(1)));
     wh = zeros(1,n);  dh = zeros(1,n);           % ph (phi^) başlangıç durumundan sonra kurulur
     perSay = zeros(1,n);  perIs = zeros(1,n);  durSay = zeros(1,n);
     yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
@@ -369,6 +382,7 @@ for i = 0:nStep-1
                 bB = (ykF == 4 & (ykDir.*wh >= 0 | yol <= 0)) | bT | (yk & ykT >= yokTmax);
                 ykF(bB) = 0;  ykSon(bB) = tt;  ykIzBit(bB & ~bT) = tt + 0.3;
                 ykTemas = ykTemas + bT;  sh(bT) = ykDir(bT);
+                if ybMod == 3, yokEtkin = yokEtkin0 | abs(dh) <= FsN + yokTE; end
                 bas = yokEtkin & ykF == 0 & durSay*p.Ts >= yokBek & (tt - ykSon) >= yokPer & ykSay < yokMaks;
                 ykF(bas) = 1;  ykT(bas) = 0;  ykPhi0(bas) = y(bas);  ykDir(bas) = -sh(bas);
                 ykTh0(bas) = x(3,bas);  ykSay = ykSay + bas;

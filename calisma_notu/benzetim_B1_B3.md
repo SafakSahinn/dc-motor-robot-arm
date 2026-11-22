@@ -185,3 +185,38 @@ Dişlisiz kestirici aynı haritada 3879/3888.
 - Sonuç: 60/60 hücrede rejim sınıfı aynı, salınan hücrelerde genlik ve frekans farkı < %1, en büyük |Δθ| 0,03°.
 - 200° / τ_p 0,06'da (yumuşak yay bölgesi, θ* = 194,5°'nin hemen ötesi) kol tarafı geri beslemeyle 1,43° genlikli 2,5 Hz çevrim çıkıyor. İki modelde de aynı, adım boyutu 4 kat küçülünce değişmiyor. Bu, yay bölgesinin yalnız yükle kaymaya değil, kendi başına limit cycle'a da yol açtığını gösteriyor (bedel şekillerindeki τ_p 0,06 tepesinin kaynağı).
 - Not: ilk koşuda yay sertliği `sim_param`'da PID kazancı `S.Kp` ile aynı adı taşıdığı için yanlış değer aldı (22/60). `S.KpB` olarak düzeltildi; sonuçlar düzeltilmiş koşudan.
+
+## Açıklar: yoklama bölgesi denemesi (2026-11-22, sürüyor)
+
+**Soru.** B2'de kestiricinin (dişlisiz) kaybettiği koşular, yoklama bölgesi genişletilerek kapanır mı?
+
+**Teşhis** (`simulasyon/7_karsilastirma/acik/acik_teshis.m`, log `acik_teshis_log.txt`). Kayıpların hepsi net durağan torkun (yerçekimi + dış yük) küçük olduğu yerlerde:
+
+| Kayıp | Net tork [N·m] | Ne oluyor |
+|---|---|---|
+| sürtünmeli a2 0,06, 347,5° (6 koşu) | +0,008 | yük kolu öbür yüze geçiriyor; olay modu görmüyor (d^ 0,040, sürtünme aralığında), yoklama yok |
+| c yaklaşma 357,5°, yön −1 (iki ortam, 6 koşu) | −0,0105 | kol boşlukta 360°'ye sarkıyor, s^ yanlış, yoklama yok |
+| sürtünmesiz a2 0,02, 175/185° (12 koşu) | ±0,0009 | yüz avlanması, 7,24° çevrim |
+
+(b salınım 180° kayıpları H7 toplamına zaten girmiyor: b'de son yüz tanımsız.)
+
+**Denenen.** `kol_benzetim.m`'ye `p.yokBolge` (varsayılan `'180'`, eski davranış; gerileme 5 yapılandırmada θ ve u farkı 0, kanonik 42/42):
+- A `'180+360'`: ±`yokBant` (1°) bandı 360°'ye de.
+- B `'tork'`: 180 bandı YA DA durgunken |d^| ≤ FsN + `yokTorkEsik` (1°/2°/3° eşdeğeri). d^ gözlemcinin dişli torku tahmini (yerçekimi ve yükü zaten içeriyor).
+
+Betikler `acik_karsilastir.m` (5 paralel süreç, ~5 dk), `acik_birlestir.m` → `acik_log.txt`.
+
+| Varyant | B2 sürtünmeli (3888) | B2 sürtünmesiz (3888) | B1 sürtünmeli / sürtünmesiz (210) |
+|---|---|---|---|
+| 180 (eski) | 3879 | 3873 | 210 / 210 |
+| 180+360 | 3879 | 3873 | 210 / 210 |
+| tork 1° | 3738 | 3877 | 210 / 210 |
+| tork 2° | 3743 | 3877 | 210 / 210 |
+| tork 3° | 3735 | 3874 | 210 / 210 |
+
+**Sonuç: iki çözüm de açıkları kapatmadı.**
+1. A hiçbir şey değiştirmedi: ızgarada 360° yok, en yakın 357,5° ±1° bandının dışında.
+2. B sürtünmesizde yalnız 357,5° c'yi (3 koşu) kapattı. Sürtünmeli durumda yoklama 150–210° ve 330–357,5°'ye yayıldı (sürtünme aralığı 0,06 N·m) ve **141 koşu kaybettirdi** (e 0,5–1,3°, App ~2°; yoklama kolu oynatıyor, B13 en çok 0,22° → 3–4°).
+3. 175/185° çevrimi ve 347,5° a2 0,06, yoklama yapılsa da sürüyor. Bunlar "yüz bilinmiyor" değil, net torkun kolu bir yüze bastıramayacak kadar küçük olduğu durumlar: 180°'nin yüksüz hali gibi, bilinmeyen sabit yük yerçekimini dengeleyip yeni bir sıfır tork noktası (θ*) yaratıyor. Yöntem 180°'de bunu hedef kaydırmayla (ε = 0,5°) çözüyordu; θ*'da bunu yapmıyor.
+
+Bir sonraki adım kullanıcıyla kararlaştırılacak.

@@ -1,0 +1,245 @@
+=== acik_birlestir, 2026-11-22 16:01
+Kestirici (olay+yoklama), yoklama bölgesi p.yokBolge varyantları. Dişlisiz (taup = 0).
+B2 ızgarası: hücre = 108 açı x 2 yön x 3 tohum = 648 koşu; toplam = b salınım hariç 6 senaryo (3888).
+B1 ızgarası: senaryo = 7 istek x 2 yön x 3 tohum = 42 koşu; toplam = b hariç 5 senaryo (210).
+
+--- B2 ızgarası, sürtünmeli ---
+varyant      | temel       | a1 darbe    | a2 yük 0,02 | a2 yük 0,06 | b salınım   | c yaklaşma  | d yön değ.  | toplam    | yoklama ort/en çok | B13 en çok ° | RMS u ort N m | B12 b
+180 (eski)   |  648/648    |  648/648    |  648/648    |  642/648    |  642/648    |  645/648    |  648/648    | 3879/3888 |  0.01 / 2          |   0.22       | 0.1209        | 1.000
+180+360      |  648/648    |  648/648    |  648/648    |  642/648    |  642/648    |  645/648    |  648/648    | 3879/3888 |  0.01 / 2          |   0.22       | 0.1209        | 1.000
+tork 1°      |  626/648    |  630/648    |  636/648    |  571/648    |  623/648    |  627/648    |  648/648    | 3738/3888 |  0.40 / 3          |   3.13       | 0.1311        | 1.000
+tork 2°      |  625/648    |  637/648    |  642/648    |  565/648    |  623/648    |  626/648    |  648/648    | 3743/3888 |  0.41 / 3          |   3.22       | 0.1316        | 1.000
+tork 3°      |  627/648    |  630/648    |  635/648    |  573/648    |  624/648    |  622/648    |  648/648    | 3735/3888 |  0.43 / 3          |   4.20       | 0.1324        | 1.000
+
+--- B2 ızgarası, sürtünmesiz ---
+varyant      | temel       | a1 darbe    | a2 yük 0,02 | a2 yük 0,06 | b salınım   | c yaklaşma  | d yön değ.  | toplam    | yoklama ort/en çok | B13 en çok ° | RMS u ort N m | B12 b
+180 (eski)   |  648/648    |  648/648    |  636/648    |  648/648    |  642/648    |  645/648    |  648/648    | 3873/3888 |  0.01 / 2          |   0.23       | 0.1442        | 1.000
+180+360      |  648/648    |  648/648    |  636/648    |  648/648    |  642/648    |  645/648    |  648/648    | 3873/3888 |  0.01 / 2          |   0.23       | 0.1442        | 1.000
+tork 1°      |  648/648    |  648/648    |  637/648    |  648/648    |  642/648    |  648/648    |  648/648    | 3877/3888 |  0.06 / 2          |   1.74       | 0.1443        | 1.000
+tork 2°      |  648/648    |  648/648    |  637/648    |  648/648    |  642/648    |  648/648    |  648/648    | 3877/3888 |  0.07 / 2          |   1.74       | 0.1442        | 1.000
+tork 3°      |  648/648    |  648/648    |  636/648    |  646/648    |  642/648    |  648/648    |  648/648    | 3874/3888 |  0.08 / 2          |   1.74       | 0.1443        | 1.000
+
+--- B2 ızgarası: kaybedilen koşular (b salınım hariç) ---
+180 (eski):
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -1.87°, App 2.46°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.85°, App 2.47°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.54°, App 0.44°
+   sürtünmesiz a2 yük 0,02  175.0° yön -1: 3 tohum, e +0.82°, App 7.24°
+   sürtünmesiz a2 yük 0,02  175.0° yön +1: 3 tohum, e +0.88°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön -1: 3 tohum, e -0.65°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön +1: 3 tohum, e -0.54°, App 7.23°
+   sürtünmesiz c yaklaşma   357.5° yön -1: 3 tohum, e +2.48°, App 0.43°
+180+360:
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -1.87°, App 2.46°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.85°, App 2.47°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.54°, App 0.44°
+   sürtünmesiz a2 yük 0,02  175.0° yön -1: 3 tohum, e +0.82°, App 7.24°
+   sürtünmesiz a2 yük 0,02  175.0° yön +1: 3 tohum, e +0.88°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön -1: 3 tohum, e -0.65°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön +1: 3 tohum, e -0.54°, App 7.23°
+   sürtünmesiz c yaklaşma   357.5° yön -1: 3 tohum, e +2.48°, App 0.43°
+tork 1°:
+   sürtünmeli  temel        152.5° yön -1: 1 tohum, e -0.81°, App 2.29°
+   sürtünmeli  temel        152.5° yön +1: 1 tohum, e -1.14°, App 2.27°
+   sürtünmeli  temel        155.0° yön -1: 3 tohum, e -0.71°, App 1.94°
+   sürtünmeli  temel        155.0° yön +1: 3 tohum, e -0.60°, App 1.94°
+   sürtünmeli  temel        205.0° yön -1: 3 tohum, e +0.60°, App 1.94°
+   sürtünmeli  temel        205.0° yön +1: 3 tohum, e +0.66°, App 1.94°
+   sürtünmeli  temel        207.5° yön +1: 2 tohum, e +0.44°, App 2.17°
+   sürtünmeli  temel        335.0° yön -1: 3 tohum, e +0.90°, App 1.81°
+   sürtünmeli  temel        335.0° yön +1: 3 tohum, e +0.90°, App 1.81°
+   sürtünmeli  a1 darbe     152.5° yön -1: 3 tohum, e -0.65°, App 2.23°
+   sürtünmeli  a1 darbe     152.5° yön +1: 3 tohum, e -0.76°, App 2.24°
+   sürtünmeli  a1 darbe     207.5° yön -1: 3 tohum, e +0.73°, App 2.24°
+   sürtünmeli  a1 darbe     207.5° yön +1: 3 tohum, e +0.64°, App 2.23°
+   sürtünmeli  a1 darbe     332.5° yön -1: 3 tohum, e +1.02°, App 1.90°
+   sürtünmeli  a1 darbe     332.5° yön +1: 3 tohum, e +1.06°, App 1.90°
+   sürtünmeli  a2 yük 0,02  142.5° yön -1: 3 tohum, e -0.48°, App 3.18°
+   sürtünmeli  a2 yük 0,02  142.5° yön +1: 3 tohum, e -0.49°, App 3.09°
+   sürtünmeli  a2 yük 0,02  217.5° yön -1: 3 tohum, e +0.60°, App 3.20°
+   sürtünmeli  a2 yük 0,02  217.5° yön +1: 2 tohum, e +0.66°, App 3.22°
+   sürtünmeli  a2 yük 0,02  322.5° yön -1: 1 tohum, e +1.28°, App 2.63°
+   sürtünmeli  a2 yük 0,06  127.5° yön -1: 1 tohum, e +0.50°, App 1.10°
+   sürtünmeli  a2 yük 0,06  127.5° yön +1: 1 tohum, e +0.50°, App 1.10°
+   sürtünmeli  a2 yük 0,06  130.0° yön -1: 3 tohum, e +0.51°, App 0.91°
+   sürtünmeli  a2 yük 0,06  130.0° yön +1: 3 tohum, e +0.51°, App 0.91°
+   sürtünmeli  a2 yük 0,06  132.5° yön -1: 3 tohum, e +0.52°, App 0.76°
+   sürtünmeli  a2 yük 0,06  132.5° yön +1: 3 tohum, e +0.52°, App 0.79°
+   sürtünmeli  a2 yük 0,06  135.0° yön -1: 3 tohum, e +0.53°, App 0.66°
+   sürtünmeli  a2 yük 0,06  135.0° yön +1: 3 tohum, e +0.53°, App 0.66°
+   sürtünmeli  a2 yük 0,06  137.5° yön -1: 3 tohum, e +0.52°, App 0.59°
+   sürtünmeli  a2 yük 0,06  137.5° yön +1: 3 tohum, e +0.51°, App 0.59°
+   sürtünmeli  a2 yük 0,06  177.5° yön -1: 3 tohum, e +0.37°, App 1.23°
+   sürtünmeli  a2 yük 0,06  177.5° yön +1: 3 tohum, e +0.37°, App 1.24°
+   sürtünmeli  a2 yük 0,06  182.5° yön -1: 3 tohum, e -0.37°, App 1.24°
+   sürtünmeli  a2 yük 0,06  182.5° yön +1: 3 tohum, e -0.37°, App 1.24°
+   sürtünmeli  a2 yük 0,06  222.5° yön -1: 3 tohum, e -0.51°, App 0.59°
+   sürtünmeli  a2 yük 0,06  222.5° yön +1: 3 tohum, e -0.51°, App 0.59°
+   sürtünmeli  a2 yük 0,06  225.0° yön -1: 3 tohum, e -0.52°, App 0.66°
+   sürtünmeli  a2 yük 0,06  225.0° yön +1: 3 tohum, e -0.52°, App 0.67°
+   sürtünmeli  a2 yük 0,06  227.5° yön -1: 3 tohum, e -0.52°, App 0.74°
+   sürtünmeli  a2 yük 0,06  227.5° yön +1: 3 tohum, e -0.52°, App 0.75°
+   sürtünmeli  a2 yük 0,06  230.0° yön -1: 3 tohum, e -0.51°, App 0.92°
+   sürtünmeli  a2 yük 0,06  230.0° yön +1: 3 tohum, e -0.51°, App 0.92°
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -2.05°, App 2.52°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.89°, App 2.65°
+   sürtünmeli  a2 yük 0,06  355.0° yön +1: 3 tohum, e -0.26°, App 1.16°
+   sürtünmeli  a2 yük 0,06  357.5° yön -1: 3 tohum, e -0.31°, App 1.23°
+   sürtünmeli  a2 yük 0,06  357.5° yön +1: 3 tohum, e -0.30°, App 1.23°
+   sürtünmeli  c yaklaşma   155.0° yön +1: 3 tohum, e -0.48°, App 1.94°
+   sürtünmeli  c yaklaşma   157.5° yön +1: 3 tohum, e -0.86°, App 1.78°
+   sürtünmeli  c yaklaşma   202.5° yön -1: 3 tohum, e +0.83°, App 1.78°
+   sürtünmeli  c yaklaşma   205.0° yön -1: 3 tohum, e +0.45°, App 1.94°
+   sürtünmeli  c yaklaşma   337.5° yön -1: 3 tohum, e +0.15°, App 1.69°
+   sürtünmeli  c yaklaşma   340.0° yön -1: 3 tohum, e +0.28°, App 1.54°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.45°, App 0.49°
+   sürtünmesiz a2 yük 0,02  175.0° yön -1: 3 tohum, e +0.82°, App 7.24°
+   sürtünmesiz a2 yük 0,02  175.0° yön +1: 3 tohum, e +0.88°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön -1: 3 tohum, e -0.63°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön +1: 2 tohum, e -0.65°, App 7.24°
+tork 2°:
+   sürtünmeli  temel        152.5° yön -1: 3 tohum, e -1.25°, App 2.31°
+   sürtünmeli  temel        152.5° yön +1: 3 tohum, e -1.24°, App 2.24°
+   sürtünmeli  temel        207.5° yön -1: 3 tohum, e +1.24°, App 2.23°
+   sürtünmeli  temel        207.5° yön +1: 3 tohum, e +1.26°, App 2.24°
+   sürtünmeli  temel        332.5° yön -1: 2 tohum, e +0.53°, App 1.90°
+   sürtünmeli  temel        332.5° yön +1: 3 tohum, e +0.44°, App 1.90°
+   sürtünmeli  temel        335.0° yön -1: 3 tohum, e +0.60°, App 1.78°
+   sürtünmeli  temel        335.0° yön +1: 3 tohum, e +0.66°, App 1.79°
+   sürtünmeli  a1 darbe     150.0° yön -1: 3 tohum, e -1.46°, App 2.80°
+   sürtünmeli  a1 darbe     210.0° yön -1: 1 tohum, e +1.21°, App 2.84°
+   sürtünmeli  a1 darbe     210.0° yön +1: 1 tohum, e +1.23°, App 2.76°
+   sürtünmeli  a1 darbe     332.5° yön -1: 3 tohum, e +0.60°, App 1.86°
+   sürtünmeli  a1 darbe     332.5° yön +1: 3 tohum, e +0.63°, App 1.86°
+   sürtünmeli  a2 yük 0,02  322.5° yön -1: 3 tohum, e +0.57°, App 2.56°
+   sürtünmeli  a2 yük 0,02  322.5° yön +1: 3 tohum, e +0.56°, App 2.56°
+   sürtünmeli  a2 yük 0,06  127.5° yön -1: 3 tohum, e +0.50°, App 1.02°
+   sürtünmeli  a2 yük 0,06  127.5° yön +1: 3 tohum, e +0.50°, App 1.03°
+   sürtünmeli  a2 yük 0,06  130.0° yön -1: 3 tohum, e +0.51°, App 0.86°
+   sürtünmeli  a2 yük 0,06  130.0° yön +1: 3 tohum, e +0.51°, App 0.86°
+   sürtünmeli  a2 yük 0,06  132.5° yön -1: 3 tohum, e +0.52°, App 0.69°
+   sürtünmeli  a2 yük 0,06  132.5° yön +1: 3 tohum, e +0.52°, App 0.71°
+   sürtünmeli  a2 yük 0,06  135.0° yön -1: 3 tohum, e +0.53°, App 0.60°
+   sürtünmeli  a2 yük 0,06  135.0° yön +1: 3 tohum, e +0.53°, App 0.59°
+   sürtünmeli  a2 yük 0,06  137.5° yön -1: 3 tohum, e +0.52°, App 0.57°
+   sürtünmeli  a2 yük 0,06  137.5° yön +1: 3 tohum, e +0.53°, App 0.56°
+   sürtünmeli  a2 yük 0,06  177.5° yön -1: 3 tohum, e +0.40°, App 1.23°
+   sürtünmeli  a2 yük 0,06  177.5° yön +1: 3 tohum, e +0.39°, App 1.24°
+   sürtünmeli  a2 yük 0,06  182.5° yön -1: 3 tohum, e -0.38°, App 1.24°
+   sürtünmeli  a2 yük 0,06  182.5° yön +1: 3 tohum, e -0.39°, App 1.24°
+   sürtünmeli  a2 yük 0,06  222.5° yön -1: 3 tohum, e -0.52°, App 0.57°
+   sürtünmeli  a2 yük 0,06  222.5° yön +1: 3 tohum, e -0.52°, App 0.56°
+   sürtünmeli  a2 yük 0,06  225.0° yön -1: 3 tohum, e -0.53°, App 0.60°
+   sürtünmeli  a2 yük 0,06  225.0° yön +1: 3 tohum, e -0.53°, App 0.60°
+   sürtünmeli  a2 yük 0,06  227.5° yön -1: 3 tohum, e -0.52°, App 0.70°
+   sürtünmeli  a2 yük 0,06  227.5° yön +1: 3 tohum, e -0.52°, App 0.69°
+   sürtünmeli  a2 yük 0,06  230.0° yön -1: 3 tohum, e -0.51°, App 0.85°
+   sürtünmeli  a2 yük 0,06  230.0° yön +1: 3 tohum, e -0.51°, App 0.85°
+   sürtünmeli  a2 yük 0,06  232.5° yön -1: 2 tohum, e -0.50°, App 1.03°
+   sürtünmeli  a2 yük 0,06  232.5° yön +1: 3 tohum, e -0.50°, App 1.01°
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -2.05°, App 2.52°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.89°, App 2.65°
+   sürtünmeli  a2 yük 0,06  357.5° yön -1: 3 tohum, e -0.32°, App 1.23°
+   sürtünmeli  a2 yük 0,06  357.5° yön +1: 3 tohum, e -0.32°, App 1.22°
+   sürtünmeli  c yaklaşma   152.5° yön +1: 1 tohum, e +0.05°, App 1.94°
+   sürtünmeli  c yaklaşma   155.0° yön +1: 3 tohum, e -0.88°, App 1.91°
+   sürtünmeli  c yaklaşma   157.5° yön +1: 3 tohum, e -0.68°, App 1.77°
+   sürtünmeli  c yaklaşma   202.5° yön -1: 3 tohum, e +0.70°, App 1.77°
+   sürtünmeli  c yaklaşma   205.0° yön -1: 3 tohum, e +0.88°, App 1.91°
+   sürtünmeli  c yaklaşma   335.0° yön -1: 3 tohum, e -0.00°, App 1.78°
+   sürtünmeli  c yaklaşma   337.5° yön -1: 3 tohum, e +0.33°, App 1.71°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.45°, App 0.49°
+   sürtünmesiz a2 yük 0,02  175.0° yön -1: 3 tohum, e +0.82°, App 7.24°
+   sürtünmesiz a2 yük 0,02  175.0° yön +1: 3 tohum, e +0.88°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön -1: 3 tohum, e -0.63°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön +1: 2 tohum, e -0.65°, App 7.24°
+tork 3°:
+   sürtünmeli  temel        150.0° yön +1: 1 tohum, e -0.02°, App 2.22°
+   sürtünmeli  temel        152.5° yön -1: 3 tohum, e -0.82°, App 2.20°
+   sürtünmeli  temel        152.5° yön +1: 3 tohum, e -0.69°, App 2.20°
+   sürtünmeli  temel        207.5° yön -1: 3 tohum, e +0.67°, App 2.20°
+   sürtünmeli  temel        207.5° yön +1: 3 tohum, e +0.85°, App 2.21°
+   sürtünmeli  temel        210.0° yön -1: 1 tohum, e +0.73°, App 2.79°
+   sürtünmeli  temel        210.0° yön +1: 1 tohum, e +0.61°, App 2.80°
+   sürtünmeli  temel        332.5° yön -1: 3 tohum, e +1.01°, App 1.85°
+   sürtünmeli  temel        332.5° yön +1: 3 tohum, e +1.05°, App 1.86°
+   sürtünmeli  a1 darbe     150.0° yön -1: 3 tohum, e -0.90°, App 2.73°
+   sürtünmeli  a1 darbe     150.0° yön +1: 3 tohum, e -0.82°, App 2.72°
+   sürtünmeli  a1 darbe     210.0° yön -1: 3 tohum, e +0.95°, App 2.73°
+   sürtünmeli  a1 darbe     210.0° yön +1: 3 tohum, e +0.79°, App 2.72°
+   sürtünmeli  a1 darbe     330.0° yön -1: 3 tohum, e +1.25°, App 2.38°
+   sürtünmeli  a1 darbe     330.0° yön +1: 3 tohum, e +1.25°, App 2.38°
+   sürtünmeli  a2 yük 0,02  140.0° yön -1: 3 tohum, e -0.47°, App 3.81°
+   sürtünmeli  a2 yük 0,02  140.0° yön +1: 3 tohum, e -0.60°, App 3.83°
+   sürtünmeli  a2 yük 0,02  220.0° yön -1: 3 tohum, e +0.45°, App 3.79°
+   sürtünmeli  a2 yük 0,02  220.0° yön +1: 3 tohum, e +0.55°, App 3.82°
+   sürtünmeli  a2 yük 0,02  320.0° yön +1: 1 tohum, e +1.51°, App 3.09°
+   sürtünmeli  a2 yük 0,06  125.0° yön -1: 1 tohum, e +0.50°, App 1.10°
+   sürtünmeli  a2 yük 0,06  125.0° yön +1: 2 tohum, e +0.50°, App 1.05°
+   sürtünmeli  a2 yük 0,06  127.5° yön -1: 3 tohum, e +0.51°, App 0.89°
+   sürtünmeli  a2 yük 0,06  127.5° yön +1: 3 tohum, e +0.51°, App 0.89°
+   sürtünmeli  a2 yük 0,06  130.0° yön -1: 3 tohum, e +0.52°, App 0.77°
+   sürtünmeli  a2 yük 0,06  130.0° yön +1: 3 tohum, e +0.52°, App 0.77°
+   sürtünmeli  a2 yük 0,06  132.5° yön -1: 3 tohum, e +0.53°, App 0.65°
+   sürtünmeli  a2 yük 0,06  132.5° yön +1: 3 tohum, e +0.53°, App 0.65°
+   sürtünmeli  a2 yük 0,06  135.0° yön -1: 3 tohum, e +0.54°, App 0.54°
+   sürtünmeli  a2 yük 0,06  135.0° yön +1: 3 tohum, e +0.54°, App 0.54°
+   sürtünmeli  a2 yük 0,06  137.5° yön -1: 3 tohum, e +0.53°, App 0.54°
+   sürtünmeli  a2 yük 0,06  137.5° yön +1: 3 tohum, e +0.53°, App 0.54°
+   sürtünmeli  a2 yük 0,06  222.5° yön -1: 3 tohum, e -0.53°, App 0.53°
+   sürtünmeli  a2 yük 0,06  222.5° yön +1: 3 tohum, e -0.53°, App 0.54°
+   sürtünmeli  a2 yük 0,06  225.0° yön -1: 3 tohum, e -0.53°, App 0.53°
+   sürtünmeli  a2 yük 0,06  225.0° yön +1: 3 tohum, e -0.53°, App 0.53°
+   sürtünmeli  a2 yük 0,06  227.5° yön -1: 3 tohum, e -0.53°, App 0.64°
+   sürtünmeli  a2 yük 0,06  227.5° yön +1: 3 tohum, e -0.53°, App 0.63°
+   sürtünmeli  a2 yük 0,06  230.0° yön -1: 3 tohum, e -0.52°, App 0.76°
+   sürtünmeli  a2 yük 0,06  230.0° yön +1: 3 tohum, e -0.52°, App 0.74°
+   sürtünmeli  a2 yük 0,06  232.5° yön -1: 3 tohum, e -0.51°, App 0.89°
+   sürtünmeli  a2 yük 0,06  232.5° yön +1: 3 tohum, e -0.51°, App 0.84°
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -2.05°, App 2.52°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.89°, App 2.65°
+   sürtünmeli  a2 yük 0,06  357.5° yön -1: 3 tohum, e -0.33°, App 1.23°
+   sürtünmeli  a2 yük 0,06  357.5° yön +1: 3 tohum, e -0.33°, App 1.23°
+   sürtünmeli  c yaklaşma   152.5° yön +1: 3 tohum, e -0.31°, App 2.21°
+   sürtünmeli  c yaklaşma   155.0° yön +1: 3 tohum, e -1.05°, App 1.89°
+   sürtünmeli  c yaklaşma   157.5° yön +1: 3 tohum, e -0.52°, App 1.76°
+   sürtünmeli  c yaklaşma   202.5° yön -1: 2 tohum, e +0.53°, App 1.76°
+   sürtünmeli  c yaklaşma   205.0° yön -1: 3 tohum, e +1.06°, App 1.89°
+   sürtünmeli  c yaklaşma   207.5° yön -1: 3 tohum, e +0.37°, App 2.21°
+   sürtünmeli  c yaklaşma   335.0° yön -1: 3 tohum, e +0.32°, App 1.77°
+   sürtünmeli  c yaklaşma   337.5° yön -1: 3 tohum, e +0.41°, App 1.70°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.45°, App 0.49°
+   sürtünmesiz a2 yük 0,02  175.0° yön -1: 3 tohum, e +0.77°, App 7.24°
+   sürtünmesiz a2 yük 0,02  175.0° yön +1: 3 tohum, e +0.85°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön -1: 3 tohum, e -0.58°, App 7.24°
+   sürtünmesiz a2 yük 0,02  185.0° yön +1: 3 tohum, e -0.53°, App 7.23°
+   sürtünmesiz a2 yük 0,06  170.0° yön -1: 1 tohum, e +0.41°, App 0.86°
+   sürtünmesiz a2 yük 0,06  170.0° yön +1: 1 tohum, e +0.42°, App 0.86°
+
+--- Yoklama sayısının açıya göre dağılımı (B2, temel, ortalama yoklama/koşu) ---
+sürtünmeli  180 (eski)   yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
+sürtünmeli  180+360      yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
+sürtünmeli  tork 1°      yoklama: 33 açıda (152.5-357.5° arası), açı başına en çok 1.00
+sürtünmeli  tork 2°      yoklama: 34 açıda (152.5-357.5° arası), açı başına en çok 1.00
+sürtünmeli  tork 3°      yoklama: 36 açıda (150.0-357.5° arası), açı başına en çok 1.00
+sürtünmesiz 180 (eski)   yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
+sürtünmesiz 180+360      yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
+sürtünmesiz tork 1°      yoklama: 4 açıda (177.5-357.5° arası), açı başına en çok 1.00
+sürtünmesiz tork 2°      yoklama: 4 açıda (177.5-357.5° arası), açı başına en çok 1.00
+sürtünmesiz tork 3°      yoklama: 6 açıda (175.0-357.5° arası), açı başına en çok 1.00
+
+--- B1 ızgarası (179-181°) ---
+sürtünmeli
+varyant      | temel      | a1 darbe   | a2 yük     | b salınım  | c yaklaşma | d yön değ. | toplam H7 | B12 ort | B13 en çok °
+180 (eski)   |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+180+360      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+tork 1°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+tork 2°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+tork 3°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+sürtünmesiz
+varyant      | temel      | a1 darbe   | a2 yük     | b salınım  | c yaklaşma | d yön değ. | toplam H7 | B12 ort | B13 en çok °
+180 (eski)   |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
+180+360      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
+tork 1°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
+tork 2°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
+tork 3°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
