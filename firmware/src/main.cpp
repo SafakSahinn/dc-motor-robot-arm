@@ -254,10 +254,14 @@ static void paketIsle(uint32_t t0) {
       return;
     }
     case prot::T_KTL_BASLAT: {
-      if (ayr.uzunluk() != sizeof(kontrol::Ayar) || dDurum == 1) { gonder(prot::T_HATA, sira, &tip, 1); break; }
+      // yük: Ayar (180 B) ya da Ayar + AyarEk (204 B, θ* arama)
+      const bool ekli = ayr.uzunluk() == sizeof(kontrol::Ayar) + sizeof(kontrol::AyarEk);
+      if ((ayr.uzunluk() != sizeof(kontrol::Ayar) && !ekli) || dDurum == 1) { gonder(prot::T_HATA, sira, &tip, 1); break; }
       memcpy(&sonAyar, ayr.yuk(), sizeof(sonAyar));
+      static kontrol::AyarEk sonEk;
+      if (ekli) memcpy(&sonEk, ayr.yuk() + sizeof(kontrol::Ayar), sizeof(sonEk));
       ayarVar = true;
-      pilKtl.baslat(sonAyar);
+      pilKtl.baslat(sonAyar, ekli ? &sonEk : nullptr);
       rtHazir = pilKtl;   // dDurum != 1: kontrol görevi şu an rtHazir'ı okumuyor
       gonder(tip | 0x80, sira, &pilKtl.turetilen(), sizeof(kontrol::Turetilen));
       break;

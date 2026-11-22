@@ -24,6 +24,15 @@ f = [kp, p.KV, p.KI, p.Tmax, p.olu, al(p,'Iolu',0), ...
      al(p,'yokA',0.12), al(p,'yokD',deg2rad(0.5)), al(p,'yokEsik',0.04), al(p,'yokOrta',0.5), al(p,'vDurF',Inf)];
 y = [typecast(double(dbl), 'uint8'), typecast(int32(i32), 'uint8'), uint8(u8), typecast(single(f), 'uint8')];
 if numel(y) ~= 180, error('Ayar boyu %d (180 olmalı)', numel(y)); end
+% θ* arama (p.thYildiz + p.tyArama): kontrol::AyarEk (24 B) eklenir; yoksa eski 180 B paket.
+if al(p,'thYildiz',false) && al(p,'tyArama',false)
+    ek = [typecast(double(al(p,'tyBas',1)), 'uint8'), ...
+          typecast(single([al(p,'tyHiz',deg2rad(0.25)), al(p,'tyMaks',deg2rad(0.5)), al(p,'tyF',1)]), 'uint8'), ...
+          uint8([1 0 0 0])];
+    y = [y, ek];
+elseif al(p,'thYildiz',false)
+    error('kart yalnız θ* aramayı (tyArama) destekliyor');
+end
 end
 
 function v = al(p, ad, vars)

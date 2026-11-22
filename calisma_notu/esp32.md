@@ -398,3 +398,12 @@ Kart önce `Kontrolcu::hedefAyarla(thRef)` (hedef sayım/kesir + ofsetin yerçek
 sonra `adim()` koşar. Yoklama bandı `T_KTL_BASLAT`'taki son hedefe göre kalır (ikizdeki p.refYol ile aynı).
 Eski paketler değişmedi; eski PIL ilk 4 senaryo yeni firmware'le 8/8, |du| <= 3e-7. Kullanım:
 `simulasyon/7_karsilastirma/pil_b1_yol.m` (B1 c/d), sonuçlar `calisma_notu/benzetim_B1_B3.md`.
+
+## Ek (2026-11-22): θ* arama (kontrol::AyarEk)
+
+`T_KTL_BASLAT` yükü artık 180 B (`Ayar`, eski davranış) ya da 180 + 24 B (`Ayar` + `AyarEk`: tyBas, tyHiz,
+tyMaks, tyF, tyArama). Ek varsa kart ikizdeki `p.thYildiz` + `p.tyArama` kuralını koşar: referans dururken
+s^ ~2 s'de 2 kez değişirse hedef tyHiz ile kaydırılır (en çok tyMaks); `hedefAyarla()` referans değişimini
+bildirir (kaydırma sıfırlanır). `ktl_ayar_paketle.m` eki p.tyArama açıksa kendisi ekler. Eski PIL (pil.m)
+yeni firmware'le 84/84, kart-gölge kararları aynı, |du| <= 3,6e-7 (gerileme yok). Kullanım:
+`simulasyon/7_karsilastirma/acik/pil_acik.m`, sonuçlar `calisma_notu/benzetim_B1_B3.md` "Açıklar".

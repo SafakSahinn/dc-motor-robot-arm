@@ -238,4 +238,10 @@ Betikler `acik_karsilastir.m` (5 paralel süreç, ~5 dk), `acik_birlestir.m` →
 2. **357,5°'ye yukarıdan yaklaşma (iki ortamda 3'er koşu):** 360° kararlı denge; kol boşlukta 360°'ye sarkıyor, dişliye dayanmadığı için ne olay ne d^ bir şey gösteriyor (e +2,5°). Yoklama bandını 360°'ye ±1° genişletmek ızgarada etkisiz (357,5° bandın dışında); net torka göre geniş yoklama sürtünmeli durumu bozuyor (yukarıda).
 - Ortak nokta: ikisi de net torkun sürtünmeye göre küçük olduğu, kolun dişliyi yüklemediği ya da yüklediğinin motor tarafından ayırt edilemediği durumlar. Yalnız motor sinyaliyle çalışan bir kestiricinin gözlenebilirlik sınırı.
 
-Firmware: arama kuralı karta taşınacak (PIL), aşağıda.
+**PIL (kart).** Arama kuralı `firmware/src/kontrol.cpp`'ye taşındı (`kontrol::AyarEk`, `calisma_notu/esp32.md`). `acik/pil_acik.m`, 16 koşu (175/185° 0,02 yük sürtünmesiz ve sürtünmeli, 347,5° 0,06 sürtünmeli, B1 temel 179,25/179,5/180,75° iki ortamda):
+
+- H7 PIL 14/16, MATLAB 14/16 (kaybedilen ikisi 347,5°: kartta da sınır).
+- 175/185° sürtünmesiz: kartta da çevrim yok (App 0,17–0,18°, e ±0,08°).
+- Kart-gölge ayrık kararları 16/16 aynı, en büyük |du| 4,6e-7 N·m, kayıp 0, kart hata sayaçları 0.
+- Eski PIL (`6_esp32/pil.m`, 84 koşu) yeni firmware'le 84/84, kararlar aynı, |du| ≤ 3,6e-7 (gerileme yok).
+- Not: 179,5° sürtünmesiz yüksüz koşuda da arama bir kez devreye girdi (−0,05°); H7 etkilenmedi.

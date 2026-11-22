@@ -73,6 +73,20 @@ struct __attribute__((packed)) Ayar {
 };
 static_assert(sizeof(Ayar) == 180, "Ayar paket boyu");
 
+// İsteğe bağlı ek (T_KTL_BASLAT yükü 180 + 24 B ise). Yoksa hepsi kapalı (eski davranış).
+// θ* arama (kol_benzetim p.thYildiz + p.tyArama): referans dururken s^ ~2 s'de 2 kez değişirse
+// (yüz avlanması) hedef tyHiz ile, net tork sign(n0) yönüne kaydırılır (en çok tyMaks).
+// MATLAB karşılığı: ktl_ayar_paketle.m'nin 6. argümanı.
+struct __attribute__((packed)) AyarEk {
+  double tyBas;      // [s] kaydırma bu andan önce başlamaz
+  float tyHiz;       // [rad/s] kaydırma hızı
+  float tyMaks;      // [rad] en büyük kaydırma
+  float tyF;         // [Hz] d^ süzgeci (n0'ın işareti için)
+  uint8_t tyArama;   // 1: θ* arama açık
+  uint8_t rez0, rez1, rez2;
+};
+static_assert(sizeof(AyarEk) == 24, "AyarEk boyu");
+
 // Bir kontrol örneğinin girdisi (T_KTL_ADIM'da 10 B).
 struct __attribute__((packed)) Girdi {
   uint16_t ham;      // motor AS5600 ham açısı 0..4095 (tur içi)
@@ -103,8 +117,9 @@ static_assert(sizeof(Turetilen) == 24, "Turetilen boyu");
 
 class Kontrolcu {
  public:
-  void baslat(const Ayar& a);
+  void baslat(const Ayar& a, const AyarEk* ek = nullptr);
   Cikti adim(const Girdi& g);
+  float tyD() const { return tyD_; }   // θ* kaydırması [rad]
   // Zamanla değişen referans (B1 c/d, ikizde p.refYol): hedefi ve ofsetin yerçekimi terimini
   // yeniler (MATLAB: thr = refYol(t), ofsG = mglN/KsN sin(thr)). Yoklama bandı (yokEtkin)
   // baslat()'taki son hedefe göre kalır. adim()'dan ÖNCE çağrılır.
@@ -136,6 +151,12 @@ class Kontrolcu {
   float ykDir_, ykDm_, ykYon_;
   bool ykSonVar_;    // false: ykSon = -Inf
   int32_t ykSon_;    // son yoklama bitişinin örnek indisi
+  // θ* arama (AyarEk)
+  AyarEk e_;
+  bool tyAra_, tyDon_, refSabit_, izVar_;
+  float aTy_, tyDec_, dhF_, tyD_, tyAv_, tyS_, tyMgl_;
+  int32_t tyCap_, nTyCap_, nTyBas_, izK_;
+  double thRefD_, mglKs_;
   // kontrolcü
   float z_, uOnc_, eOnc_;
   int32_t k_;        // örnek indisi (tt = k * Ts)

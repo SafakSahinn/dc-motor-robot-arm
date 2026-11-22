@@ -37,9 +37,18 @@ int32_t toplamEsigi(double Ts, double esik) {
 
 }  // namespace
 
-void Kontrolcu::baslat(const Ayar& a) {
+void Kontrolcu::baslat(const Ayar& a, const AyarEk* ek) {
   a_ = a;
   memset(&t_, 0, sizeof(t_));
+  if (ek) e_ = *ek; else memset(&e_, 0, sizeof(e_));
+  tyAra_ = e_.tyArama != 0 && a.kesMod != KES_KAPALI;
+  aTy_ = (float)(1.0 - exp(-2.0 * M_PI * (double)e_.tyF * a.Ts));
+  tyDec_ = (float)exp(-a.Ts / 2.0);                // ~2 s pencere (MATLAB exp(-Ts/2))
+  nTyCap_ = toplamEsigi(a.Ts, 1.0);                // uçta 1 s (birikimli)
+  nTyBas_ = carpimEsigi(a.Ts, e_.tyBas, false);    // tt >= tyBas
+  tyMgl_ = a.mglN;  mglKs_ = (double)a.mglN / (double)a.KsN;
+  thRefD_ = a.thRef;  refSabit_ = true;
+  dhF_ = tyD_ = tyAv_ = tyS_ = 0.0f;  tyCap_ = 0;  tyDon_ = false;  izVar_ = false;  izK_ = 0;
 
   // --- sabitler (kol_benzetim.m 113–142) ---
   qM_ = (float)a.qM;
@@ -87,6 +96,8 @@ void Kontrolcu::baslat(const Ayar& a) {
 }
 
 void Kontrolcu::hedefAyarla(double thRef) {
+  refSabit_ = fabs(thRef - thRefD_) < 1e-9;   // θ* arama: referans duruyor mu (MATLAB rs)
+  thRefD_ = thRef;
   ofsG_ = (float)((double)a_.mglN / (double)a_.KsN * sin(thRef));   // MATLAB: ofsGk*sin(thr)
   const double rc = floor(thRef / a_.qM);
   t_.refC = (int32_t)rc;
@@ -151,6 +162,7 @@ KONTROL_HIZLI Cikti Kontrolcu::adim(const Girdi& g) {
       const bool bB = (ykF_ == 4 && (ykDir_ * wh_ >= 0.0f || yol <= 0.0f)) || bT ||
                       (ykBas && ykT_ >= t_.nTmax);
       if (bB) { ykF_ = 0; ykSonVar_ = true; ykSon_ = k_; }
+      if (bB && !bT) { izVar_ = true; izK_ = k_; }     // MATLAB ykIzBit = tt + 0,3
       if (bT) { ++ykTemas_; sh_ = ykDir_; }
       const bool perTamam = !ykSonVar_ || (nPer_ != ASLA && (k_ - ykSon_) >= nPer_);
       if (yokEtkin_ && ykF_ == 0 && durSay_ >= t_.nBek && perTamam && ykSay_ < a.yokMaks) {
@@ -160,6 +172,31 @@ KONTROL_HIZLI Cikti Kontrolcu::adim(const Girdi& g) {
       ykYon_ = ykDir_ * ((ykF_ == 2 || ykF_ == 3) ? -1.0f : 1.0f);
     }
 
+    // --- θ* arama (kol_benzetim p.thYildiz + p.tyArama): yüz avlanmasında hedefi kaydır
+    float ofsGk = ofsG_;
+    if (tyAra_) {
+      const double tt = (double)k_ * a.Ts;
+      const bool yd = ykF_ > 0 || (izVar_ && tt <= (double)izK_ * a.Ts + 0.3);
+      if (!yd) dhF_ = dhF_ + aTy_ * (dh_ - dhF_);
+      const float n0 = tyD_ != 0.0f
+          ? dhF_ + (float)((double)tyMgl_ * (sin(thRefD_) - sin(thRefD_ + (double)tyD_))) : dhF_;
+      float sg = isaret(n0);  if (sg == 0.0f) sg = 1.0f;
+      tyAv_ = tyAv_ * tyDec_ + (sh_ != shOnc ? 1.0f : 0.0f);
+      const bool rs = refSabit_;  refSabit_ = true;
+      if (!rs) { tyS_ = 0.0f; tyD_ = 0.0f; tyCap_ = 0; tyDon_ = false; }
+      const bool av = rs && k_ >= nTyBas_ && tyAv_ >= 1.5f && !yd;
+      if (av && tyS_ == 0.0f) tyS_ = sg;
+      bool uc = false;
+      if (av && tyS_ != 0.0f) {
+        float yon = tyS_ * isaret((float)cos(thRefD_));  if (yon == 0.0f) yon = 1.0f;
+        tyD_ = sinirla(tyD_ + yon * e_.tyHiz * Ts_, e_.tyMaks);
+        uc = fabsf(tyD_) >= e_.tyMaks;
+      }
+      if (uc) ++tyCap_; else tyCap_ = 0;
+      if (tyCap_ >= nTyCap_ && !tyDon_) { tyS_ = -tyS_; tyDon_ = true; tyCap_ = 0; }
+      if (tyD_ != 0.0f) ofsGk = (float)(mglKs_ * sin(thRefD_ + (double)tyD_));
+    }
+
     // --- yüz değişimi, rampa, ofset (254–261)
     if (sh_ != shOnc) {
       ++yuzDeg_;
@@ -167,13 +204,14 @@ KONTROL_HIZLI Cikti Kontrolcu::adim(const Girdi& g) {
     }
     if (a.yuzRampa > 0.0f) sOf_ = sOf_ + sinirla(sh_ - sOf_, adm_);
     else sOf_ = sh_;
-    ofs = sOf_ * a.rN + ofsG_;
+    ofs = sOf_ * a.rN + ofsGk;
   } else {
     ofs = sOf_ * a.rN + ofsG_;     // kestirici kapalı: başlangıç yüzüyle sabit ofset
   }
 
   // --- P-PI (263–271): konum hatası motor tarafından, hız motor tarafından
-  const float e = (float)(t_.refC - sayim_) * qM_ + t_.refF + ofs;
+  float e = (float)(t_.refC - sayim_) * qM_ + t_.refF + ofs;
+  if (tyD_ != 0.0f) e = (float)(t_.refC - sayim_) * qM_ + t_.refF + tyD_ + ofs;   // θ*: thr = thr0 + tyD
   const float v = a.hizKaynak == HIZ_GIRDI ? g.v : wh_;
   const float ev = a.kp * e - v;
   const float u0 = a.KV * ev + a.KI * z_;
