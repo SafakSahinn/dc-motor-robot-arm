@@ -186,7 +186,7 @@ Dişlisiz kestirici aynı haritada 3879/3888.
 - 200° / τ_p 0,06'da (yumuşak yay bölgesi, θ* = 194,5°'nin hemen ötesi) kol tarafı geri beslemeyle 1,43° genlikli 2,5 Hz çevrim çıkıyor. İki modelde de aynı, adım boyutu 4 kat küçülünce değişmiyor. Bu, yay bölgesinin yalnız yükle kaymaya değil, kendi başına limit cycle'a da yol açtığını gösteriyor (bedel şekillerindeki τ_p 0,06 tepesinin kaynağı).
 - Not: ilk koşuda yay sertliği `sim_param`'da PID kazancı `S.Kp` ile aynı adı taşıdığı için yanlış değer aldı (22/60). `S.KpB` olarak düzeltildi; sonuçlar düzeltilmiş koşudan.
 
-## Açıklar: yoklama bölgesi denemesi (2026-11-22, sürüyor)
+## Açıklar: yoklama bölgesi ve θ* hedef kaydırma (2026-11-22)
 
 **Soru.** B2'de kestiricinin (dişlisiz) kaybettiği koşular, yoklama bölgesi genişletilerek kapanır mı?
 
@@ -219,4 +219,23 @@ Betikler `acik_karsilastir.m` (5 paralel süreç, ~5 dk), `acik_birlestir.m` →
 2. B sürtünmesizde yalnız 357,5° c'yi (3 koşu) kapattı. Sürtünmeli durumda yoklama 150–210° ve 330–357,5°'ye yayıldı (sürtünme aralığı 0,06 N·m) ve **141 koşu kaybettirdi** (e 0,5–1,3°, App ~2°; yoklama kolu oynatıyor, B13 en çok 0,22° → 3–4°).
 3. 175/185° çevrimi ve 347,5° a2 0,06, yoklama yapılsa da sürüyor. Bunlar "yüz bilinmiyor" değil, net torkun kolu bir yüze bastıramayacak kadar küçük olduğu durumlar: 180°'nin yüksüz hali gibi, bilinmeyen sabit yük yerçekimini dengeleyip yeni bir sıfır tork noktası (θ*) yaratıyor. Yöntem 180°'de bunu hedef kaydırmayla (ε = 0,5°) çözüyordu; θ*'da bunu yapmıyor.
 
-Bir sonraki adım kullanıcıyla kararlaştırılacak.
+**θ* hedef kaydırma (kullanıcı kararı: dene, olmazsa sınır olarak yaz).** 180°'deki ε = 0,5° kuralının genellemesi: net torku küçük hedefte hedefi en çok 0,5° kaydır. `kol_benzetim.m`'ye `p.thYildiz` (+ `p.tyArama`), varsayılan kapalı, gerileme 0 fark.
+
+- **Kâhin testi** (`acik_ty_tek.m`, log `acik_ty_tek_log.txt`; 175°, sürtünmesiz, 0,02 yük): yükü bilerek hedef 0,275° kaydırılınca (net tork = mgl sin 0,5°) çevrim tamamen kalkıyor (App 7,24° → 0,11°, e −0,16°). Fikir doğru.
+- **Yük kestirimiyle (`thYildiz`)**: süzülmüş d^'dan yük kestirilip gereken kaydırma hesaplanıyor. Çalışmadı (kaydırma −0,13°, App 6,66°): çevrim sürerken kolun ortalama açısı hedeften ~0,7° sapıyor, yük kestirimi bu kadar bozuluyor.
+- **Arama (`tyArama`)**: referans dururken s^ ~2 s'de 2 kez değişirse (yüz avlanması) hedef 0,25°/s ile kaydırılır (net tork sign(n0) yönüne; en çok 0,5°; uçta 1 s daha avlanırsa bir kez öbür yön), avlanma durunca tutulur. 175° ve 185°'de 0,035° kaydırmayla çevrim kalktı (App 0,18°).
+
+| Varyant | B2 sürtünmeli (3888) | B2 sürtünmesiz (3888) | B1 sürtünmeli / sürtünmesiz (210) | B13 en çok |
+|---|---|---|---|---|
+| 180 (eski) | 3879 | 3873 | 210 / 210 | 0,22° / 0,23° |
+| θ* kestirim | 3879 | 3873 | 210 / 210 | 0,22° / 0,23° |
+| **θ* arama** | **3879** | **3885** | **210 / 210** | 0,22° / 0,23° |
+
+**Sonuç.** Arama 175/185° çevrimini (12 koşu) kapattı, başka hiçbir koşuyu bozmadı (B1 dahil; B12 0,990 / 0,987). Kaydırma yalnız yüz avlanmasında devreye giriyor, diğer koşularda kontrolcü eskisiyle aynı.
+
+**Kalan sınırlar (yayında yazılacak), toplam 7776 koşunun 12'si:**
+1. **Sürtünmeli, 347,5° + 0,06 N·m yük (6 koşu):** yük yerçekimini aşıp kolu öbür yüze geçiriyor, net tork +0,008 N·m sürtünme aralığının (±0,06) içinde. Olay modu d^'yı sürtünmeden ayıramıyor; yoklama da bu yüzden sonradan tetiklenmiyor (yokPer = Inf, s^ değişmedi). Kol 2r kayık kalıyor (e −1,9°).
+2. **357,5°'ye yukarıdan yaklaşma (iki ortamda 3'er koşu):** 360° kararlı denge; kol boşlukta 360°'ye sarkıyor, dişliye dayanmadığı için ne olay ne d^ bir şey gösteriyor (e +2,5°). Yoklama bandını 360°'ye ±1° genişletmek ızgarada etkisiz (357,5° bandın dışında); net torka göre geniş yoklama sürtünmeli durumu bozuyor (yukarıda).
+- Ortak nokta: ikisi de net torkun sürtünmeye göre küçük olduğu, kolun dişliyi yüklemediği ya da yüklediğinin motor tarafından ayırt edilemediği durumlar. Yalnız motor sinyaliyle çalışan bir kestiricinin gözlenebilirlik sınırı.
+
+Firmware: arama kuralı karta taşınacak (PIL), aşağıda.

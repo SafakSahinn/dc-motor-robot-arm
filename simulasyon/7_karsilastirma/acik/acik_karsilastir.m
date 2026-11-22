@@ -1,6 +1,7 @@
 function acik_karsilastir(v)
 % ACIK_KARSILASTIR  Kestiricinin B2'de bulunan açıkları için yoklama bölgesi seçeneklerinin karşılaştırması.
-%   Varyantlar (p.yokBolge): 1 '180' (eski), 2 '180+360', 3-5 'tork' (p.yokTorkEsik = mgl sin 1°/2°/3°).
+%   Varyantlar (p.yokBolge): 1 '180' (eski), 2 '180+360', 3-5 'tork' (p.yokTorkEsik = mgl sin 1°/2°/3°),
+%   6 θ* hedef kaydırma, yük kestirimiyle (p.thYildiz), 7 θ* arama (p.tyArama).
 %   Bölüm 1, B2 ızgarası (dişlisiz, taup = 0): 108 açı (90-357,5°) x 2 yön x 3 tohum x 7 senaryo x
 %     {sürtünmeli, sürtünmesiz}; b2_harita/kos ile aynı kurulum ve H7 (son 1 s |e| <= 0,5°, en büyük <= 1°).
 %   Bölüm 2, B1 ızgarası: 7 istek (179-181°) x 2 yön x 3 tohum x 6 senaryo x 2 sürtünme;
@@ -89,6 +90,8 @@ q.yuzKes = 'olay+yoklama';  q.yokOrta = 0.6;  q.vDurF = 10;
 q.tOlc = true;  q.tPen = 0.54e-3;  q.tGec = 0.1e-3;  q.vKaynak = 'gozlemci';
 q.yokBolge = Vv.bolge;
 if ~isnan(Vv.esik), q.yokTorkEsik = Vv.esik; end
+if Vv.ty, q.thYildiz = true; end
+if isfield(Vv, 'ara') && Vv.ara, q.tyArama = true; end
 end
 
 function r = kos2(p0, G, Vv, a, sc, aci, Y, ts)

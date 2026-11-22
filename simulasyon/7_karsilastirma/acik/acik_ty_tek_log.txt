@@ -1,0 +1,6 @@
+kaydırmasız              hedef 175.000° | son 1 s e (istenen) +0.681° | App 7.24° | s^ değişimi 3 | gerçek yüz değişimi 5 | net tork ort -0.0019 N m
+θ* kaydırma              hedef 175.000° | son 1 s e (istenen) +1.028° | App 6.66° | s^ değişimi 3 | gerçek yüz değişimi 5 | net tork ort -0.0034 N m | tyD -0.126°
+kâhin (net = +tyMin)     hedef 174.725° | son 1 s e (istenen) -0.156° | App 0.11° | s^ değişimi 0 | gerçek yüz değişimi 0 | net tork ort +0.0016 N m
+kâhin (net = +3 tyMin)   hedef 173.721° | son 1 s e (istenen) -1.160° | App 0.00° | s^ değişimi 0 | gerçek yüz değişimi 0 | net tork ort +0.0058 N m
+θ* arama                 hedef 175.000° | son 1 s e (istenen) +0.084° | App 0.18° | s^ değişimi 0 | gerçek yüz değişimi 1 | net tork ort +0.0006 N m | tyD -0.035°
+θ* arama, 185°           hedef 185.000° | son 1 s e (istenen) -0.081° | App 0.17° | s^ değişimi 0 | gerçek yüz değişimi 3 | net tork ort -0.0006 N m | tyD +0.035°

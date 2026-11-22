@@ -73,6 +73,15 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %     'tork'    : '180' bandı YA DA durgunken kestirilen dişli torku belirsiz: |d^| <= FsN + p.yokTorkEsik
 %                 (sürtünme aralığı sıfırı içeriyor; yerçekimi + dış yükün net durağan torku küçük).
 %                 Her kontrol örneğinde yeniden değerlendirilir. p.yokTorkEsik [N m], varsayılan mglN sin 1°.
+%   p.thYildiz (varsayılan false): bilinmeyen sabit yük yerçekimini dengeleyince oluşan sıfır tork noktası
+%     (θ*) için hedef kaydırma; 180°'deki ε kuralının genellemesi. Süzülmüş d^ (p.tyF Hz, yoklamada
+%     dondurulur) ile yük kestirilir; kaydırmasız hedefte beklenen net tork |n0| < p.tyK*tyMin ise
+%     (tyMin = mglN sin p.tyEps, varsayılan 0,5°; t >= p.tyBas) hedef, net tork sign(n0)*tyMin olacak
+%     kadar kaydırılır (en çok p.tyMaks, varsayılan 0,5°); |n0| > 2 tyMin olunca bırakılır. out.tyD.
+%     p.tyArama = true: yük kestirimi yerine arama. Referans dururken s^ ~2 s'de 2 kez değişirse (yüz
+%     avlanması) hedef p.tyHiz (0,25°/s) ile, net tork sign(n0) yönüne gidecek biçimde kaydırılır
+%     (en çok p.tyMaks); avlanma durunca tutulur; uçta 1 s daha sürerse bir kez öbür yöne; referans
+%     değişince sıfırlanır.
 %   Ofsetteki r, K_s, mgl kestiricinin bildiği değerlerdir: p.rN, p.KsN, p.mglN (varsayılan: ikizin gerçeği).
 %   Çıktı: out.shat (s^ kaydı), out.dhat, out.yuzDegis, out.yuzDegisAn, out.yuzSon,
 %   out.yokSay (yoklama sayısı), out.yokKol (yoklama + 0,3 s içinde kolun en büyük hareketi [rad],
@@ -208,6 +217,14 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     end
     yokEtkin0 = yokEtkin;
     yokTE = al(p,'yokTorkEsik', al(p,'mglN',p.mgl)*sin(deg2rad(1)));
+    tyAc = al(p,'thYildiz', false);                % θ* hedef kaydırma (yükün yarattığı sıfır tork noktası)
+    tyMgl = al(p,'mglN', p.mgl);  tyKs = al(p,'KsN', p.Ks);
+    aTy = 1 - exp(-2*pi*al(p,'tyF', 1)*p.Ts);
+    tyMin = tyMgl*sin(al(p,'tyEps', deg2rad(0.5)));  tyK = al(p,'tyK', 0.75);
+    tyMaks = al(p,'tyMaks', deg2rad(0.5));  tyBas = al(p,'tyBas', 1);
+    dhF = zeros(1,n);  tyD = zeros(1,n);  tyS = zeros(1,n);
+    tyAra = al(p,'tyArama', false);  tyHiz = al(p,'tyHiz', deg2rad(0.25));   % arama: kaydırma hızı [rad/s]
+    tyAv = zeros(1,n);  tyThOnc = th_ref;  tyCap = zeros(1,n);  tyDon = false(1,n);
     wh = zeros(1,n);  dh = zeros(1,n);           % ph (phi^) başlangıç durumundan sonra kurulur
     perSay = zeros(1,n);  perIs = zeros(1,n);  durSay = zeros(1,n);
     yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
@@ -390,6 +407,35 @@ for i = 0:nStep-1
                 izl = yk | tt <= ykIzBit;
                 ykKol(izl) = max(ykKol(izl), abs(x(3,izl) - ykTh0(izl)));
             end
+            if tyAc                                % θ*: net durağan tork küçükse hedefi en çok tyMaks kaydır
+                tyYd = ykF > 0 | tt <= ykIzBit;    % yoklama sırasında d^ yoklama torkunu içerir
+                dhF(~tyYd) = dhF(~tyYd) + aTy*(dh(~tyYd) - dhF(~tyYd));
+                thr0 = thr;
+                Lh = tyMgl*sin(thr0 + tyD) - dhF;  % dış yük kestirimi (kol: tau_s = mgl sin - yük)
+                n0 = tyMgl*sin(thr0) - Lh;          % kaydırmasız hedefte beklenen net durağan tork
+                tySg = sign(n0);  tySg(tySg == 0) = 1;
+                if tyAra                            % arama: yüz avlanması sürdükçe hedefi kaydır
+                    tyAv = tyAv*exp(-p.Ts/2) + (sh ~= shOnc);          % ~2 s pencerede s^ değişimi
+                    rs = abs(thr0 - tyThOnc) < 1e-9;  tyThOnc = thr0;  % referans duruyor mu
+                    tyS(~rs) = 0;  tyD(~rs) = 0;  tyCap(~rs) = 0;  tyDon(~rs) = false;
+                    av = rs & tt >= tyBas & tyAv >= 1.5 & ~tyYd;
+                    tyYeni = av & tyS == 0;  tyS(tyYeni) = tySg(tyYeni);
+                    ta = av & tyS ~= 0;
+                    yon = tyS.*sign(cos(thr0));  yon(yon == 0) = 1;     % net tork tyS yönüne gitsin
+                    tyD(ta) = min(max(tyD(ta) + yon(ta)*tyHiz*p.Ts, -tyMaks), tyMaks);
+                    uc = ta & abs(tyD) >= tyMaks - 1e-12;  tyCap(uc) = tyCap(uc) + p.Ts;  tyCap(~uc) = 0;
+                    dn = tyCap >= 1 & ~tyDon;  tyS(dn) = -tyS(dn);  tyDon(dn) = true;  tyCap(dn) = 0;  % uçta 1 s: öbür yön
+                else
+                    tyAk = tt >= tyBas & abs(n0) < tyK*tyMin;
+                    tyYeni = tyAk & tyS == 0;  tyS(tyYeni) = tySg(tyYeni);
+                    tyS(abs(n0) > 2*tyMin) = 0;     % yük kalktı ya da değişti: kaydırmayı bırak
+                    tyHd = zeros(1,n);  ta = tyS ~= 0;
+                    tyHd(ta) = (tyS(ta)*tyMin - n0(ta))./(tyMgl*cos(thr0(ta)));
+                    tyHd = min(max(tyHd, -tyMaks), tyMaks);
+                    tyD = tyD + aTy*(tyHd - tyD);
+                end
+                thr = thr0 + tyD;  ofsG = tyMgl/tyKs*sin(thr);
+            end
             dg = sh ~= shOnc;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
             if kesMod >= 3, ykSon(dg & ykF == 0) = -Inf; end   % yüz değişti: oturunca yeniden yokla
             if rampa > 0
@@ -502,6 +548,7 @@ if kurMod > 0, out.shat = SH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn
 if kesMod > 0
     out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;
     if kesMod >= 3, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
+    if tyAc, out.tyD = tyD; end
 end
 
 % --- Analiz ---

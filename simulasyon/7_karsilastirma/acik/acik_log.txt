@@ -1,4 +1,4 @@
-=== acik_birlestir, 2026-11-22 16:01
+=== acik_birlestir, 2026-11-22 16:18
 Kestirici (olay+yoklama), yoklama bölgesi p.yokBolge varyantları. Dişlisiz (taup = 0).
 B2 ızgarası: hücre = 108 açı x 2 yön x 3 tohum = 648 koşu; toplam = b salınım hariç 6 senaryo (3888).
 B1 ızgarası: senaryo = 7 istek x 2 yön x 3 tohum = 42 koşu; toplam = b hariç 5 senaryo (210).
@@ -10,6 +10,8 @@ varyant      | temel       | a1 darbe    | a2 yük 0,02 | a2 yük 0,06 | b salı
 tork 1°      |  626/648    |  630/648    |  636/648    |  571/648    |  623/648    |  627/648    |  648/648    | 3738/3888 |  0.40 / 3          |   3.13       | 0.1311        | 1.000
 tork 2°      |  625/648    |  637/648    |  642/648    |  565/648    |  623/648    |  626/648    |  648/648    | 3743/3888 |  0.41 / 3          |   3.22       | 0.1316        | 1.000
 tork 3°      |  627/648    |  630/648    |  635/648    |  573/648    |  624/648    |  622/648    |  648/648    | 3735/3888 |  0.43 / 3          |   4.20       | 0.1324        | 1.000
+θ* kestirim  |  648/648    |  648/648    |  648/648    |  642/648    |  642/648    |  645/648    |  648/648    | 3879/3888 |  0.01 / 2          |   0.22       | 0.1205        | 1.000
+θ* arama     |  648/648    |  648/648    |  648/648    |  642/648    |  642/648    |  645/648    |  648/648    | 3879/3888 |  0.01 / 2          |   0.22       | 0.1209        | 1.000
 
 --- B2 ızgarası, sürtünmesiz ---
 varyant      | temel       | a1 darbe    | a2 yük 0,02 | a2 yük 0,06 | b salınım   | c yaklaşma  | d yön değ.  | toplam    | yoklama ort/en çok | B13 en çok ° | RMS u ort N m | B12 b
@@ -18,6 +20,8 @@ varyant      | temel       | a1 darbe    | a2 yük 0,02 | a2 yük 0,06 | b salı
 tork 1°      |  648/648    |  648/648    |  637/648    |  648/648    |  642/648    |  648/648    |  648/648    | 3877/3888 |  0.06 / 2          |   1.74       | 0.1443        | 1.000
 tork 2°      |  648/648    |  648/648    |  637/648    |  648/648    |  642/648    |  648/648    |  648/648    | 3877/3888 |  0.07 / 2          |   1.74       | 0.1442        | 1.000
 tork 3°      |  648/648    |  648/648    |  636/648    |  646/648    |  642/648    |  648/648    |  648/648    | 3874/3888 |  0.08 / 2          |   1.74       | 0.1443        | 1.000
+θ* kestirim  |  648/648    |  648/648    |  636/648    |  648/648    |  642/648    |  645/648    |  648/648    | 3873/3888 |  0.01 / 2          |   0.23       | 0.1442        | 1.000
+θ* arama     |  648/648    |  648/648    |  648/648    |  648/648    |  642/648    |  645/648    |  648/648    | 3885/3888 |  0.01 / 2          |   0.23       | 0.1442        | 0.999
 
 --- B2 ızgarası: kaybedilen koşular (b salınım hariç) ---
 180 (eski):
@@ -215,6 +219,20 @@ tork 3°:
    sürtünmesiz a2 yük 0,02  185.0° yön +1: 3 tohum, e -0.53°, App 7.23°
    sürtünmesiz a2 yük 0,06  170.0° yön -1: 1 tohum, e +0.41°, App 0.86°
    sürtünmesiz a2 yük 0,06  170.0° yön +1: 1 tohum, e +0.42°, App 0.86°
+θ* kestirim:
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -1.87°, App 2.45°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.85°, App 2.46°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.54°, App 0.44°
+   sürtünmesiz a2 yük 0,02  175.0° yön -1: 3 tohum, e +1.10°, App 6.66°
+   sürtünmesiz a2 yük 0,02  175.0° yön +1: 3 tohum, e +1.14°, App 6.67°
+   sürtünmesiz a2 yük 0,02  185.0° yön -1: 3 tohum, e -1.10°, App 6.66°
+   sürtünmesiz a2 yük 0,02  185.0° yön +1: 3 tohum, e -1.04°, App 6.65°
+   sürtünmesiz c yaklaşma   357.5° yön -1: 3 tohum, e +2.49°, App 0.29°
+θ* arama:
+   sürtünmeli  a2 yük 0,06  347.5° yön -1: 3 tohum, e -1.95°, App 2.45°
+   sürtünmeli  a2 yük 0,06  347.5° yön +1: 3 tohum, e -1.88°, App 2.47°
+   sürtünmeli  c yaklaşma   357.5° yön -1: 3 tohum, e +2.54°, App 0.44°
+   sürtünmesiz c yaklaşma   357.5° yön -1: 3 tohum, e +2.48°, App 0.43°
 
 --- Yoklama sayısının açıya göre dağılımı (B2, temel, ortalama yoklama/koşu) ---
 sürtünmeli  180 (eski)   yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
@@ -222,11 +240,15 @@ sürtünmeli  180+360      yoklama: 1 açıda (180.0-180.0° arası), açı baş
 sürtünmeli  tork 1°      yoklama: 33 açıda (152.5-357.5° arası), açı başına en çok 1.00
 sürtünmeli  tork 2°      yoklama: 34 açıda (152.5-357.5° arası), açı başına en çok 1.00
 sürtünmeli  tork 3°      yoklama: 36 açıda (150.0-357.5° arası), açı başına en çok 1.00
+sürtünmeli  θ* kestirim  yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
+sürtünmeli  θ* arama     yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
 sürtünmesiz 180 (eski)   yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
 sürtünmesiz 180+360      yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
 sürtünmesiz tork 1°      yoklama: 4 açıda (177.5-357.5° arası), açı başına en çok 1.00
 sürtünmesiz tork 2°      yoklama: 4 açıda (177.5-357.5° arası), açı başına en çok 1.00
 sürtünmesiz tork 3°      yoklama: 6 açıda (175.0-357.5° arası), açı başına en çok 1.00
+sürtünmesiz θ* kestirim  yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
+sürtünmesiz θ* arama     yoklama: 1 açıda (180.0-180.0° arası), açı başına en çok 1.00
 
 --- B1 ızgarası (179-181°) ---
 sürtünmeli
@@ -236,6 +258,8 @@ varyant      | temel      | a1 darbe   | a2 yük     | b salınım  | c yaklaşm
 tork 1°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
 tork 2°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
 tork 3°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+θ* kestirim  |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.989   | 0.33
+θ* arama     |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.990   | 0.33
 sürtünmesiz
 varyant      | temel      | a1 darbe   | a2 yük     | b salınım  | c yaklaşma | d yön değ. | toplam H7 | B12 ort | B13 en çok °
 180 (eski)   |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
@@ -243,3 +267,5 @@ varyant      | temel      | a1 darbe   | a2 yük     | b salınım  | c yaklaşm
 tork 1°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
 tork 2°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
 tork 3°      |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.985   | 0.30
+θ* kestirim  |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.984   | 0.30
+θ* arama     |  42/42     |  42/42     |  42/42     | -          |  42/42     |  42/42     | 210/210   | 0.987   | 0.31
