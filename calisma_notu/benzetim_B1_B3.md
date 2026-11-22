@@ -245,3 +245,76 @@ Betikler `acik_karsilastir.m` (5 paralel süreç, ~5 dk), `acik_birlestir.m` →
 - Kart-gölge ayrık kararları 16/16 aynı, en büyük |du| 4,6e-7 N·m, kayıp 0, kart hata sayaçları 0.
 - Eski PIL (`6_esp32/pil.m`, 84 koşu) yeni firmware'le 84/84, kararlar aynı, |du| ≤ 3,6e-7 (gerileme yok).
 - Not: 179,5° sürtünmesiz yüksüz koşuda da arama bir kez devreye girdi (−0,05°); H7 etkilenmedi.
+
+---
+
+## B1-L. Literatürdeki yalnız motor sinyalli kestiricilerle karşılaştırma ve dayanıklılık (2026-11-22)
+
+**Neden.** B1'deki tabanların hepsi patent kuralı. Hakemin "literatürdeki gözlemci/kestirici yöntemlerle neden karşılaştırmadınız?" sorusuna cevap. Yayın hedefi nedeniyle olası bütün itirazlar ayrıca sınandı (aşağıda "Hakem soruları").
+
+**Yeniden kurulan yöntemler** (`kol_benzetim.m`, `p.yuzKes`, varsayılan kapalı; gerileme 9 yapılandırmada θ ve u farkı 0):
+- **L1 `momentum`:** Ruderman–Iwasaki 2016 *TIE* sanal sensörünün tork kısmı. Genelleştirilmiş momentum gözlemcisi r = L(J_M w − ∫(u − b_M w + r)), r → −d. Dişli torku = −r − sign(ŵ)·F_cN (hareketteyken). Yüz = işaret, histerezis eşiği. Hız: enkoder farkı (makaledeki gibi) ya da gözlemci ŵ.
+- **L2 `sta`:** Ruderman–Fridman 2019 *TCST*, model içermeyen süper-burulma türevleyicisi (denklem 5–6), k2 = 1,1 L, k1 = 2,028 √k2. PDF metninde "k1 = 2,028 k2" okunuyor; birimler gereği kök işareti metin çıkarımında kaybolmuş. Makale yöntemi kayıt üzerinde çevrimdışı uyguluyor; burada çevrim içi kural: |e| > eşik ve sgn e = −sgn ŵ (ani yavaşlama) → yüz = sgn ŵ. **L2 + uyarım:** makalenin S1 adımı, 180° bandında durgunken U sin(2πft) 1 s, integral donuk, en çok 3 kez.
+- **L3 `edilgen`:** Neubauer 2015 *Mech. Sci.* kuralı, durgunken s = sign(u).
+- **Ablasyon `olay`:** bizim kestirici yoklamasız.
+
+**Betikler.** `7_karsilastirma/b1_literatur_taban.m` (B1 senaryo/ölçütleri; `B1L_SOGUK`: başlangıç inancı ters, `B1L_MOMEK`: L1'e büyük eşikler), `b1l_ozet.m`, `b1d_dayaniklilik.m` (`B1D_SURT`: sürtünme bilgisi ince tarama), `b1d_ozet.m`, `b1l_sta/sta_tespit.m`. Günlükler: `b1l_log.txt`, `b1ls_log.txt`, `b1lm_log.txt`, `b1d_log.txt`, `b1dS_log.txt`, `b1l_sta/sta_tespit_log.txt`. Kontrol: `olay+yok` satırı B1'i aynen verdi (210/210, B12 0,989 / 0,985); hiç tetiklenmeyen STA ayarları 60/210 = B1'deki sabit tablo kuralı.
+
+**1. Ana tablo** (H7 / 210, temel+a1+a2+c+d, 3 tohum; tabanlar kendi lehine en iyi ayarla):
+
+| Yöntem | Izgara | Sürtünmeli | Sürtünmesiz |
+|---|---|---|---|
+| L1 momentum | L {30,100,300} × eşik {0,005..0,03} × hız {fark, ŵ} | 138 (temel 0/42, App 6,6°: yüz avlanması) | 210 |
+| L1, eşik ≥ F_s (`b1lm`) | eşik {0,045..0,15} | 186 (en iyi eşik = F_s = 0,06) | 210 |
+| L2 STA | L {10,30,100,300} × eşik {3,10,30} q_M | 71 | 49 |
+| L2 STA + uyarım | 4 STA ayarı × U {0,03, 0,06, 0,12} × f {2, 5} Hz | 22 | 46 |
+| L3 sign(u) | – | 96 | 210 (avl 376) |
+| olay (ablasyon) | – | 210 | 210 |
+| olay+yok (bizim) | – | 210 | 210 |
+| olay+yok + θ* arama | – | 210 (B12 0,990) | 210 (0,987) |
+
+- L1'in enkoder farkıyla hızı AS5600 gürültüsünde L = 100–300'de saniyede yüzlerce yüz değişimi (avl 229–1242). ŵ ile sakin.
+- Büyük eşik L1'i 186'ya çıkarıyor, ama ancak F_s bilinirse (en iyi eşik tam F_s). Bizim farkımız yalnız büyük eşik değil: hareketteyken F_c, dururken ±F_s aralığı ve kalıcılık (N_per). Kalan fark temel ve a1'de (30/42 vs 42/42).
+
+**2. Soğuk başlangıç (başlangıç inancı ters, `b1ls`).** olay 210, olay+yok 210, L1 en iyi 163, lenze 168, panasonic 108, toyoda 60, sign(u) 126, STA 69, STA+uyarım 45 (sürtünmeli). Sürtünmesizde patent kuralları ve L1 210, STA ≤ 56. Kol boşluğun ortasından başlıyor ve ilk hareketteki temas olayı yanlış inancı düzeltiyor.
+
+**3. L2 neden çalışmıyor: tespit edilebilirlik (`sta_tespit`).** Ölçüt: çarpma ±10 ms içindeki max|e| / geçişlerden ≥ 50 ms uzak örneklerin %99'u (eşiksiz, kestirici lehine).
+- Pozitif kontrol (makalenin §III-D örneği; m2, sertlik, sönüm makalede yok, varsayıldı): tepe yalnız sert temas (√(k/m1) = 7500 rad/s) + 0,1 ms örnekleme + nicemsiz durumda belirgin (44×, 3,6×). 750 rad/s'de ya da 1 ms'de ya da 12 bit nicemde oran ≈ 1.
+- Bizim tesis (√(K_s/J_M) = 52,7 rad/s): 3 senaryo × 2 sürtünme × Ts {0,1, 1} ms × {12, 16, 20} bit × gürültü, oranların ortancası 0,6–1,8; tek aykırı 11,6 (20 bit, 0,1 ms, gürültüsüz, tek çarpma). AS5600 + 1 kHz'de hiçbir koşulda ayırt edilemiyor.
+- Yorum: STA'nın varsayımı "çarpma dürtü biçiminde bozucu". Yumuşak dişli (K_s = 10 N·m/rad) ve 180°'de kolun boşlukta yavaş düşmesi çarpmayı dürtü olmaktan çıkarıyor; 1 kHz'te ayrık STA'nın kendi titreşimi (≈ k2·Ts²) tabanı belirliyor. Makalenin kendisi "düşük örnekleme ve nicemlemeye duyarlılığı" gelecek çalışmaya bırakıyor; bu sonuç o sorunun bizim tesis için cevabı.
+
+**4. Dayanıklılık (`b1d`, `b1dS`), H7 doğru / ters başlangıç, sürtünmeli tesis:**
+
+| Koşul | olay | olay+yok | L1 (L100 e0,06 ŵ) | lenze 0,03 | sign(u) |
+|---|---|---|---|---|---|
+| AS5600 (kanonik) | 210 / 210 | 210 / 210 | 186 / 210 | 120 / 168 | 96 / 126 |
+| enkoder 0,017° | 180 / 204 | 207 / 210 | 183 / 180 | 117 / 165 | 102 / 123 |
+| enkoder 0,068° | 165 / 138 | 198 / 210 | 189 / 198 | 114 / 162 | 105 / 129 |
+| J_MN × 0,8 / × 1,2 | 210 / 210, 210 / 204 | 210 / 210 her ikisi | ≈ 186 / 210 | aynı | aynı |
+| sürtünme bilgisi × 0 | 114 / 126 | 155 / 168 | 144 / 138 | – | – |
+| × 0,25 | 131 / 143 | 180 / 168 | 144 / 138 | – | – |
+| × 0,5 | 198 / 210 | 210 / 210 | 144 / 138 | – | – |
+| × 0,75 | 210 / 210 | 210 / 210 | 160 / 160 | – | – |
+| × 1,1 | 210 / 204 | 210 / 210 | 186 / 210 | – | – |
+| × 1,25 | 210 / 185 | 210 / 210 | 186 / 210 | – | – |
+| × 1,5 | 165 / 160 | 159 / 138 | 198 / 192 | – | – |
+| × 2 | 38 / 36 | 41 / 22 | 210 / 197 | – | – |
+| sürtünmesiz tesis, bilgi 0,04/0,06 | 4 / 6 | 52 / 29 | 210 / 210 | – | – |
+
+Sürtünmesiz tesiste (enkoder satırları) olay ve olay+yok hep 210; L1 117–198, 0,068°'de 84.
+
+**Bulgular.**
+1. **Literatür tabanları:** sürtünmeli dişlide 180°'de hiçbiri 210'a ulaşmıyor (en iyi L1, F_s'yi bilerek 186). Sürtünmesiz dişlide L1 ve patent kuralları da 210, yani katkı yine sürtünmeli dişlide (B1 ile aynı sonuç).
+2. **Yoklamanın katkısı AS5600'de görünmüyor**, ne B1 senaryolarında ne soğuk başlangıçta (eski `5_planlama/yuz_kestirici_as5600` ile tutarlı: orada da olay tek başına 42/42, yalnız 0,017°'de 38/42). Katkı **daha kaba enkoderde ve yanlış başlangıçta**: 0,068°'de olay 165 / 138, olay+yok 198 / 210. Yayında yoklama "ucuz enkodere ve yanlış başlangıca karşı güvenlik ağı" olarak sunulmalı, AS5600'de zorunlu diye değil.
+3. **Sürtünme bilgisi asıl donanım riski.** olay+yok penceresi: gerçek sürtünmenin 0,5–1,25 katı (her iki başlangıçta 210). Fazla tahmin daha tehlikeli (× 1,5: 159 / 138, × 2: 41 / 22): sürtünme aralığı gerçek dişli torkunu yutuyor, olay hiç oluşmuyor, yoklamanın temas eşiği (−F_cN) de temas göremiyor. Eksik tahmin × 0,5'e kadar zararsız. **Deneyden önce F_c ve F_s ölçülmeli ve kestiriciye düşük tarafta (≈ 0,75 ×) verilmeli.** L1'in sabit büyük eşiği bu belirsizliğe daha dayanıklı (× 2'de 210), ama kanonik durumda 186'da kalıyor; iki yaklaşımı birleştirmek (ör. eşik = max(F_s aralığı, sabit taban)) açık bir seçenek, denenmedi.
+4. J_M'nin ±%20 hatası etkisiz.
+
+### Hakem soruları ve cevapları (çalışma için, rapora değil)
+
+1. **"Literatürdeki kestiricilerle karşılaştırma yok."** Var: L1 (Ruderman–Iwasaki 2016), L2 (Ruderman–Fridman 2019, uyarımlı ve uyarımsız), L3 (Neubauer 2015), kendi lehlerine ızgarayla, aynı algılayıcılarla, ayrıca soğuk başlangıçta.
+2. **"STA'yı yanlış kurdunuz."** Pozitif kontrol: makalenin örneğinde sert temas + hızlı örneklemede tepeler belirgin; bizim tesiste hiçbir çözünürlük/örneklemede değil. Neden: yumuşak dişli + 180°'de yavaş konma + 1 kHz. Sınır: pozitif kontrolde makalede verilmeyen m2/sertlik varsayıldı.
+3. **"Olay kipinin farkı yalnız büyük eşik."** L1'e F_s'yi aşan eşikler verildi: en iyisi 186/210 (eşik = F_s), olay 210.
+4. **"Yoklama gereksiz."** AS5600'de evet, test edilen senaryolarda sonucu değiştirmiyor. Kaba enkoder ve yanlış başlangıçta gerekli (0,068°: 138 → 210). Dürüstçe böyle yazılmalı.
+5. **"Gerçek donanımda çalışır mı?"** Benzetimde AS5600 nicemleme + gürültü + gecikme, INA228 ölçümü, akım döngüsü, Coulomb + statik sürtünme var; kestirici ESP32 kartında PIL ile MATLAB'la aynı karar veriyor. Modelde olmayanlar: dişin doğrusal olmayan temas sertliği, konuma bağlı sürtünme, motor dişli (cogging) torku, sıcaklıkla sürtünme değişimi. En büyük bilinen risk sürtünme bilgisi (madde 3): pencere −%50 / +%25. Henüz sınanmayanlar: konuma bağlı/değişken sürtünme, cogging, Stribeck.
+6. **"Neubauer 2015'ten sonra konuyu bıraktı; belki çözülemediği için."** Kayıtlı bilgi: Neubauer 2017'den sonra robotik yayını yok, ulaşım/lojistik alanına geçmiş (OpenAlex, `literatur/genisletme_2026-11-21.md`). Ekip (Gattringer, JKU Linz) 2017'de boşluklu kalibrasyonu sürdürmüş. Amaçları endüstriyel robot kalibrasyonu; sıfır tork duruşlarından kaçınmak onlar için yeterli, yani sorunu çözmeye ihtiyaçları yoktu. "Çözemedikleri için bıraktılar" iddiası için kanıt yok, tersi için de yok; yalnız olgular yazılır. Ruderman çizgisi boşluk üzerinde çalışmaya devam ediyor, yani alan terk edilmiş değil; bizim açık (tork sıfırken yüz) kapatılmamış.
+7. **"Sonuç çıkmazsa?"** Benzetim tarafı zaten sonuç verdi. Donanımda kestirici çalışmazsa bile karşılaştırmanın kendisi (patent kuralları, literatür yöntemleri, ön yük bedeli, STA'nın düşük maliyetli algılayıcıda uygulanamazlığı, sürtünme bilgisi penceresi) yayınlanabilir bir katkı; ama ana iddia buna göre daraltılır.

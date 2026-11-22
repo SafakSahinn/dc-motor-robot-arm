@@ -67,6 +67,17 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %               oturunca yeniden yoklanır (en çok p.yokMaks); ayrıca p.yokPer s'de bir (varsayılan Inf).
 %               'olay+yoklama'da yoklama torku olay sayılmaz.
 %   'olay+yoklama': ikisi birlikte.
+%   Literatür tabanları (B1-L, 7_karsilastirma/b1_literatur_taban.m; yoklama yok, gözlemci yine çalışır):
+%   'momentum': genelleştirilmiş momentum gözlemcisi (Ruderman-Iwasaki 2016 TIE sanal sensörünün tork
+%               kısmı): r = L(JM w - ∫(u - bM w + r)), r -> -d; dişli torku = -r - sign(w^)FcN (hareketteyken).
+%               |.| > p.momEsik ise s^ = işareti (histerezis). p.momL [rad/s] (100), p.momEsik [N m] (0,01),
+%               p.momV = 'fark' (enkoder farkı, makaledeki gibi) ya da 'gozlemci' (w^).
+%   'sta'     : model içermeyen süper-burulma türevleyicisi (Ruderman-Fridman 2019 TCST, denklem 5-6):
+%               x^' = w^ + k1|e|^½ sgn e, w^' = k2 sgn e, e = y - x^, k2 = 1,1 p.staL, k1 = 2,028 √k2.
+%               Çarpma: |e| > p.staEsik [rad] ve sgn e = -sgn w^ (ani yavaşlama) -> s^ = sgn w^.
+%               p.staUyar = [U f T] (U > 0: makalenin S1 uyarımı): 180° bandında motor p.yokBekle s
+%               durgunken T s boyunca u'ya U sin(2π f t) eklenir, integral donar; en çok p.staMaks kez.
+%               Çıktı out.staSay.
 %   p.yokBolge (yoklamanın etkin olduğu bölge; varsayılan '180'):
 %     '180'     : |th_ref - 180°| <= p.yokBant (eski davranış)
 %     '180+360' : ayrıca |th_ref - 360°| <= p.yokBant (dik aşağı; yerçekimi torku orada da sıfır)
@@ -186,10 +197,12 @@ if isfield(p,'ofsetYuz') && ~isempty(p.ofsetYuz)
     durSay = zeros(1,n);  yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
     ofsG = p.mgl*sin(th_ref)/p.Ks;  ofs = yz*p.r + ofsG;
 end
-kesMod = 0;                                        % 0 kapalı, 1 edilgen, 2 olay, 3 yoklama, 4 olay+yoklama
+kesMod = 0;                                        % 0 kapalı, 1 edilgen, 2 olay, 3 yoklama, 4 olay+yoklama,
+ykMod = false;                                     % 5 momentum, 6 sta (B1-L literatür tabanları)
 if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
-    kesMod = find(strcmp(p.yuzKes, {'edilgen','olay','yoklama','olay+yoklama'}));
+    kesMod = find(strcmp(p.yuzKes, {'edilgen','olay','yoklama','olay+yoklama','momentum','sta'}));
     if isempty(kesMod), error('bilinmeyen yuzKes: %s', p.yuzKes); end
+    ykMod = kesMod == 3 || kesMod == 4;            % etken yoklama yalnız bu iki kipte
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;                    % s^ ve ofsetteki (rampalı) yüz
     rN = al(p,'rN', p.r);                            % kestiricinin/ofsetin bildiği değerler (duyarlılık, iş sırası 4)
@@ -209,11 +222,11 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     yokOrta = al(p,'yokOrta', 0.5);  vDurF = al(p,'vDurF', Inf);
     aDur = 1 - exp(-2*pi*vDurF*p.Ts);  whF = zeros(1,n);   % durgunluk kararı için süzülmüş w^ (Inf: süzgeç yok)
     l1 = 3*wo;  l2 = 3*wo^2;  l3 = JMN*wo^3;
-    yokEtkin = (kesMod >= 3) & abs(th_ref - pi) <= yokBant + 1e-12;
+    yokEtkin = ykMod & abs(th_ref - pi) <= yokBant + 1e-12;
     ybMod = find(strcmp(al(p,'yokBolge','180'), {'180','180+360','tork'}));
     if isempty(ybMod), error('bilinmeyen yokBolge: %s', p.yokBolge); end
     if ybMod == 2
-        yokEtkin = yokEtkin | ((kesMod >= 3) & abs(mod(th_ref + pi, 2*pi) - pi) <= yokBant + 1e-12);
+        yokEtkin = yokEtkin | (ykMod & abs(mod(th_ref + pi, 2*pi) - pi) <= yokBant + 1e-12);
     end
     yokEtkin0 = yokEtkin;
     yokTE = al(p,'yokTorkEsik', al(p,'mglN',p.mgl)*sin(deg2rad(1)));
@@ -232,8 +245,20 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     ykYon = zeros(1,n);  ykDm = zeros(1,n);
     ykSon = -Inf(1,n);  ykSay = zeros(1,n);  ykTemas = zeros(1,n);  ykTh0 = zeros(1,n);
     ykIzBit = -Inf(1,n);  ykKol = zeros(1,n);
+    if kesMod == 5                                 % momentum gözlemcisi (B1-L, L1)
+        mmL = al(p,'momL', 100);  mmE = al(p,'momEsik', 0.01);
+        mmV = strcmp(al(p,'momV','fark'), 'gozlemci');
+        mmI = zeros(1,n);  mmR = zeros(1,n);  mmY = [];
+    end
+    if kesMod == 6                                 % STA çarpma dedektörü (B1-L, L2)
+        stL = al(p,'staL', 100);  stK2 = 1.1*stL;  stK1 = 2.028*sqrt(stK2);
+        stE = al(p,'staEsik', 10*p.qM);  stX = [];  stW = zeros(1,n);
+        stU = al(p,'staUyar', [0 2 1]);  stMaks = al(p,'staMaks', 3);
+        stA = false(1,n);  stT = zeros(1,n);  stSay = zeros(1,n);
+        stEtkin = abs(th_ref - pi) <= yokBant + 1e-12;
+    end
 end
-kurMod = 0;                                        % 0 kapalı, 1 panasonic, 2 toyoda, 3 lenze (B1)
+kurMod = 0;                                       % 0 kapalı, 1 panasonic, 2 toyoda, 3 lenze (B1)
 if isfield(p,'yuzKural') && ~isempty(p.yuzKural)
     if kesMod > 0 || yuzMod > 0, error('yuzKural, yuzKes ve ofsetYuz ile birlikte kullanılamaz'); end
     kurMod = find(strcmp(p.yuzKural, {'panasonic','toyoda','lenze'}));
@@ -387,7 +412,30 @@ for i = 0:nStep-1
                 if kesMod == 4, d2 = d2 & ykF == 0 & tt - ykSon > yokTmin; end   % yoklama torku olay sayılmaz
                 sh(d2) = ad(d2);
             end
-            if kesMod >= 3                         % etken yoklama (evreler: 1 it, 2 fren, 3 geri, 4 fren)
+            if kesMod == 5                         % momentum gözlemcisi: r -> -d, s^ = sign(dişli torku)
+                if isempty(mmY), mmY = y; end
+                if mmV, wm = wh; else, wm = (y - mmY)/p.Ts; end
+                mmY = y;
+                mmI = mmI + p.Ts*(uo - bMN*wm + mmR);       % ∫(u - b w + r)
+                mmR = mmL*(JMN*wm - mmI);
+                sgm = sign(wh).*(abs(wh) > vEs);
+                tsM = -mmR - sgm*FcN;                       % d - nominal Coulomb = dişli torku kestirimi
+                sh(tsM > mmE) = 1;  sh(tsM < -mmE) = -1;    % histerezis: |tsM| <= mmE iken s^ tutulur
+            end
+            if kesMod == 6                         % STA (model yok): çarpma = ani yavaşlama tepesi
+                if isempty(stX), stX = y; end
+                ee = y - stX;
+                stX = stX + p.Ts*(stW + stK1*sqrt(abs(ee)).*sign(ee));
+                stW = stW + p.Ts*stK2*sign(ee);
+                dd = abs(ee) > stE & sign(ee) == -sign(stW) & abs(stW) > vEs;
+                sh(dd) = sign(stW(dd));                     % çarpılan yüz = motorun hareket yönü
+                if stU(1) > 0                               % uyarım (makalenin S1'i): 180° bandında, durgunken
+                    stT(stA) = stT(stA) + p.Ts;  stA(stT >= stU(3)) = false;
+                    bas = stEtkin & ~stA & durSay*p.Ts >= yokBek & stSay < stMaks;
+                    stA(bas) = true;  stT(bas) = 0;  stSay = stSay + bas;
+                end
+            end
+            if ykMod                         % etken yoklama (evreler: 1 it, 2 fren, 3 geri, 4 fren)
                 yk = ykF > 0;  ykT(yk) = ykT(yk) + p.Ts;
                 yol = ykDir.*(y - ykPhi0);
                 tsY = ykDir.*dh - FcN;                              % itiş yönünde dişli torku tahmini
@@ -437,7 +485,7 @@ for i = 0:nStep-1
                 thr = thr0 + tyD;  ofsG = tyMgl/tyKs*sin(thr);
             end
             dg = sh ~= shOnc;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
-            if kesMod >= 3, ykSon(dg & ykF == 0) = -Inf; end   % yüz değişti: oturunca yeniden yokla
+            if ykMod, ykSon(dg & ykF == 0) = -Inf; end   % yüz değişti: oturunca yeniden yokla
             if rampa > 0
                 adm = 2*p.Ts/rampa;  sOf = sOf + max(min(sh - sOf, adm), -adm);
             else
@@ -485,10 +533,13 @@ for i = 0:nStep-1
         if Isif, z(e.*e_onc < 0) = 0; end          % hata işaret değiştirdi: integrali sıfırla
         e_onc = e;  zOnc = z;
         z  = z + iz*p.Ts .* ~doy .* (abs(e) >= Iolu);  % basit anti-windup + ölü bant
-        if kesMod >= 3                             % yoklama sırasında kontrolcü donar
+        if ykMod                             % yoklama sırasında kontrolcü donar
             u(yk) = min(max(yokA*ykYon(yk), -p.Tmax), p.Tmax);  z(yk) = zOnc(yk);   % mutlak itiş torku
         end
-        u(abs(u) < p.olu) = 0;                     % sürücü ölü bandı
+        if kesMod == 6 && stU(1) > 0               % STA uyarımı: kontrolcü çalışır, integral donar, sinüs eklenir
+            u(stA) = min(max(u(stA) + stU(1)*sin(2*pi*stU(2)*stT(stA)), -p.Tmax), p.Tmax);  z(stA) = zOnc(stA);
+        end
+        u(abs(u) < p.olu) = 0;                    % sürücü ölü bandı
         if ktlK
             kc = kc + 1;
             if ktlD                                % PIL: tesise dış kontrolcünün u'su
@@ -547,7 +598,8 @@ if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = 
 if kurMod > 0, out.shat = SH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh; end
 if kesMod > 0
     out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;
-    if kesMod >= 3, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
+    if ykMod, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
+    if kesMod == 6, out.staSay = stSay; end
     if tyAc, out.tyD = tyD; end
 end
 

@@ -1,0 +1,185 @@
+=== sta_tespit 2026-11-22 18:02
+
+--- A) Pozitif kontrol (makale örneği), sütunlar: ilk 4 çarpmanın oranı
+wc    75 rad/s  Ts 1e-04  nicem 0       L  40: [1.5 1 1.5 1]
+wc    75 rad/s  Ts 1e-04  nicem 0       L 100: [0.86 1.3 0.86 1.3]
+wc    75 rad/s  Ts 1e-04  nicem 6e-06   L  40: [0.95 0.73 0.92 0.88]
+wc    75 rad/s  Ts 1e-04  nicem 6e-06   L 100: [1 0.93 0.91 0.93]
+wc    75 rad/s  Ts 1e-04  nicem 0.0015  L  40: [0.77 0.74 0.79 0.74]
+wc    75 rad/s  Ts 1e-04  nicem 0.0015  L 100: [0.77 0.76 0.78 0.76]
+wc    75 rad/s  Ts 1e-03  nicem 0       L  40: [0.75 0.39 0.75 0.39]
+wc    75 rad/s  Ts 1e-03  nicem 0       L 100: [0.64 0.41 0.64 0.41]
+wc    75 rad/s  Ts 1e-03  nicem 6e-06   L  40: [0.71 1 0.91 0.52]
+wc    75 rad/s  Ts 1e-03  nicem 6e-06   L 100: [1.2 0.44 0.77 0.47]
+wc    75 rad/s  Ts 1e-03  nicem 0.0015  L  40: [0.82 0.82 0.82 0.82]
+wc    75 rad/s  Ts 1e-03  nicem 0.0015  L 100: [0.99 0.91 0.99 0.89]
+wc   750 rad/s  Ts 1e-04  nicem 0       L  40: [1.2 1.4 1.4 0.92]
+wc   750 rad/s  Ts 1e-04  nicem 0       L 100: [0.98 1.1 1.5 1.4]
+wc   750 rad/s  Ts 1e-04  nicem 6e-06   L  40: [0.97 1 1 0.75]
+wc   750 rad/s  Ts 1e-04  nicem 6e-06   L 100: [0.99 0.98 0.99 0.93]
+wc   750 rad/s  Ts 1e-04  nicem 0.0015  L  40: [0.86 0.79 0.81 0.74]
+wc   750 rad/s  Ts 1e-04  nicem 0.0015  L 100: [0.83 0.8 0.8 0.76]
+wc   750 rad/s  Ts 1e-03  nicem 0       L  40: [0.76 0.6 0.93 0.57]
+wc   750 rad/s  Ts 1e-03  nicem 0       L 100: [1 0.7 0.72 0.62]
+wc   750 rad/s  Ts 1e-03  nicem 6e-06   L  40: [0.87 0.55 0.66 0.64]
+wc   750 rad/s  Ts 1e-03  nicem 6e-06   L 100: [1.5 0.97 0.91 1.3]
+wc   750 rad/s  Ts 1e-03  nicem 0.0015  L  40: [0.82 0.82 0.82 0.82]
+wc   750 rad/s  Ts 1e-03  nicem 0.0015  L 100: [0.99 0.99 0.99 0.99]
+wc  7500 rad/s  Ts 1e-04  nicem 0       L  40: [44 3.6 2.3 1.4]
+wc  7500 rad/s  Ts 1e-04  nicem 0       L 100: [6.2 1.2 1 0.92]
+wc  7500 rad/s  Ts 1e-04  nicem 6e-06   L  40: [3.5 1 1 0.9]
+wc  7500 rad/s  Ts 1e-04  nicem 6e-06   L 100: [1.5 1.1 0.99 1]
+wc  7500 rad/s  Ts 1e-04  nicem 0.0015  L  40: [0.79 0.79 0.77 0.75]
+wc  7500 rad/s  Ts 1e-04  nicem 0.0015  L 100: [0.78 0.8 0.8 0.76]
+wc  7500 rad/s  Ts 1e-03  nicem 0       L  40: [1.6 1.1 1 0.53]
+wc  7500 rad/s  Ts 1e-03  nicem 0       L 100: [0.81 0.99 1 0.49]
+wc  7500 rad/s  Ts 1e-03  nicem 6e-06   L  40: [0.73 0.98 1.3 0.52]
+wc  7500 rad/s  Ts 1e-03  nicem 6e-06   L 100: [0.6 1.1 1.2 0.48]
+wc  7500 rad/s  Ts 1e-03  nicem 0.0015  L  40: [0.82 0.82 0.82 0.8]
+wc  7500 rad/s  Ts 1e-03  nicem 0.0015  L 100: [0.99 0.99 0.99 0.99]
+
+--- B) Bizim tesis, sütunlar: çarpma oranlarının ortancası / en büyüğü (n çarpma)
+sürtünmeli  b salınım  Ts 1e-04 12 bit gür 0 L  10: ortanca 1.22 en büyük 1.22 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 12 bit gür 0 L  30: ortanca 1.21 en büyük 1.22 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 12 bit gür 0 L 100: ortanca 1.44 en büyük 1.49 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 12 bit gür 1 L  10: ortanca 1.20 en büyük 1.35 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 12 bit gür 1 L  30: ortanca 1.19 en büyük 1.35 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 12 bit gür 1 L 100: ortanca 1.21 en büyük 1.30 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 16 bit gür 0 L  10: ortanca 1.00 en büyük 1.20 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 16 bit gür 0 L  30: ortanca 1.00 en büyük 1.02 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 16 bit gür 0 L 100: ortanca 1.07 en büyük 1.15 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 20 bit gür 0 L  10: ortanca 1.01 en büyük 1.75 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 20 bit gür 0 L  30: ortanca 1.00 en büyük 1.15 (n 15)
+sürtünmeli  b salınım  Ts 1e-04 20 bit gür 0 L 100: ortanca 1.01 en büyük 1.41 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 12 bit gür 0 L  10: ortanca 0.89 en büyük 1.12 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 12 bit gür 0 L  30: ortanca 0.91 en büyük 1.11 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 12 bit gür 0 L 100: ortanca 0.75 en büyük 1.38 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 12 bit gür 1 L  10: ortanca 0.76 en büyük 1.15 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 12 bit gür 1 L  30: ortanca 0.87 en büyük 1.24 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 12 bit gür 1 L 100: ortanca 0.86 en büyük 1.02 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 16 bit gür 0 L  10: ortanca 0.68 en büyük 1.11 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 16 bit gür 0 L  30: ortanca 0.87 en büyük 1.30 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 16 bit gür 0 L 100: ortanca 0.93 en büyük 1.01 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 20 bit gür 0 L  10: ortanca 0.84 en büyük 0.96 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 20 bit gür 0 L  30: ortanca 0.77 en büyük 1.10 (n 15)
+sürtünmeli  b salınım  Ts 1e-03 20 bit gür 0 L 100: ortanca 0.96 en büyük 1.09 (n 15)
+sürtünmeli  a2 yük     Ts 1e-04 12 bit gür 0 L  10: ortanca 1.10 en büyük 1.27 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 12 bit gür 0 L  30: ortanca 1.19 en büyük 1.20 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 12 bit gür 0 L 100: ortanca 1.42 en büyük 1.43 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 12 bit gür 1 L  10: ortanca 1.28 en büyük 1.39 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 12 bit gür 1 L  30: ortanca 1.27 en büyük 1.41 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 12 bit gür 1 L 100: ortanca 1.24 en büyük 1.29 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 16 bit gür 0 L  10: ortanca 1.00 en büyük 2.08 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 16 bit gür 0 L  30: ortanca 0.97 en büyük 1.13 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 16 bit gür 0 L 100: ortanca 0.91 en büyük 1.11 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 20 bit gür 0 L  10: ortanca 1.14 en büyük 11.58 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 20 bit gür 0 L  30: ortanca 1.03 en büyük 1.07 (n 6)
+sürtünmeli  a2 yük     Ts 1e-04 20 bit gür 0 L 100: ortanca 1.14 en büyük 1.34 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 12 bit gür 0 L  10: ortanca 0.87 en büyük 1.01 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 12 bit gür 0 L  30: ortanca 0.88 en büyük 0.99 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 12 bit gür 0 L 100: ortanca 0.59 en büyük 0.63 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 12 bit gür 1 L  10: ortanca 0.69 en büyük 1.21 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 12 bit gür 1 L  30: ortanca 0.78 en büyük 1.01 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 12 bit gür 1 L 100: ortanca 0.78 en büyük 1.01 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 16 bit gür 0 L  10: ortanca 0.79 en büyük 0.96 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 16 bit gür 0 L  30: ortanca 0.86 en büyük 0.94 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 16 bit gür 0 L 100: ortanca 0.91 en büyük 1.01 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 20 bit gür 0 L  10: ortanca 0.83 en büyük 1.48 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 20 bit gür 0 L  30: ortanca 0.85 en büyük 0.90 (n 6)
+sürtünmeli  a2 yük     Ts 1e-03 20 bit gür 0 L 100: ortanca 0.99 en büyük 1.05 (n 6)
+sürtünmeli  d yön değ. Ts 1e-04 12 bit gür 0 L  10: ortanca 1.19 en büyük 1.19 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 12 bit gür 0 L  30: ortanca 1.05 en büyük 1.06 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 12 bit gür 0 L 100: ortanca 1.00 en büyük 1.01 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 12 bit gür 1 L  10: ortanca 1.34 en büyük 1.35 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 12 bit gür 1 L  30: ortanca 1.24 en büyük 1.29 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 12 bit gür 1 L 100: ortanca 1.18 en büyük 1.21 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 16 bit gür 0 L  10: ortanca 1.20 en büyük 1.39 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 16 bit gür 0 L  30: ortanca 1.02 en büyük 1.02 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 16 bit gür 0 L 100: ortanca 1.06 en büyük 1.11 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 20 bit gür 0 L  10: ortanca 1.80 en büyük 2.73 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 20 bit gür 0 L  30: ortanca 1.05 en büyük 1.08 (n 2)
+sürtünmeli  d yön değ. Ts 1e-04 20 bit gür 0 L 100: ortanca 1.22 en büyük 1.42 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 12 bit gür 0 L  10: ortanca 1.03 en büyük 1.03 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 12 bit gür 0 L  30: ortanca 0.88 en büyük 1.00 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 12 bit gür 0 L 100: ortanca 0.73 en büyük 0.75 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 12 bit gür 1 L  10: ortanca 0.70 en büyük 0.84 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 12 bit gür 1 L  30: ortanca 0.71 en büyük 0.82 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 12 bit gür 1 L 100: ortanca 0.89 en büyük 1.00 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 16 bit gür 0 L  10: ortanca 1.01 en büyük 1.09 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 16 bit gür 0 L  30: ortanca 1.01 en büyük 1.16 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 16 bit gür 0 L 100: ortanca 1.04 en büyük 1.07 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 20 bit gür 0 L  10: ortanca 0.68 en büyük 0.71 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 20 bit gür 0 L  30: ortanca 0.68 en büyük 0.88 (n 2)
+sürtünmeli  d yön değ. Ts 1e-03 20 bit gür 0 L 100: ortanca 0.91 en büyük 0.98 (n 2)
+sürtünmesiz b salınım  Ts 1e-04 12 bit gür 0 L  10: ortanca 1.00 en büyük 1.00 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 12 bit gür 0 L  30: ortanca 1.00 en büyük 1.01 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 12 bit gür 0 L 100: ortanca 1.01 en büyük 1.02 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 12 bit gür 1 L  10: ortanca 1.20 en büyük 1.41 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 12 bit gür 1 L  30: ortanca 1.19 en büyük 1.41 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 12 bit gür 1 L 100: ortanca 1.16 en büyük 1.43 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 16 bit gür 0 L  10: ortanca 1.01 en büyük 1.03 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 16 bit gür 0 L  30: ortanca 1.07 en büyük 1.09 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 16 bit gür 0 L 100: ortanca 1.14 en büyük 1.15 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 20 bit gür 0 L  10: ortanca 1.00 en büyük 1.01 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 20 bit gür 0 L  30: ortanca 1.03 en büyük 1.09 (n 10)
+sürtünmesiz b salınım  Ts 1e-04 20 bit gür 0 L 100: ortanca 1.13 en büyük 1.37 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 12 bit gür 0 L  10: ortanca 1.06 en büyük 1.17 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 12 bit gür 0 L  30: ortanca 0.96 en büyük 1.04 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 12 bit gür 0 L 100: ortanca 0.68 en büyük 1.10 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 12 bit gür 1 L  10: ortanca 0.69 en büyük 1.12 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 12 bit gür 1 L  30: ortanca 0.86 en büyük 1.24 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 12 bit gür 1 L 100: ortanca 0.96 en büyük 1.23 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 16 bit gür 0 L  10: ortanca 0.78 en büyük 1.09 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 16 bit gür 0 L  30: ortanca 1.02 en büyük 1.40 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 16 bit gür 0 L 100: ortanca 0.90 en büyük 1.10 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 20 bit gür 0 L  10: ortanca 0.79 en büyük 1.29 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 20 bit gür 0 L  30: ortanca 1.00 en büyük 1.44 (n 10)
+sürtünmesiz b salınım  Ts 1e-03 20 bit gür 0 L 100: ortanca 0.82 en büyük 0.92 (n 10)
+sürtünmesiz a2 yük     Ts 1e-04 12 bit gür 0 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 12 bit gür 0 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 12 bit gür 0 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 12 bit gür 1 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 12 bit gür 1 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 12 bit gür 1 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 16 bit gür 0 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 16 bit gür 0 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 16 bit gür 0 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 20 bit gür 0 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 20 bit gür 0 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-04 20 bit gür 0 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 12 bit gür 0 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 12 bit gür 0 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 12 bit gür 0 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 12 bit gür 1 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 12 bit gür 1 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 12 bit gür 1 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 16 bit gür 0 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 16 bit gür 0 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 16 bit gür 0 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 20 bit gür 0 L  10: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 20 bit gür 0 L  30: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz a2 yük     Ts 1e-03 20 bit gür 0 L 100: ortanca NaN en büyük NaN (n 0)
+sürtünmesiz d yön değ. Ts 1e-04 12 bit gür 0 L  10: ortanca 1.02 en büyük 1.12 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 12 bit gür 0 L  30: ortanca 0.95 en büyük 1.05 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 12 bit gür 0 L 100: ortanca 0.99 en büyük 1.01 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 12 bit gür 1 L  10: ortanca 1.32 en büyük 1.37 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 12 bit gür 1 L  30: ortanca 1.24 en büyük 1.27 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 12 bit gür 1 L 100: ortanca 1.16 en büyük 1.18 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 16 bit gür 0 L  10: ortanca 1.02 en büyük 1.03 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 16 bit gür 0 L  30: ortanca 1.00 en büyük 1.01 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 16 bit gür 0 L 100: ortanca 1.13 en büyük 1.22 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 20 bit gür 0 L  10: ortanca 1.38 en büyük 1.73 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 20 bit gür 0 L  30: ortanca 1.20 en büyük 1.31 (n 2)
+sürtünmesiz d yön değ. Ts 1e-04 20 bit gür 0 L 100: ortanca 1.20 en büyük 1.39 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 12 bit gür 0 L  10: ortanca 1.04 en büyük 1.05 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 12 bit gür 0 L  30: ortanca 1.00 en büyük 1.03 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 12 bit gür 0 L 100: ortanca 1.06 en büyük 1.26 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 12 bit gür 1 L  10: ortanca 0.95 en büyük 0.95 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 12 bit gür 1 L  30: ortanca 0.86 en büyük 0.89 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 12 bit gür 1 L 100: ortanca 0.83 en büyük 0.89 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 16 bit gür 0 L  10: ortanca 1.01 en büyük 1.25 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 16 bit gür 0 L  30: ortanca 1.21 en büyük 1.28 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 16 bit gür 0 L 100: ortanca 0.55 en büyük 0.66 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 20 bit gür 0 L  10: ortanca 0.87 en büyük 1.05 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 20 bit gür 0 L  30: ortanca 1.07 en büyük 1.49 (n 2)
+sürtünmesiz d yön değ. Ts 1e-03 20 bit gür 0 L 100: ortanca 0.79 en büyük 1.16 (n 2)

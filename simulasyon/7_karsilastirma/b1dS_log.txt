@@ -1,0 +1,27 @@
+=== B1-D dayanıklılık, 2026-11-22 19:04. Hücre: H7 / 210 (temel, a1, a2, c, d; 3 tohum). doğru/ters = başlangıç inancı.
+Senaryo ayrıntısı köşeli parantezde (temel a1 a2 c d, her biri /42), yalnız 210 olmayanlarda.
+
+sürt bilgisi x0      sürtünmeli 
+   olay                 | doğru 114 [0 18 42 12 42]    | ters  126 [12 29 31 12 42]  
+   olay+yok             | doğru 155 [6 37 42 33 37]    | ters  168 [15 41 42 31 39]  
+   momentum L100 e0.06  | doğru 144 [30 0 42 42 30]    | ters  138 [12 12 42 42 30]  
+sürt bilgisi x0.25   sürtünmeli 
+   olay                 | doğru 131 [0 33 42 14 42]    | ters  143 [0 42 42 17 42]   
+   olay+yok             | doğru 180 [12 42 42 42 42]   | ters  168 [0 42 42 42 42]   
+   momentum L100 e0.06  | doğru 144 [30 0 42 42 30]    | ters  138 [12 12 42 42 30]  
+sürt bilgisi x0.75   sürtünmeli 
+   olay                 | doğru 210                    | ters  210                   
+   olay+yok             | doğru 210                    | ters  210                   
+   momentum L100 e0.06  | doğru 160 [30 12 42 42 34]   | ters  160 [22 21 42 42 33]  
+sürt bilgisi x1.1    sürtünmeli 
+   olay                 | doğru 210                    | ters  204 [39 39 42 42 42]  
+   olay+yok             | doğru 210                    | ters  210                   
+   momentum L100 e0.06  | doğru 186 [30 30 42 42 42]   | ters  210                   
+sürt bilgisi x1.25   sürtünmeli 
+   olay                 | doğru 210                    | ters  185 [30 30 41 42 42]  
+   olay+yok             | doğru 210                    | ters  210                   
+   momentum L100 e0.06  | doğru 186 [30 30 42 42 42]   | ters  210                   
+sürtünmesiz tesis, bilgi 0.04/0.06 sürtünmesiz
+   olay                 | doğru   4 [0 0 4 0 0]        | ters    6 [0 0 6 0 0]       
+   olay+yok             | doğru  52 [12 12 4 12 12]    | ters   29 [0 0 5 12 12]     
+   momentum L100 e0.06  | doğru 210                    | ters  210                   
