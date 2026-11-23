@@ -404,3 +404,33 @@ Haritayla **kayma tamamen kalkıyor** (kayma 0/420, her koşulda). b 0,4 sürtü
 **Devam/dur tablosu güncellendi** (yukarıdaki tabloda r, cogging, AS5600 satırları). Donanım için asıl risk sıralaması şimdi şöyle: (1) cogging, ölçülmeli, ≤ 0,2 F_c olmalı; (2) r ±%20'den fazla değişiyorsa r(θ) haritası ölçülüp tabloya konmalı; (3) birleşik etkiler. Tek tek güvenli olan cogging ve r birlikte sürtünmesiz tesisi de bozuyor, bu yüzden tanılama deneyinde cogging ile r(θ) birlikte ölçülmeli.
 
 **Sınırlar.** Harita hedef açıda okunuyor (geçişte yaklaşık). Birleşimde yalnız tek nokta ve tek-çıkarma sınandı, ikili etkileşim taraması yapılmadı. Cogging yine tek harmonik.
+
+
+## B1-G. Net torku sıfıra yakın eklemler (2026-11-23, tur 67)
+
+**Neden.** B1'in bütün senaryoları dik kolda geçiyordu: yerçekimi, 180° çevresi dışında kolu bir yüze bastırıyor. Genişletme planı (kullanıcı onaylı, sıra 1 → 2a → 2b → 3) net durağan torkun her açıda sıfıra yakın olduğu eklemleri soruyor: yatay eklem, karşı ağırlık, yay dengeleme, dış bozucu.
+
+**Ortak kurulum.** B1-M ile aynı: 5 yöntem, sürtünmeli ve sürtünmesiz tesis, 3 tohum, AS5600 kanonik, P-PI, INA228 tork ölçümü, gözlemci hızı. Senaryolar temel / a1 darbe / a2 sabit yük / c yaklaşma / d yön değişimi. Bunlara altıncı yöntem olarak olay+yok'un **her açıda yoklama** varyantı eklendi (`yokBant = pi`, bant her hedefi kapsar). Varsayılan varyantta bant 180° ± 1°. Betik `simulasyon/7_karsilastirma/b1g_net_tork.m` (`B1G_SEN`, `B1G_PARCA`/`B1G_NPAR`), özet `b1g_ozet.m` (`B1G_ONEK`).
+- **Ölçüt (yeni):** |e| ≤ 0,5° ve e_max ≤ 1° (son 1 s), ayrıca kestiricinin son yüzü (`o.yuzSon`) tesisin son 1 s'deki gerçek dişli torkunun işaretine eşit olmalı. Son 1 s'de hiç dişli torku oluşmadıysa (kol boşlukta serbest) yüz tanımsız: H7 sayılmaz, logda ayrıca "temassız" olarak sayılır.
+- **`yokTorkEsik`** sabit 0,0042 N m (D düzeneğinin dik kolundaki mgl sin 1°). Yalnız `yokBolge = 'tork'` kipinde kullanılıyor, iki varyant da bu kipte değil. Ama mgl = 0'da varsayılanı 0'a düştüğü için belirsizlik kalmasın diye B1'deki değere sabitlendi.
+
+### Senaryo 1. Yatay eklem (mgl = 0)
+
+Tesiste mgl = 0, kestirici de mglN = 0 biliyor. Kod değişikliği yok. Hedefler 45 / 120 / 180 / 270°, ± yaklaşma (8 hedef). Başlangıç inancı: doğru = ilk hareket yönü (motor kolu o yöne itiyor). Darbe ve sabit yük ilk yüzün tersine. Hücre /120 (5 senaryo × 8 × 3 tohum). Log `b1g1_log.txt`.
+
+| H7 /120 (doğru / ters) | sürtünmeli | sürtünmesiz |
+|---|---|---|
+| olay | 24 / 24 | 24 / 24 |
+| olay+yok | 25 / 24 | 24 / 26 |
+| olay+yok her açı | 25 / 24 | 24 / 28 |
+| momentum | 24 / 24 | 24 / 24 |
+| lenze | 24 / 24 | 24 / 24 |
+| edilgen | 0 / 24 | 24 / 24 |
+
+**Bütün yöntemler yalnız a2'de (sabit yük) geçiyor: 24/24. Öbür dört senaryo neredeyse tamamen başarısız.** Başarısızlıkların çoğu "temassız": sürtünmeli tesiste 96–153/240, sürtünmesizde 166–192/240 (edilgen hariç). Temassız koşuların hiçbirinde konum ölçütü tutmuyor (|e| ≤ 0,5° yalnız 0–2 koşuda). e ±3°'ye (≈ ±2r) yayılıyor, son 1 s içinde de hâlâ değişiyor.
+
+**Neden (tek koşu izi, olay+yok, sürtünmeli, 45°, doğru başlangıç).** Motor hedefte duruyor. Kol ise boşluğun içinde serbest bir kütle gibi bir yüzden öbürüne gidip geliyor: e 0,4° ile 3° arasında, periyot yaklaşık 4 s. Son 4 s'de temas oranı %1,4, kestirici yüzü bir kez bile değiştirmiyor. Sürtünmesiz tesiste de durum aynı. Bunun nedeni tesiste kol tarafında yalnız viskoz yatak sürtünmesi olması: bL = 1e-4 N m s/rad, J_L ile zaman sabiti yaklaşık 36 s. Coulomb sürtünmesi yalnız motor tarafında. Kolu bir yüze bastıran tork olmayınca dişli çarpması kolu geri fırlatıyor ve kol neredeyse sönümsüz kalıyor.
+
+**Yorum.** Burada sorun yüz kestirimi değil, gözlenecek bir yüzün olmaması. Kol bir yüze yaslanmıyorsa motor tarafındaki hiçbir bilgi kolun boşluktaki yerini veremez. Bu, gözlenebilirlik itirazının (hakem sorusu 8) sınır durumu. Yöntemler arasındaki fark gürültü düzeyinde. Her açıda yoklama da yardımcı olmuyor: yoklama "temas mı, boşluk mu" sorusunu soruyor, ama kol serbestçe yüzerken her iki cevap da birkaç saniye sonra geçersiz kalıyor. a2'nin geçmesi tam tersini gösteriyor: küçük ama kalıcı bir tork (0,02 N m ≈ 0,5 F_c) kolu bir yüze bastırınca bütün yöntemler (edilgen dahil) her hedefte doğru. Edilgen yöntemin sürtünmesiz tesisteki farklı davranışı (temassız yalnız 5, ama 135 konum başarısızlığı, ortalama |e| 1,06°) yöntemin kendinden geliyor: s^ = sign(u) seçimi kolu sürekli bir yüze itiyor ve titreşen bir temas oluşturuyor.
+
+**Sonuç (senaryo 1).** Yatay eklemde bu kestiriciler tek başına anlamsız. Kola bir yüze bastıran kalıcı bir tork gerekiyor. Bu tork mekanik ön yükle (B2, makas dişli), ya da kontrolle sağlanabilir: motoru kolu sürekli bir yüze dayayacak kadar sabit bir tork farkıyla tutmak. İkincisi yeni bir yöntem, plan dışında, sorulmadan denenmedi. **Model sınırı:** kol tarafındaki Coulomb sürtünmesi (rulman) tesiste yok. Gerçek eklemde kol boşlukta salınmak yerine bir yerde durur. Bu durumda da kol yüzde değil, boşlukta herhangi bir konumda kalır ve hata 2r'ye kadar çıkabilir. Sonuç değişmez, ama başarısızlığın biçimi değişir (salınım yerine sabit kayma). Bunu sınamak için tesise kol tarafı sürtünmesi eklemek gerekir. Bu bir kod değişikliği ve plan dışında.
