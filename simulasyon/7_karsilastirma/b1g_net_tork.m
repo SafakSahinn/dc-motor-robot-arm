@@ -35,6 +35,7 @@ M = {'olay', struct('yuzKes','olay','vDurF',10);
 qAS = 2*pi/(4096*30);  nAS = deg2rad(0.043)/p0.N;
 as = struct('qM', qAS, 'nM', nAS);
 sen = getenv('B1G_SEN');  if isempty(sen), sen = '1'; end
+scSec = 1:5;
 switch sen
     case '1'
         onek = 'b1g1';
@@ -54,6 +55,20 @@ switch sen
             K(end+1,:) = {sprintf('yayE %gFc', c), struct('mgl', 0, 'mglN', 0, 'yayE', c*0.04)}; %#ok<AGROW>
         end
         istek = [45 120 180 270];   % sin 2th: 45/120 büyük, 180 kararlı sıfır, 270 kararsız sıfır
+    case '3'    % dış bozucu, net torku küçük eklemde (2a: mgl x0,05 ve x0,1, mglN doğru); yalnız temel senaryo
+        onek = 'b1g3';  K = {};  scSec = 1;
+        for c = [0.05 0.1]
+            j0 = struct('mgl', c*mglD, 'mglN', c*mglD);
+            for f = [1 5 25]
+                for A = [0.005 0.01 0.02 0.05]
+                    K(end+1,:) = {sprintf('mgl x%g dA %g Hz %g', c, f, A), ek(j0, struct('bA', A, 'df', f, 'dT0', tD, 'dT', tD + 2))}; %#ok<AGROW>
+                end
+            end
+            for B = [0.005 0.01 0.02]
+                K(end+1,:) = {sprintf('mgl x%g dB %g', c, B), ek(j0, struct('bB', B, 'dBT0', tD))}; %#ok<AGROW>
+            end
+        end
+        istek = [45 120 180 270];
     otherwise, error('bilinmeyen B1G_SEN: %s', sen);
 end
 epsK = strcmp(getenv('B1G_EPS'), '1');            % B1G_EPS=1: 180° ε kuralı (önek sonuna 'e')
@@ -61,7 +76,7 @@ if epsK, onek = [onek 'e']; end
 sc_ad = {'temel', 'a1 darbe', 'a2 yük', 'c yaklaşma', 'd yön değ.'};
 sur = {'sürtünmeli', 0.04, 0.06; 'sürtünmesiz', 0, 0};
 V = {};   % (yöntem, koşul, başlangıç, tesis, senaryo)
-for k = 1:size(K,1), for m = 1:size(M,1), for b = [1 -1], for a = 1:2, for sc = 1:5
+for k = 1:size(K,1), for m = 1:size(M,1), for b = [1 -1], for a = 1:2, for sc = scSec
     V(end+1,:) = {m, k, b, a, sc}; %#ok<AGROW>
 end, end, end, end, end
 parca = str2double(getenv('B1G_PARCA'));  npar = str2double(getenv('B1G_NPAR'));
@@ -89,10 +104,13 @@ for v = sec
        case 5, W = [hedef + 3*Yf; hedef - 1.5*Yf; hedef];  tk = [0 2.25 3];
    end
    if sc >= 4, q.adim = 0;  q.refYol = @(t) deg2rad(interp1(tk, W, min(t, tk(end)))); end
+   kz = K{kk,2};                                   % senaryo 3: bozucu genliği -s0 yönünde (sinüs ilk yarı dalgası yüzden koparır)
+   if isfield(kz, 'bA'), q.dA = -kz.bA*s0;  kz = rmfield(kz, 'bA'); end
+   if isfield(kz, 'bB'), q.dB = -kz.bB*s0;  kz = rmfield(kz, 'bB'); end
    for ts = 1:3
      p = q;  p.nTohum = ts;
      if isfield(M{m,2}, 'yuzKes'), p = ek(p, ortak); end
-     p = ek(p, as);  p = ek(p, K{kk,2});  p = ek(p, M{m,2});
+     p = ek(p, as);  p = ek(p, kz);  p = ek(p, M{m,2});
      o = kol_benzetim(p, hedef, kpv*ones(1,n));
      sap = rad2deg(o.th) - hedef;  son = o.t > o.t(end) - 1;
      gy = sign(o.tau_s).*(abs(o.tau_s) > 0);  yuzS = sign(sum(gy(son,:), 1));
@@ -103,6 +121,9 @@ for v = sec
      R(k).sen = sc_ad{sc};  R(k).tohum = ts;  R(k).hedef = hedef;  R(k).Yn = Yn;
      R(k).h7 = iyi & yuzS ~= 0 & yuzK == yuzS;  R(k).iyi = iyi;  R(k).e = e;  R(k).emax = emax;
      R(k).yuzS = yuzS;  R(k).yuzK = yuzK;
+     if isfield(o, 'yuzDegis'), R(k).yuzDeg = o.yuzDegis; else, R(k).yuzDeg = zeros(1,n); end
+     ts3 = o.t >= tD & o.t < tD + 2;  gy3 = sign(o.tau_s(ts3,:));   % bozucu penceresinde gerçek yüz değişimi var mı
+     R(k).gercekCevir = any(gy3 == -s0, 1) & any(gy3 == s0, 1);
      if isfield(o, 'yokSay'), R(k).yokSay = o.yokSay; else, R(k).yokSay = zeros(1,n); end
    end
    fprintf('%s | %s | %s | bas %+d | %s bitti (%.0f s)\n', M{m,1}, K{kk,1}, sur{a,1}, bas, sc_ad{sc}, toc(t0));

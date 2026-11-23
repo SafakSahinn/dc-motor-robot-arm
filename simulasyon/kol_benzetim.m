@@ -171,6 +171,8 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %     başına bir kez). Stribeck biçimi için tesisin p.Fs, p.vs değerleri ayrıca değiştirilebilir.
 %   p.rA, p.rK (1), p.rF: açıya bağlı boşluk, tesiste r(th) = r (1 + rA sin(rK th + rF)) (rK = 1 çıkış dişlisi
 %     eksantrikliği). Kestirici/ofset p.rN'yi (varsayılan p.r) sabit bilir; analiz sınıfı yine p.r ile.
+%   p.yayE [N m] (B1-G 2b, yay dengeleme): kola artık tork -yayE sin(2 th) eklenir (yerçekimi terimine ek;
+%     dengelenmiş kolda tesis mgl = 0 ile birlikte). Kestirici bilmez (ofset yalnız mglN sin th kullanır).
 %   p.asHar = [E1 f1 E2 f2] [rad, motor mili tarafı]: AS5600 açıya bağlı harmonik hatası; motor ölçümüne
 %     (nicemleme ve gürültüden önce) (E1 sin(psi + f1) + E2 sin(2 psi + f2))/N eklenir, psi = N phi.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
@@ -308,6 +310,7 @@ end
 cogA = al(p,'cogA',0);  cogK = al(p,'cogK',12);  cogF = al(p,'cogF',0);   % model dışı tesis etkileri (B1-M)
 sfA = al(p,'sfA',0);  sfF = al(p,'sfF',0);
 rAc = al(p,'rA',0);  rKc = al(p,'rK',1);  rFc = al(p,'rF',0);
+yayE = al(p,'yayE',0);                            % yay dengelemenin artık torku (B1-G 2b)
 if kesMod > 0, ph = olc(x(1,:), p.qM); end
 ua = u;  aAk = 1 - exp(-al(p,'akimW',Inf)*p.dt);       % akım döngüsü (Inf: tork = komut)
 tOlc = kesMod > 0 && al(p,'tOlc',false);           % gözlemci torku ölçümden mi (iş sırası 5)
@@ -678,6 +681,7 @@ out.sinif(out.kararsiz) = 4;
               (tm - p.bM*dphi - tf - ts)/p.JM;
               dth;
               (ts - p.bL*dth - p.mgl*sin(th) + bozucu(tt))/p.JL];
+        if yayE ~= 0, dx(4,:) = dx(4,:) - yayE*sin(2*th)/p.JL; end   % yay dengeleme artığı (B1-G 2b)
         if elk > 0, dx(5,:) = (eV - eRa*x(5,:) - eKm*dphi)/eLa; end
     end
 end

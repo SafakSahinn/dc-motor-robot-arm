@@ -13,8 +13,8 @@ if isempty(R), s = load([onek '_sonuc.mat']);  R = s.R; end
 M = s.M;  K = s.K;  save([onek '_sonuc.mat'], 'R', 'M', 'K');
 fid = fopen([onek '_log.txt'], 'w');
 yaz = @(varargin) [fprintf(varargin{:}), fprintf(fid, varargin{:})];
-nH = numel(R(1).e);  N1 = 5*nH*3;
-yaz('=== B1-G (%s), %s. Hücre: H7 / %d (5 senaryo x %d hedef x 3 tohum).\n', onek, datestr(now,'yyyy-mm-dd HH:MM'), N1, nH);
+nH = numel(R(1).e);  nS = numel(unique({R.sen}));  N1 = nS*nH*3;
+yaz('=== B1-G (%s), %s. Hücre: H7 / %d (%d senaryo x %d hedef x 3 tohum).\n', onek, datestr(now,'yyyy-mm-dd HH:MM'), N1, nS, nH);
 yaz('Hedefler: %s. Köşeli parantez: senaryo ayrıntısı (temel a1 a2 c d, her biri /%d), yalnız tam olmayanlarda.\n', mat2str(R(1).hedef(1:nH/2)), nH*3);
 yaz('Yüz ölçütü: kestiricinin son yüzü = gerçek son dişli torku işareti (temassız: H7 değil).\n\n');
 etk = {'doğru', 'ters '};
@@ -28,7 +28,7 @@ for kk = 1:size(K,1)
             for b = [1 -1]
                 j = jm & [R.bas] == b;
                 h = nnz([R(j).h7]);  ek = '';
-                if h < N1, ek = mat2str(arrayfun(@(sc) nnz([R(j & strcmp({R.sen}, sen{sc})).h7]), 1:5)); end
+                if h < N1 && nS > 1, ek = mat2str(arrayfun(@(sc) nnz([R(j & strcmp({R.sen}, sen{sc})).h7]), 1:5)); end
                 yaz(' | %s %3d %-14s', etk{(3 - b)/2}, h, ek);
             end
             r = R(jm);  h7 = [r.h7];  yS = [r.yuzS];  yK = [r.yuzK];  iyi = [r.iyi];  e = abs([r.e]);
@@ -38,6 +38,7 @@ for kk = 1:size(K,1)
         end
     end
 end
+if nS == 1, fclose(fid); return; end
 % senaryo x hedef: olay+yok ve her-açı varyantı, temassız sayısı (iki başlangıç, iki tesis birlikte)
 yaz('\n--- Temassız koşu sayısı, senaryo x hedef (iki başlangıç x 3 tohum = /6 her tesiste) ---\n');
 hh = R(1).hedef;  Y = R(1).Yn;

@@ -457,3 +457,28 @@ Tesiste mgl, D'nin dik kolunun 0,1 ve 0,05 katı (0,024 / 0,012 N m, yani F_c'ni
 - Komut tabanlı yöntemler (lenze, edilgen) sürtünmeli tesiste kötüleşiyor: yerçekimi sürtünme aralığının içinde kalınca u'nun işareti artık yüzü göstermiyor. Olay tabanlı kestirici bundan etkilenmiyor, çünkü sürtünme aralığını hesaba katıyor.
 
 **Sonuç (senaryo 2a).** Karşı ağırlıklı kolda kestirici, kolu bir yüze bastıran net tork olduğu sürece çalışıyor. Bu tork F_c'nin %30'u kadar küçük olabilir (denenen en küçük değer; alt sınır taranmadı), çünkü yalnız kol tarafında tutucu sürtünme yok. Başarısızlık, senaryo 1'deki gibi, net torkun sıfırlandığı noktaya (burada 180°) sıkışıyor. Bu noktanın çevresindeki "ölü bant" mgl küçüldükçe genişliyor. Kabaca |mgl sin(θ − 180°)| ≲ birkaç 10⁻³ N m olan açılarda yüz tutunmuyor. Bu bandın açı cinsinden genişliği ölçülmedi.
+
+### Senaryo 2b. Yay dengeleme (artık tork ε sin 2θ)
+
+**Kod.** `kol_benzetim.m` dosyasına varsayılanı kapalı `p.yayE` eklendi. Kolun hareket denklemine −yayE·sin 2θ ekleniyor. Gerileme 4f4c889'a karşı yapıldı: 9 yapılandırmada θ ve u farkı 0, açıkça verilen `yayE = 0` da bire bir aynı. İşaret denetimi de tutuyor: mgl = 0 ve yayE 0,04 ile durağan dişli torku 45°'de +0,040, 135°'de −0,040. Tesis mgl = 0. Kestirici mglN = 0 biliyor, artığı bilmiyor (ofset tablosunda bu terim yok).
+
+**ε değerleri:** 0,5 / 1 / 2 F_c = 0,02 / 0,04 / 0,08 N m. Gerekçe: artığın tepe değeri sürtünme aralığının altında, eşitinde ve üstünde olsun, böylece yüzü sürtünmeye karşı tutup tutamadığı görülsün. Hedefler aynı (45 / 120 / 180 / 270). sin 2θ için 45° ve 120° tepe ya da tepeye yakın. 180° **kararlı** sıfır: artık kolu geri çeken bir yay gibi. 270° **kararsız** sıfır: artık kolu itiyor. Başlangıç inancı sign(sin 2·hedef), sıfırda ilk hareket yönü. Log `b1g2b_log.txt`.
+
+**Hedefe göre** (olay+yok, iki başlangıç × 5 senaryo × 3 tohum = /30 her hedef-yön):
+
+| | 45° / 120° | 180° (kararlı sıfır) | 270° (kararsız sıfır) |
+|---|---|---|---|
+| 0,5 F_c sürtünmeli | 30 / 30 | 15 | 6 |
+| 0,5 F_c sürtünmesiz | 30 / 30 | 29 | 6 |
+| 1 F_c sürtünmeli | 30 / 30 | 24 | 6–7 |
+| 1 F_c sürtünmesiz | 30 / 30 | 30 | 6 |
+| 2 F_c sürtünmeli | 18–21 / 24 | 24 | 23–24 |
+| 2 F_c sürtünmesiz | 24 / 24 | 30 | 6 |
+
+- **Tepe açılarında (45 / 120) 0,5 ve 1 F_c'de tam.** 2a ile aynı sonuç: kolu bir yüze bastıran net tork varsa kestirici çalışıyor.
+- **2 F_c'de 45 / 120'deki kayıp yüzden değil, ofset tablosundan.** Ofset artık torkun dişli esnemesini (yayE sin 2θ / K_s) bilmiyor. 2 F_c'de bu 0,08/10 rad = 0,46°. Temel senaryoda ölçülen kayma 45°'de −0,46°, 120°'de +0,40°, yani tam bu değer. Kayma 0,5° sınırının hemen altında kaldığı için bozucu ve yaklaşma senaryoları sınırı aşıyor. Başarısızlık türü de bunu doğruluyor: "konum" (yüz doğru) 41–54, ortalama |e| 0,5–0,9°. r(θ) durumunda olduğu gibi sorun tablonun bilgisinde. Artık ölçülüp tabloya eklenirse giderilebilir (denenmedi).
+- **Kararlı sıfır (180°) çoğunlukla geçiyor**, sürtünmesiz tesiste tam ya da tama yakın. Geri çeken artık, kol hedeften kayınca onu motora doğru bastırıyor. Sürtünmeli tesiste ε küçükken (0,5 F_c) yarıya iniyor (15/30, 9 temassız).
+- **Kararsız sıfır (270°) neredeyse hep başarısız: 6/30, yani yalnız a2 (sabit yük) geçiyor.** Tek koşu izi (olay+yok, sürtünmesiz, 1 F_c): kol yüzler arasında avlanıyor. e 1, 2, 3, 5 ve 8. saniyelerde sırasıyla +1,0 / −1,4 / +1,8 / +2,5 / −3,3°, δ her seferinde ±r'de. Kestirici son yüzü genellikle doğru buluyor ama kol hedefte durmuyor. Bu, B1'deki θ* "yüz avlanması" ile aynı olay (dik kolda 180°). Tek istisna 2 F_c sürtünmeli (23–24/30): orada sürtünme avlanmayı durduruyor olabilir. Bu doğrulanmadı.
+- **Her açıda yoklama** 0,5–2 F_c sürtünmelide "yanlış yüz" sayısını azaltıyor (48 → 16, 12 → 3, 11 → 3). Ama karşılığında aynı koşular "konum" hatasına kayıyor, H7 toplamı değişmiyor (±6).
+
+**Sonuç (senaryo 2b).** Yay dengelemeli kolda belirleyici olan şey sıfır noktasının türü. Kararlı sıfırda (geri çeken artık) kestirici çalışıyor. Kararsız sıfırda kol avlanıyor ve bunu hiçbir yöntem çözmüyor. Tepe açılarında artık büyüdükçe (≥ 2 F_c) ofset tablosuna artığın esneme terimi girmeli.
