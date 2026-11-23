@@ -1,0 +1,211 @@
+=== B1-M model dışı etkiler, 2026-11-23 13:10. Hücre: H7 / 210 (temel, a1, a2, c, d; 3 tohum, tohuma bağlı faz).
+doğru/ters = başlangıç inancı. Köşeli parantez: senaryo ayrıntısı (temel a1 a2 c d, her biri /42), yalnız 210 olmayanlarda.
+Yüz ölçütü dişli torkunun işareti; d: eski delta ölçütüyle farklıysa onun sonucu.
+
+denetim (etkisiz)      sürtünmeli 
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 186 [30 30 42 42 42]       | ters  210                       
+   lenze 0.03           | doğru 120 [0 24 42 12 42]        | ters  168 [30 42 42 12 42]      
+   edilgen              | doğru  96 [0 30 42 12 12]        | ters  126 [30 30 42 12 12]      
+denetim (etkisiz)      sürtünmesiz
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 117 [15 3 15 42 42]        | ters  183 [42 15 42 42 42]      
+   lenze 0.03           | doğru 210                        | ters  210                       
+   edilgen              | doğru 210                        | ters  210                       
+cogging 0.1Fc          sürtünmeli 
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 186 [30 30 42 42 42]       | ters  209 [42 41 42 42 42]      
+   lenze 0.03           | doğru 120 [1 18 42 22 37]        | ters  153 [21 35 42 22 33]      
+   edilgen              | doğru 111 [0 38 42 9 22]         | ters  134 [30 31 42 9 22]       
+cogging 0.1Fc          sürtünmesiz
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 126 [18 6 18 42 42]        | ters  181 [42 13 42 42 42]      
+   lenze 0.03           | doğru 210                        | ters  210                       
+   edilgen              | doğru 160 [31 30 42 28 29]       | ters  157 [27 29 42 29 30]      
+cogging 0.25Fc         sürtünmeli 
+   olay                 | doğru 176 [33 29 42 36 36]       | ters  185 [34 35 41 36 39]      
+   olay+yok             | doğru 186 [36 36 42 36 36]       | ters  194 [38 39 42 36 39]      
+   momentum L100 e0.06  | doğru 133 [21 16 40 30 26]       | ters  152 [29 23 42 29 29]      
+   lenze 0.03           | doğru 131 [16 20 42 23 30]       | ters  154 [26 32 42 23 31]      
+   edilgen              | doğru 100 [11 28 27 9 25]        | ters  125 [28 27 35 10 25]      
+cogging 0.25Fc         sürtünmesiz
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 125 [16 9 16 42 42]        | ters  179 [37 16 42 42 42]      
+   lenze 0.03           | doğru 210                        | ters  210                       
+   edilgen              | doğru 120 [21 21 42 18 18]       | ters  121 [21 22 42 18 18]      
+cogging 0.5Fc          sürtünmeli 
+   olay                 | doğru  64 [5 6 40 6 7]           | ters   71 [12 5 42 6 6]         
+   olay+yok             | doğru  66 [8 5 42 6 5]           | ters   67 [8 6 41 6 6]          
+   momentum L100 e0.06  | doğru  54 [4 3 36 4 7]           | ters   70 [7 4 39 4 16]         
+   lenze 0.03           | doğru  81 [13 12 27 16 13]       | ters   94 [16 14 34 16 14]      
+   edilgen              | doğru  59 [6 10 24 11 8]         | ters   62 [12 5 26 11 8]        
+cogging 0.5Fc          sürtünmesiz
+   olay                 | doğru 117 [18 19 42 20 18]       | ters  128 [19 23 42 24 20]      
+   olay+yok             | doğru 117 [18 21 39 20 19]       | ters  115 [16 20 40 20 19]      
+   momentum L100 e0.06  | doğru  61 [7 3 20 18 13]         | ters   90 [16 3 39 17 15]       
+   lenze 0.03           | doğru 140 [22 20 42 28 28]       | ters  147 [26 23 42 28 28]      
+   edilgen              | doğru  67 [9 9 24 14 11]         | ters   69 [11 10 23 14 11]      
+Stribeck vs 0.01       sürtünmeli 
+   olay                 | doğru 210                        | ters  206 [40 40 42 42 42]      
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 184 [30 28 42 42 42]       | ters  210                       
+   lenze 0.03           | doğru 180 [12 42 42 42 42]       | ters  192 [24 42 42 42 42]      
+   edilgen              | doğru 141 [12 42 42 4 41]        | ters  160 [30 42 42 6 40]       
+Stribeck vs 0.2        sürtünmeli 
+   olay                 | doğru 186 [30 30 42 42 42]       | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 180 [30 24 42 42 42]       | ters  154 [19 9 42 42 42]       
+   lenze 0.03           | doğru 102 [0 6 42 12 42]         | ters  180 [42 42 42 12 42]      
+   edilgen              | doğru 104 [0 38 42 12 12]        | ters  126 [30 30 42 12 12]      
+Stribeck Fs/Fc 1       sürtünmeli 
+   olay                 | doğru 208 [42 42 42 41 41]       | ters  190 [37 37 37 39 40]      
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 186 [30 30 42 42 42]       | ters  201 [42 33 42 42 42]      
+   lenze 0.03           | doğru 206 [38 42 42 42 42]       | ters  210                       
+   edilgen              | doğru 138 [42 42 42 0 12]        | ters   78 [0 24 42 0 12]        
+Stribeck Fs/Fc 2       sürtünmeli 
+   olay                 | doğru 198 [30 42 42 42 42]       | ters  210                       
+   olay+yok             | doğru 183 [31 31 42 41 38]       | ters  188 [37 31 42 38 40]      
+   momentum L100 e0.06  | doğru 161 [30 12 42 42 35]       | ters  194 [42 31 42 41 38]      
+   lenze 0.03           | doğru 120 [0 6 42 42 30]         | ters  111 [12 6 42 21 30]       
+   edilgen              | doğru 102 [0 18 42 12 30]        | ters  159 [40 38 39 12 30]      
+konum sürt a0.2        sürtünmeli 
+   olay                 | doğru 204 [38 40 42 42 42]       | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 177 [30 22 42 42 41]       | ters  199 [40 34 42 42 41]      
+   lenze 0.03           | doğru 114 [0 12 42 23 37]        | ters  154 [16 37 42 22 37]      
+   edilgen              | doğru 105 [4 30 42 12 17]        | ters  129 [27 31 42 12 17]      
+konum sürt a0.4        sürtünmeli 
+   olay                 | doğru 202 [38 38 42 42 42]       | ters  205 [40 40 41 42 42]      
+   olay+yok             | doğru 201 [38 37 42 42 42]       | ters  210                       
+   momentum L100 e0.06  | doğru 162 [23 18 42 42 37]       | ters  186 [37 28 42 42 37]      
+   lenze 0.03           | doğru 132 [10 11 42 32 37]       | ters  150 [11 30 41 32 36]      
+   edilgen              | doğru 106 [4 28 42 9 23]         | ters  128 [20 35 42 9 22]       
+konum sürt a0.6        sürtünmeli 
+   olay                 | doğru 175 [37 33 33 41 31]       | ters  178 [38 33 30 40 37]      
+   olay+yok             | doğru 190 [38 37 36 41 38]       | ters  201 [42 42 36 42 39]      
+   momentum L100 e0.06  | doğru 156 [21 15 42 42 36]       | ters  172 [29 23 42 42 36]      
+   lenze 0.03           | doğru 136 [11 11 42 35 37]       | ters  157 [14 31 40 35 37]      
+   edilgen              | doğru 113 [14 28 42 8 21]        | ters  124 [20 34 41 8 21]       
+r(th) rK1 b0.2         sürtünmeli 
+   olay                 | doğru 174 [32 38 42 32 30] d82   | ters  183 [36 42 42 32 31] d82  
+   olay+yok             | doğru 185 [36 42 42 32 33] d82   | ters  186 [36 42 42 32 34] d82  
+   momentum L100 e0.06  | doğru 149 [24 23 42 32 28] d75   | ters  172 [34 33 42 32 31] d80  
+   lenze 0.03           | doğru  95 [0 15 42 12 26] d54    | ters  146 [27 40 42 12 25] d58  
+   edilgen              | doğru  88 [0 24 42 10 12] d48    | ters  124 [30 32 40 10 12] d55  
+r(th) rK1 b0.2         sürtünmesiz
+   olay                 | doğru 210  d84                   | ters  210  d84                  
+   olay+yok             | doğru 210  d84                   | ters  210  d84                  
+   momentum L100 e0.06  | doğru 124 [16 8 16 42 42] d60    | ters  175 [37 12 42 42 42] d80  
+   lenze 0.03           | doğru 210  d84                   | ters  210  d84                  
+   edilgen              | doğru 208 [42 42 42 42 40] d84   | ters  209 [41 42 42 42 42] d84  
+r(th) rK1 b0.4         sürtünmeli 
+   olay                 | doğru 123 [22 18 29 28 26] d54   | ters  142 [34 26 28 28 26] d60  
+   olay+yok             | doğru 135 [30 20 28 30 27] d60   | ters  144 [34 26 28 29 27] d60  
+   momentum L100 e0.06  | doğru 104 [15 10 24 28 27] d43   | ters  132 [28 16 34 28 26] d60  
+   lenze 0.03           | doğru  65 [0 4 24 13 24] d29     | ters  106 [18 16 37 12 23] d39  
+   edilgen              | doğru  51 [0 8 28 8 7] d21       | ters   69 [16 16 21 8 8] d27    
+r(th) rK1 b0.4         sürtünmesiz
+   olay                 | doğru  84 [14 14 28 14 14] d0    | ters   84 [14 14 28 14 14] d0   
+   olay+yok             | doğru  84 [14 14 28 14 14] d0    | ters   84 [14 14 28 14 14] d0   
+   momentum L100 e0.06  | doğru  34 [3 0 3 14 14] d0       | ters   71 [14 1 28 14 14] d0    
+   lenze 0.03           | doğru  84 [14 14 28 14 14] d0    | ters   84 [14 14 28 14 14] d0   
+   edilgen              | doğru  84 [14 14 28 14 14] d0    | ters   85 [14 14 28 15 14] d0   
+r(th) rK6 b0.2         sürtünmeli 
+   olay                 | doğru 204 [39 39 42 42 42] d140  | ters  210  d140                 
+   olay+yok             | doğru 210  d140                  | ters  210  d140                 
+   momentum L100 e0.06  | doğru 179 [30 23 42 42 42] d124  | ters  195 [36 33 42 42 42] d139 
+   lenze 0.03           | doğru 112 [0 20 42 12 38] d82    | ters  153 [21 40 42 12 38] d97  
+   edilgen              | doğru  95 [0 29 42 12 12] d70    | ters  134 [34 37 39 12 12] d85  
+r(th) rK6 b0.2         sürtünmesiz
+   olay                 | doğru 210  d140                  | ters  210  d140                 
+   olay+yok             | doğru 210  d140                  | ters  210  d140                 
+   momentum L100 e0.06  | doğru 144 [22 16 22 42 42] d112  | ters  184 [40 18 42 42 42] d130 
+   lenze 0.03           | doğru 210  d140                  | ters  210  d140                 
+   edilgen              | doğru 210  d140                  | ters  209 [41 42 42 42 42] d140 
+r(th) rK6 b0.4         sürtünmeli 
+   olay                 | doğru 109 [22 20 14 28 25] d103  | ters  103 [18 18 14 28 25]      
+   olay+yok             | doğru 115 [21 19 23 28 24] d111  | ters  116 [22 19 23 28 24]      
+   momentum L100 e0.06  | doğru  92 [10 13 16 28 25] d87   | ters  120 [20 21 26 28 25] d102 
+   lenze 0.03           | doğru  62 [0 10 14 13 25] d59    | ters   96 [12 18 28 13 25] d73  
+   edilgen              | doğru  41 [0 13 14 8 6] d39      | ters   65 [15 17 19 8 6] d58    
+r(th) rK6 b0.4         sürtünmesiz
+   olay                 | doğru  84 [14 14 28 14 14] d70   | ters   84 [14 14 28 14 14] d70  
+   olay+yok             | doğru  84 [14 14 28 14 14] d70   | ters   84 [14 14 28 14 14] d70  
+   momentum L100 e0.06  | doğru  56 [10 8 10 14 14]        | ters   79 [14 9 28 14 14] d65   
+   lenze 0.03           | doğru  84 [14 14 28 14 14] d70   | ters   84 [14 14 28 14 14] d70  
+   edilgen              | doğru  84 [14 14 28 14 14] d70   | ters   84 [14 14 28 14 14] d70  
+AS5600 harm 0.25°      sürtünmeli 
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 186 [30 30 42 42 42]       | ters  210                       
+   lenze 0.03           | doğru 119 [0 23 42 12 42]        | ters  166 [30 42 42 12 40]      
+   edilgen              | doğru  96 [0 30 42 12 12]        | ters  126 [30 30 42 12 12]      
+AS5600 harm 0.25°      sürtünmesiz
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 111 [13 1 13 42 42]        | ters  184 [42 16 42 42 42]      
+   lenze 0.03           | doğru 210                        | ters  210                       
+   edilgen              | doğru 210                        | ters  210                       
+AS5600 harm 0.5°       sürtünmeli 
+   olay                 | doğru 210                        | ters  208 [41 41 42 42 42]      
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 190 [32 32 42 42 42]       | ters  210                       
+   lenze 0.03           | doğru 116 [0 21 42 12 41]        | ters  166 [30 42 42 12 40]      
+   edilgen              | doğru  96 [0 30 42 12 12]        | ters  126 [30 30 42 12 12]      
+AS5600 harm 0.5°       sürtünmesiz
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 108 [12 0 12 42 42]        | ters  184 [42 16 42 42 42]      
+   lenze 0.03           | doğru 210                        | ters  210                       
+   edilgen              | doğru 210                        | ters  210                       
+AS5600 harm 1°         sürtünmeli 
+   olay                 | doğru 210                        | ters  202 [38 38 42 42 42]      
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 194 [34 34 42 42 42]       | ters  202 [38 38 42 42 42]      
+   lenze 0.03           | doğru 113 [0 18 42 12 41]        | ters  166 [30 42 42 12 40]      
+   edilgen              | doğru  97 [0 31 42 12 12]        | ters  126 [30 30 42 12 12]      
+AS5600 harm 1°         sürtünmesiz
+   olay                 | doğru 210                        | ters  210                       
+   olay+yok             | doğru 210                        | ters  210                       
+   momentum L100 e0.06  | doğru 111 [13 1 13 42 42]        | ters  183 [42 15 42 42 42]      
+   lenze 0.03           | doğru 210                        | ters  210                       
+   edilgen              | doğru 210                        | ters  210                       
+birleşik orta          sürtünmeli 
+   olay                 | doğru 112 [20 18 39 19 16] d81   | ters  113 [21 18 42 16 16] d81  
+   olay+yok             | doğru 129 [21 22 40 22 24] d80   | ters  123 [23 20 40 20 20] d80  
+   momentum L100 e0.06  | doğru  97 [14 11 40 15 17] d72   | ters  111 [18 17 42 14 20] d76  
+   lenze 0.03           | doğru  87 [10 12 40 11 14] d59   | ters   99 [14 21 38 12 14] d68  
+   edilgen              | doğru  73 [12 20 28 4 9] d43     | ters   71 [12 19 27 4 9] d45    
+birleşik orta          sürtünmesiz
+   olay                 | doğru 183 [31 32 42 39 39] d84   | ters  182 [31 31 42 39 39] d84  
+   olay+yok             | doğru 182 [31 31 42 39 39] d84   | ters  182 [31 31 42 39 39] d84  
+   momentum L100 e0.06  | doğru 107 [15 11 15 36 30] d61   | ters  146 [29 17 35 36 29] d79  
+   lenze 0.03           | doğru 190 [35 35 42 39 39] d84   | ters  192 [36 36 42 39 39] d84  
+   edilgen              | doğru 103 [14 14 42 18 15] d59   | ters  103 [15 15 42 17 14] d58  
+
+--- olay+yok ve momentum: koşul başına en kötü hücre (tesis x başlangıç) ---
+denetim (etkisiz)      | olay+yok 210 | momentum 117 | lenze 0. 120
+cogging 0.1Fc          | olay+yok 210 | momentum 126 | lenze 0. 120
+cogging 0.25Fc         | olay+yok 186 | momentum 125 | lenze 0. 131
+cogging 0.5Fc          | olay+yok  66 | momentum  54 | lenze 0.  81
+Stribeck vs 0.01       | olay+yok 210 | momentum 184 | lenze 0. 180
+Stribeck vs 0.2        | olay+yok 210 | momentum 154 | lenze 0. 102
+Stribeck Fs/Fc 1       | olay+yok 210 | momentum 186 | lenze 0. 206
+Stribeck Fs/Fc 2       | olay+yok 183 | momentum 161 | lenze 0. 111
+konum sürt a0.2        | olay+yok 210 | momentum 177 | lenze 0. 114
+konum sürt a0.4        | olay+yok 201 | momentum 162 | lenze 0. 132
+konum sürt a0.6        | olay+yok 190 | momentum 156 | lenze 0. 136
+r(th) rK1 b0.2         | olay+yok 185 | momentum 124 | lenze 0.  95
+r(th) rK1 b0.4         | olay+yok  84 | momentum  34 | lenze 0.  65
+r(th) rK6 b0.2         | olay+yok 210 | momentum 144 | lenze 0. 112
+r(th) rK6 b0.4         | olay+yok  84 | momentum  56 | lenze 0.  62
+AS5600 harm 0.25°      | olay+yok 210 | momentum 111 | lenze 0. 119
+AS5600 harm 0.5°       | olay+yok 210 | momentum 108 | lenze 0. 116
+AS5600 harm 1°         | olay+yok 210 | momentum 111 | lenze 0. 113
+birleşik orta          | olay+yok 123 | momentum  97 | lenze 0.  87

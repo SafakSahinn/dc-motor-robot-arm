@@ -315,7 +315,57 @@ Sürtünmesiz tesiste (enkoder satırları) olay ve olay+yok hep 210; L1 117–1
 2. **"STA'yı yanlış kurdunuz."** Pozitif kontrol: makalenin örneğinde sert temas + hızlı örneklemede tepeler belirgin; bizim tesiste hiçbir çözünürlük/örneklemede değil. Neden: yumuşak dişli + 180°'de yavaş konma + 1 kHz. Sınır: pozitif kontrolde makalede verilmeyen m2/sertlik varsayıldı.
 3. **"Olay kipinin farkı yalnız büyük eşik."** L1'e F_s'yi aşan eşikler verildi: en iyisi 186/210 (eşik = F_s), olay 210.
 4. **"Yoklama gereksiz."** AS5600'de evet, test edilen senaryolarda sonucu değiştirmiyor. Kaba enkoder ve yanlış başlangıçta gerekli (0,068°: 138 → 210). Dürüstçe böyle yazılmalı.
-5. **"Gerçek donanımda çalışır mı?"** Benzetimde AS5600 nicemleme + gürültü + gecikme, INA228 ölçümü, akım döngüsü, Coulomb + statik sürtünme var; kestirici ESP32 kartında PIL ile MATLAB'la aynı karar veriyor. Modelde olmayanlar: dişin doğrusal olmayan temas sertliği, konuma bağlı sürtünme, motor dişli (cogging) torku, sıcaklıkla sürtünme değişimi. En büyük bilinen risk sürtünme bilgisi (madde 3): pencere −%50 / +%25. Henüz sınanmayanlar: konuma bağlı/değişken sürtünme, cogging, Stribeck.
+5. **"Gerçek donanımda çalışır mı?"** Benzetimde AS5600 nicemleme + gürültü + gecikme, INA228 ölçümü, akım döngüsü, Coulomb + statik sürtünme var; kestirici ESP32 kartında PIL ile MATLAB'la aynı karar veriyor. Modelde olmayanlar: dişin doğrusal olmayan temas sertliği, konuma bağlı sürtünme, motor dişli (cogging) torku, sıcaklıkla sürtünme değişimi. En büyük bilinen risk sürtünme bilgisi (madde 3): pencere −%50 / +%25. Henüz sınanmayanlar: konuma bağlı/değişken sürtünme, cogging, Stribeck. (23 Kasım güncellemesi: B1-M'de sınandı. Cogging ≥ 0,25 F_c ve r'nin %40 yanlış bilinmesi asıl riskler. AS5600 harmonik hatası ve Stribeck biçimi zararsız. Ayrıntı B1-M bölümünde.)
 6. **"Neubauer 2015'ten sonra konuyu bıraktı; belki çözülemediği için."** Kayıtlı bilgi: Neubauer 2017'den sonra robotik yayını yok, ulaşım/lojistik alanına geçmiş (OpenAlex, `literatur/genisletme_2026-11-21.md`). Ekip (Gattringer, JKU Linz) 2017'de boşluklu kalibrasyonu sürdürmüş. Amaçları endüstriyel robot kalibrasyonu; sıfır tork duruşlarından kaçınmak onlar için yeterli, yani sorunu çözmeye ihtiyaçları yoktu. "Çözemedikleri için bıraktılar" iddiası için kanıt yok, tersi için de yok; yalnız olgular yazılır. Ruderman çizgisi boşluk üzerinde çalışmaya devam ediyor, yani alan terk edilmiş değil; bizim açık (tork sıfırken yüz) kapatılmamış.
 7. **"Sonuç çıkmazsa?"** Benzetim tarafı zaten sonuç verdi. Donanımda kestirici çalışmazsa bile karşılaştırmanın kendisi (patent kuralları, literatür yöntemleri, ön yük bedeli, STA'nın düşük maliyetli algılayıcıda uygulanamazlığı, sürtünme bilgisi penceresi) yayınlanabilir bir katkı; ama ana iddia buna göre daraltılır.
 8. **"Motor tarafı boşluk içindeki çıkış konumunu göremez (gözlenebilirlik)."** (23 Kasım ek taramasında bir blog yazısında görülen itiraz, `literatur/genisletme_2026-11-21.md` §2.7.) Biz boşluk içindeki sürekli konumu değil, ayrık temas yüzünü kestiriyoruz. Yüz yalnız tork aktaran geçişlerde değişir ve bu geçişler motor tarafında tork gözlemcisinde iz bırakır (olay). İzsiz kalan tek durumda (yerçekimi sıfır, tork aktarılmıyor) yoklama yüzü etkin olarak sorgular. Gözlenebilirlik edilgen değil, etkin algılamayla sağlanıyor.
+
+## B1-M. Modelde olmayan etkiler altında dayanıklılık (2026-11-23)
+
+**Neden.** "Gerçek donanımda patlar mı?" kaygısı (tur 61). B1-D bilinen belirsizlikleri (enkoder, sürtünme bilgisi, J_M) sınamıştı. Burada kestiricinin hiç bilmediği tesis ve sensör etkileri sınanıyor. Amaç: siparişten önce riski ölçmek, tanılama deneyinin devam/dur ölçütlerini sayıyla yazmak.
+
+**Yöntem.** `kol_benzetim.m` dosyasına varsayılanı kapalı dört tesis/sensör seçeneği eklendi (başlıkta "Model dışı etkiler"). Eski sürümle (9c2379a) 9 yapılandırmada gerileme yapıldı, θ ve u farkı 0.
+- cogging: motor torkuna `cogA sin(12 N φ + faz)` eklenir. Kol tarafında 0,004 / 0,01 / 0,02 N m (= 0,1 / 0,25 / 0,5 F_c), motor milinde 0,13 / 0,33 / 0,67 mN m.
+- Stribeck biçimi: tesiste v_s 0,01 ya da 0,2 rad/s (varsayılan 0,05), F_s/F_c 1 ya da 2 (varsayılan 1,5). Kestirici 0,04/0,06 bilir.
+- konuma bağlı sürtünme: sürtünme × (1 + a sin(Nφ + faz)), mil turu başına bir kez, a = 0,2 / 0,4 / 0,6.
+- açıya bağlı boşluk: r(θ) = r (1 + b sin(r_K θ + faz)). r_K = 1 çıkış dişlisi eksantrikliği, r_K = 6 pinyon varsayımı. b = 0,2 / 0,4. Kestirici ve ofset r_N = r'yi sabit bilir.
+- AS5600 harmonik hatası: mil açısı ölçümüne E sin(ψ + f1) + E/2 sin(2ψ + f2) eklenir. E = 0,25° / 0,5° / 1° (veri sayfasındaki sistem INL'si, mıknatıs kaymasız ±1°).
+- birleşik: cogging 0,25 F_c + a 0,4 + b 0,2 (r_K 1) + E 0,5°.
+
+Fazlar tohuma bağlı. Kurulum, senaryolar ve H7 ölçütü B1-D ile aynı (AS5600 kanonik, 5 senaryo × 14 × 3 tohum = 210, doğru/ters başlangıç). Tek fark: son yüz dişli torkunun işaretinden okunuyor. r değişkenken eski delta ≥ r ölçütü yanıltıyor (logda "d" sütunu, denetim satırında ikisi aynı). Betik `simulasyon/7_karsilastirma/b1m_model_disi.m`, özet `b1m_ozet.m`, log `b1m_log.txt`.
+
+**olay+yok için en kötü hücre (tesis × başlangıç, /210):**
+
+| Etki | hafif | orta | ağır |
+|---|---|---|---|
+| cogging (0,1 / 0,25 / 0,5 F_c) | 210 | 186 | 66 (sürtünmesiz tesiste 115) |
+| Stribeck (v_s 0,01 / 0,2; F_s/F_c 1 / 2) | 210 / 210 | 210 | 183 (F_s/F_c 2) |
+| konuma bağlı sürtünme (a 0,2 / 0,4 / 0,6) | 210 | 201 | 190 |
+| r(θ), r_K 1 (b 0,2 / 0,4) | 185 | 84 | |
+| r(θ), r_K 6 (b 0,2 / 0,4) | 210 | 84 | |
+| AS5600 harmonik (0,25° / 0,5° / 1°) | 210 | 210 | 210 |
+| birleşik orta | sürtünmeli 123, sürtünmesiz 182 | | |
+
+Karşılaştırma (aynı en kötü hücre): momentum (L1) her koşulda daha kötü (denetimde bile 117). lenze denetimde 120, ağır cogging ve birleşik sürtünmesizde olay+yok'tan biraz iyi (81 / 190), r(θ) b 0,4 sürtünmesizde eşit (84). Bütün yöntemler aynı etkilerde bozuluyor. Hiçbir koşulda bir taban, kestiriciyi açık farkla geçmiyor.
+
+**Başarısızlığın türü** (olay+yok, |e| son 1 s ortalaması): |e| > 1,5° yanlış yüz izi, 0,5–1,5° konum kayması, |e| ≤ 0,5° ama e_max > 1° salınım.
+- **r(θ) b 0,4:** başarısızlıkların neredeyse hepsi kayma (sürtünmesiz 0/252 yüz izi, ortalama |e| 0,6°; sürtünmeli 3/141). **Kestirici yüzü doğru buluyor.** Ofset tablosu ise r_N'yi kullandığı için kol (r − r_N) kadar kayık duruyor. Yani sorun yüz kestirimi değil, tablonun r bilgisi. r_K 1'de θ ≈ 180° çevresinde r(θ) neredeyse sabit, yani bu aslında "r %40'a kadar yanlış bilinirse" durumu. r ±%20 içinde biliniyorsa sorun yok (sürtünmesizde 210).
+- **cogging 0,25 F_c (sürtünmeli):** 40 başarısızlığın 24'ü yüz izi, 12'si kayma. Cogging, dişli torkunun sürtünme aralığından ayrılmasını gölgeliyor (olay ya geç ya da yanlış oluşuyor). 0,5 F_c'de bütün yöntemler çöküyor, sürtünmesiz tesiste bile (çoğu kayma + salınım: cogging motoru detent'e çekiyor, konum kontrolü o hassasiyete inemiyor).
+- **konuma bağlı sürtünme ve F_s/F_c 2:** az sayıda, karışık (yarısı yüz izi). Sürtünme bilgisi penceresinin (B1-D, 0,5–1,25×) yerel ihlali gibi davranıyor.
+- **AS5600 harmonik hatası 1°'ye kadar etkisiz.** Mil tarafındaki hata dişliden sonra 30'a bölünüyor (kol tarafında ≤ 0,033°), olay da hız/tork izine bakıyor, mutlak açıya değil.
+- **birleşik orta (sürtünmeli 123):** tek tek zararsız ya da hafif olan etkiler birlikte belirgin bozulma veriyor (69 yüz izi, 73 kayma). En büyük pay büyük olasılıkla cogging 0,25 F_c (tek başına 186) ve r ±%20'nin (tek başına 185) birleşimi. Birer birer çıkarma (leave-one-out) denenmedi.
+
+**Devam/dur ölçütleri taslağı** (tanılama deneyinde ölçülecek; hepsi kol tarafı ve B1 senaryoları için):
+
+| Ölçülen | Devam | Dikkat (önlem gerekir) | Dur / donanım değiştir |
+|---|---|---|---|
+| Boşluk r ve açıya göre değişimi | r_N gerçek r'nin ±%20'si içinde, her açıda | ±%20–40: r(θ) haritası ölçülüp ofset tablosuna konmalı | (harita ile çözülebilir, dur gerekmez; doğrulanmalı) |
+| Cogging genliği | ≤ 0,1 F_c (motor milinde ≲ 0,13 mN m) | 0,1–0,25 F_c | ≥ 0,5 F_c: motor değişmeli ya da cogging telafisi (denenmedi) |
+| Konuma bağlı sürtünme değişimi | ≤ ±%40 | ±%40–60 | ölçülmedi (> ±%60) |
+| F_s/F_c oranı | ≤ 1,5 (1 de güvenli) | ≈ 2: F_sN seçimi yeniden ayarlanmalı | |
+| F_c, F_s bilgisi (B1-D) | 0,5–1,25 × gerçek | | > 1,25× |
+| AS5600 açı hatası | ≤ 1° (mil) | | ≥ 2° denenmedi |
+
+**Sınırlar.** (1) Her etki ayrı, birleşim tek noktada sınandı. (2) Cogging tek harmonik ve mil turu başına 12 periyot. Gerçek motorun periyodu ve genliği ölçülmeli. (3) r_K = 6 bir varsayım (son kademe oranı bilinmiyor). (4) AS5600'de mıknatıs kayması için ±1°'nin üstü denenmedi.
+
+**Açık sorular (kullanıcıya):** (a) r(θ) bilinirse (ofset r_N(θ) haritasıyla) kayma kayboluyor mu? Bu, "sorun tabloda, kestiricide değil" savının doğrudan kanıtı olur. (b) Birleşik koşulda birer birer çıkarma: hangi etki baskın? (c) AS5600 2° (mıknatıs kayması). (d) Cogging 0,1–0,25 F_c ince taraması. Cogging telafisi yeni bir yöntem olur, sorulmadan girilmez.

@@ -163,6 +163,15 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   Kestiricinin bildiği FcN/FsN değişmez. out.tau_s net dişli torkudur (A - B).
 % p.kayitEk = true (varsayılan kapalı; B2 bedel): out.w motor hızı [rad/s, kol tarafı]; motorElk açıksa
 %   out.i akım [A, eşdeğer] ve out.V sürücü gerilimi [V] (aynı kayıt aralığı p.dec).
+% Model dışı etkiler (B1-M, 7_karsilastirma/b1m_model_disi.m; hepsi varsayılan kapalı, kestirici bilmez):
+%   p.cogA [N m, kol tarafı], p.cogK (12), p.cogF [rad]: motor torkuna cogging -cogA sin(cogK N phi + cogF)
+%     (motor mili turu başına cogK periyot).
+%   p.sfA, p.sfF: konuma bağlı sürtünme, tesis sürtünmesi (1 + sfA sin(N phi + sfF)) ile çarpılır (mil turu
+%     başına bir kez). Stribeck biçimi için tesisin p.Fs, p.vs değerleri ayrıca değiştirilebilir.
+%   p.rA, p.rK (1), p.rF: açıya bağlı boşluk, tesiste r(th) = r (1 + rA sin(rK th + rF)) (rK = 1 çıkış dişlisi
+%     eksantrikliği). Kestirici/ofset p.rN'yi (varsayılan p.r) sabit bilir; analiz sınıfı yine p.r ile.
+%   p.asHar = [E1 f1 E2 f2] [rad, motor mili tarafı]: AS5600 açıya bağlı harmonik hatası; motor ölçümüne
+%     (nicemleme ve gürültüden önce) (E1 sin(psi + f1) + E2 sin(2 psi + f2))/N eklenir, psi = N phi.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
 % p.dT0 <= t < p.dT aralığında (dT0 varsayılan 0, dT Inf). p.x0, p.z0: önceki benzetimin son
 % durumundan sürdürme.
@@ -290,6 +299,14 @@ if nM > 0
 else
     olcM = @(xx) olc(xx, p.qM);
 end
+asH = al(p,'asHar',[0 0 0 0]);                     % AS5600 harmonik hatası (B1-M)
+if any(asH([1 3]) ~= 0)
+    olcM0 = olcM;  asN = p.N;
+    olcM = @(xx) olcM0(xx + (asH(1)*sin(asN*xx + asH(2)) + asH(3)*sin(2*asN*xx + asH(4)))/asN);
+end
+cogA = al(p,'cogA',0);  cogK = al(p,'cogK',12);  cogF = al(p,'cogF',0);   % model dışı tesis etkileri (B1-M)
+sfA = al(p,'sfA',0);  sfF = al(p,'sfF',0);
+rAc = al(p,'rA',0);  rKc = al(p,'rK',1);  rFc = al(p,'rF',0);
 if kesMod > 0, ph = olc(x(1,:), p.qM); end
 ua = u;  aAk = 1 - exp(-al(p,'akimW',Inf)*p.dt);       % akım döngüsü (Inf: tork = komut)
 tOlc = kesMod > 0 && al(p,'tOlc',false);           % gözlemci torku ölçümden mi (iş sırası 5)
@@ -630,9 +647,16 @@ out.sinif(out.kararsiz) = 4;
         phi = x(1,:); dphi = x(2,:); th = x(3,:); dth = x(4,:);
         d = phi - th;  dd = dphi - dth;
         ts = zeros(size(d));
-        sag = d >  p.r;  sol = d < -p.r;
-        ts(sag) = max(p.Ks*(d(sag)-p.r) + p.cs*dd(sag), 0);
-        ts(sol) = min(p.Ks*(d(sol)+p.r) + p.cs*dd(sol), 0);
+        if rAc ~= 0                                % açıya bağlı boşluk (B1-M)
+            rrr = p.r*(1 + rAc*sin(rKc*th + rFc));
+            sag = d >  rrr;  sol = d < -rrr;
+            ts(sag) = max(p.Ks*(d(sag)-rrr(sag)) + p.cs*dd(sag), 0);
+            ts(sol) = min(p.Ks*(d(sol)+rrr(sol)) + p.cs*dd(sol), 0);
+        else
+            sag = d >  p.r;  sol = d < -p.r;
+            ts(sag) = max(p.Ks*(d(sag)-p.r) + p.cs*dd(sag), 0);
+            ts(sol) = min(p.Ks*(d(sol)+p.r) + p.cs*dd(sol), 0);
+        end
         if onY                                     % makas dişli: B yarısının yay kuvveti
             if oFn, tp = oTp*p.taupFn(tt); else, tp = oTp; end
             ts = ts - max(tp + oKp.*(p.r - d), 0);
@@ -643,10 +667,12 @@ out.sinif(out.kararsiz) = 4;
         if surVar                                  % yumuşatılmış Stribeck sürtünmesi
             tf = (fc + (fs-fc).*exp(-(dphi/p.vs).^2)) .* tanh(dphi/p.veps);
             if fKay, tf = tf*(1 + (fKayK - 1)*min(tt/fKayT, 1)); end
+            if sfA ~= 0, tf = tf.*(1 + sfA*sin(p.N*phi + sfF)); end   % konuma bağlı sürtünme (B1-M)
         else
             tf = 0;
         end
         if elk > 0, tm = eKm*x(5,:); else, tm = ua; end   % tesis torku
+        if cogA ~= 0, tm = tm - cogA*sin(cogK*p.N*phi + cogF); end   % cogging (B1-M)
         dx = [dphi;
               (tm - p.bM*dphi - tf - ts)/p.JM;
               dth;
