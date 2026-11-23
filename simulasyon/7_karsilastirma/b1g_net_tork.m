@@ -3,7 +3,7 @@ function b1g_net_tork
 % Senaryo (ortam B1G_SEN):
 %   '1'  (varsayılan) yatay eklem: tesiste mgl = 0, kestirici de mglN = 0 bilir. Kod değişikliği yok.
 %   '2a' karşı ağırlık: tesiste mgl x 0,1 / x 0,05 (D'nin dik kolu), kestirici mglN doğru, x0,5, x1,5.
-%        Başlangıç inancı doğru = sign(sin hedef) (180°'de ilk hareket yönü); darbe/yük işareti -s0.
+%        Başlangıç inancı doğru = sign(sin hedef) (180°'de ilk hareket yönü); darbe/yük işareti +s0 (yüzden koparır; 2026-11-23 düzeltme, ilk koşumlarda -s0 yüze bastırıyordu).
 %   '2b' yay dengeleme: tesiste mgl = 0 ve artık tork -yayE sin 2th (kol_benzetim p.yayE), yayE 0,5 / 1 / 2 F_c
 %        (0,02 / 0,04 / 0,08 N m). Kestirici mglN = 0 (artığı bilmez). Başlangıç inancı sign(sin 2 hedef).
 %   B1G_EPS=1: B1'in 180° kuralı (|hedef - 180| < 0,5° ise hedef = 180 - 0,5 Yf), önek sonuna 'e'.
@@ -98,15 +98,15 @@ for v = sec
    end
    q = p0;  q.Fc = sur{a,2};  q.Fs = sur{a,3};  q.yuz0 = bas*s0;  q.adim = 1.1*Yn;
    switch sc
-       case 2, q.dA = -0.05*s0;  q.df = 25;  q.dT0 = tD;  q.dT = tD + 0.02;   % yüzden koparan darbe
-       case 3, q.dB = -0.02*s0;  q.dBT0 = tD;                                 % yüzü çevirmeye çalışan sabit yük
+       case 2, q.dA = 0.05*s0;   q.df = 25;  q.dT0 = tD;  q.dT = tD + 0.02;   % yüzden koparan darbe
+       case 3, q.dB = 0.02*s0;   q.dBT0 = tD;                                 % yüzü çevirmeye çalışan sabit yük
        case 4, W = [hedef - 5*Yf; hedef];  tk = [0 2.5];
        case 5, W = [hedef + 3*Yf; hedef - 1.5*Yf; hedef];  tk = [0 2.25 3];
    end
    if sc >= 4, q.adim = 0;  q.refYol = @(t) deg2rad(interp1(tk, W, min(t, tk(end)))); end
-   kz = K{kk,2};                                   % senaryo 3: bozucu genliği -s0 yönünde (sinüs ilk yarı dalgası yüzden koparır)
-   if isfield(kz, 'bA'), q.dA = -kz.bA*s0;  kz = rmfield(kz, 'bA'); end
-   if isfield(kz, 'bB'), q.dB = -kz.bB*s0;  kz = rmfield(kz, 'bB'); end
+   kz = K{kk,2};                                   % bozucu +s0 yönünde: kol denkleminde +d, durağan dişli torku mgl sin th - d, yani +s0 yüzden koparır (B1-M ile aynı)
+   if isfield(kz, 'bA'), q.dA = kz.bA*s0;  kz = rmfield(kz, 'bA'); end
+   if isfield(kz, 'bB'), q.dB = kz.bB*s0;  kz = rmfield(kz, 'bB'); end
    for ts = 1:3
      p = q;  p.nTohum = ts;
      if isfield(M{m,2}, 'yuzKes'), p = ek(p, ortak); end
