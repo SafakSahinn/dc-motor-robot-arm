@@ -94,6 +94,7 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %     (en çok p.tyMaks); avlanma durunca tutulur; uçta 1 s daha sürerse bir kez öbür yöne; referans
 %     değişince sıfırlanır.
 %   Ofsetteki r, K_s, mgl kestiricinin bildiği değerlerdir: p.rN, p.KsN, p.mglN (varsayılan: ikizin gerçeği).
+%   p.rN skaler ya da benzetim başına bir değer (1 x n, ör. hedef açıda okunmuş r(θ) haritası; B1-M ek).
 %   Çıktı: out.shat (s^ kaydı), out.dhat, out.yuzDegis, out.yuzDegisAn, out.yuzSon,
 %   out.yokSay (yoklama sayısı), out.yokKol (yoklama + 0,3 s içinde kolun en büyük hareketi [rad],
 %   yalnız ölçüm için gerçek theta kullanılır), out.yokTemas (temas bulan yoklama sayısı).
@@ -215,7 +216,7 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;                    % s^ ve ofsetteki (rampalı) yüz
     rN = al(p,'rN', p.r);                            % kestiricinin/ofsetin bildiği değerler (duyarlılık, iş sırası 4)
-    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf*rN + ofsG;
+    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf.*rN + ofsG;
     rampa  = al(p,'yuzRampa', 0.5);
     wo     = al(p,'gozW', 2*pi*40);
     JMN    = al(p,'JMN', p.JM);   bMN = al(p,'bMN', p.bM);
@@ -276,7 +277,7 @@ if isfield(p,'yuzKural') && ~isempty(p.yuzKural)
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;  kYon = sh;  kS = sh;
     rN = al(p,'rN', p.r);  rampa = al(p,'yuzRampa', 0.5);
-    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf*rN + ofsG;
+    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf.*rN + ofsG;
     kuralV = al(p,'kuralV', 0.05);  kuralT1 = al(p,'kuralT1', 0.02);  kuralT2 = al(p,'kuralT2', 0.04);
     kuralU = al(p,'kuralU', 0.01);
     yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
@@ -508,7 +509,7 @@ for i = 0:nStep-1
             else
                 sOf = sh;
             end
-            ofs = sOf*rN + ofsG;
+            ofs = sOf.*rN + ofsG;
         end
         if kurMod > 0                              % komut tabanlı taban kurallar (B1)
             shOnc = sh;
@@ -532,7 +533,7 @@ for i = 0:nStep-1
             else
                 sOf = kS;
             end
-            ofs = sOf*rN + ofsG;
+            ofs = sOf.*rN + ofsG;
         end
         if vGoz, v = wh; end                       % hız = bu örnekte güncellenmiş w^ (kart: HIZ_GOZLEMCI)
         e  = thr + ofs - thm;

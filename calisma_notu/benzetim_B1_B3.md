@@ -359,13 +359,48 @@ Karşılaştırma (aynı en kötü hücre): momentum (L1) her koşulda daha köt
 
 | Ölçülen | Devam | Dikkat (önlem gerekir) | Dur / donanım değiştir |
 |---|---|---|---|
-| Boşluk r ve açıya göre değişimi | r_N gerçek r'nin ±%20'si içinde, her açıda | ±%20–40: r(θ) haritası ölçülüp ofset tablosuna konmalı | (harita ile çözülebilir, dur gerekmez; doğrulanmalı) |
-| Cogging genliği | ≤ 0,1 F_c (motor milinde ≲ 0,13 mN m) | 0,1–0,25 F_c | ≥ 0,5 F_c: motor değişmeli ya da cogging telafisi (denenmedi) |
+| Boşluk r ve açıya göre değişimi | r_N gerçek r'nin ±%20'si içinde, her açıda (ya da r(θ) haritası ofsette) | harita olmadan ±%20–40: r(θ) haritası ölçülüp ofset tablosuna konmalı (B1-M ek: kayma tamamen kalkıyor) | (dur gerekmez; haritayla ±%40'ta sürtünmeli tesiste 192–194 kalıyor) |
+| Cogging genliği | ≤ 0,2 F_c (motor milinde ≲ 0,27 mN m; B1-M ek: 0,125–0,2 hepsi 210) | 0,2–0,25 F_c (0,25'te 186, kenar keskin) | ≥ 0,5 F_c: motor değişmeli ya da cogging telafisi (denenmedi) |
 | Konuma bağlı sürtünme değişimi | ≤ ±%40 | ±%40–60 | ölçülmedi (> ±%60) |
 | F_s/F_c oranı | ≤ 1,5 (1 de güvenli) | ≈ 2: F_sN seçimi yeniden ayarlanmalı | |
 | F_c, F_s bilgisi (B1-D) | 0,5–1,25 × gerçek | | > 1,25× |
-| AS5600 açı hatası | ≤ 1° (mil) | | ≥ 2° denenmedi |
+| AS5600 açı hatası | ≤ 2° (mil; 2°'de 208, B1-M ek) | | > 2° denenmedi |
 
 **Sınırlar.** (1) Her etki ayrı, birleşim tek noktada sınandı. (2) Cogging tek harmonik ve mil turu başına 12 periyot. Gerçek motorun periyodu ve genliği ölçülmeli. (3) r_K = 6 bir varsayım (son kademe oranı bilinmiyor). (4) AS5600'de mıknatıs kayması için ±1°'nin üstü denenmedi.
 
 **Açık sorular (kullanıcıya):** (a) r(θ) bilinirse (ofset r_N(θ) haritasıyla) kayma kayboluyor mu? Bu, "sorun tabloda, kestiricide değil" savının doğrudan kanıtı olur. (b) Birleşik koşulda birer birer çıkarma: hangi etki baskın? (c) AS5600 2° (mıknatıs kayması). (d) Cogging 0,1–0,25 F_c ince taraması. Cogging telafisi yeni bir yöntem olur, sorulmadan girilmez.
+
+
+### B1-M ek. Açık soruların koşuları (2026-11-23, tur 66)
+
+**Değişiklik.** `kol_benzetim.m` dosyasında `p.rN` artık benzetim başına bir değer (1 × n) alabiliyor (`sOf.*rN`). 59421c6 ile 9 yapılandırmada gerileme yapıldı, θ ve u farkı 0. Ayrıca r_N = r·1 vektörü skalerle bire bir aynı sonucu veriyor. Betik `b1m_model_disi.m` (`B1M_EK=1`, önek `b1mE`), özet `B1M_ONEK=b1mE b1m_ozet`, başarısızlık türü yeni kalıcı betik `b1m_tur.m`, log `b1mE_log.txt`. Kurulum B1-M ile aynı: 5 yöntem, iki tesis, iki başlangıç, tohuma bağlı faz.
+
+**(a) Ofsette r(θ) haritası.** r_N = r (1 + b sin(r_K θ_hedef + faz)), yani tablo gerçek r(θ)'yi hedef açıda okuyor. Bu bir yaklaşıklık: kararlı durumda θ ≈ hedef olduğu için yeterli, geçişte tablo hedefteki r'yi kullanıyor.
+
+| olay+yok, en kötü hücre /210 | harita yok (B1-M) | harita var |
+|---|---|---|
+| r_K 1, b 0,2 | 185 | 210 |
+| r_K 1, b 0,4 | 84 | 194 (sürtünmesiz 210) |
+| r_K 6, b 0,2 | 210 | 210 |
+| r_K 6, b 0,4 | 84 | 192 (sürtünmesiz 210) |
+
+Haritayla **kayma tamamen kalkıyor** (kayma 0/420, her koşulda). b 0,4 sürtünmeli tesiste kalan 27–28 başarısızlığın hepsi yüz izi, ortalama |e| 1,9–2,1°. Böylece "B1-M'deki r(θ) başarısızlığı kestiriciden değil, ofset tablosunun r bilgisinden" savı doğrudan doğrulanmış oluyor. Kalan küçük pay sürtünmeli tesise özgü: ±%40'lık r değişimi olay penceresini (dişlinin boşlukta kaldığı süre) değiştiriyor. Tek etki olarak dayanılabilir düzeyde.
+
+**(b) Birleşik orta, birer birer çıkarma** (olay+yok, en kötü hücre /210; birleşik: sürtünmeli 123, sürtünmesiz 182):
+
+| Çıkarılan etki | sürtünmeli | sürtünmesiz |
+|---|---|---|
+| cogging 0,25 F_c | **186** | 210 |
+| konum sürt. a 0,4 | 169 | 182 |
+| r(θ) b 0,2 | 155 | 210 |
+| AS5600 0,5° | 127 | 185 |
+
+**Baskın etki cogging.** Onu çıkarmak sürtünmeli tesiste 123'ü 186'ya çıkarıyor. Bu değer, cogging tek başına uygulandığında alınan 186 ile aynı düzeyde. Ardından konuma bağlı sürtünme ve r(θ) geliyor. AS5600 hatasının payı yok denecek kadar az (123 → 127). Sürtünmesiz tesiste konum sürtünmesini çıkarmak bir şey değiştirmiyor (182), çünkü çarpılacak sürtünme yok. Bu aynı zamanda bir denetim. Orada bozulmayı cogging ile r(θ) birlikte yapıyor: ikisinden biri çıkınca 210. Başarısızlık türü (sürtünmeli): cogging çıkınca 21 yüz izi, 16 kayma; r(θ) çıkınca 54 yüz izi, 34 kayma.
+
+**(c) AS5600 harmonik 2°** (E1 2°, E2 1°; mıknatıs kayması): olay+yok 208/210. Sürtünmeli tesiste ters başlangıç ve d senaryosunda 2 yüz izi var. Sürtünmesizde 210. Mil hatası dişliden sonra 30'a bölündüğü için 2° de etkisiz sayılır. Karşılaştırma: momentum 126, lenze 111.
+
+**(d) Cogging ince taraması** (0,125 / 0,15 / 0,175 / 0,2 F_c): olay+yok her ikisi tesiste 210/210. Olay yöntemi 0,2 F_c sürtünmeli tesiste 203'e iniyor. B1-M'deki 0,25 F_c değeri 186'ydı. Yani **eşik 0,2 ile 0,25 F_c arasında ve kenar keskin.** Devam eşiği 0,1'den 0,2 F_c'ye (motor milinde ≈ 0,27 mN m) çekildi.
+
+**Devam/dur tablosu güncellendi** (yukarıdaki tabloda r, cogging, AS5600 satırları). Donanım için asıl risk sıralaması şimdi şöyle: (1) cogging, ölçülmeli, ≤ 0,2 F_c olmalı; (2) r ±%20'den fazla değişiyorsa r(θ) haritası ölçülüp tabloya konmalı; (3) birleşik etkiler. Tek tek güvenli olan cogging ve r birlikte sürtünmesiz tesisi de bozuyor, bu yüzden tanılama deneyinde cogging ile r(θ) birlikte ölçülmeli.
+
+**Sınırlar.** Harita hedef açıda okunuyor (geçişte yaklaşık). Birleşimde yalnız tek nokta ve tek-çıkarma sınandı, ikili etkileşim taraması yapılmadı. Cogging yine tek harmonik.

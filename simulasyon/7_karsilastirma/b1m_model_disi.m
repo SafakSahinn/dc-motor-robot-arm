@@ -6,6 +6,7 @@ function b1m_model_disi
 % Fazlar tohuma bağlı (her tohum farklı faz). Kurulum, senaryolar, H7 ölçütü b1d_dayaniklilik ile aynı;
 % yalnız son yüz dişli torkunun işaretinden (r değişkenken delta >= r ölçütü yanıltır). Denetim için
 % eski (delta) ölçütü de h7d olarak kaydedilir. Paralel: B1M_PARCA / B1M_NPAR. Özet: b1m_ozet.
+% B1M_EK=1: ek koşul listesi (önek b1mE; özet için B1M_ONEK=b1mE). Başarısızlık türü: b1m_tur.
 kok = fileparts(fileparts(mfilename('fullpath')));
 addpath(kok, fullfile(kok, '4a_ghaffari'));
 cd(fileparts(mfilename('fullpath')));
@@ -45,6 +46,23 @@ end
 K(end+1,:) = {'birleşik orta', [1 2], ek(as, struct('cogA', 0.01, 'sfA', 0.4, 'rA', 0.2, 'rK', 1, ...
               'asHar', deg2rad([0.5 0 0.25 0])))};
 onek = 'b1m';  mSec = 1:size(M,1);
+if strcmp(getenv('B1M_EK'), '1')   % B1-M ek koşuları (tur 66): (a) r(th) haritası ofsette, (b) birleşik ortadan
+    onek = 'b1mE';  K = {};        % birer birer çıkarma, (c) AS5600 2°, (d) cogging ince taraması
+    for rk = [1 6]
+        for b = [0.2 0.4]
+            K(end+1,:) = {sprintf('r(th) rK%d b%g harita', rk, b), [1 2], ek(as, struct('rA', b, 'rK', rk, 'rHarita', true))}; %#ok<AGROW>
+        end
+    end
+    bo = struct('cogA', 0.01, 'sfA', 0.4, 'rA', 0.2, 'rK', 1, 'asHar', deg2rad([0.5 0 0.25 0]));
+    cik = {'cogging', {'cogA'}; 'konum sürt', {'sfA'}; 'r(th)', {'rA', 'rK'}; 'AS5600', {'asHar'}};
+    for j = 1:size(cik,1)
+        K(end+1,:) = {['birleşik - ' cik{j,1}], [1 2], ek(as, rmfield(bo, cik{j,2}))}; %#ok<AGROW>
+    end
+    K(end+1,:) = {'AS5600 harm 2°', [1 2], ek(as, struct('asHar', deg2rad([2 0 1 0])))};
+    for c = [0.125 0.15 0.175 0.2]
+        K(end+1,:) = {sprintf('cogging %gFc', c), [1 2], ek(as, struct('cogA', 0.04*c))}; %#ok<AGROW>
+    end
+end
 V = {};   % (yöntem, koşul, başlangıç)
 for k = 1:size(K,1), for m = mSec, for b = [1 -1], V(end+1,:) = {m, k, b}; end, end, end %#ok<AGROW>
 parca = str2double(getenv('B1M_PARCA'));  npar = str2double(getenv('B1M_NPAR'));
@@ -78,6 +96,9 @@ for v = sec
      fz = @(o) 2*pi*mod(0.618*ts + o, 1);           % tohuma bağlı faz
      p.cogF = fz(0.10);  p.sfF = fz(0.35);  p.rF = fz(0.60);
      if isfield(p, 'asHar'), p.asHar([2 4]) = [fz(0.85) fz(0.20)]; end
+     if isfield(p, 'rHarita')                       % ofset r(th)'yi hedef açıda okur (kararlı durumda th ~ hedef)
+         p.rN = p.r*(1 + p.rA*sin(p.rK*deg2rad(hedef) + p.rF));  p = rmfield(p, 'rHarita');
+     end
      o = kol_benzetim(p, hedef, kpv*ones(1,n));
      sap = rad2deg(o.th) - hedef;  son = o.t > o.t(end) - 1;
      gy = sign(o.tau_s).*(abs(o.tau_s) > 0);  yuzS = sign(sum(gy(son,:), 1));
@@ -86,7 +107,7 @@ for v = sec
      k = numel(R) + 1;  iyi = abs(e) <= 0.5 & emax <= 1;
      R(k).yontem = M{m,1};  R(k).kosul = K{kk,1};  R(k).bas = bas;  R(k).sur = sur{a,1};  R(k).sen = sen{sc};
      R(k).tohum = ts;  R(k).h7 = iyi & yuzS == sDog;  R(k).h7d = iyi & yuzD == sDog;
-     R(k).iyi = iyi;  R(k).e = e;
+     R(k).iyi = iyi;  R(k).e = e;  R(k).emax = emax;
    end
   end
  end
