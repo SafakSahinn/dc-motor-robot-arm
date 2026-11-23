@@ -4,6 +4,9 @@ function b1g_net_tork
 %   '1'  (varsayılan) yatay eklem: tesiste mgl = 0, kestirici de mglN = 0 bilir. Kod değişikliği yok.
 %   '2a' karşı ağırlık: tesiste mgl x 0,1 / x 0,05 (D'nin dik kolu), kestirici mglN doğru, x0,5, x1,5.
 %        Başlangıç inancı doğru = sign(sin hedef) (180°'de ilk hareket yönü); darbe/yük işareti -s0.
+%   '2b' yay dengeleme: tesiste mgl = 0 ve artık tork -yayE sin 2th (kol_benzetim p.yayE), yayE 0,5 / 1 / 2 F_c
+%        (0,02 / 0,04 / 0,08 N m). Kestirici mglN = 0 (artığı bilmez). Başlangıç inancı sign(sin 2 hedef).
+%   B1G_EPS=1: B1'in 180° kuralı (|hedef - 180| < 0,5° ise hedef = 180 - 0,5 Yf), önek sonuna 'e'.
 % Ölçüt yeni (yerçekimi yok, sign(sin hedef) anlamsız): |e| <= 0,5°, e_max <= 1° (son 1 s) VE
 % kestiricinin son yüzü (o.yuzSon) = tesisin son 1 s'deki gerçek dişli torku işareti. Gerçek tork son 1 s
 % boyunca hiç oluşmadıysa (kol boşlukta serbest) yuzS = 0: H7 sayılmaz, ayrıca "temassız" olarak sayılır.
@@ -45,8 +48,16 @@ switch sen
             end
         end
         istek = [45 120 180 270];
+    case '2b'   % yay dengeleme: tesiste mgl = 0 + artık -yayE sin 2th; kestirici mglN = 0 (artığı bilmez)
+        onek = 'b1g2b';  K = {};
+        for c = [0.5 1 2]
+            K(end+1,:) = {sprintf('yayE %gFc', c), struct('mgl', 0, 'mglN', 0, 'yayE', c*0.04)}; %#ok<AGROW>
+        end
+        istek = [45 120 180 270];   % sin 2th: 45/120 büyük, 180 kararlı sıfır, 270 kararsız sıfır
     otherwise, error('bilinmeyen B1G_SEN: %s', sen);
 end
+epsK = strcmp(getenv('B1G_EPS'), '1');            % B1G_EPS=1: 180° ε kuralı (önek sonuna 'e')
+if epsK, onek = [onek 'e']; end
 sc_ad = {'temel', 'a1 darbe', 'a2 yük', 'c yaklaşma', 'd yön değ.'};
 sur = {'sürtünmeli', 0.04, 0.06; 'sürtünmesiz', 0, 0};
 V = {};   % (yöntem, koşul, başlangıç, tesis, senaryo)
@@ -62,8 +73,13 @@ for v = sec
    m = V{v,1};  kk = V{v,2};  bas = V{v,3};  a = V{v,4};  sc = V{v,5};
    Yf = Yn;  if sc == 5, Yf = -Yn; end
    hedef = I;  s0 = Yn;                            % mgl = 0: ilk hareket yönü = ilk temas yüzü
+   if epsK                                         % B1'in 180° kuralı: bant içindeki hedef 0,5° kaydırılır
+       kay = abs(I - 180) < 0.5;  hedef(kay) = 180 - 0.5*Yf(kay);
+   end
    if K{kk,2}.mgl > 0                              % yerçekimi var: B1 kuralı sign(sin hedef), 180°'de Yn
        s0 = sign(round(sind(hedef)*1e9));  s0(s0 == 0) = Yn(s0 == 0);
+   elseif isfield(K{kk,2}, 'yayE')                 % yay artığı: durağan dişli torku işareti sign(sin 2 hedef)
+       s0 = sign(round(sind(2*hedef)*1e9));  s0(s0 == 0) = Yn(s0 == 0);
    end
    q = p0;  q.Fc = sur{a,2};  q.Fs = sur{a,3};  q.yuz0 = bas*s0;  q.adim = 1.1*Yn;
    switch sc

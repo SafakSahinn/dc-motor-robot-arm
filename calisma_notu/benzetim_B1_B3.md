@@ -434,3 +434,26 @@ Tesiste mgl = 0, kestirici de mglN = 0 biliyor. Kod değişikliği yok. Hedefler
 **Yorum.** Burada sorun yüz kestirimi değil, gözlenecek bir yüzün olmaması. Kol bir yüze yaslanmıyorsa motor tarafındaki hiçbir bilgi kolun boşluktaki yerini veremez. Bu, gözlenebilirlik itirazının (hakem sorusu 8) sınır durumu. Yöntemler arasındaki fark gürültü düzeyinde. Her açıda yoklama da yardımcı olmuyor: yoklama "temas mı, boşluk mu" sorusunu soruyor, ama kol serbestçe yüzerken her iki cevap da birkaç saniye sonra geçersiz kalıyor. a2'nin geçmesi tam tersini gösteriyor: küçük ama kalıcı bir tork (0,02 N m ≈ 0,5 F_c) kolu bir yüze bastırınca bütün yöntemler (edilgen dahil) her hedefte doğru. Edilgen yöntemin sürtünmesiz tesisteki farklı davranışı (temassız yalnız 5, ama 135 konum başarısızlığı, ortalama |e| 1,06°) yöntemin kendinden geliyor: s^ = sign(u) seçimi kolu sürekli bir yüze itiyor ve titreşen bir temas oluşturuyor.
 
 **Sonuç (senaryo 1).** Yatay eklemde bu kestiriciler tek başına anlamsız. Kola bir yüze bastıran kalıcı bir tork gerekiyor. Bu tork mekanik ön yükle (B2, makas dişli), ya da kontrolle sağlanabilir: motoru kolu sürekli bir yüze dayayacak kadar sabit bir tork farkıyla tutmak. İkincisi yeni bir yöntem, plan dışında, sorulmadan denenmedi. **Model sınırı:** kol tarafındaki Coulomb sürtünmesi (rulman) tesiste yok. Gerçek eklemde kol boşlukta salınmak yerine bir yerde durur. Bu durumda da kol yüzde değil, boşlukta herhangi bir konumda kalır ve hata 2r'ye kadar çıkabilir. Sonuç değişmez, ama başarısızlığın biçimi değişir (salınım yerine sabit kayma). Bunu sınamak için tesise kol tarafı sürtünmesi eklemek gerekir. Bu bir kod değişikliği ve plan dışında.
+
+### Senaryo 2a. Karşı ağırlık (mgl × 0,1 ve × 0,05)
+
+Tesiste mgl, D'nin dik kolunun 0,1 ve 0,05 katı (0,024 / 0,012 N m, yani F_c'nin 0,6 ve 0,3 katı; tork her açıda sürtünme aralığının içinde). Kestiricinin bildiği mglN üç durumda: doğru, × 0,5, × 1,5. Kod değişikliği yok. Hedefler ve senaryolar senaryo 1 ile aynı. Başlangıç inancı B1 kuralıyla: doğru = sign(sin hedef), 180°'de ilk hareket yönü. Darbe ve yük -s0 yönünde. İki koşum yapıldı: 180° tam hedef (`b1g2a_log.txt`), ve B1'in 180° ε kuralıyla, yani hedef 180 − 0,5·Y (`B1G_EPS=1`, `b1g2ae_log.txt`). Hücre /120.
+
+| ε kuralıyla, H7 /120 (doğru / ters) | ×0,1 sürt.li | ×0,1 sürt.siz | ×0,05 sürt.li | ×0,05 sürt.siz |
+|---|---|---|---|---|
+| olay | 98 / 97 | 98 / 96 | 96 / 90 | 96 / 96 |
+| olay+yok (iki varyant aynı) | 98 / 97 | 98 / 96 | 96 / 93 | 96 / 96 |
+| momentum | 98 / 96 | 97 / 90 | 96 / 84 | 96 / 79 |
+| lenze | 78 / 78 | 96 / 96 | 72 / 60 | 96 / 96 |
+| edilgen | 42 / 60 | 96 / 96 | 25 / 70 | 96 / 96 |
+
+(mglN doğru. ×0,5 ve ×1,5 satırları ±3 içinde aynı.)
+
+**Hedefe göre ayrıştırınca** (olay+yok, iki başlangıç, mglN doğru):
+- **45 / 120 / 270°: 180/180, her tesiste, her iki mgl'de, ε kuralı olsun olmasın.** Yerçekimi F_c'nin %30'u kadar küçük olsa da kolu bir yüze bastırmaya yetiyor. Sürtünme motor tarafında, kolu tutmuyor. Bu yüz de kestirici tarafından doğru bulunuyor. Temassız koşu yok denecek kadar az (0–3/240).
+- **180°: yalnız a2 (sabit yük) geçiyor, 12/60.** ε kuralı yardım etmiyor (9–15/60). mgl × 0,1'de 0,5° kaydırmanın verdiği tork 0,024 · sin 0,5° ≈ 2·10⁻⁴ N m, yani F_c'nin %0,5'i. Kolu bir yüze bastırmak için çok küçük. B1'de (tam mgl) aynı kaydırma 0,0021 N m veriyordu. Başarısızlıklar yanlış yüz (17–46/60) ya da konum hatası, ortalama |e| 1,4–2,1°.
+- **Kestiricinin mgl hatası (±%50) sonucu değiştirmiyor.** Ofsetteki mgl·sin θ / K_s terimi bu kadar küçük mgl'de ihmal edilebilir. Yüz kararı da mgl'yi kullanmıyor.
+- **Her açıda yoklama varyantı burada olay+yok ile bire bir aynı.** 180° dışında yüz zaten doğru olduğu için yoklama bir şey değiştirmiyor. 180°'de ise senaryo 1'deki gibi kalıcı bir yüz olmadığından yoklamanın cevabı tutmuyor.
+- Komut tabanlı yöntemler (lenze, edilgen) sürtünmeli tesiste kötüleşiyor: yerçekimi sürtünme aralığının içinde kalınca u'nun işareti artık yüzü göstermiyor. Olay tabanlı kestirici bundan etkilenmiyor, çünkü sürtünme aralığını hesaba katıyor.
+
+**Sonuç (senaryo 2a).** Karşı ağırlıklı kolda kestirici, kolu bir yüze bastıran net tork olduğu sürece çalışıyor. Bu tork F_c'nin %30'u kadar küçük olabilir (denenen en küçük değer; alt sınır taranmadı), çünkü yalnız kol tarafında tutucu sürtünme yok. Başarısızlık, senaryo 1'deki gibi, net torkun sıfırlandığı noktaya (burada 180°) sıkışıyor. Bu noktanın çevresindeki "ölü bant" mgl küçüldükçe genişliyor. Kabaca |mgl sin(θ − 180°)| ≲ birkaç 10⁻³ N m olan açılarda yüz tutunmuyor. Bu bandın açı cinsinden genişliği ölçülmedi.
