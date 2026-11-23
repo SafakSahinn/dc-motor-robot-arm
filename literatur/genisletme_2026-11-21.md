@@ -294,3 +294,26 @@ Kullanıcı Cloudflare doğrulamasını geçti. Espacenet'te CQL sorguları (`ct
 3. Katkının en keskin cümlesi (öneri): "Komutla varsayılan yüz, yerçekimi ön yükü sıfırken ve hız sıfıra yakınken gerçek yüzden ayrılabilir. Biz gerçek yüzü yalnız motor sinyalleriyle kestiriyoruz." Bunu kanıtlamak için benzetimde **komut tabanlı kural (Toyoda/Panasonic türü) ile kestiricinin karşılaştırılması** gerekir.
 4. Ön yük kaybını motor akımıyla izleme: yalnız bilyalı vida için bir örnek var (CN123047288A, 2026). Dişli ön yükü (yaylı ya da makaslı) için bulunamadı.
 5. Kalan risk: JP, CN ve KR patentlerinin özgün dildeki tam metinleri taranmadı (makine çevirisi). 2026'nın son aylarında yayımlanmamış başvurular doğal olarak görülemez (18 ay gizlilik).
+
+### 2.7 Ek tarama ve gözlenebilirlik itirazı (23 Kasım 2026)
+
+Beş ek sorgu yapıldı: 2024–26 yıllarında motor tarafından yüz kestirimi, donanımla (ek algılayıcıyla) sensörsüz boşluk, ucuz kol ve AS5600. **Yeniliği bozan bir kaynak çıkmadı.** Yeni görülenler:
+
+| Kaynak | Ne yapıyor | Bizimle farkı |
+|---|---|---|
+| Precision Engineering, 2024 (ScienceDirect PII S0141635924002125) | Yalnız tahrik tarafı sinyallerinden, Hilbert–Huang dönüşümüyle boşluğun **büyüklüğünü** kestiriyor | Büyüklük (r) kestirimi, çevrimdışı/sinyal işleme. Çalışma sırasında **temas yüzü** kestirimi yok. Bizde r biliniyor sayılıyor, yoklama ise r'yi izlemeye aday (ikinci bildiri) |
+| ResearchGate 398643236, "Gear Backlash Identification and Compensation ... Industrial Robot Repeatability" | Yön kuralı: düzeltmenin işareti hedefe varmadan önceki hızdan seçiliyor | Panasonic WO2026074901A1 ailesiyle aynı, **komut tabanlı** yüz varsayımı. Hız ≈ 0'da ve bozucu altında tanımsız (B1'deki "panasonic" kuralı bunu temsil ediyor) |
+| dongho.dev blog yazısı | "Motor tarafı algılayıcı, boşluk içindeki çıkış konumunu çözemez" itirazı | Hakem itirazı olarak bildiride cevaplanmalı (aşağıda) |
+| robonine (bütçe servo testleri) | Ucuz seri servolarda boşluğu yaklaşık 0,8° ölçmüş, çift servo ile ön yük denemiş | Düşük maliyetli kollarda boşluğun bizim r = 1,5° (yarı genişlik) mertebesinde olduğunu destekliyor. Ön yük B2'deki makas dişliye karşılık |
+
+Künye notu: dongho.dev ve robonine sayfalarının tam bağlantıları 23 Kasım'daki yeniden aramada bulunamadı. Bildiride atıf yapılacaksa önce bağlantı ve sayı (0,8°) yeniden doğrulanmalı. Yeniden aramada ayrıca robonine'a bağlı bir Zenodo kaydı (records/19261714, ucuz UART servolarda boşluk test düzeneği, v3, 27 Mart 2026) ve SO-ARM100 deposunda "Feetech STS3215 servos have around 1 degree real backlash" başlıklı bir GitHub konusu görüldü. Bunların yalnız başlıkları görüldü, içerikleri okunmadı.
+
+**Gözlenebilirlik itirazı ve cevabı.** İtiraz: "Motor tarafındaki enkoder, çıkışın boşluk içinde nerede olduğunu göremez. Motor tarafından yüz kestirimi bu yüzden imkânsız." Cevap:
+1. Biz boşluk içindeki sürekli konumu kestirmiyoruz. Kestirdiğimiz, ayrık bir durum olan **temas yüzü** (s ∈ {−1, +1}).
+2. Yüz değişimi motor tarafında iz bırakır. Temas kurulurken dişli torku sürtünme aralığının dışına çıkar ("olay", tork gözlemcisi + bilinen sürtünme aralığı). Temas kaybında da motor yükten kurtulur. Durum ancak bu geçişlerde değişebildiği için, geçişleri gözleyen bir kestirici durumu izleyebilir.
+3. İzlenemeyen tek durum, hiç tork aktarılmadan boşlukta kalınan, yerçekiminin de sıfır olduğu durum. Orada **yoklama** (aktif, küçük mutlak itiş) yüzü sorgulayıp durumu gözlenebilir kılar. Yani gözlenebilirlik edilgen değil, **etkin algılamayla** sağlanıyor.
+4. Kanıt: B1/B1-L benzetimleri (sürtünmeli tesiste olay+yok 210/210, soğuk başlangıçta bile) ve STA tespit edilebilirliği analizi.
+
+Bu cevap bildirinin "Hakem soruları" bölümüne de eklenmeli (`calisma_notu/benzetim_B1_B3.md`).
+
+**Patent ile akademik yenilik farkı (kullanıcıyla konuşuldu).** Bir patentin varlığı, akademik yeniliği kendiliğinden ne kanıtlar ne de bozar. Panasonic'in 2024 başvurusu iki şeyi gösteriyor: sorun sanayide güncel, ve motor tarafıyla çözülmek isteniyor. Teşhisli bir olumsuz donanım sonucu da ikinci bir çalışmaya veri olur.
