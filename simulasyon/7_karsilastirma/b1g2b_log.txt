@@ -1,55 +1,55 @@
-=== B1-G (b1g2b), 2026-11-23 18:56. Hücre: H7 / 120 (5 senaryo x 8 hedef x 3 tohum).
+=== B1-G (b1g2b), 2026-11-24 12:12. Hücre: H7 / 120 (5 senaryo x 8 hedef x 3 tohum).
 Hedefler: [45 120 180 270]. Köşeli parantez: senaryo ayrıntısı (temel a1 a2 c d, her biri /24), yalnız tam olmayanlarda.
 Yüz ölçütü: kestiricinin son yüzü = gerçek son dişli torku işareti (temassız: H7 değil).
 
 yayE 0.5Fc             sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  78 [18 12 24 12 12] | ters   84 [18 12 24 12 18] |       18         48     12    2.04
-   olay+yok             | doğru  78 [18 12 24 12 12] | ters   84 [18 12 24 12 18] |       18         48     12    2.04
-   olay+yok her açı     | doğru  78 [18 12 24 12 12] | ters   84 [18 12 24 12 18] |       18         16     44    1.28
-   momentum L100 e0.06  | doğru  84 [18 12 24 18 12] | ters   84 [18 12 24 18 12] |        0         48     24    2.30
-   lenze 0.03           | doğru  66 [18 12 24 6 6] | ters   66 [18 12 24 6 6] |        0         78     30    2.02
-   edilgen              | doğru  40 [6 0 18 10 6]  | ters   60 [15 9 24 6 6]  |        8         87     45    2.13
+   olay                 | doğru  66 [18 12 12 12 12] | ters   78 [18 12 18 12 18] |       18         66     12    2.12
+   olay+yok             | doğru  66 [18 12 12 12 12] | ters   78 [18 12 18 12 18] |       18         66     12    2.12
+   olay+yok her açı     | doğru  72 [18 12 18 12 12] | ters   78 [18 12 18 12 18] |       18         26     46    1.48
+   momentum L100 e0.06  | doğru  78 [18 12 18 18 12] | ters   78 [18 12 18 18 12] |        0         55     29    2.23
+   lenze 0.03           | doğru  60 [18 12 18 6 6] | ters   60 [18 12 18 6 6] |        0         84     36    1.92
+   edilgen              | doğru  40 [6 0 18 10 6]  | ters   42 [15 9 6 6 6]   |       13         90     55    2.12
 yayE 0.5Fc             sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         30     18    0.91
-   olay+yok             | doğru  95 [18 18 24 18 17] | ters   95 [18 18 24 17 18] |        2         30     18    0.87
-   olay+yok her açı     | doğru  95 [18 18 24 18 17] | ters   95 [18 18 24 17 18] |        2         30     18    0.90
-   momentum L100 e0.06  | doğru  96 [18 18 24 18 18] | ters   90 [18 18 18 18 18] |        0         54      0    3.02
-   lenze 0.03           | doğru  93 [18 18 24 15 18] | ters   90 [15 18 24 15 18] |        9         48      0    2.54
-   edilgen              | doğru  77 [12 13 24 15 13] | ters   73 [12 12 24 13 12] |       27         27     36    0.71
+   olay                 | doğru  90 [18 18 18 18 18] | ters   90 [18 18 18 18 18] |        1         39     20    1.27
+   olay+yok             | doğru  89 [18 18 18 18 17] | ters   89 [18 18 18 17 18] |        3         39     20    1.22
+   olay+yok her açı     | doğru  89 [18 18 18 18 17] | ters   89 [18 18 18 17 18] |        3         39     20    1.25
+   momentum L100 e0.06  | doğru  78 [18 18 6 18 18] | ters   84 [18 18 12 18 18] |        0         78      0    2.94
+   lenze 0.03           | doğru  87 [18 18 18 15 18] | ters   84 [15 18 18 15 18] |        9         60      0    2.57
+   edilgen              | doğru  71 [12 14 17 15 13] | ters   68 [12 13 18 13 12] |       31         27     43    0.79
 yayE 1Fc               sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  91 [18 18 24 13 18] | ters   90 [18 18 24 12 18] |       12         12     35    1.73
-   olay+yok             | doğru  91 [18 18 24 13 18] | ters   90 [18 18 24 12 18] |       12         12     35    1.73
-   olay+yok her açı     | doğru  90 [18 18 24 12 18] | ters   93 [18 21 24 12 18] |       15          3     39    1.09
-   momentum L100 e0.06  | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         42      6    2.66
-   lenze 0.03           | doğru  90 [18 18 24 12 18] | ters   78 [18 12 24 12 12] |        0         60     12    2.16
-   edilgen              | doğru  51 [6 0 18 15 12] | ters   69 [12 6 24 15 12] |        0         87     33    1.89
+   olay                 | doğru  91 [18 18 24 13 18] | ters   90 [18 18 24 12 18] |       12         12     35    1.60
+   olay+yok             | doğru  91 [18 18 24 13 18] | ters   90 [18 18 24 12 18] |       12         12     35    1.61
+   olay+yok her açı     | doğru  90 [18 18 24 12 18] | ters   94 [18 22 24 12 18] |       16          1     39    1.10
+   momentum L100 e0.06  | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         42      6    2.67
+   lenze 0.03           | doğru  78 [18 18 12 12 18] | ters   72 [18 18 12 12 12] |        0         84      6    2.47
+   edilgen              | doğru  51 [6 6 12 15 12] | ters   57 [12 12 6 15 12] |        0        115     17    2.17
 yayE 1Fc               sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         12     36    1.05
-   olay+yok             | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         12     36    1.05
-   olay+yok her açı     | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         12     36    1.00
-   momentum L100 e0.06  | doğru  96 [18 18 24 18 18] | ters   90 [18 18 18 18 18] |        0         54      0    3.04
-   lenze 0.03           | doğru  90 [18 18 24 15 15] | ters   90 [15 18 24 15 18] |       12         12     36    0.84
-   edilgen              | doğru  76 [13 13 24 14 12] | ters   74 [12 13 24 12 13] |       20         30     40    0.65
+   olay                 | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         18     30    0.99
+   olay+yok             | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         18     30    0.99
+   olay+yok her açı     | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         18     30    0.95
+   momentum L100 e0.06  | doğru  90 [18 18 18 18 18] | ters   96 [18 18 24 18 18] |        0         54      0    3.04
+   lenze 0.03           | doğru  90 [18 18 24 15 15] | ters   90 [15 18 24 15 18] |       12         18     30    0.81
+   edilgen              | doğru  76 [13 13 24 14 12] | ters   73 [12 12 24 12 13] |       21         30     40    0.65
 yayE 2Fc               sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  86 [23 24 15 12 12] | ters   90 [24 24 18 12 12] |       12         11     41    0.48
-   olay+yok             | doğru  86 [23 24 15 12 12] | ters   90 [24 24 18 12 12] |       12         11     41    0.48
-   olay+yok her açı     | doğru  92 [24 24 18 8 18] | ters   85 [21 19 18 9 18] |       12          3     48    0.59
-   momentum L100 e0.06  | doğru  75 [18 18 15 12 12] | ters   78 [18 18 18 12 12] |        0         36     51    1.75
-   lenze 0.03           | doğru  69 [18 18 15 6 12] | ters   66 [12 18 18 6 12] |        6         36     63    1.24
-   edilgen              | doğru  76 [24 24 4 12 12] | ters   75 [18 18 18 9 12] |        6         24     59    1.28
+   olay                 | doğru  89 [23 18 24 12 12] | ters   96 [24 24 24 12 12] |       12         11     32    0.51
+   olay+yok             | doğru  89 [23 18 24 12 12] | ters   96 [24 24 24 12 12] |       12         11     32    0.51
+   olay+yok her açı     | doğru  98 [24 24 24 8 18] | ters   96 [21 24 24 9 18] |       12          3     31    0.61
+   momentum L100 e0.06  | doğru  84 [18 18 24 12 12] | ters   84 [18 18 24 12 12] |        0         36     36    2.00
+   lenze 0.03           | doğru  78 [18 18 24 6 12] | ters   72 [12 18 24 6 12] |        6         36     48    1.36
+   edilgen              | doğru  90 [24 24 18 12 12] | ters   69 [18 18 12 9 12] |        6         24     51    1.72
 yayE 2Fc               sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  84 [18 18 12 18 18] | ters   84 [18 18 12 18 18] |        0         18     54    0.93
-   olay+yok             | doğru  84 [18 18 12 18 18] | ters   84 [18 18 12 18 18] |        0         18     54    0.93
-   olay+yok her açı     | doğru  84 [18 18 12 18 18] | ters   84 [18 18 12 18 18] |        0         18     54    0.93
-   momentum L100 e0.06  | doğru  84 [18 18 12 18 18] | ters   78 [18 18 6 18 18] |        0         54     24    2.29
-   lenze 0.03           | doğru  81 [18 18 12 15 18] | ters   81 [18 18 12 15 18] |        6         18     54    0.87
-   edilgen              | doğru  65 [15 13 12 13 12] | ters   66 [15 13 12 13 13] |       17         33     59    0.64
+   olay                 | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         18     30    1.13
+   olay+yok             | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         18     30    1.13
+   olay+yok her açı     | doğru  96 [18 18 24 18 18] | ters   96 [18 18 24 18 18] |        0         18     30    1.13
+   momentum L100 e0.06  | doğru  90 [18 18 18 18 18] | ters   96 [18 18 24 18 18] |        0         54      0    3.06
+   lenze 0.03           | doğru  93 [18 18 24 15 18] | ters   93 [18 18 24 15 18] |        6         18     30    1.04
+   edilgen              | doğru  79 [15 15 24 13 12] | ters   79 [15 14 24 13 13] |       15         32     35    0.66
 
 --- Temassız koşu sayısı, senaryo x hedef (iki başlangıç x 3 tohum = /6 her tesiste) ---
 olay+yok           sürtünmeli  | temel      00000000 | a1 darbe   00000000 | a2 yük     00000000 | c yaklaşma 0018000180 | d yön değ. 00300030
-olay+yok           sürtünmesiz | temel      00000000 | a1 darbe   00000000 | a2 yük     00000000 | c yaklaşma 00100000 | d yön değ. 00000010
-olay+yok her açı   sürtünmeli  | temel      00000001 | a1 darbe   00000001 | a2 yük     00000000 | c yaklaşma 0018000181 | d yön değ. 00300030
-olay+yok her açı   sürtünmesiz | temel      00000000 | a1 darbe   00000000 | a2 yük     00000000 | c yaklaşma 00100000 | d yön değ. 00000010
-edilgen            sürtünmeli  | temel      00000000 | a1 darbe   00000000 | a2 yük     00000000 | c yaklaşma 00800060 | d yön değ. 00000000
-edilgen            sürtünmesiz | temel      00600050 | a1 darbe   00600050 | a2 yük     00000000 | c yaklaşma 0010000100 | d yön değ. 0012000100
+olay+yok           sürtünmesiz | temel      00000000 | a1 darbe   00000001 | a2 yük     00000000 | c yaklaşma 00100000 | d yön değ. 00000010
+olay+yok her açı   sürtünmeli  | temel      00000001 | a1 darbe   00010001 | a2 yük     00000000 | c yaklaşma 0018000181 | d yön değ. 00300030
+olay+yok her açı   sürtünmesiz | temel      00000000 | a1 darbe   00000001 | a2 yük     00000000 | c yaklaşma 00100000 | d yön değ. 00000010
+edilgen            sürtünmeli  | temel      00000000 | a1 darbe   00000000 | a2 yük     30002000 | c yaklaşma 00800060 | d yön değ. 00000000
+edilgen            sürtünmesiz | temel      00600050 | a1 darbe   00500080 | a2 yük     00001000 | c yaklaşma 0010000100 | d yön değ. 0012000100
 (sütun sırası: hedef [45 120 180 270] önce Yn = +1, sonra Yn = -1)
