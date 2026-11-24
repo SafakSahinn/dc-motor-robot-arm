@@ -1,27 +1,27 @@
-=== B1-G (b1g1), 2026-11-23 18:11. Hücre: H7 / 120 (5 senaryo x 8 hedef x 3 tohum).
+=== B1-G (b1g1), 2026-11-24 11:33. Hücre: H7 / 120 (5 senaryo x 8 hedef x 3 tohum).
 Hedefler: [45 120 180 270]. Köşeli parantez: senaryo ayrıntısı (temel a1 a2 c d, her biri /24), yalnız tam olmayanlarda.
 Yüz ölçütü: kestiricinin son yüzü = gerçek son dişli torku işareti (temassız: H7 değil).
 
 yatay mgl 0            sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      137         55      0    2.00
-   olay+yok             | doğru  25 [1 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      128         58      5    1.96
-   olay+yok her açı     | doğru  25 [1 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      106         64     21    1.79
-   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      153         39      0    2.03
-   lenze 0.03           | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |       96         72     24    2.02
-   edilgen              | doğru   0 [0 0 0 0 0]    | ters   24 [0 0 24 0 0]   |      140         67      9    2.34
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      121         47     24    1.87
+   olay+yok             | doğru  25 [1 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      114         49     28    1.82
+   olay+yok her açı     | doğru  24 [1 0 23 0 0]   | ters   24 [0 0 24 0 0]   |      110         35     47    1.60
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      137         31     24    1.90
+   lenze 0.03           | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |       96         72     24    1.90
+   edilgen              | doğru  24 [0 0 24 0 0]   | ters    0 [0 0 0 0 0]    |      140         67      9    2.37
 yatay mgl 0            sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
-   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      166         26      0    1.95
-   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   26 [0 0 24 0 2]   |      168         22      0    1.97
-   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   28 [0 0 24 0 4]   |      174         14      0    1.98
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      167         25      0    1.79
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   26 [0 0 24 0 2]   |      169         21      0    1.79
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   28 [0 0 24 0 4]   |      173         15      0    1.84
    momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      172         20      0    1.60
-   lenze 0.03           | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.52
-   edilgen              | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |        5         52    135    1.06
+   lenze 0.03           | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.53
+   edilgen              | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |        8         52    132    1.07
 
 --- Temassız koşu sayısı, senaryo x hedef (iki başlangıç x 3 tohum = /6 her tesiste) ---
-olay+yok           sürtünmeli  | temel      66666636 | a1 darbe   33233101 | a2 yük     00000000 | c yaklaşma 66466636 | d yön değ. 22452333
-olay+yok           sürtünmesiz | temel      64565665 | a1 darbe   66666566 | a2 yük     00000000 | c yaklaşma 66666666 | d yön değ. 54443343
-olay+yok her açı   sürtünmeli  | temel      66644535 | a1 darbe   10200001 | a2 yük     00000000 | c yaklaşma 43433434 | d yön değ. 66435236
-olay+yok her açı   sürtünmesiz | temel      65565665 | a1 darbe   66666666 | a2 yük     00000000 | c yaklaşma 66656666 | d yön değ. 46454543
+olay+yok           sürtünmeli  | temel      66666636 | a1 darbe   00100010 | a2 yük     00000000 | c yaklaşma 66466636 | d yön değ. 22452333
+olay+yok           sürtünmesiz | temel      64565665 | a1 darbe   66666666 | a2 yük     00000000 | c yaklaşma 66666666 | d yön değ. 54443343
+olay+yok her açı   sürtünmeli  | temel      66644535 | a1 darbe   21111110 | a2 yük     00000000 | c yaklaşma 43433434 | d yön değ. 66435236
+olay+yok her açı   sürtünmesiz | temel      65565665 | a1 darbe   66665666 | a2 yük     00000000 | c yaklaşma 66656666 | d yön değ. 46454543
 edilgen            sürtünmeli  | temel      66666666 | a1 darbe   66666666 | a2 yük     00000000 | c yaklaşma 11000030 | d yön değ. 45655545
-edilgen            sürtünmesiz | temel      00020000 | a1 darbe   00010000 | a2 yük     00000000 | c yaklaşma 00000000 | d yön değ. 00010010
+edilgen            sürtünmesiz | temel      00020000 | a1 darbe   00110110 | a2 yük     00000000 | c yaklaşma 00000000 | d yön değ. 00010010
 (sütun sırası: hedef [45 120 180 270] önce Yn = +1, sonra Yn = -1)
