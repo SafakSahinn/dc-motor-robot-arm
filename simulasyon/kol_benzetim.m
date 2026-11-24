@@ -171,6 +171,9 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %     başına bir kez). Stribeck biçimi için tesisin p.Fs, p.vs değerleri ayrıca değiştirilebilir.
 %   p.rA, p.rK (1), p.rF: açıya bağlı boşluk, tesiste r(th) = r (1 + rA sin(rK th + rF)) (rK = 1 çıkış dişlisi
 %     eksantrikliği). Kestirici/ofset p.rN'yi (varsayılan p.r) sabit bilir; analiz sınıfı yine p.r ile.
+%   p.rFn (isteğe bağlı, B3 aşınma): t [s] -> skaler çarpan; tesiste r(t) = p.r*rFn(t) (rA ile birlikte
+%     r(t)(1 + rA sin ...)); makas dişlinin B yayı da r(t)'ye göre. rFn(0) = 1 olmalı. Kestirici p.rN'yi
+%     bilir (değişmez). Analizdeki temas kenarı (side) ve ofsetYuz üst sınırı da o anki r(t)'yi kullanır.
 %   p.yayE [N m] (B1-G 2b, yay dengeleme): kola artık tork -yayE sin(2 th) eklenir (yerçekimi terimine ek;
 %     dengelenmiş kolda tesis mgl = 0 ile birlikte). Kestirici varsayılan olarak bilmez (p.yayEN, aşağıda).
 %   p.FcL, p.FsL [N m] (B1-G 1b, kol yatağı/rulman sürtünmesi; varsayılan 0, FsL varsayılanı FcL): kola
@@ -334,6 +337,7 @@ end
 cogA = al(p,'cogA',0);  cogK = al(p,'cogK',12);  cogF = al(p,'cogF',0);   % model dışı tesis etkileri (B1-M)
 sfA = al(p,'sfA',0);  sfF = al(p,'sfF',0);
 rAc = al(p,'rA',0);  rKc = al(p,'rK',1);  rFc = al(p,'rF',0);
+rFnAc = isfield(p,'rFn') && ~isempty(p.rFn);      % zamanla değişen boşluk çarpanı (B3)
 yayE = al(p,'yayE',0);                            % yay dengelemenin artık torku (B1-G 2b)
 FcL = al(p,'FcL',0);  FsL = al(p,'FsL',FcL);       % kol tarafı Coulomb/yapışma sürtünmesi (B1-G 1b)
 surL = FcL > 0 || FsL > 0;
@@ -424,14 +428,15 @@ for i = 0:nStep-1
             thr = th_ref;
         end
         if yuzMod > 0                              % üst sınır: yüz ikizin gerçek deltasından
-            dl = x(1,:) - x(3,:);  tm = abs(dl) >= p.r;
+            if rFnAc, rY = p.r*p.rFn(i*p.dt); else, rY = p.r; end   % ikizin o anki gerçek r'si (B3)
+            dl = x(1,:) - x(3,:);  tm = abs(dl) >= rY;
             if yuzMod == 2
                 durSay = (durSay + 1).*(abs(x(4,:)) < yuzV);
                 tm = tm & durSay >= yuzN;
             end
             yy = yz;  yy(tm) = sign(dl(tm));
             dg = yy ~= yz;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
-            yz = yy;  ofs = yz*p.r + ofsG;
+            yz = yy;  ofs = yz*rY + ofsG;
         end
         if kesMod > 0                              % yüz kestirici: yalnız enkoder + u
             tt = i*p.dt;  shOnc = sh;
@@ -662,7 +667,12 @@ end
 % --- Analiz ---
 thd = rad2deg(TH);
 out.A_deg = (max(thd)-min(thd))/2;                 % salınım genliği [derece]
-side = sign(DEL) .* (abs(DEL) >= p.r);             % +1 / -1 temas kenarı, 0 boşlukta
+if rFnAc                                           % kayıt anındaki gerçek r(t) (B3)
+    rKay = p.r*arrayfun(p.rFn, (iAn + (1:nRec)'*p.dec)*p.dt);
+    side = sign(DEL) .* (abs(DEL) >= rKay);
+else
+    side = sign(DEL) .* (abs(DEL) >= p.r);         % +1 / -1 temas kenarı, 0 boşlukta
+end
 out.gecis = zeros(1,n);  out.bosluk_orani = mean(side==0);
 for j = 1:n
     s = side(:,j);  s = s(s~=0);
@@ -686,19 +696,20 @@ out.sinif(out.kararsiz) = 4;
         phi = x(1,:); dphi = x(2,:); th = x(3,:); dth = x(4,:);
         d = phi - th;  dd = dphi - dth;
         ts = zeros(size(d));
+        if rFnAc, r0 = p.r*p.rFn(tt); else, r0 = p.r; end   % zamanla büyüyen boşluk (B3, aşınma)
         if rAc ~= 0                                % açıya bağlı boşluk (B1-M)
-            rrr = p.r*(1 + rAc*sin(rKc*th + rFc));
+            rrr = r0*(1 + rAc*sin(rKc*th + rFc));
             sag = d >  rrr;  sol = d < -rrr;
             ts(sag) = max(p.Ks*(d(sag)-rrr(sag)) + p.cs*dd(sag), 0);
             ts(sol) = min(p.Ks*(d(sol)+rrr(sol)) + p.cs*dd(sol), 0);
         else
-            sag = d >  p.r;  sol = d < -p.r;
-            ts(sag) = max(p.Ks*(d(sag)-p.r) + p.cs*dd(sag), 0);
-            ts(sol) = min(p.Ks*(d(sol)+p.r) + p.cs*dd(sol), 0);
+            sag = d >  r0;  sol = d < -r0;
+            ts(sag) = max(p.Ks*(d(sag)-r0) + p.cs*dd(sag), 0);
+            ts(sol) = min(p.Ks*(d(sol)+r0) + p.cs*dd(sol), 0);
         end
         if onY                                     % makas dişli: B yarısının yay kuvveti
             if oFn, tp = oTp*p.taupFn(tt); else, tp = oTp; end
-            ts = ts - max(tp + oKp.*(p.r - d), 0);
+            ts = ts - max(tp + oKp.*(r0 - d), 0);
             fc = p.Fc + oMu*tp;  fs = p.Fs + oMu*tp;
         else
             fc = p.Fc;  fs = p.Fs;
