@@ -564,3 +564,13 @@ Bozucular +s0 yönünde, yani yerçekiminin bastırdığı yüzden koparan yönd
 - Her açıda yoklama varyantı burada da olay+yok ile bire bir aynı.
 
 **Sonuç (senaryo 3).** Bozucu yüzü ancak kolu bastıran net torkun üstüne çıktığında çeviriyor. Hızlı (25 Hz) bozucular eylemsizlikle süzülüyor. Geçici çevirmeler (sinüs) kestiriciyi bozmuyor: bozucu bitince yüz geri geliyor ve olay tabanlı kestirici iki tesiste de tam. Kalıcı çevirmeler (sabit yük) de yakalanıyor. Kayıp yalnız yeni net torkun sürtünme aralığının birkaç yüzdesinde kaldığı eşik durumunda, sürtünmeli tesiste ortaya çıkıyor. Bu, B1-G'nin genel sonucuyla aynı: kestirici bir yüz olduğu sürece onu buluyor, yüzü belirleyen net tork sıfıra yaklaştıkça başarısız oluyor.
+
+### Kontrolle ön yük: tek motorda sınır (2026-11-24, tur 69; kod yok)
+
+**Soru.** Senaryo 1'in sonucu iki çözüm öneriyordu: mekanik ön yük (B2) ya da motorun kolu sabit bir tork farkıyla bir yüze dayaması. İkincisi yatay eklemde ve 2a/2b'nin sıfır noktalarında (180°, 270°) denenecekti.
+
+**Neden tek motorda olmuyor.** Kol durgun kaldığı sürece kol denkleminden dişli torku kola etkiyen net dış torka eşit: τ_s = mgl sin θ + yayE sin 2θ − d, buna kol yatağının yapışması en çok ±FsL ekleyebiliyor. Motor yalnız dişli üzerinden etkiyor. Sıfır noktalarında net dış tork sıfır olduğu için kalıcı durumdaki dişli torku |τ_s| ≤ FsL ile sınırlı. Motor bundan büyük bir torkla kolu bir yüze dayarsa kol hızlanır ve yüzden ayrılır. Yani tek motorla kalıcı bir ön yük ancak kola karşı tork veren bir şey varsa kurulabilir: yerçekimi, dış yük ya da kol sürtünmesi. Sıfır noktasında bunların yalnız sonuncusu kalıyor.
+
+**Kanıt (senaryo 1b).** Lenze kuralının sürtünmeli tesisteki 192–225/240'lık sonucu bu sınırın içinde kalan rastlantısal bir ön yük: kolu tutan temas torku −0,0056 ve −0,012 N m, FsL (0,006 / 0,015) ile sınırlı. Sürtünmesiz motorda (u kalıcı durumda sıfıra gidiyor) bu temas oluşmuyor.
+
+**Karar (kullanıcı, 2026-11-24).** Çalışma tek motorlu kalıyor. Çift motorlu elektriksel ön yük (iki pinyon arasında tork farkı, literatürdeki dual-motor anti-backlash) ikinci bir motor, yani donanım değişikliği istediği için kapsam dışı. Sıfır noktalarında boşluğu kaldırmanın yolu mekanik ön yük (B2) olarak kalıyor. Tek motorlu sistem için çıkarılacak ders: yüz kestirimi ancak net dış tork sürtünme aralığına göre küçük değilken anlamlı. Sıfır noktaları ya kaçınılacak bölgeler olarak tanımlanmalı ya da mekanik ön yük gerektiriyor.
