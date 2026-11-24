@@ -173,6 +173,9 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %     eksantrikliği). Kestirici/ofset p.rN'yi (varsayılan p.r) sabit bilir; analiz sınıfı yine p.r ile.
 %   p.yayE [N m] (B1-G 2b, yay dengeleme): kola artık tork -yayE sin(2 th) eklenir (yerçekimi terimine ek;
 %     dengelenmiş kolda tesis mgl = 0 ile birlikte). Kestirici bilmez (ofset yalnız mglN sin th kullanır).
+%   p.FcL, p.FsL [N m] (B1-G 1b, kol yatağı/rulman sürtünmesi; varsayılan 0, FsL varsayılanı FcL): kola
+%     motor tarafıyla aynı biçimde yumuşatılmış Stribeck sürtünmesi (FcL + (FsL - FcL) e^-(th'/vs)^2) tanh(th'/veps).
+%     Kestirici bilmez (gözlemci yalnız motor tarafını modelliyor).
 %   p.asHar = [E1 f1 E2 f2] [rad, motor mili tarafı]: AS5600 açıya bağlı harmonik hatası; motor ölçümüne
 %     (nicemleme ve gürültüden önce) (E1 sin(psi + f1) + E2 sin(2 psi + f2))/N eklenir, psi = N phi.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
@@ -311,6 +314,8 @@ cogA = al(p,'cogA',0);  cogK = al(p,'cogK',12);  cogF = al(p,'cogF',0);   % mode
 sfA = al(p,'sfA',0);  sfF = al(p,'sfF',0);
 rAc = al(p,'rA',0);  rKc = al(p,'rK',1);  rFc = al(p,'rF',0);
 yayE = al(p,'yayE',0);                            % yay dengelemenin artık torku (B1-G 2b)
+FcL = al(p,'FcL',0);  FsL = al(p,'FsL',FcL);       % kol tarafı Coulomb/yapışma sürtünmesi (B1-G 1b)
+surL = FcL > 0 || FsL > 0;
 if kesMod > 0, ph = olc(x(1,:), p.qM); end
 ua = u;  aAk = 1 - exp(-al(p,'akimW',Inf)*p.dt);       % akım döngüsü (Inf: tork = komut)
 tOlc = kesMod > 0 && al(p,'tOlc',false);           % gözlemci torku ölçümden mi (iş sırası 5)
@@ -682,6 +687,9 @@ out.sinif(out.kararsiz) = 4;
               dth;
               (ts - p.bL*dth - p.mgl*sin(th) + bozucu(tt))/p.JL];
         if yayE ~= 0, dx(4,:) = dx(4,:) - yayE*sin(2*th)/p.JL; end   % yay dengeleme artığı (B1-G 2b)
+        if surL                                    % kol yatağı sürtünmesi (B1-G 1b)
+            dx(4,:) = dx(4,:) - (FcL + (FsL-FcL)*exp(-(dth/p.vs).^2)).*tanh(dth/p.veps)/p.JL;
+        end
         if elk > 0, dx(5,:) = (eV - eRa*x(5,:) - eKm*dphi)/eLa; end
     end
 end

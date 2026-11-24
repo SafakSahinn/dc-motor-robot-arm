@@ -2,6 +2,7 @@ function b1g_net_tork
 % B1-G: net durağan torku sıfıra yakın eklemler (genişletme planı, tur 67).
 % Senaryo (ortam B1G_SEN):
 %   '1'  (varsayılan) yatay eklem: tesiste mgl = 0, kestirici de mglN = 0 bilir. Kod değişikliği yok.
+%   '1b' yatay eklem + kol yatağı Coulomb sürtünmesi FcL 0,001 / 0,004 / 0,01 N m (F_c'nin %2,5 / 10 / 25'i), FsL = 1,5 FcL.
 %   '2a' karşı ağırlık: tesiste mgl x 0,1 / x 0,05 (D'nin dik kolu), kestirici mglN doğru, x0,5, x1,5.
 %        Başlangıç inancı doğru = sign(sin hedef) (180°'de ilk hareket yönü); darbe/yük işareti +s0 (yüzden koparır; 2026-11-23 düzeltme, ilk koşumlarda -s0 yüze bastırıyordu).
 %   '2b' yay dengeleme: tesiste mgl = 0 ve artık tork -yayE sin 2th (kol_benzetim p.yayE), yayE 0,5 / 1 / 2 F_c
@@ -40,6 +41,12 @@ switch sen
     case '1'
         onek = 'b1g1';
         K = {'yatay mgl 0', struct('mgl', 0, 'mglN', 0)};
+        istek = [45 120 180 270];
+    case '1b'   % yatay eklem + kol yatağı sürtünmesi (kol_benzetim p.FcL/p.FsL, FsL = 1,5 FcL; kestirici bilmez)
+        onek = 'b1g1b';  K = {};
+        for c = [0.001 0.004 0.01]
+            K(end+1,:) = {sprintf('yatay FcL %g', c), struct('mgl', 0, 'mglN', 0, 'FcL', c, 'FsL', 1.5*c)}; %#ok<AGROW>
+        end
         istek = [45 120 180 270];
     case '2a'   % karşı ağırlık: tesiste mgl x 0,1 ve x 0,05; kestirici mglN doğru ya da ±%50 yanlış
         onek = 'b1g2a';  K = {};
