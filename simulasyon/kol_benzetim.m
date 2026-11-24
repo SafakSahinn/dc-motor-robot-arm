@@ -79,7 +79,12 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %               birinci mertebede düşer). |yol_a - yol_b| <= p.rOlcTut (0,75°) ise kabul (yalnız motor sinyali).
 %               Bir yüz yol p.rOlcMaks (3 rN) içinde bulunmazsa ya da evreler p.rOlcTmax (3) s'yi aşarsa iptal.
 %               Çıktı out.rOlc: n, iptal (benzetim başına), t, rHat, yol (a), yol2 (b), tau1, tau2, kol (bu yoklamada
-%               kolun en büyük hareketi, gerçek theta; yalnız değerlendirme), kabul (satır = ölçüm, en çok p.rOlcKayit).
+%               kolun en büyük hareketi, gerçek theta; yalnız değerlendirme), kabul, rN (ölçümden sonraki rN)
+%               (satır = ölçüm, en çok p.rOlcKayit); out.rNSon.
+%   p.rGun (rOlc ile; varsayılan 'yok'): kabul edilen her ölçümden sonra ofsetin rN'si güncellenir.
+%               'mutlak': rN += p.rGunK (0,5) (r^ - rN).  'fark': ilk kabul edilen ölçüm başvuru r^0 (o anda r = rN0
+%               varsayılır), sonra D += rGunK (r^ - r^0 - D), rN = rN0 + D (ölçümün sabit sapması düşer).
+%   p.rNKahin = true (karşılaştırma tabanı; rGun ile birlikte değil): her kontrol örneğinde rN = p.r*rFn(t).
 %   Literatür tabanları (B1-L, 7_karsilastirma/b1_literatur_taban.m; yoklama yok, gözlemci yine çalışır):
 %   'momentum': genelleştirilmiş momentum gözlemcisi (Ruderman-Iwasaki 2016 TIE sanal sensörünün tork
 %               kısmı): r = L(JM w - ∫(u - bM w + r)), r -> -d; dişli torku = -r - sign(w^)FcN (hareketteyken).
@@ -245,6 +250,7 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     ykMod = kesMod == 3 || kesMod == 4;            % etken yoklama yalnız bu iki kipte
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;                    % s^ ve ofsetteki (rampalı) yüz
+    rKah = al(p,'rNKahin', false);                   % kâhin karşılaştırması: rN = gerçek r(t) (B3)
     rN = al(p,'rN', p.r);                            % kestiricinin/ofsetin bildiği değerler (duyarlılık, iş sırası 4)
     ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);
     if yayEN ~= 0, ofsG = ofsG + yayEN*sin(2*th_ref)/yayKN; end
@@ -291,11 +297,15 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     rOlc = ykMod && al(p,'rOlc',false);           % tam geçiş yoklaması: r ölçümü (B3)
     if rOlc
         rOlcV = al(p,'rOlcV', 0.1);  rOlcEs = al(p,'rOlcEsik', 0.01);  rOlcA = al(p,'rOlcA', 0.12);
-        rOlcMax = al(p,'rOlcMaks', 3*rN).*ones(1,n);  rOlcTmax = al(p,'rOlcTmax', 3);
+        rOlcMk = al(p,'rOlcMaks', []);  rOlcTmax = al(p,'rOlcTmax', 3);   % boş: o anki 3 rN (rN güncellenebilir)
+        gMod = find(strcmp(al(p,'rGun','yok'), {'yok','mutlak','fark'})) - 1;   % çevrim içi rN güncellemesi
+        if isempty(gMod), error('bilinmeyen rGun: %s', p.rGun); end
+        if gMod > 0 && al(p,'rNKahin',false), error('rGun ile rNKahin birlikte kullanılamaz'); end
+        rGunK = al(p,'rGunK', 0.5);  rN0 = rN.*ones(1,n);  rRef = NaN(1,n);  rD = zeros(1,n);
         wY = 2*pi*al(p,'rOlcW', 10);  rOKp = JMN*wY^2;  rOKd = 2*0.7*JMN*wY;
         rOKs = al(p,'KsN', p.Ks);  rOlcK = al(p,'rOlcKayit', 200);  rOvs = al(p,'vsN', p.vs);
         rOlcTb = al(p,'rOlcTb', 0.03);  ykMovT = zeros(1,n);
-        rOR = NaN(rOlcK,n);  rOT = rOR;  rOY = rOR;  rOY2 = rOR;  rO1 = rOR;  rO2 = rOR;  rOK = rOR;  rOA = false(rOlcK,n);
+        rOR = NaN(rOlcK,n);  rOT = rOR;  rOY = rOR;  rOY2 = rOR;  rO1 = rOR;  rO2 = rOR;  rOK = rOR;  rOA = false(rOlcK,n);  rOG = rOR;
         rOlcTut = al(p,'rOlcTut', deg2rad(0.75));
         rOn = zeros(1,n);  rOab = zeros(1,n);
         ykYa = zeros(1,n);  ykA = zeros(1,n);  ykT2 = zeros(1,n);  ykTau0 = zeros(1,n);
@@ -468,6 +478,7 @@ for i = 0:nStep-1
         end
         if kesMod > 0                              % yüz kestirici: yalnız enkoder + u
             tt = i*p.dt;  shOnc = sh;
+            if rKah, if rFnAc, rN = p.r*p.rFn(tt)*ones(1,n); else, rN = p.r*ones(1,n); end, end   % kâhin: gerçek r(t)
             y  = ymot;
             eo = y - ph;                           % gözlemci (u: son uygulanan tork)
             ph = ph + p.Ts*(wh + l1*eo);
@@ -543,6 +554,17 @@ for i = 0:nStep-1
                         rOn(j) = rOn(j) + 1;  m = min(rOn(j), rOlcK);
                         rOR(m,j) = (ykYa(j) + e2r)/4;                % iki yönün ortalaması: kolun yavaş kayması birinci mertebede düşer
                         rOA(m,j) = abs(ykA(j) - yR) <= rOlcTut;      % iki geçiş tutarlı mı (kol oynamadı mı; yalnız motor)
+                        if gMod > 0 && rOA(m,j)                      % rN güncellemesi (yalnız kabul edilen ölçüm)
+                            if numel(rN) == 1, rN = rN*ones(1,n); end
+                            if gMod == 1                             % mutlak: üstel ortalama
+                                rN(j) = rN(j) + rGunK*(rOR(m,j) - rN(j));
+                            elseif isnan(rRef(j))                    % fark: ilk kabul edilen ölçüm başvuru (r = rN0 sayılır)
+                                rRef(j) = rOR(m,j);
+                            else
+                                rD(j) = rD(j) + rGunK*(rOR(m,j) - rRef(j) - rD(j));  rN(j) = rN0(j) + rD(j);
+                            end
+                        end
+                        rOG(m,j) = rN(min(j, numel(rN)));
                         rOT(m,j) = tt;  rOY(m,j) = ykA(j);  rOY2(m,j) = yR;  rO1(m,j) = ykTau0(j);  rO2(m,j) = ykT2(j);
                         rOK(m,j) = max(abs(x(3,j) - ykTh0(j)), ykKolP(j));   % kolun bu yoklamadaki en büyük hareketi (gerçek theta)
                     end
@@ -552,6 +574,7 @@ for i = 0:nStep-1
                     ykF(c1) = 12;  ykF(c2) = 13;  ykF(c3) = 14;
                     ykDir(cy) = -ykDir(cy);  ykRef(cy) = y(cy);  ykS0(cy) = y(cy);  ykT(cy) = 0;  ykMov(cy) = false;
                     ykHd(c3) = ykA(c3)/2;                            % ortaya: ilk geçiş yolunun yarısı
+                    if isempty(rOlcMk), rOlcMax = 3*rN.*ones(1,n); else, rOlcMax = rOlcMk.*ones(1,n); end
                     ab1 = ykF == 11 & abs(y - ykPhi0) > rOlcMax;    % yüz 1 bulunamadı: bitir
                     ab2 = (ykF == 12 | ykF == 13) & ~cy & abs(y - ykP1) > rOlcMax;   % öbür yüz bulunamadı: ortaya dön
                     rOab = rOab + ab1 + ab2;
@@ -735,10 +758,11 @@ if yuzMod > 0, out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = 
 if kurMod > 0, out.shat = SH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh; end
 if kesMod > 0
     out.shat = SH;  out.dhat = DH;  out.yuzDegis = yuzDeg;  out.yuzDegisAn = yuzDegAn;  out.yuzSon = sh;
+    if rOlc || rKah, out.rNSon = rN.*ones(1,n); end   % B3: kestiricinin son bildiği r
     if ykMod, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
     if rOlc                                    % tam geçiş ölçümleri (B3; satır = ölçüm, sütun = benzetim)
         out.rOlc = struct('n', rOn, 'iptal', rOab, 't', rOT, 'rHat', rOR, 'yol', rOY, 'yol2', rOY2, 'tau1', rO1, ...
-            'tau2', rO2, 'kol', rOK, 'kabul', rOA);
+            'tau2', rO2, 'kol', rOK, 'kabul', rOA, 'rN', rOG);
     end
     if kesMod == 6, out.staSay = stSay; end
     if tyAc, out.tyD = tyD; end
