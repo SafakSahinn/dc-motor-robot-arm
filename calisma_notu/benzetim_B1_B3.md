@@ -439,26 +439,27 @@ Tesiste mgl = 0, kestirici de mglN = 0 biliyor. Kod değişikliği yok. Hedefler
 
 ### Senaryo 2a. Karşı ağırlık (mgl × 0,1 ve × 0,05)
 
-Tesiste mgl, D'nin dik kolunun 0,1 ve 0,05 katı (0,024 / 0,012 N m, yani F_c'nin 0,6 ve 0,3 katı; tork her açıda sürtünme aralığının içinde). Kestiricinin bildiği mglN üç durumda: doğru, × 0,5, × 1,5. Kod değişikliği yok. Hedefler ve senaryolar senaryo 1 ile aynı. Başlangıç inancı B1 kuralıyla: doğru = sign(sin hedef), 180°'de ilk hareket yönü. Darbe ve yük -s0 yönünde. İki koşum yapıldı: 180° tam hedef (`b1g2a_log.txt`), ve B1'in 180° ε kuralıyla, yani hedef 180 − 0,5·Y (`B1G_EPS=1`, `b1g2ae_log.txt`). Hücre /120.
+Tesiste mgl, D'nin dik kolunun 0,1 ve 0,05 katı (0,024 / 0,012 N m, yani F_c'nin 0,6 ve 0,3 katı; tork her açıda sürtünme aralığının içinde). Kestiricinin bildiği mglN üç durumda: doğru, × 0,5, × 1,5. Kod değişikliği yok. Hedefler ve senaryolar senaryo 1 ile aynı. Başlangıç inancı B1 kuralıyla: doğru = sign(sin hedef), 180°'de ilk hareket yönü. Darbe ve yük +s0 yönünde: darbe kolu yüzden koparır, yük yüzü çevirmeye çalışır (0,02 N m). İki koşum yapıldı: 180° tam hedef (`b1g2a_log.txt`), ve B1'in 180° ε kuralıyla, yani hedef 180 − 0,5·Y (`B1G_EPS=1`, `b1g2ae_log.txt`). Hücre /120.
 
 | ε kuralıyla, H7 /120 (doğru / ters) | ×0,1 sürt.li | ×0,1 sürt.siz | ×0,05 sürt.li | ×0,05 sürt.siz |
 |---|---|---|---|---|
-| olay | 98 / 97 | 98 / 96 | 96 / 90 | 96 / 96 |
-| olay+yok (iki varyant aynı) | 98 / 97 | 98 / 96 | 96 / 93 | 96 / 96 |
-| momentum | 98 / 96 | 97 / 90 | 96 / 84 | 96 / 79 |
-| lenze | 78 / 78 | 96 / 96 | 72 / 60 | 96 / 96 |
-| edilgen | 42 / 60 | 96 / 96 | 25 / 70 | 96 / 96 |
+| olay | 93 / 97 | 98 / 96 | 91 / 96 | 96 / 96 |
+| olay+yok (iki varyant aynı) | 92 / 97 | 98 / 96 | 94 / 96 | 96 / 96 |
+| momentum | 98 / 95 | 85 / 90 | 97 / 84 | 90 / 88 |
+| lenze | 66 / 66 | 96 / 96 | 72 / 58 | 96 / 96 |
+| edilgen | 30 / 51 | 91 / 90 | 35 / 61 | 96 / 96 |
 
-(mglN doğru. ×0,5 ve ×1,5 satırları ±3 içinde aynı.)
+(mglN doğru. ×0,5 ve ×1,5 satırları ±3 içinde aynı. 180° tam hedefle olay ve olay+yok her hücrede 90–96, yani ε kuralı burada da bir şey kazandırmıyor.)
 
 **Hedefe göre ayrıştırınca** (olay+yok, iki başlangıç, mglN doğru):
 - **45 / 120 / 270°: 180/180, her tesiste, her iki mgl'de, ε kuralı olsun olmasın.** Yerçekimi F_c'nin %30'u kadar küçük olsa da kolu bir yüze bastırmaya yetiyor. Sürtünme motor tarafında, kolu tutmuyor. Bu yüz de kestirici tarafından doğru bulunuyor. Temassız koşu yok denecek kadar az (0–3/240).
-- **180°: yalnız a2 (sabit yük) geçiyor, 12/60.** ε kuralı yardım etmiyor (9–15/60). mgl × 0,1'de 0,5° kaydırmanın verdiği tork 0,024 · sin 0,5° ≈ 2·10⁻⁴ N m, yani F_c'nin %0,5'i. Kolu bir yüze bastırmak için çok küçük. B1'de (tam mgl) aynı kaydırma 0,0021 N m veriyordu. Başarısızlıklar yanlış yüz (17–46/60) ya da konum hatası, ortalama |e| 1,4–2,1°.
+- **a2 yükü bu açılarda yüzü gerçekten çeviriyor ve kestirici her çevirmeyi yakalıyor.** Yük 0,02 N m, durağan dişli torku mgl sin θ − 0,02·s0. mgl × 0,05'te (0,012 N m) yük yerçekiminden her açıda büyük: 45 / 120 / 270°'de bozucu penceresinde 6/6 koşuda gerçek yüz değişiyor, 6/6'sı H7. mgl × 0,1'de (0,024 N m) yalnız 45°'de çeviriyor (0,017 < 0,02). 120° (0,021) ve 270° (0,024) yerçekimi yükü tutuyor, yüz değişmiyor, yine 6/6 H7. a1 darbesi (50 ms) bu açılarda yüzü hiç çevirmiyor: kol koparılıyor ama yerçekimi onu aynı yüze geri getiriyor.
+- **180°: yalnız a2 (sabit yük) geçiyor, 12/60.** Orada yerçekimi sıfır olduğu için yük, senaryo 1'deki gibi kolu kendi yüzüne bastırıyor. Temel, a1, c ve d 180°'de 0/6. ε kuralı yardım etmiyor (7–14/60), sürtünmeli tesiste a2'yi bile 6'dan 3–5'e düşürüyor. mgl × 0,1'de 0,5° kaydırmanın verdiği tork 0,024 · sin 0,5° ≈ 2·10⁻⁴ N m, yani F_c'nin %0,5'i. Kolu bir yüze bastırmak için çok küçük. B1'de (tam mgl) aynı kaydırma 0,0021 N m veriyordu. Başarısızlıklar yanlış yüz (11–46/60) ya da konum hatası, ortalama |e| 1,2–2,3°.
 - **Kestiricinin mgl hatası (±%50) sonucu değiştirmiyor.** Ofsetteki mgl·sin θ / K_s terimi bu kadar küçük mgl'de ihmal edilebilir. Yüz kararı da mgl'yi kullanmıyor.
 - **Her açıda yoklama varyantı burada olay+yok ile bire bir aynı.** 180° dışında yüz zaten doğru olduğu için yoklama bir şey değiştirmiyor. 180°'de ise senaryo 1'deki gibi kalıcı bir yüz olmadığından yoklamanın cevabı tutmuyor.
 - Komut tabanlı yöntemler (lenze, edilgen) sürtünmeli tesiste kötüleşiyor: yerçekimi sürtünme aralığının içinde kalınca u'nun işareti artık yüzü göstermiyor. Olay tabanlı kestirici bundan etkilenmiyor, çünkü sürtünme aralığını hesaba katıyor.
 
-**Sonuç (senaryo 2a).** Karşı ağırlıklı kolda kestirici, kolu bir yüze bastıran net tork olduğu sürece çalışıyor. Bu tork F_c'nin %30'u kadar küçük olabilir (denenen en küçük değer; alt sınır taranmadı), çünkü yalnız kol tarafında tutucu sürtünme yok. Başarısızlık, senaryo 1'deki gibi, net torkun sıfırlandığı noktaya (burada 180°) sıkışıyor. Bu noktanın çevresindeki "ölü bant" mgl küçüldükçe genişliyor. Kabaca |mgl sin(θ − 180°)| ≲ birkaç 10⁻³ N m olan açılarda yüz tutunmuyor. Bu bandın açı cinsinden genişliği ölçülmedi.
+**Sonuç (senaryo 2a).** Karşı ağırlıklı kolda kestirici, kolu bir yüze bastıran net tork olduğu sürece çalışıyor. Bu net tork bir yük yüzünden işaret değiştirse bile yeni yüz bulunuyor (a2). Bu tork F_c'nin %30'u kadar küçük olabilir (denenen en küçük değer; alt sınır taranmadı), çünkü yalnız kol tarafında tutucu sürtünme yok. Başarısızlık, senaryo 1'deki gibi, net torkun sıfırlandığı noktaya (burada 180°) sıkışıyor. Bu noktanın çevresindeki "ölü bant" mgl küçüldükçe genişliyor. Kabaca |mgl sin(θ − 180°)| ≲ birkaç 10⁻³ N m olan açılarda yüz tutunmuyor. Bu bandın açı cinsinden genişliği ölçülmedi.
 
 ### Senaryo 2b. Yay dengeleme (artık tork ε sin 2θ)
 
