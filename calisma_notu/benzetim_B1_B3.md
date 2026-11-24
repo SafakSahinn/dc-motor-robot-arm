@@ -485,3 +485,38 @@ Tesiste mgl, D'nin dik kolunun 0,1 ve 0,05 katı (0,024 / 0,012 N m, yani F_c'ni
 - **Her açıda yoklama** 0,5–2 F_c sürtünmelide "yanlış yüz" sayısını azaltıyor (66 → 26, 12 → 1, 11 → 3). Bu koşuların çoğu "konum" hatasına kayıyor, H7 toplamı yalnız biraz artıyor (/240'ta +6, +3, +9; kazancın çoğu 270°'de, 2 F_c'de 20–21'den 23–27'ye).
 
 **Sonuç (senaryo 2b).** Yay dengelemeli kolda belirleyici olan şey sıfır noktasının türü. Kararlı sıfırda (geri çeken artık) kestirici çalışıyor. Kararsız sıfırda kol avlanıyor ve bunu hiçbir yöntem çözmüyor. Bir dış yük artığı tam karşılarsa (0,5 F_c'de 45°'de a2) tepe açısı da sıfır noktasına dönüşüyor. Tepe açılarında artık büyüdükçe (≥ 2 F_c) ofset tablosuna artığın esneme terimi girmeli.
+
+### Senaryo 3. Dış bozucu, net torku küçük eklemde
+
+**Kurulum.** Tesis 2a'nın karşı ağırlıklı kolu: mgl × 0,05 ve × 0,1 (0,012 / 0,024 N m), kestirici mglN doğru biliyor. Yalnız temel senaryo, bozucu t = 3 s'de başlıyor. İki bozucu türü var:
+- **dA, sinüs:** 2 s süren, 1 / 5 / 25 Hz, genlik 0,005 / 0,01 / 0,02 / 0,05 N m (F_c'nin 0,12 / 0,25 / 0,5 / 1,25 katı).
+- **dB, sabit yük:** 0,005 / 0,01 / 0,02 N m, t = 3 s'den sona kadar.
+
+Bozucular +s0 yönünde, yani yerçekiminin bastırdığı yüzden koparan yönde. Hedefler 45 / 120 / 180 / 270°, ± yaklaşma. Hücre /24 (8 hedef × 3 tohum). Log `b1g3_log.txt`, sonunda `b1g3_ozet` ayrıntı tablosu var.
+
+**Soru.** Bozucu yüzü çeviriyor mu, çeviriyorsa kestirici bunu yakalıyor mu? Ayrıntı tablosu 180° hedeflerini dışarıda bırakıyor (/36: 2 başlangıç × 6 hedef-yön × 3 tohum) ve dört sayı veriyor:
+- **çevir:** bozucu penceresinde (3–5 s) gerçek dişli torku iki işareti de aldı.
+- **kalıcı:** son yüz ilk yüzün tersi.
+- **yakala:** kalıcı çevrilen koşularda kestiricinin son yüzü doğru.
+- **H7:** her zamanki ölçüt.
+
+**Sinüs bozucu (dA): yüzü yalnız geçici çeviriyor, kestirici her durumda toparlanıyor.**
+- Genlik kolu bastıran yerçekiminden (mgl sin θ, × 0,05'te 0,008–0,012, × 0,1'de 0,017–0,024 N m) büyükse ve frekans 1–5 Hz ise yüz pencerede çevriliyor. × 0,05'te bu 0,02 ve 0,05 N m'de oluyor, × 0,1'de yalnız 0,05 N m'de. Çoğu hücrede 36/36. İstisnalar eşiğe yakın: × 0,05, 5 Hz, 0,02 N m'de sürtünmeli 33, sürtünmesiz 0. × 0,1, 5 Hz, 0,05 N m, sürtünmesizde 24. 25 Hz'de hiçbir genlikte çevirme yok: kol eylemsizliği bozucuyu süzüyor.
+- Bozucu bitince yerçekimi kolu ilk yüze geri getiriyor. Kalıcı çevirme hiçbir sinüs koşusunda yok.
+- **Olay ve olay+yok her sinüs hücresinde 36/36 H7**, çevirme olsun olmasın, iki tesiste de. Momentum 33–36. Lenze ve edilgen sürtünmeli tesiste düşüyor: lenze × 0,05'te 24–36, edilgen × 0,05'te 18–36, × 0,1'de 9–36. Bu 2a'daki aynı nedenden geliyor: yerçekimi sürtünme aralığının içinde kalınca u'nun işareti yüzü göstermiyor.
+
+**Sabit yük (dB): yerçekiminden büyükse yüzü kalıcı çeviriyor, olay tabanlı kestirici bunu yakalıyor.**
+
+| dB (N m) | mgl × 0,05: kalıcı çevrilen /36 | yakalanan (olay / olay+yok) | mgl × 0,1: kalıcı /36 | yakalanan |
+|---|---|---|---|---|
+| 0,005 | 0 | – | 0 | – |
+| 0,01 | 12 (yalnız 45°) | sürt.li 6/12, sürt.siz 12/12 | 0 | – |
+| 0,02 | 36 | 36/36, iki tesiste | 12 (yalnız 45°) | 12/12, iki tesiste |
+
+- Yük ancak mgl sin θ'yı aştığı yerde yüzü çeviriyor, yani beklenen eşikte. × 0,05'te 0,01 N m yalnız 45°'yi geçiyor (0,0085 < 0,01 < 0,0104). × 0,1'de 0,02 N m yalnız 45°'yi geçiyor (0,017 < 0,02).
+- Olay ve olay+yok kalıcı çevirmenin hepsini yakalıyor. **Tek istisna eşiğe çok yakın durum:** × 0,05, dB 0,01, 45°, sürtünmeli tesis, yakalama 6/12. Orada yeni net tork 0,01 − 0,0085 = 0,0015 N m, yani F_c'nin %4'ü. Kalan 6 koşu H7'yi kaçırıyor (H7 30/36). Sürtünmesiz tesiste aynı hücre 12/12.
+- Komut tabanlı ve momentum yöntemleri kalıcı çevirmede daha kötü. Örnek × 0,05, dB 0,01, sürtünmesiz: momentum 3/12, lenze 0/12. × 0,1, dB 0,02, sürtünmesiz: momentum 0/12. Edilgen sürtünmeli tesiste 0,02 N m'de 27/36.
+- **180°'de yalnız sabit yük kolu kurtarıyor.** Sinüs koşularında 180° hedefleri hiç geçmiyor (0/12; olay, olay+yok ve her açı varyantının bütün sinüs hücrelerinde yalnız 1 koşu geçiyor). Sabit yük ise en küçük değerinde bile (0,005 N m ≈ 0,12 F_c) olay+yok'ta 12/12 H7, olay'da 6–12/12. Bu senaryo 1 ve 2a'daki a2 sonucunun aynısı: kalıcı bir tork, sıfır noktasında yüzü kendisi oluşturuyor.
+- Her açıda yoklama varyantı burada da olay+yok ile bire bir aynı.
+
+**Sonuç (senaryo 3).** Bozucu yüzü ancak kolu bastıran net torkun üstüne çıktığında çeviriyor. Hızlı (25 Hz) bozucular eylemsizlikle süzülüyor. Geçici çevirmeler (sinüs) kestiriciyi bozmuyor: bozucu bitince yüz geri geliyor ve olay tabanlı kestirici iki tesiste de tam. Kalıcı çevirmeler (sabit yük) de yakalanıyor. Kayıp yalnız yeni net torkun sürtünme aralığının birkaç yüzdesinde kaldığı eşik durumunda, sürtünmeli tesiste ortaya çıkıyor. Bu, B1-G'nin genel sonucuyla aynı: kestirici bir yüz olduğu sürece onu buluyor, yüzü belirleyen net tork sıfıra yaklaştıkça başarısız oluyor.

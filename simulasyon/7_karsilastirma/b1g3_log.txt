@@ -1,0 +1,487 @@
+=== B1-G (b1g3), 2026-11-24 12:27. Hücre: H7 / 24 (1 senaryo x 8 hedef x 3 tohum).
+Hedefler: [45 120 180 270]. Köşeli parantez: senaryo ayrıntısı (temel a1 a2 c d, her biri /24), yalnız tam olmayanlarda.
+Yüz ölçütü: kestiricinin son yüzü = gerçek son dişli torku işareti (temassız: H7 değil).
+
+mgl x0.05 dA 1 Hz 0.005 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.48
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    0.92
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    0.92
+   momentum L100 e0.06  | doğru  18                | ters   21                |        0          9      0    2.30
+   lenze 0.03           | doğru  15                | ters    9                |        0         15      9    2.48
+   edilgen              | doğru   0                | ters   18                |        0         24      6    3.06
+mgl x0.05 dA 1 Hz 0.005 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.96
+   olay+yok             | doğru  18                | ters   18                |        0          2     10    1.74
+   olay+yok her açı     | doğru  18                | ters   18                |        0          2     10    1.74
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          6      6    1.06
+mgl x0.05 dA 1 Hz 0.01 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.52
+   olay+yok             | doğru  18                | ters   18                |        1          2      9    1.43
+   olay+yok her açı     | doğru  18                | ters   18                |        1          2      9    1.43
+   momentum L100 e0.06  | doğru  18                | ters   16                |        0         12      2    2.25
+   lenze 0.03           | doğru  18                | ters   12                |        0         12      6    2.53
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.01
+mgl x0.05 dA 1 Hz 0.01 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         11      1    2.79
+   olay+yok             | doğru  18                | ters   18                |        0          3      9    1.56
+   olay+yok her açı     | doğru  18                | ters   18                |        0          3      9    1.56
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          3      9    1.28
+mgl x0.05 dA 1 Hz 0.02 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.08
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.09
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.09
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.09
+   lenze 0.03           | doğru   9                | ters   15                |        0         18      6    3.07
+   edilgen              | doğru   2                | ters   18                |        0         21      7    3.04
+mgl x0.05 dA 1 Hz 0.02 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         11      1    2.66
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.76
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.76
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          5      7    1.04
+mgl x0.05 dA 1 Hz 0.05 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.10
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    0.79
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    0.79
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.10
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.10
+   edilgen              | doğru  18                | ters   18                |        0         12      0    3.12
+mgl x0.05 dA 1 Hz 0.05 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         10      2    2.65
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.75
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.75
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          4      8    0.98
+mgl x0.05 dA 5 Hz 0.005 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        6          6      0    1.42
+   olay+yok             | doğru  18                | ters   18                |        0         12      0    2.24
+   olay+yok her açı     | doğru  18                | ters   18                |        0         12      0    2.24
+   momentum L100 e0.06  | doğru  18                | ters   15                |        6          9      0    1.75
+   lenze 0.03           | doğru  15                | ters    9                |        0         15      9    2.31
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.08
+mgl x0.05 dA 5 Hz 0.005 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.95
+   olay+yok             | doğru  18                | ters   18                |        0          4      8    1.92
+   olay+yok her açı     | doğru  18                | ters   18                |        0          4      8    1.92
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          4      8    1.22
+mgl x0.05 dA 5 Hz 0.01 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        2         10      0    1.78
+   olay+yok             | doğru  18                | ters   18                |        1         10      1    1.92
+   olay+yok her açı     | doğru  18                | ters   18                |        1         10      1    1.92
+   momentum L100 e0.06  | doğru  18                | ters   15                |        2         13      0    2.03
+   lenze 0.03           | doğru  15                | ters   17                |        0         15      1    1.80
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.08
+mgl x0.05 dA 5 Hz 0.01 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         11      1    2.84
+   olay+yok             | doğru  18                | ters   18                |        0          6      6    2.12
+   olay+yok her açı     | doğru  18                | ters   18                |        0          6      6    2.12
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          4      8    1.21
+mgl x0.05 dA 5 Hz 0.02 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        1          8      3    2.22
+   olay+yok             | doğru  18                | ters   18                |        0          9      3    2.13
+   olay+yok her açı     | doğru  18                | ters   18                |        0          9      3    2.13
+   momentum L100 e0.06  | doğru  18                | ters   18                |        1          8      3    2.10
+   lenze 0.03           | doğru  15                | ters   12                |        1         20      0    1.95
+   edilgen              | doğru   5                | ters   15                |        0         22      6    2.36
+mgl x0.05 dA 5 Hz 0.02 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        1         11      0    2.71
+   olay+yok             | doğru  18                | ters   18                |        0          2     10    1.62
+   olay+yok her açı     | doğru  18                | ters   18                |        0          2     10    1.62
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          2     10    1.38
+mgl x0.05 dA 5 Hz 0.05 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.94
+   olay+yok             | doğru  18                | ters   18                |        0          8      4    1.88
+   olay+yok her açı     | doğru  18                | ters   18                |        0          8      4    1.88
+   momentum L100 e0.06  | doğru  18                | ters   18                |        2         10      0    2.69
+   lenze 0.03           | doğru  18                | ters   18                |        0          8      4    2.07
+   edilgen              | doğru  18                | ters   13                |        0         17      0    2.68
+mgl x0.05 dA 5 Hz 0.05 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.81
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.45
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.45
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    2.86
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.98
+   edilgen              | doğru  18                | ters   18                |        0          2     10    1.32
+mgl x0.05 dA 25 Hz 0.005 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.03
+   olay+yok             | doğru  18                | ters   18                |        0          6      6    1.82
+   olay+yok her açı     | doğru  18                | ters   18                |        0          6      6    1.82
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.04
+   lenze 0.03           | doğru  15                | ters    9                |        0         15      9    2.33
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.08
+mgl x0.05 dA 25 Hz 0.005 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.00
+   olay+yok             | doğru  18                | ters   18                |        0          5      7    1.72
+   olay+yok her açı     | doğru  18                | ters   18                |        0          5      7    1.72
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          5      7    1.17
+mgl x0.05 dA 25 Hz 0.01 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.03
+   olay+yok             | doğru  18                | ters   18                |        0          8      4    1.73
+   olay+yok her açı     | doğru  18                | ters   18                |        0          8      4    1.73
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.04
+   lenze 0.03           | doğru  15                | ters    9                |        0         15      9    2.33
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.08
+mgl x0.05 dA 25 Hz 0.01 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.00
+   olay+yok             | doğru  18                | ters   18                |        0          5      7    1.99
+   olay+yok her açı     | doğru  18                | ters   18                |        0          5      7    1.99
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          3      9    1.16
+mgl x0.05 dA 25 Hz 0.02 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.03
+   olay+yok             | doğru  18                | ters   18                |        0          9      3    2.36
+   olay+yok her açı     | doğru  18                | ters   18                |        0          9      3    2.36
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.04
+   lenze 0.03           | doğru  15                | ters    9                |        0         15      9    2.32
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.08
+mgl x0.05 dA 25 Hz 0.02 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.00
+   olay+yok             | doğru  18                | ters   18                |        0          4      8    2.08
+   olay+yok her açı     | doğru  18                | ters   18                |        0          4      8    2.08
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    3.00
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.00
+   edilgen              | doğru  18                | ters   18                |        0          6      6    1.01
+mgl x0.05 dA 25 Hz 0.05 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |       12          0      0    1.47
+   olay+yok             | doğru  18                | ters   18                |        6          0      6    1.98
+   olay+yok her açı     | doğru  18                | ters   18                |        6          0      6    1.98
+   momentum L100 e0.06  | doğru  18                | ters   15                |       12          3      0    1.79
+   lenze 0.03           | doğru  15                | ters    9                |        0         15      9    2.35
+   edilgen              | doğru   0                | ters   18                |        0         30      0    3.07
+mgl x0.05 dA 25 Hz 0.05 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.00
+   olay+yok             | doğru  18                | ters   18                |        0          6      6    2.06
+   olay+yok her açı     | doğru  18                | ters   18                |        0          6      6    2.06
+   momentum L100 e0.06  | doğru  18                | ters   15                |        0         15      0    2.99
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.98
+   edilgen              | doğru  18                | ters   18                |        0          2     10    1.23
+mgl x0.05 dB 0.005     sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   24                |        0          6      0    3.03
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   21                |        0          9      0    3.04
+   lenze 0.03           | doğru   6                | ters    3                |        0         39      0    2.24
+   edilgen              | doğru   6                | ters   18                |        0         24      0    3.06
+mgl x0.05 dB 0.005     sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  21                | ters   24                |        0          3      0    3.03
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   21                |        0          9      0    3.01
+   lenze 0.03           | doğru  18                | ters   24                |        0          6      0    3.03
+   edilgen              | doğru  23                | ters   24                |        0          1      0    0.03
+mgl x0.05 dB 0.01      sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  14                | ters   22                |        0         12      0    3.05
+   olay+yok             | doğru  20                | ters   22                |        0          6      0    3.03
+   olay+yok her açı     | doğru  20                | ters   23                |        0          5      0    3.04
+   momentum L100 e0.06  | doğru  12                | ters   21                |        0          6      9    2.09
+   lenze 0.03           | doğru  12                | ters    9                |        0         27      0    2.70
+   edilgen              | doğru  12                | ters    6                |        3         24      3    2.80
+mgl x0.05 dB 0.01      sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  12                | ters   21                |        0         15      0    3.06
+   lenze 0.03           | doğru  12                | ters   18                |        0         18      0    3.06
+   edilgen              | doğru  15                | ters   15                |        4          9      5    0.82
+mgl x0.05 dB 0.02      sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   24                |        0          6      0    3.14
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  24                | ters   24                |        0          0      0    0.00
+   lenze 0.03           | doğru  24                | ters   24                |        0          0      0    0.00
+   edilgen              | doğru  24                | ters   15                |        0          9      0    3.06
+mgl x0.05 dB 0.02      sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   24                |        0          6      0    3.12
+   lenze 0.03           | doğru  24                | ters   24                |        0          0      0    0.00
+   edilgen              | doğru  24                | ters   24                |        0          0      0    0.00
+mgl x0.1 dA 1 Hz 0.005 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.87
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.07
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.07
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    2.75
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.11
+   edilgen              | doğru   0                | ters    9                |        0         31      8    2.86
+mgl x0.1 dA 1 Hz 0.005 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          0     12    1.40
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.42
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.42
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          4      8    1.19
+mgl x0.1 dA 1 Hz 0.01  sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.72
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.31
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.31
+   momentum L100 e0.06  | doğru  18                | ters   18                |        2         10      0    1.91
+   lenze 0.03           | doğru  18                | ters   18                |        3          9      0    1.87
+   edilgen              | doğru   0                | ters    9                |        0         37      2    2.92
+mgl x0.1 dA 1 Hz 0.01  sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          0     12    1.11
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.11
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.11
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        1          3      8    0.95
+mgl x0.1 dA 1 Hz 0.02  sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.10
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.37
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.37
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.10
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.10
+   edilgen              | doğru   6                | ters   11                |        0         25      6    2.93
+mgl x0.1 dA 1 Hz 0.02  sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          0     12    0.82
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    0.81
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    0.81
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          5      7    1.13
+mgl x0.1 dA 1 Hz 0.05  sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.12
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.33
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.33
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.11
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.11
+   edilgen              | doğru  18                | ters   18                |        0         12      0    3.13
+mgl x0.1 dA 1 Hz 0.05  sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          0     12    1.29
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.28
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.28
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          0     12    1.37
+mgl x0.1 dA 5 Hz 0.005 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.88
+   olay+yok             | doğru  18                | ters   18                |        0          3      9    1.61
+   olay+yok her açı     | doğru  18                | ters   18                |        0          3      9    1.61
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    2.88
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.40
+   edilgen              | doğru   0                | ters    9                |        0         36      3    2.93
+mgl x0.1 dA 5 Hz 0.005 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          6      6    1.82
+   olay+yok             | doğru  18                | ters   18                |        0          1     11    1.03
+   olay+yok her açı     | doğru  18                | ters   18                |        0          1     11    1.03
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          4      8    1.25
+mgl x0.1 dA 5 Hz 0.01  sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   19                |        2          8      1    1.91
+   olay+yok             | doğru  18                | ters   18                |        0          5      7    1.63
+   olay+yok her açı     | doğru  18                | ters   18                |        0          5      7    1.63
+   momentum L100 e0.06  | doğru  18                | ters   19                |        2          8      1    1.91
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.95
+   edilgen              | doğru   0                | ters    9                |        0         33      6    3.02
+mgl x0.1 dA 5 Hz 0.01  sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          2     10    1.61
+   olay+yok             | doğru  18                | ters   18                |        0          2     10    1.54
+   olay+yok her açı     | doğru  18                | ters   18                |        0          2     10    1.54
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          4      8    1.03
+mgl x0.1 dA 5 Hz 0.02  sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        2          9      1    1.70
+   olay+yok             | doğru  18                | ters   18                |        0          5      7    1.59
+   olay+yok her açı     | doğru  18                | ters   18                |        0          5      7    1.59
+   momentum L100 e0.06  | doğru  18                | ters   18                |        1         10      1    2.21
+   lenze 0.03           | doğru  18                | ters   18                |        0         11      1    2.52
+   edilgen              | doğru  18                | ters   16                |        0         10      4    2.17
+mgl x0.1 dA 5 Hz 0.02  sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          4      8    1.96
+   olay+yok             | doğru  18                | ters   18                |        0          3      9    1.68
+   olay+yok her açı     | doğru  18                | ters   18                |        0          3      9    1.68
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          4      8    1.09
+mgl x0.1 dA 5 Hz 0.05  sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.71
+   olay+yok             | doğru  18                | ters   18                |        0          5      7    0.68
+   olay+yok her açı     | doğru  18                | ters   18                |        0          5      7    0.68
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    2.89
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.85
+   edilgen              | doğru  18                | ters   18                |        0         12      0    3.08
+mgl x0.1 dA 5 Hz 0.05  sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          3      9    1.47
+   olay+yok             | doğru  18                | ters   18                |        0          1     11    1.36
+   olay+yok her açı     | doğru  18                | ters   18                |        0          1     11    1.36
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          7      5    0.94
+mgl x0.1 dA 25 Hz 0.005 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.03
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.56
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.56
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.03
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.43
+   edilgen              | doğru   0                | ters    9                |        0         39      0    2.87
+mgl x0.1 dA 25 Hz 0.005 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          6      6    2.41
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.76
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.76
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          7      5    0.84
+mgl x0.1 dA 25 Hz 0.01 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.03
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.52
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.52
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.03
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.43
+   edilgen              | doğru   0                | ters    9                |        0         39      0    2.87
+mgl x0.1 dA 25 Hz 0.01 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0          6      6    2.41
+   olay+yok             | doğru  18                | ters   18                |        0          0     12    1.75
+   olay+yok her açı     | doğru  18                | ters   18                |        0          0     12    1.75
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          2     10    0.99
+mgl x0.1 dA 25 Hz 0.02 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.03
+   olay+yok             | doğru  18                | ters   18                |        0          2     10    1.30
+   olay+yok her açı     | doğru  18                | ters   18                |        0          2     10    1.30
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.03
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.43
+   edilgen              | doğru   0                | ters    9                |        0         38      1    2.87
+mgl x0.1 dA 25 Hz 0.02 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         11      1    2.91
+   olay+yok             | doğru  18                | ters   18                |        0          3      9    1.36
+   olay+yok her açı     | doğru  18                | ters   18                |        0          3      9    1.36
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          7      5    1.07
+mgl x0.1 dA 25 Hz 0.05 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    2.95
+   olay+yok             | doğru  18                | ters   18                |        0          6      6    1.82
+   olay+yok her açı     | doğru  18                | ters   18                |        0          6      6    1.82
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    2.95
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    2.39
+   edilgen              | doğru   0                | ters    9                |        0         35      4    2.92
+mgl x0.1 dA 25 Hz 0.05 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   18                |        0         12      0    3.01
+   olay+yok             | doğru  18                | ters   18                |        0          3      9    1.54
+   olay+yok her açı     | doğru  18                | ters   18                |        0          3      9    1.54
+   momentum L100 e0.06  | doğru  18                | ters   18                |        0         12      0    3.01
+   lenze 0.03           | doğru  18                | ters   18                |        0         12      0    3.01
+   edilgen              | doğru  18                | ters   18                |        0          9      3    0.64
+mgl x0.1 dB 0.005      sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   24                |        0          6      0    3.02
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   24                |        0          6      0    3.02
+   lenze 0.03           | doğru  21                | ters   18                |        0          9      0    0.13
+   edilgen              | doğru   6                | ters    9                |        0         33      0    2.96
+mgl x0.1 dB 0.005      sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   24                |        0          6      0    3.04
+   lenze 0.03           | doğru  18                | ters   24                |        0          6      0    3.04
+   edilgen              | doğru  23                | ters   23                |        0          2      0    0.03
+mgl x0.1 dB 0.01       sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   24                |        0          6      0    3.06
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   24                |        0          1      5    1.24
+   lenze 0.03           | doğru   6                | ters    6                |        0         36      0    1.82
+   edilgen              | doğru   6                | ters    9                |        0         33      0    3.00
+mgl x0.1 dB 0.01       sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  18                | ters   24                |        0          6      0    3.06
+   lenze 0.03           | doğru  18                | ters   24                |        0          6      0    3.06
+   edilgen              | doğru  24                | ters   24                |        0          0      0    0.00
+mgl x0.1 dB 0.02       sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  18                | ters   24                |        0          6      0    3.14
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  24                | ters   23                |        0          1      0    0.47
+   lenze 0.03           | doğru  12                | ters   12                |        0         24      0    2.84
+   edilgen              | doğru  12                | ters   15                |        0         21      0    3.02
+mgl x0.1 dB 0.02       sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok             | doğru  24                | ters   24                |        0          0      0    0.00
+   olay+yok her açı     | doğru  24                | ters   24                |        0          0      0    0.00
+   momentum L100 e0.06  | doğru  12                | ters   18                |        0         18      0    3.11
+   lenze 0.03           | doğru  24                | ters   24                |        0          0      0    0.00
+   edilgen              | doğru  19                | ters   18                |        1          8      2    0.56
+
+--- Senaryo 3 ayrıntı (180° hariç, /36: H7 çevir kalıcı yakala/kalıcı) ---
+koşul                      tesis       | olay                  | olay+yok              | momentum              | lenze 0.0             | edilgen              
+mgl x0.05 dA 1 Hz 0.005    sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 24  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 1 Hz 0.005    sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 1 Hz 0.01     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 34  0  0  0/0       | 30  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 1 Hz 0.01     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 1 Hz 0.02     sürtünmeli  | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 24 36  0  0/0       | 20 36  0  0/0      
+mgl x0.05 dA 1 Hz 0.02     sürtünmesiz | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.05 dA 1 Hz 0.05     sürtünmeli  | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.05 dA 1 Hz 0.05     sürtünmesiz | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.05 dA 5 Hz 0.005    sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 24  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 5 Hz 0.005    sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 5 Hz 0.01     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 30  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 5 Hz 0.01     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 5 Hz 0.02     sürtünmeli  | 36 33  0  0/0       | 36 33  0  0/0       | 36 32  0  0/0       | 27 33  0  0/0       | 20 18  0  0/0      
+mgl x0.05 dA 5 Hz 0.02     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 5 Hz 0.05     sürtünmeli  | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 31 36  0  0/0      
+mgl x0.05 dA 5 Hz 0.05     sürtünmesiz | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.05 dA 25 Hz 0.005   sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 24  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.005   sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.01    sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 24  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.01    sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.02    sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 24  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.02    sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.05    sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 24  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dA 25 Hz 0.05    sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.05 dB 0.005         sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       |  3  0  0  0/0       | 18  0  0  0/0      
+mgl x0.05 dB 0.005         sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 33  0  0  0/0       | 36  0  0  0/0       | 35  0  0  0/0      
+mgl x0.05 dB 0.01          sürtünmeli  | 30 12 12  6/12      | 30 12 12  6/12      | 27 12 12  8/12      |  9 12 12  9/12      | 12 12 12  6/12     
+mgl x0.05 dB 0.01          sürtünmesiz | 36 12 12 12/12      | 36 12 12 12/12      | 27 12 12  3/12      | 24 12 12  0/12      | 18 19 15 11/15     
+mgl x0.05 dB 0.02          sürtünmeli  | 36 36 36 36/36      | 36 36 36 36/36      | 36 36 36 36/36      | 36 36 36 36/36      | 27 36 36 27/36     
+mgl x0.05 dB 0.02          sürtünmesiz | 36 36 36 36/36      | 36 36 36 36/36      | 36 36 36 36/36      | 36 36 36 36/36      | 36 36 36 36/36     
+mgl x0.1 dA 1 Hz 0.005     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 1 Hz 0.005     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 1 Hz 0.01      sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 1 Hz 0.01      sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 1 Hz 0.02      sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 17  0  0  0/0      
+mgl x0.1 dA 1 Hz 0.02      sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 1 Hz 0.05      sürtünmeli  | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.1 dA 1 Hz 0.05      sürtünmesiz | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.1 dA 5 Hz 0.005     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 5 Hz 0.005     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 5 Hz 0.01      sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 5 Hz 0.01      sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 5 Hz 0.02      sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 34  0  0  0/0      
+mgl x0.1 dA 5 Hz 0.02      sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 5 Hz 0.05      sürtünmeli  | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0       | 36 36  0  0/0      
+mgl x0.1 dA 5 Hz 0.05      sürtünmesiz | 36 24  0  0/0       | 36 24  0  0/0       | 36 24  0  0/0       | 36 36  0  0/0       | 36 24  0  0/0      
+mgl x0.1 dA 25 Hz 0.005    sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.005    sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.01     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.01     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.02     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.02     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.05     sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dA 25 Hz 0.05     sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dB 0.005          sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 27  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dB 0.005          sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dB 0.01           sürtünmeli  | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       |  0  0  0  0/0       |  9  0  0  0/0      
+mgl x0.1 dB 0.01           sürtünmesiz | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0       | 36  0  0  0/0      
+mgl x0.1 dB 0.02           sürtünmeli  | 36 12 12 12/12      | 36 12 12 12/12      | 35 12 12 12/12      | 12 12 12 12/12      | 15 12 12  9/12     
+mgl x0.1 dB 0.02           sürtünmesiz | 36 12 12 12/12      | 36 12 12 12/12      | 24 12 12  0/12      | 36 12 12 12/12      | 25 23 12 12/12     
