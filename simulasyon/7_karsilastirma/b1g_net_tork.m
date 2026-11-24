@@ -3,6 +3,9 @@ function b1g_net_tork
 % Senaryo (ortam B1G_SEN):
 %   '1'  (varsayılan) yatay eklem: tesiste mgl = 0, kestirici de mglN = 0 bilir. Kod değişikliği yok.
 %   '1b' yatay eklem + kol yatağı Coulomb sürtünmesi FcL 0,001 / 0,004 / 0,01 N m (F_c'nin %2,5 / 10 / 25'i), FsL = 1,5 FcL.
+%   '1d' 1b + kol yatağı yapışmasına bilinçli dayama (p.dayama = tau_d, oran 0,25/0,5/0,8/1,2 x FsLN; FsLN
+%        kestiricinin bildiği FsL, doğru ya da 0,8 oranda x0,5 / x2; ayrıca FcL = 0 sürtünmesiz rulman). Lenze yok
+%        (dayama yalnız yuzKes yöntemlerinde).
 %   '2a' karşı ağırlık: tesiste mgl x 0,1 / x 0,05 (D'nin dik kolu), kestirici mglN doğru, x0,5, x1,5.
 %        Başlangıç inancı doğru = sign(sin hedef) (180°'de ilk hareket yönü); darbe/yük işareti +s0 (yüzden koparır; 2026-11-23 düzeltme, ilk koşumlarda -s0 yüze bastırıyordu).
 %   '2b' yay dengeleme: tesiste mgl = 0 ve artık tork -yayE sin 2th (kol_benzetim p.yayE), yayE 0,5 / 1 / 2 F_c
@@ -36,7 +39,7 @@ M = {'olay', struct('yuzKes','olay','vDurF',10);
 qAS = 2*pi/(4096*30);  nAS = deg2rad(0.043)/p0.N;
 as = struct('qM', qAS, 'nM', nAS);
 sen = getenv('B1G_SEN');  if isempty(sen), sen = '1'; end
-scSec = 1:5;
+scSec = 1:5;  mSec = 1:size(M,1);
 switch sen
     case '1'
         onek = 'b1g1';
@@ -46,6 +49,19 @@ switch sen
         onek = 'b1g1b';  K = {};
         for c = [0.001 0.004 0.01]
             K(end+1,:) = {sprintf('yatay FcL %g', c), struct('mgl', 0, 'mglN', 0, 'FcL', c, 'FsL', 1.5*c)}; %#ok<AGROW>
+        end
+        istek = [45 120 180 270];
+    case '1d'   % 1b + kol yapışmasına bilinçli dayama (kol_benzetim p.dayama; yalnız yuzKes yöntemleri)
+        % tau_d = oran x FsLN; FsLN kestiricinin bildiği FsL (doğru, x0,5, x2). FcL 0 (sürtünmesiz rulman): FsLN varsayılır.
+        onek = 'b1g1d';  K = {};  mSec = 1:4;  mSec(end+1) = 6;
+        for c = [0.004 0.01]
+            for d = [0.25 1; 0.5 1; 0.8 1; 1.2 1; 0.8 0.5; 0.8 2]'
+                K(end+1,:) = {sprintf('FcL %g, tau_d %g FsLN, FsLN x%g', c, d(1), d(2)), ...
+                    struct('mgl', 0, 'mglN', 0, 'FcL', c, 'FsL', 1.5*c, 'dayama', d(1)*d(2)*1.5*c)}; %#ok<AGROW>
+            end
+        end
+        for c = [0.004 0.01]
+            K(end+1,:) = {sprintf('FcL 0, tau_d 0.8 FsLN, FsLN %g', 1.5*c), struct('mgl', 0, 'mglN', 0, 'dayama', 0.8*1.5*c)}; %#ok<AGROW>
         end
         istek = [45 120 180 270];
     case '2a'   % karşı ağırlık: tesiste mgl x 0,1 ve x 0,05; kestirici mglN doğru ya da ±%50 yanlış
@@ -91,6 +107,7 @@ if epsK, onek = [onek 'e']; end
 sc_ad = {'temel', 'a1 darbe', 'a2 yük', 'c yaklaşma', 'd yön değ.'};
 sur = {'sürtünmeli', 0.04, 0.06; 'sürtünmesiz', 0, 0};
 V = {};   % (yöntem, koşul, başlangıç, tesis, senaryo)
+M = M(mSec,:);
 for k = 1:size(K,1), for m = 1:size(M,1), for b = [1 -1], for a = 1:2, for sc = scSec
     V(end+1,:) = {m, k, b, a, sc}; %#ok<AGROW>
 end, end, end, end, end

@@ -178,6 +178,11 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %     Kestirici bilmez (gözlemci yalnız motor tarafını modelliyor).
 %   p.yayEN [N m] (varsayılan 0; B1-G 2b artığı): kestiricinin bildiği yay artığı. yuzKes/yuzKural ofsetine
 %     yayEN sin(2 th_ref)/KsN eklenir (durağan dişli torku mgl sin th + yayE sin 2th'nin esneme payı).
+%   p.dayama [N m] (varsayılan 0/kapalı; B1-G 1d, kol yatağı yapışmasına bilinçli dayama; yalnız yuzKes açıkken):
+%     kestiricinin bildiği net durağan tork |mglN sin th_ref + yayEN sin 2th_ref| <= p.dayEsik (0,0042) olan
+%     hedeflerde, motor ilk kez p.dayBekle (0,5) s durgun kalınca (yoklama dışında) dayama katsayısı kD
+%     p.dayRampa (0,5) s'de 0 -> 1 çıkar ve öyle kalır. Ofsete sOf*kD*dayama/KsN (fazladan sıkışma), torka
+%     sOf*kD*dayama ileri besleme eklenir (integratör bununla çekişmez). Skaler ya da benzetim başına bir değer.
 %   p.asHar = [E1 f1 E2 f2] [rad, motor mili tarafı]: AS5600 açıya bağlı harmonik hatası; motor ölçümüne
 %     (nicemleme ve gürültüden önce) (E1 sin(psi + f1) + E2 sin(2 psi + f2))/N eklenir, psi = N phi.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
@@ -215,6 +220,7 @@ if isfield(p,'ofsetYuz') && ~isempty(p.ofsetYuz)
     durSay = zeros(1,n);  yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
     ofsG = p.mgl*sin(th_ref)/p.Ks;  ofs = yz*p.r + ofsG;
 end
+dyAc = false;                                      % kol yapışmasına dayama (B1-G 1d)
 kesMod = 0;                                        % 0 kapalı, 1 edilgen, 2 olay, 3 yoklama, 4 olay+yoklama,
 ykMod = false;                                     % 5 momentum, 6 sta (B1-L literatür tabanları)
 if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
@@ -277,7 +283,15 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
         stA = false(1,n);  stT = zeros(1,n);  stSay = zeros(1,n);
         stEtkin = abs(th_ref - pi) <= yokBant + 1e-12;
     end
+    dyAc = any(al(p,'dayama',0) ~= 0);
+    if dyAc                                        % kol yapışmasına dayama (B1-G 1d)
+        dyT = p.dayama(:)'.*ones(1,n);  dyKs = al(p,'KsN', p.Ks);
+        dyBek = al(p,'dayBekle', 0.5);  dyRam = al(p,'dayRampa', 0.5);
+        dyEtkin = abs(al(p,'mglN', p.mgl)*sin(th_ref) + yayEN*sin(2*th_ref)) <= al(p,'dayEsik', 0.0042) + 1e-12;
+        dyBas = false(1,n);  dyK = zeros(1,n);
+    end
 end
+if kesMod == 0 && any(al(p,'dayama',0) ~= 0), error('dayama yalnız yuzKes açıkken'); end
 kurMod = 0;                                       % 0 kapalı, 1 panasonic, 2 toyoda, 3 lenze (B1)
 if isfield(p,'yuzKural') && ~isempty(p.yuzKural)
     if kesMod > 0 || yuzMod > 0, error('yuzKural, yuzKes ve ofsetYuz ile birlikte kullanılamaz'); end
@@ -528,8 +542,13 @@ for i = 0:nStep-1
                 sOf = sh;
             end
             ofs = sOf.*rN + ofsG;
+            if dyAc                                % dayama: ilk durgunluktan sonra rampayla, kalıcı
+                dyBas = dyBas | (dyEtkin & ykF == 0 & durSay*p.Ts >= dyBek);
+                if dyRam > 0, dyK(dyBas) = min(dyK(dyBas) + p.Ts/dyRam, 1); else, dyK(dyBas) = 1; end
+                ofs = ofs + sOf.*dyK.*dyT/dyKs;
+            end
         end
-        if kurMod > 0                              % komut tabanlı taban kurallar (B1)
+        if kurMod > 0                             % komut tabanlı taban kurallar (B1)
             shOnc = sh;
             if kurMod == 3                         % lenze: tork işareti, histerezisli
                 kS(u > kuralU) = 1;  kS(u < -kuralU) = -1;
@@ -564,6 +583,7 @@ for i = 0:nStep-1
             u0 = Kp.*e + Ki.*z - Kd.*v;
             iz = e;
         end
+        if dyAc, u0 = u0 + sOf.*dyK.*dyT; end     % dayama torku ileri besleme
         u  = min(max(u0,-p.Tmax),p.Tmax);
         doy = (u0 > p.Tmax & iz > 0) | (u0 < -p.Tmax & iz < 0);
         if Isif, z(e.*e_onc < 0) = 0; end          % hata işaret değiştirdi: integrali sıfırla

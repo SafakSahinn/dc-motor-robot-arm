@@ -1,0 +1,181 @@
+=== B1-G (b1g1d), 2026-11-24 14:12. Hücre: H7 / 120 (5 senaryo x 8 hedef x 3 tohum).
+Hedefler: [45 120 180 270]. Köşeli parantez: senaryo ayrıntısı (temel a1 a2 c d, her biri /24), yalnız tam olmayanlarda.
+Yüz ölçütü: kestiricinin son yüzü = gerçek son dişli torku işareti (temassız: H7 değil).
+
+FcL 0.004, tau_d 0.25 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.10
+   olay+yok             | doğru  26 [0 0 24 2 0]   | ters   24 [0 0 24 0 0]   |      190          0      0    1.11
+   olay+yok her açı     | doğru  40 [0 0 24 16 0]  | ters   24 [0 0 24 0 0]   |      176          0      0    1.19
+   momentum L100 e0.06  | doğru  48 [0 0 24 0 24]  | ters   48 [0 0 24 0 24]  |      144          0      0    0.51
+   edilgen              | doğru  96 [24 24 24 24 0] | ters   72 [24 24 0 24 0] |        0         72      0    1.17
+FcL 0.004, tau_d 0.25 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.04
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.95
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.67
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.03
+   edilgen              | doğru  40 [1 4 24 5 6]   | ters   44 [6 2 24 7 5]   |      108         48      0    0.02
+FcL 0.004, tau_d 0.5 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.11
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      186          0      0    1.14
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      168          0      0    1.24
+   momentum L100 e0.06  | doğru  48 [0 0 24 0 24]  | ters   48 [0 0 24 0 24]  |      144          0      0    0.51
+   edilgen              | doğru  96 [24 24 24 24 0] | ters   72 [24 24 0 24 0] |        0         72      0    1.19
+FcL 0.004, tau_d 0.5 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.96
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.68
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.03
+   edilgen              | doğru  65 [9 11 24 4 17] | ters   70 [12 11 24 11 12] |       18         87      0    0.02
+FcL 0.004, tau_d 0.8 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.12
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      186          0      0    1.15
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      168          0      0    1.25
+   momentum L100 e0.06  | doğru  48 [0 0 24 0 24]  | ters   48 [0 0 24 0 24]  |      144          0      0    0.51
+   edilgen              | doğru  96 [24 24 24 24 0] | ters   72 [24 24 0 24 0] |        0         72      0    1.21
+FcL 0.004, tau_d 0.8 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.06
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.97
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.69
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.03
+   edilgen              | doğru  66 [11 10 24 8 13] | ters   73 [12 13 24 10 14] |       13         88      0    0.04
+FcL 0.004, tau_d 1.2 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.14
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      186          0      0    1.17
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      168          0      0    1.26
+   momentum L100 e0.06  | doğru  48 [0 0 24 0 24]  | ters   48 [0 0 24 0 24]  |      144          0      0    0.51
+   edilgen              | doğru  96 [24 24 24 24 0] | ters   72 [24 24 0 24 0] |        0         72      0    1.23
+FcL 0.004, tau_d 1.2 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.07
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.98
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.70
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.03
+   edilgen              | doğru  71 [12 13 24 13 9] | ters   74 [15 11 24 15 9] |       13         82      0    0.06
+FcL 0.004, tau_d 0.8 FsLN, FsLN x0.5 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.11
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      186          0      0    1.14
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      168          0      0    1.24
+   momentum L100 e0.06  | doğru  48 [0 0 24 0 24]  | ters   48 [0 0 24 0 24]  |      144          0      0    0.51
+   edilgen              | doğru  96 [24 24 24 24 0] | ters   72 [24 24 0 24 0] |        0         72      0    1.18
+FcL 0.004, tau_d 0.8 FsLN, FsLN x0.5 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.95
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.67
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.03
+   edilgen              | doğru  64 [5 13 24 6 16] | ters   56 [2 8 24 8 14]  |       45         75      0    0.01
+FcL 0.004, tau_d 0.8 FsLN, FsLN x2 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.16
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      186          0      0    1.18
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      168          0      0    1.28
+   momentum L100 e0.06  | doğru  48 [0 0 24 0 24]  | ters   48 [0 0 24 0 24]  |      144          0      0    0.51
+   edilgen              | doğru  96 [24 24 24 24 0] | ters   72 [24 24 0 24 0] |        0         72      0    1.25
+FcL 0.004, tau_d 0.8 FsLN, FsLN x2 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.08
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.99
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.72
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.03
+   edilgen              | doğru  86 [17 16 24 16 13] | ters   84 [13 14 24 17 16] |       11         59      0    0.08
+FcL 0.01, tau_d 0.25 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  45 [0 0 24 21 0]  | ters   24 [0 0 24 0 0]   |      147         24      0    1.23
+   olay+yok             | doğru  45 [0 0 24 21 0]  | ters   24 [0 0 24 0 0]   |      147         24      0    1.23
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      144         24      0    1.24
+   momentum L100 e0.06  | doğru  72 [0 0 24 24 24] | ters   72 [0 0 24 24 24] |       96          0      0    0.66
+   edilgen              | doğru 120                | ters   87 [24 24 0 19 20] |        0         33      0    2.33
+FcL 0.01, tau_d 0.25 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.91
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   26 [0 0 24 2 0]   |      190          0      0    0.88
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   40 [0 0 24 16 0]  |      176          0      0    0.72
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   edilgen              | doğru  78 [7 13 24 22 12] | ters   85 [19 8 24 21 13] |       14         63      0    0.05
+FcL 0.01, tau_d 0.5 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  25 [0 0 24 1 0]   | ters   24 [0 0 24 0 0]   |      167         24      0    1.15
+   olay+yok             | doğru  31 [0 0 24 7 0]   | ters   24 [0 0 24 0 0]   |      161         24      0    1.17
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      144         24      0    1.25
+   momentum L100 e0.06  | doğru  72 [0 0 24 24 24] | ters   72 [0 0 24 24 24] |       96          0      0    0.66
+   edilgen              | doğru 117 [24 24 24 24 21] | ters   86 [24 24 0 24 14] |        0         37      0    2.14
+FcL 0.01, tau_d 0.5 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.92
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   26 [0 0 24 2 0]   |      190          0      0    0.90
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   40 [0 0 24 16 0]  |      176          0      0    0.73
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   edilgen              | doğru  89 [8 18 24 23 16] | ters   97 [16 17 24 23 17] |        7         47      0    0.08
+FcL 0.01, tau_d 0.8 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      168         24      0    1.17
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      162         24      0    1.19
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      144         24      0    1.27
+   momentum L100 e0.06  | doğru  72 [0 0 24 24 24] | ters   72 [0 0 24 24 24] |       96          0      0    0.66
+   edilgen              | doğru 116 [24 24 24 24 20] | ters   72 [24 24 0 24 0] |        0         52      0    1.64
+FcL 0.01, tau_d 0.8 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.95
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   26 [0 0 24 2 0]   |      190          0      0    0.93
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   39 [0 0 24 15 0]  |      177          0      0    0.75
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   edilgen              | doğru 103 [22 21 24 19 17] | ters   96 [8 21 24 23 20] |        6         35      0    0.11
+FcL 0.01, tau_d 1.2 FsLN, FsLN x1 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      168         24      0    1.20
+   olay+yok             | doğru  30 [0 0 24 6 0]   | ters   24 [0 0 24 0 0]   |      162         24      0    1.22
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      144         24      0    1.29
+   momentum L100 e0.06  | doğru  72 [0 0 24 24 24] | ters   72 [0 0 24 24 24] |       96          0      0    0.66
+   edilgen              | doğru 111 [24 24 24 24 15] | ters   72 [24 24 0 24 0] |        0         57      0    1.56
+FcL 0.01, tau_d 1.2 FsLN, FsLN x1 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.98
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.95
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.74
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   edilgen              | doğru  90 [23 22 24 0 21] | ters   89 [17 24 24 7 17] |        1         60      0    0.15
+FcL 0.01, tau_d 0.8 FsLN, FsLN x0.5 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  35 [0 0 24 11 0]  | ters   24 [0 0 24 0 0]   |      157         24      0    1.19
+   olay+yok             | doğru  40 [0 0 24 16 0]  | ters   24 [0 0 24 0 0]   |      152         24      0    1.21
+   olay+yok her açı     | doğru  48 [0 0 24 24 0]  | ters   24 [0 0 24 0 0]   |      144         24      0    1.25
+   momentum L100 e0.06  | doğru  72 [0 0 24 24 24] | ters   72 [0 0 24 24 24] |       96          0      0    0.66
+   edilgen              | doğru 117 [24 24 24 24 21] | ters   90 [24 24 0 24 18] |        0         33      0    2.35
+FcL 0.01, tau_d 0.8 FsLN, FsLN x0.5 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.92
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   26 [0 0 24 2 0]   |      190          0      0    0.89
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   40 [0 0 24 16 0]  |      176          0      0    0.73
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   edilgen              | doğru  77 [5 11 24 23 14] | ters   94 [17 14 24 24 15] |       15         54      0    0.07
+FcL 0.01, tau_d 0.8 FsLN, FsLN x2 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      168         24      0    1.24
+   olay+yok             | doğru  26 [0 0 24 2 0]   | ters   24 [0 0 24 0 0]   |      166         24      0    1.24
+   olay+yok her açı     | doğru  39 [0 0 24 15 0]  | ters   24 [0 0 24 0 0]   |      153         24      0    1.29
+   momentum L100 e0.06  | doğru  72 [0 0 24 24 24] | ters   72 [0 0 24 24 24] |       96          0      0    0.66
+   edilgen              | doğru 104 [24 24 24 24 8] | ters   72 [24 24 0 24 0] |        0         40     24    1.48
+FcL 0.01, tau_d 0.8 FsLN, FsLN x2 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.02
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.99
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    0.78
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      192          0      0    1.05
+   edilgen              | doğru 111 [24 24 24 24 15] | ters   69 [8 2 24 17 18] |        0         60      0    0.21
+FcL 0, tau_d 0.8 FsLN, FsLN 0.006 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      117         51     24    2.01
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      113         46     33    1.90
+   olay+yok her açı     | doğru  25 [1 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      101         29     61    1.57
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      137         31     24    1.90
+   edilgen              | doğru  24 [0 0 24 0 0]   | ters   18 [0 0 0 18 0]   |      170         25      3    2.26
+FcL 0, tau_d 0.8 FsLN, FsLN 0.006 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      170         22      0    1.81
+   olay+yok             | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      170         20      2    1.81
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      168         20      4    1.85
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      172         20      0    1.60
+   edilgen              | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |        9         47    136    1.13
+FcL 0, tau_d 0.8 FsLN, FsLN 0.015 sürtünmeli                                         | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  17 [0 0 17 0 0]   | ters   24 [0 0 24 0 0]   |      119         52     28    2.10
+   olay+yok             | doğru  19 [0 0 19 0 0]   | ters   24 [0 0 24 0 0]   |      113         52     32    2.01
+   olay+yok her açı     | doğru  25 [0 1 24 0 0]   | ters   24 [0 0 24 0 0]   |      107         31     53    1.61
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      137         31     24    1.90
+   edilgen              | doğru  24 [0 0 24 0 0]   | ters    0 [0 0 0 0 0]    |      144         66      6    2.36
+FcL 0, tau_d 0.8 FsLN, FsLN 0.015 sürtünmesiz                                        | temassız yanlış yüz  konum  ort|e|
+   olay                 | doğru  25 [1 0 24 0 0]   | ters   47 [0 0 24 0 23]  |      157         11      0    1.82
+   olay+yok             | doğru  25 [1 0 24 0 0]   | ters   41 [0 0 24 0 17]  |      161         11      2    1.81
+   olay+yok her açı     | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      167         21      4    1.86
+   momentum L100 e0.06  | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |      172         20      0    1.60
+   edilgen              | doğru  24 [0 0 24 0 0]   | ters   24 [0 0 24 0 0]   |       10         48    134    1.03
+
+--- Temassız koşu sayısı, senaryo x hedef (iki başlangıç x 3 tohum = /6 her tesiste) ---
+olay+yok           sürtünmeli  | temel      8484838384848184 | a1 darbe   7272727272727272 | a2 yük     00000000 | c yaklaşma 6262306162643059 | d yön değ. 7978787678768078
+olay+yok           sürtünmesiz | temel      7881848081818479 | a1 darbe   8484848484848484 | a2 yük     00000000 | c yaklaşma 8484848484847684 | d yön değ. 8181788182817881
+olay+yok her açı   sürtünmeli  | temel      8483837981828180 | a1 darbe   7272727474737272 | a2 yük     00000000 | c yaklaşma 2825302426283028 | d yön değ. 8481787980798083
+olay+yok her açı   sürtünmesiz | temel      8484848484848484 | a1 darbe   8484848483848484 | a2 yük     00000000 | c yaklaşma 7276847280727677 | d yön değ. 7878787878787878
+edilgen            sürtünmeli  | temel      1212121212121112 | a1 darbe   1212121212121212 | a2 yük     00000000 | c yaklaşma 67777677 | d yön değ. 799998810
+edilgen            sürtünmesiz | temel      10109111014910 | a1 darbe   131510131111211 | a2 yük     00000000 | c yaklaşma 3545610106 | d yön değ. 277612873
+(sütun sırası: hedef [45 120 180 270] önce Yn = +1, sonra Yn = -1)

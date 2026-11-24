@@ -1,0 +1,7 @@
+Temassız koşular: kol inanılan yüzün önünde (e*s^ > 0) / gerisinde, ort |e| [°]
+olay       sürtünmeli  temassız 2363 | önünde 2363 (ort |e| 1.15) | gerisinde    0 (ort |e| NaN)
+olay       sürtünmesiz temassız 2631 | önünde 2631 (ort |e| 1.09) | gerisinde    0 (ort |e| NaN)
+olay+yok   sürtünmeli  temassız 2296 | önünde 2296 (ort |e| 1.15) | gerisinde    0 (ort |e| NaN)
+olay+yok   sürtünmesiz temassız 2627 | önünde 2627 (ort |e| 1.04) | gerisinde    0 (ort |e| NaN)
+edilgen    sürtünmeli  temassız  314 | önünde  241 (ort |e| 2.48) | gerisinde   73 (ort |e| 1.49)
+edilgen    sürtünmesiz temassız  270 | önünde   79 (ort |e| 0.05) | gerisinde  191 (ort |e| 0.07)
