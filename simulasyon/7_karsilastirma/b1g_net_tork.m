@@ -62,6 +62,14 @@ switch sen
             K(end+1,:) = {sprintf('yayE %gFc', c), struct('mgl', 0, 'mglN', 0, 'yayE', c*0.04)}; %#ok<AGROW>
         end
         istek = [45 120 180 270];   % sin 2th: 45/120 büyük, 180 kararlı sıfır, 270 kararsız sıfır
+    case '2bN'  % 2b + ofsette artığın esnemesi: kestirici yayEN = yayE x 1 / 0,5 / 1,5 bilir (kol_benzetim p.yayEN)
+        onek = 'b1g2bN';  K = {};
+        for c = [0.5 1 2]
+            for f = [1 0.5 1.5]
+                K(end+1,:) = {sprintf('yayE %gFc, yayEN x%g', c, f), struct('mgl', 0, 'mglN', 0, 'yayE', c*0.04, 'yayEN', f*c*0.04)}; %#ok<AGROW>
+            end
+        end
+        istek = [45 120 180 270];
     case '3'    % dış bozucu, net torku küçük eklemde (2a: mgl x0,05 ve x0,1, mglN doğru); yalnız temel senaryo
         onek = 'b1g3';  K = {};  scSec = 1;
         for c = [0.05 0.1]

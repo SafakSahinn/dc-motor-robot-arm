@@ -504,12 +504,31 @@ Tesiste mgl, D'nin dik kolunun 0,1 ve 0,05 katı (0,024 / 0,012 N m, yani F_c'ni
 | 2 F_c sürtünmesiz | 30 / 30 | 30 | 6 |
 
 - **Tepe açılarında (45 / 120) 1 F_c'de tam, 0,5 F_c'de 45°'de yalnız a2 kaybediliyor (0/6).** 2a ile aynı sonuç: kolu bir yüze bastıran net tork varsa kestirici çalışıyor. 0,5 F_c'deki kayıp bunun tersini gösteriyor: artığın 45°'deki değeri (0,02 N m) a2 yüküne (0,02 N m) tam eşit, net durağan tork sıfırlanıyor ve kol senaryo 1'deki duruma düşüyor. Kestirici 6/6 koşuda yanlış yüzde kalıyor. 120°'de artık 0,017 N m, yük ondan büyük: yüz 6/6 koşuda gerçekten çevriliyor ve 6/6'sı yakalanıyor. 1 F_c'de yük artığın altında kaldığı için tepe açılarında yüz çevrilmiyor.
-- **2 F_c'de 45 / 120'de kalan kayıp yüzden değil, ofset tablosundan.** Ofset artık torkun dişli esnemesini (yayE sin 2θ / K_s) bilmiyor. 2 F_c'de bu 0,08/10 rad = 0,46°. Temel senaryoda ölçülen kayma 45°'de −0,46°, 120°'de +0,40°, yani tam bu değer. Sürtünmesiz tesiste kayma 0,5° sınırının hemen altında kalıyor ve bütün koşular geçiyor (ortalama |e| 0,43 / 0,38°). Sürtünmeli tesiste yaklaşma yönüne göre c ya da d senaryosu sınırı aşıyor (6/30 kayıp, hepsi "konum", yüz doğru). r(θ) durumunda olduğu gibi sorun tablonun bilgisinde. Artık ölçülüp tabloya eklenirse giderilebilir (denenmedi).
+- **2 F_c'de 45 / 120'de kalan kayıp yüzden değil, ofset tablosundan.** Ofset artık torkun dişli esnemesini (yayE sin 2θ / K_s) bilmiyor. 2 F_c'de bu 0,08/10 rad = 0,46°. Temel senaryoda ölçülen kayma 45°'de −0,46°, 120°'de +0,40°, yani tam bu değer. Sürtünmesiz tesiste kayma 0,5° sınırının hemen altında kalıyor ve bütün koşular geçiyor (ortalama |e| 0,43 / 0,38°). Sürtünmeli tesiste yaklaşma yönüne göre c ya da d senaryosu sınırı aşıyor (6/30 kayıp, hepsi "konum", yüz doğru). r(θ) durumunda olduğu gibi sorun tablonun bilgisinde. Artık ölçülüp tabloya eklenirse giderilebilir. (Denendi, giderildi: aşağıda "2b ek".)
 - **Kararlı sıfır (180°) çoğunlukla geçiyor**, sürtünmesiz tesiste tam ya da tama yakın. Geri çeken artık, kol hedeften kayınca onu motora doğru bastırıyor. Sürtünmeli tesiste ε küçükken (0,5 F_c) yarıya iniyor (15/30, 9 temassız).
 - **Kararsız sıfır (270°) neredeyse hep başarısız: 3–7/30, yalnız a2 (sabit yük) geçiyor.** Sabit yük kolu bir yüze bastırarak avlanmayı durduruyor. Tek koşu izi (olay+yok, sürtünmesiz, 1 F_c): kol yüzler arasında avlanıyor. e 1, 2, 3, 5 ve 8. saniyelerde sırasıyla +1,0 / −1,4 / +1,8 / +2,5 / −3,3°, δ her seferinde ±r'de. Kestirici son yüzü genellikle doğru buluyor ama kol hedefte durmuyor. Bu, B1'deki θ* "yüz avlanması" ile aynı olay (dik kolda 180°). Tek istisna 2 F_c sürtünmeli (20–21/30): orada sürtünme avlanmayı durduruyor olabilir. Bu doğrulanmadı.
 - **Her açıda yoklama** 0,5–2 F_c sürtünmelide "yanlış yüz" sayısını azaltıyor (66 → 26, 12 → 1, 11 → 3). Bu koşuların çoğu "konum" hatasına kayıyor, H7 toplamı yalnız biraz artıyor (/240'ta +6, +3, +9; kazancın çoğu 270°'de, 2 F_c'de 20–21'den 23–27'ye).
 
 **Sonuç (senaryo 2b).** Yay dengelemeli kolda belirleyici olan şey sıfır noktasının türü. Kararlı sıfırda (geri çeken artık) kestirici çalışıyor. Kararsız sıfırda kol avlanıyor ve bunu hiçbir yöntem çözmüyor. Bir dış yük artığı tam karşılarsa (0,5 F_c'de 45°'de a2) tepe açısı da sıfır noktasına dönüşüyor. Tepe açılarında artık büyüdükçe (≥ 2 F_c) ofset tablosuna artığın esneme terimi girmeli.
+
+#### 2b ek. Artığın esneme terimi ofsette (2026-11-24, tur 69)
+
+**Kod.** `kol_benzetim.m` dosyasına varsayılanı 0 olan `p.yayEN` eklendi: kestiricinin bildiği yay artığı. Ofsete yayEN·sin 2θ_ref / K_sN ekleniyor. Durağan dişli torku mgl sin θ + yayE sin 2θ olduğu için bu, mgl teriminin yanına gelen esneme payı. Terim `yuzKes` ve `yuzKural` ofsetlerinde, `refYol` ile değişen referansta ve θ* kaydırmasında kullanılıyor. Gerileme 1395a71'e karşı: 9 yapılandırmada fark 0, açıkça verilen `yayEN = 0` da birebir aynı. Ön denetim (sürtünmesiz, 2 F_c, temel): son kayma 45°'de −0,457° → +0,0015°, 120°'de +0,402° → +0,0014°. Senaryo `B1G_SEN=2bN`, önek `b1g2bN`, log `b1g2bN_log.txt`. Kestiricinin bildiği yayEN 2a'daki mglN gibi üç durumda: doğru, × 0,5, × 1,5. Öbür her şey 2b ile aynı.
+
+**Öngörü doğrulandı: 2 F_c sürtünmeli tesiste 45 / 120°'deki 6/30 "konum" kaybı kapanıyor** (olay+yok, /30 her hedef-yön):
+
+| 2 F_c | 45° / 120° sürt.li | ort. \|e\| | 45° / 120° sürt.siz | ort. \|e\| |
+|---|---|---|---|---|
+| yayEN yok (2b) | 24 / 24 | 0,42 / 0,36° | 30 / 30 | 0,43 / 0,38° |
+| yayEN doğru | 30 / 30 | 0,12 / 0,11° | 30 / 30 | 0,02 / 0,02° |
+| yayEN × 0,5 | 30 / 30 | 0,20 / 0,16° | 30 / 30 | 0,20 / 0,18° |
+| yayEN × 1,5 | 30 / 30 | 0,26 / 0,24° | 30 / 30 | 0,25 / 0,22° |
+
+- **±%50 hatalı yayEN de yetiyor.** Kalan kayma hatanın yarısı kadar (0,5 × 0,46 ≈ 0,23°) ve 0,5° sınırının içinde kalıyor. Sürtünmeli tesiste |e| 0,12°'nin altına inmiyor: kalan kısım motor sürtünmesinin bıraktığı konum hatası, 1 F_c'de de aynı mertebede (0,12°).
+- **1 F_c ve 0,5 F_c'de H7 değişmiyor**, çünkü orada esneme payı (0,23° ve 0,11°) zaten sınırın altındaydı. Yalnız |e| küçülüyor (1 F_c sürtünmesiz 0,19 → 0,02°). 0,5 F_c'de 45°'deki a2 kaybı (24/30) olduğu gibi kalıyor. O kayıp ofsetten değil, net torkun sıfırlanmasından geliyor (yukarıda).
+- **180° ve 270° değişmiyor** (180° sürtünmeli 15 / 24 / 24, 270° 3 / 6–7 / 20–21; sayılar 2b ile ±1 içinde aynı). sin 2θ orada sıfır, terim ofsete hiçbir şey eklemiyor. Kararsız sıfırdaki yüz avlanması ofset sorunu değil.
+
+**Sonuç (2b ek).** Yay dengelemeli kolda tepe açılarındaki kayıp tamamen ofset tablosundan geliyormuş. Artığın genliği kabaca (±%50) biliniyorsa tablo bunu kapatıyor. Sıfır noktalarındaki sorunlar (270° avlanması, a2'nin artığı sıfırladığı durum) ofsetle çözülmüyor.
 
 ### Senaryo 3. Dış bozucu, net torku küçük eklemde
 

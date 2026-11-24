@@ -172,10 +172,12 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %   p.rA, p.rK (1), p.rF: açıya bağlı boşluk, tesiste r(th) = r (1 + rA sin(rK th + rF)) (rK = 1 çıkış dişlisi
 %     eksantrikliği). Kestirici/ofset p.rN'yi (varsayılan p.r) sabit bilir; analiz sınıfı yine p.r ile.
 %   p.yayE [N m] (B1-G 2b, yay dengeleme): kola artık tork -yayE sin(2 th) eklenir (yerçekimi terimine ek;
-%     dengelenmiş kolda tesis mgl = 0 ile birlikte). Kestirici bilmez (ofset yalnız mglN sin th kullanır).
+%     dengelenmiş kolda tesis mgl = 0 ile birlikte). Kestirici varsayılan olarak bilmez (p.yayEN, aşağıda).
 %   p.FcL, p.FsL [N m] (B1-G 1b, kol yatağı/rulman sürtünmesi; varsayılan 0, FsL varsayılanı FcL): kola
 %     motor tarafıyla aynı biçimde yumuşatılmış Stribeck sürtünmesi (FcL + (FsL - FcL) e^-(th'/vs)^2) tanh(th'/veps).
 %     Kestirici bilmez (gözlemci yalnız motor tarafını modelliyor).
+%   p.yayEN [N m] (varsayılan 0; B1-G 2b artığı): kestiricinin bildiği yay artığı. yuzKes/yuzKural ofsetine
+%     yayEN sin(2 th_ref)/KsN eklenir (durağan dişli torku mgl sin th + yayE sin 2th'nin esneme payı).
 %   p.asHar = [E1 f1 E2 f2] [rad, motor mili tarafı]: AS5600 açıya bağlı harmonik hatası; motor ölçümüne
 %     (nicemleme ve gürültüden önce) (E1 sin(psi + f1) + E2 sin(2 psi + f2))/N eklenir, psi = N phi.
 % İsteğe bağlı yük bozucusu (zorlanmış cevap): p.dA sin(2 pi p.df (t - dT0)) [N m] kola etki eder,
@@ -183,6 +185,7 @@ function out = kol_benzetim(p, theta0_deg, wc)
 % durumundan sürdürme.
 
 th_ref = deg2rad(theta0_deg(:)');
+yayEN = al(p,'yayEN',0);  yayKN = al(p,'KsN',p.Ks);   % ofsette yay artığının esnemesi (B1-G 2b, kestiricinin bildiği)
 dA = 0;  df = 0;  dT = Inf;  dT0 = 0;
 if isfield(p,'dA'), dA = p.dA;  df = p.df; end
 if isfield(p,'dT'), dT = p.dT; end
@@ -221,7 +224,9 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;                    % s^ ve ofsetteki (rampalı) yüz
     rN = al(p,'rN', p.r);                            % kestiricinin/ofsetin bildiği değerler (duyarlılık, iş sırası 4)
-    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf.*rN + ofsG;
+    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);
+    if yayEN ~= 0, ofsG = ofsG + yayEN*sin(2*th_ref)/yayKN; end
+    ofs = sOf.*rN + ofsG;
     rampa  = al(p,'yuzRampa', 0.5);
     wo     = al(p,'gozW', 2*pi*40);
     JMN    = al(p,'JMN', p.JM);   bMN = al(p,'bMN', p.bM);
@@ -282,7 +287,9 @@ if isfield(p,'yuzKural') && ~isempty(p.yuzKural)
     sh = sign(sin(th_ref));  if isfield(p,'yuz0'), sh = p.yuz0(:)'.*ones(1,n); end
     sh(sh == 0) = 1;  sOf = sh;  kYon = sh;  kS = sh;
     rN = al(p,'rN', p.r);  rampa = al(p,'yuzRampa', 0.5);
-    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);  ofs = sOf.*rN + ofsG;
+    ofsG = al(p,'mglN', p.mgl)*sin(th_ref)/al(p,'KsN', p.Ks);
+    if yayEN ~= 0, ofsG = ofsG + yayEN*sin(2*th_ref)/yayKN; end
+    ofs = sOf.*rN + ofsG;
     kuralV = al(p,'kuralV', 0.05);  kuralT1 = al(p,'kuralT1', 0.02);  kuralT2 = al(p,'kuralT2', 0.04);
     kuralU = al(p,'kuralU', 0.01);
     yuzDeg = zeros(1,n);  yuzDegAn = zeros(1,n);
@@ -396,7 +403,9 @@ for i = 0:nStep-1
         end
         if refY                                    % zamanla değişen referans
             thr = p.refYol(i*p.dt);
-            if kesMod > 0 || kurMod > 0, ofsG = ofsGk*sin(thr); end
+            if kesMod > 0 || kurMod > 0
+                ofsG = ofsGk*sin(thr);  if yayEN ~= 0, ofsG = ofsG + yayEN*sin(2*thr)/yayKN; end
+            end
         else
             thr = th_ref;
         end
@@ -509,6 +518,7 @@ for i = 0:nStep-1
                     tyD = tyD + aTy*(tyHd - tyD);
                 end
                 thr = thr0 + tyD;  ofsG = tyMgl/tyKs*sin(thr);
+                if yayEN ~= 0, ofsG = ofsG + yayEN*sin(2*thr)/yayKN; end
             end
             dg = sh ~= shOnc;  yuzDeg = yuzDeg + dg;  yuzDegAn = yuzDegAn + dg*(i >= iAn);
             if ykMod, ykSon(dg & ykF == 0) = -Inf; end   % yüz değişti: oturunca yeniden yokla
