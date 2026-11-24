@@ -82,6 +82,8 @@ function out = kol_benzetim(p, theta0_deg, wc)
 %               kolun en büyük hareketi, gerçek theta; yalnız değerlendirme), kabul, rN (ölçümden sonraki rN)
 %               (satır = ölçüm, en çok p.rOlcKayit); out.rNSon.
 %   p.rGun (rOlc ile; varsayılan 'yok'): kabul edilen her ölçümden sonra ofsetin rN'si güncellenir.
+%               Yalnız kabul edilen VE yeniliği (mutlak: r^ - rN; fark: r^ - r^0 - D) <= p.rGunKapi (0,3) rN olan ölçüm kullanılır (out.rOlc.gun; yanlış
+%               temas r^ ~ 0 verir ve iki yön birlikte yanıldığında tutarlılık testi onu yakalamaz).
 %               'mutlak': rN += p.rGunK (0,5) (r^ - rN).  'fark': ilk kabul edilen ölçüm başvuru r^0 (o anda r = rN0
 %               varsayılır), sonra D += rGunK (r^ - r^0 - D), rN = rN0 + D (ölçümün sabit sapması düşer).
 %   p.rNKahin = true (karşılaştırma tabanı; rGun ile birlikte değil): her kontrol örneğinde rN = p.r*rFn(t).
@@ -301,11 +303,11 @@ if isfield(p,'yuzKes') && ~isempty(p.yuzKes)
         gMod = find(strcmp(al(p,'rGun','yok'), {'yok','mutlak','fark'})) - 1;   % çevrim içi rN güncellemesi
         if isempty(gMod), error('bilinmeyen rGun: %s', p.rGun); end
         if gMod > 0 && al(p,'rNKahin',false), error('rGun ile rNKahin birlikte kullanılamaz'); end
-        rGunK = al(p,'rGunK', 0.5);  rN0 = rN.*ones(1,n);  rRef = NaN(1,n);  rD = zeros(1,n);
+        rGunK = al(p,'rGunK', 0.5);  rGunKapi = al(p,'rGunKapi', 0.3);  rN0 = rN.*ones(1,n);  rRef = NaN(1,n);  rD = zeros(1,n);
         wY = 2*pi*al(p,'rOlcW', 10);  rOKp = JMN*wY^2;  rOKd = 2*0.7*JMN*wY;
         rOKs = al(p,'KsN', p.Ks);  rOlcK = al(p,'rOlcKayit', 200);  rOvs = al(p,'vsN', p.vs);
         rOlcTb = al(p,'rOlcTb', 0.03);  ykMovT = zeros(1,n);
-        rOR = NaN(rOlcK,n);  rOT = rOR;  rOY = rOR;  rOY2 = rOR;  rO1 = rOR;  rO2 = rOR;  rOK = rOR;  rOA = false(rOlcK,n);  rOG = rOR;
+        rOR = NaN(rOlcK,n);  rOT = rOR;  rOY = rOR;  rOY2 = rOR;  rO1 = rOR;  rO2 = rOR;  rOK = rOR;  rOA = false(rOlcK,n);  rOU = rOA;  rOG = rOR;
         rOlcTut = al(p,'rOlcTut', deg2rad(0.75));
         rOn = zeros(1,n);  rOab = zeros(1,n);
         ykYa = zeros(1,n);  ykA = zeros(1,n);  ykT2 = zeros(1,n);  ykTau0 = zeros(1,n);
@@ -554,8 +556,10 @@ for i = 0:nStep-1
                         rOn(j) = rOn(j) + 1;  m = min(rOn(j), rOlcK);
                         rOR(m,j) = (ykYa(j) + e2r)/4;                % iki yönün ortalaması: kolun yavaş kayması birinci mertebede düşer
                         rOA(m,j) = abs(ykA(j) - yR) <= rOlcTut;      % iki geçiş tutarlı mı (kol oynamadı mı; yalnız motor)
-                        if gMod > 0 && rOA(m,j)                      % rN güncellemesi (yalnız kabul edilen ölçüm)
-                            if numel(rN) == 1, rN = rN*ones(1,n); end
+                        if numel(rN) == 1, rN = rN*ones(1,n); end
+                        if gMod == 2 && ~isnan(rRef(j)), yen = rOR(m,j) - rRef(j) - rD(j); else, yen = rOR(m,j) - rN(j); end
+                        rOU(m,j) = rOA(m,j) && abs(yen) <= rGunKapi*rN(j);   % akla yatkınlık (yenilik): aşınma yavaş
+                        if gMod > 0 && rOU(m,j)                      % rN güncellemesi (tutarlı ve akla yatkın ölçüm)
                             if gMod == 1                             % mutlak: üstel ortalama
                                 rN(j) = rN(j) + rGunK*(rOR(m,j) - rN(j));
                             elseif isnan(rRef(j))                    % fark: ilk kabul edilen ölçüm başvuru (r = rN0 sayılır)
@@ -762,7 +766,7 @@ if kesMod > 0
     if ykMod, out.yokSay = ykSay;  out.yokKol = ykKol;  out.yokTemas = ykTemas; end
     if rOlc                                    % tam geçiş ölçümleri (B3; satır = ölçüm, sütun = benzetim)
         out.rOlc = struct('n', rOn, 'iptal', rOab, 't', rOT, 'rHat', rOR, 'yol', rOY, 'yol2', rOY2, 'tau1', rO1, ...
-            'tau2', rO2, 'kol', rOK, 'kabul', rOA, 'rN', rOG);
+            'tau2', rO2, 'kol', rOK, 'kabul', rOA, 'gun', rOU, 'rN', rOG);
     end
     if kesMod == 6, out.staSay = stSay; end
     if tyAc, out.tyD = tyD; end

@@ -600,3 +600,67 @@ Olay+yok, olay ile her açı varyantının arasında. Momentum her koşulda 1b i
 - **FcL = 0 (sürtünmesiz rulman):** kolu tutacak bir şey yok, kol senaryo 1'deki gibi yüzüyor. Sonuçlar senaryo 1 ile karışık yönde ±24 içinde (ör. sürtünmeli olay 48 → 48 ve 41, sürtünmesiz 48 → 48 ve 72). Bazı koşularda temassız koşular "konum" başarısızlığına dönüşüyor (24–61), kalıcı bir düzelme yok.
 
 **Sonuç (senaryo 1d).** Kol yapışmasına bilinçli dayama tek motorlu yatay eklemde kurtarıcı değil. Bunun nedeni beklenen neden (τ_d'nin FsL'yi aşması) değil. Konum tabanlı dayama FsL'ye karşı dayanıklı çıktı. Asıl sorun kestiricilerin kolun durduğu yüzü bilmemesi: kol hedefe yaklaşırken her koşuda inanılan yüzün önüne kayıyor, ve motor kolu yalnız iterek tuttuğu için yanlış yüzdeki dayama kolu hiç yakalamıyor. Dayama ancak yüzü zaten u'nun işaretinden seçen (edilgen) yönteme eklenince ve sürtünmesiz motorda temas üretiyor, ama yanlış yüz oranı yüksek kalıyor. Böylece "Kontrolle ön yük: tek motorda sınır" yargısı sayıyla doğrulandı: sıfır noktalarında tek motorlu kontrol kalıcı ve güvenilir bir yüz kuramıyor. Pratik ders: yatay ya da dengelenmiş eklemde hedefe hep aynı yönden yaklaşıp kolu hedefte durdurmak (tek yönlü yaklaşma) gerekir. Bu, dayamadan ayrı bir yöntem, burada denenmedi.
+
+## B3. Tam geçiş yoklamasıyla boşluk izleme (aşınma) (2026-11-24, tur 71)
+
+**Soru.** Ofset tablosunun bildiği r zamanla büyürse (aşınma) yalnız motor sinyalleriyle izlenebilir mi? Ne doğrulukla, kaç ölçümde, tutma hatasına etkisi ne? (İkinci bildiri adayı. Rakipler §F: Giovannitti 2022 sabit hızda yerçekimi sıfır geçişi darbesi, Ruderman–Yamada–Fujimoto 2018 röleyle bilerek LC. Bizimki görev arasında, dik aşağıda, yavaş ve iki yönlü bir geçiş; kontrolcü çalışırken ofset tablosunu çevrim içi düzeltiyor.)
+
+**Neden yeni yoklama.** Eski yoklama motor `yokD` (0,5°) yol alınca frenliyordu, yani 2r'yi değil yalnız yüzü ölçüyordu.
+
+**Kod** (`kol_benzetim.m`, hepsi varsayılan kapalı, her adım ayrı gerileme: 9 yapılandırmada θ ve u farkı 0, yeni bayrak açıkça kapalı verilince birebir aynı):
+- `p.rFn` (a34ac91): tesiste r(t) = r·rFn(t). Makas dişlinin B yayı, analizdeki temas kenarı ve ofsetYuz üst sınırı da r(t)'yi kullanıyor.
+- `p.rOlc` (34a570a): tam geçiş. Kontrolcü donar. Motor yavaş yol izleyiciyle (0,1 rad/s, PD 10 Hz, ileri besleme FcN) önce inanılan yüze, sonra öbür yüze, sonra yine ilk yüze gider, ilk geçiş yolunun yarısı kadar geri gelip ortada bırakılır. Temas: itiş yönündeki dişli torku kestirimi, Stribeck'li sürtünme modeli çıkarılmış, 0,01 N·m'yi geçer. Ayrıca motor 0,8·v_R'yi geçmiş ve o andan 0,03 s geçmiş olmalı. 2r̂ = iki geçişin ortalaması (yol − (τ_a + τ_b)/K_sN). |yol_a − yol_b| ≤ 0,75° ise "tutarlı".
+- `p.rGun`, `p.rNKahin` (e802c56) ve akla yatkınlık kapısı `p.rGunKapi` (sonraki commit): 'mutlak' rN += 0,5(r̂ − rN); 'fark' rN = rN0 + D, D ilk ölçüme göre değişimin üstel ortalaması. Yalnız tutarlı ve yeniliği (mutlak: r̂ − rN, fark: r̂ − r̂₀ − D) ≤ 0,3 rN olan ölçüm yazılır. Kâhin rN = gerçek r(t).
+
+**Tek koşu izleri (360° ve 180°, sabit hedef; scratchpad, repoda yok).**
+- **Neden 360°:** 180°'de kol kararsız, geçişte düşüyor (e −4°/+5,9°, iptaller). Plandaki öneri doğrulandı.
+- **360°'de kolu yerinde tutan tek şey kol yatağının yapışması FsL.** Yerçekiminin geri getirme sertliği mgℓ ≈ 0,24 N·m/rad, dişli sertliği K_s = 10'un yanında çok küçük. Temas torku FsL'yi aşınca motor kolu (eşik − FcL)/mgℓ kadar sürüklüyor. Ölçüm, kolun bu hareketi ile kısalıyor (eksi sapma).
+- **FcL = 0:** kol boşlukta serbest sarkaç (±0,8°, ~1,3 Hz, bL çok küçük, sönmüyor). r̂ sapması +0,33° ve r büyüdükçe azalıyor.
+- **Eşik ve hız:** eşik 0,005–0,0075 gürültüde yanlış temas üretiyor. v ≤ 2v_s yapış-kay yüzünden yanlış temas, v = 0,2 kolu sürüklüyor. Seçilen 0,01 N·m / 0,1 rad/s.
+- **Tutarlılık:** iki yönlü geçiş, kolun kayıp kaymadığını yalnız motordan gösteriyor. Örnek: hata −0,87°'lik aykırı ölçümde |yol_a − yol_b| = 2,64°.
+
+**Görev döngüsü** (`7_karsilastirma/b3_r_izleme.m`, `b3_ozet.m`, `b3_sekil.m`; loglar `b3_ana_log.txt`, `b3_duy_log.txt`, `b3_180_log.txt`; şekil `b3_r_izleme.png`). B1 kanonik ayarı (D, P–PI r_gs 0,5, 1 kHz, AS5600 motor milinde, INA228, olay+yoklama). 16 s'lik çevrim: 0°'de 5 s bekleme (ölçüm), 45°'de ve 120°'de 4 s tutma. T = 80 s, 5 çevrim, çevrim başına bir ölçüm. Aşınma 2. çevrimden başlıyor ve sona kadar doğrusal: r 1,5° → 1,875° (A = 0,25) ya da 2,25° (A = 0,5). Ölçüt: her tutmanın son 1 s ortalaması e; son iki çevrim (aşınmanın %75–100'ü); H7 = |e ort| ≤ 0,5° ve en büyük ≤ 1°; 3 tohum × 2 tutma × 2 çevrim = 12. İlk denemede tutma 2 s'ydi; P–PI orada oturmadığı için aşınmasız taban bile −0,06…−0,5° çıktı, 4 s'ye çıkarıldı.
+
+**Sonuç 1: ana tarama, A = 0,5** (son iki çevrim |e| ort [°], H7/12).
+
+| Tesis (motor sürt., FcL) | sabit rN | mutlak | fark | kâhin |
+|---|---|---|---|---|
+| sürt., 0 | 0,43, 6 | 0,07, **12** | 0,30, 12 | 0,16, 12 |
+| sürt., 0,004 | 0,45, 6 | 0,17, **12** | 0,06, 12 | 0,15, 12 |
+| sürt., 0,01 | 0,47, 6 | 0,11, **12** | 0,28, 10 | 0,12, 12 |
+| sürtünmesiz, 0 | 0,61, 3 | 0,12, **12** | 0,43, 9 | 0,001, 12 |
+| sürtünmesiz, 0,004 | 0,58, 3 | 0,28, **12** | 0,25, 12 | 0,02, 12 |
+| sürtünmesiz, 0,01 | 0,56, 6 | 0,21, **12** | 0,15, 12 | 0,04, 12 |
+
+A = 0,25'te sabit rN zaten 12/12 (|e| 0,13–0,30°): r'nin %25 büyümesi H7'yi bozmuyor. Güncelleme yine |e|'yi düşürüyor: mutlak 0,02–0,27°, fark 0,03–0,23°.
+
+**Yorum.**
+1. **Mutlak kip her tesiste 12/12.** Sabit rN 3–6/12. Hata, büyüyen r'nin büyük kısmını geri alıyor.
+2. **Kalan hatanın iki kaynağı var.** (i) Gecikme: çevrim başına tek ölçüm ve K = 0,5. Benzetim sonunda rN − r = −0,2…−0,4°; bunun ~0,15°'i son ölçümden sonraki aşınma. (ii) Ölçüm sapması: sürtünmesiz tesiste kâhin ~0,02°'ye inerken mutlak 0,2–0,28°'de kalıyor. Sürtünmeli tesiste sapma ile sürtünme artığı rastlantısal olarak birbirini götürebiliyor, mutlak bazen kâhinden iyi çıkıyor (0,07 < 0,16). Bunu yöntemin üstünlüğü saymamak gerekir.
+3. **Fark kipi ancak ölçüm sapması r'den bağımsızsa işe yarıyor.** FcL = 0'da sapma r büyüdükçe küçüldüğü için kötü (9/12). Tek bir kötü başvuru ölçümü de bütün koşuyu bozabiliyor (kapı öncesi ilk koşuda sürtünmeli + FcL 0,004: 8/12). **Varsayılan öneri mutlak.**
+4. **Kol hareketi (yalnız değerlendirme, gerçek θ):** yoklama başına ortalama 0,2–0,3° (FcL 0,01), 0,55–0,6° (FcL 0,004 sürtünmeli motor), 0,8–1,0° (FcL 0). Yoklama "kolu oynatmadan" değil, "kolu boşluk içinde bırakarak" ölçüyor. 0° görev dışı bir bekleme noktası olduğu için kabul edilebilir, ama bildiride açıkça yazılmalı.
+
+**Sonuç 2: duyarlılık** (A = 0,5, sürtünmeli, FcL 0,004; mutlak / fark, H7/12; aynı tesiste sabit 6, mutlak 12).
+- **INA228 gürültüsü 0,005 N·m:** 10 / 12. Tork gürültüsü yanlış temas sayısını artırıyor, ama kapıyla sınırlı kalıyor.
+- **FcN × 1,25:** temas hiç bulunmuyor, 15/15 iptal → 6 / 6. Güvenli başarısızlık, rN sabit kalıyor.
+- **FcN × 0,75 ve AS5600 gürültüsü × 3:** tork kestirimi eşiği sürekli geçiyor, r̂ ≈ 0 (yanlış temas). İki yön aynı biçimde yanıldığı için tutarlılık testi bunu yakalamıyor. **Kapı yokken** mutlak kip rN'yi sıfıra çekti (|e| 1,9°, 0/12). **Kapıyla** hiçbir ölçüm yazılmıyor → 6 / 6 (sabite düşüyor).
+- **Motor nicemlemesi × 4:** ölçümlerin yarısı tutarsız, 3/17'si yazılıyor → 8 / 8.
+- **K_sN × 0,5 / × 2:** taban da bozuluyor (ç1 |e| 0,4–1,2°), 0–3/12. Ofsetin yerçekimi terimi (mgℓ sin θ / K_sN) yanlış. Bu r izlemenin değil, tablonun duyarlılığı; ölçümdeki τ/K_sN düzeltmesi küçük.
+- **Sonuç:** yöntemin zayıf noktası FcN. Temas eşiği 0,01 N·m, sürtünme kestirimindeki 0,01'lik bir hatayla aynı mertebede. Kapı felaketi önlüyor, ama izlemeyi de kapatıyor. Donanımda FcN önce tanılanmalı, ya da eşik çevrim içi uyarlanmalı (ör. serbest geçişin ortasındaki tork kestirimi sıfır kabul edilerek; denenmedi).
+
+**Sonuç 3: ölçüm 180°'de** (A = 0,5, mutlak / fark). Sürtünmeli + FcL 0,004: 14/21 yoklama iptal, H7 6 / 5. Sürtünmeli + FcL 0,01: 12 / 12. Sürtünmesiz + FcL 0,004: 12 / 12, ama 6 iptal ve kol hareketi 0,8°. 360° her tesiste eşit ya da daha iyi.
+
+**Kanıt zinciri / bildiri çekirdeği.** Görev arasında dik aşağıda yapılan iki yönlü yavaş tam geçiş, yalnız enkoder ve akımla r'yi:
+- kol yatağı sürtünmeli tesiste ±0,05° (motor sürtünmesiz) ile −0,1…−0,2° (motor sürtünmeli) arası doğrulukla ölçüyor;
+- yalnız motordan bir güvenilirlik göstergesi veriyor (iki yön tutarlılığı + yenilik kapısı);
+- r %50 büyüdüğünde H7'yi 3–6/12'den 12/12'ye geri getiriyor.
+
+**Sınırlar.**
+- Ölçüm 0°'de görev dışı bir bekleme gerektiriyor.
+- Çevrim başına tek ölçüm.
+- FcN duyarlılığı yüksek.
+- Kol yatağı sürtünmesi yoksa kol boşlukta salınıyor, sapma r'ye bağlı.
+- τ_p (makas ön yükü) gevşemesi senaryosu koşulmadı (aşağıda).
+- Donanım yok.
+
+**Açık: τ_p gevşemesi (planın ikinci senaryosu, ertelendi).** Makas dişlide geçiş yoklaması ilk temasta τ_p'ye takılır (B yayı serbest yolu engelliyor). τ_p'yi ölçmek için tork rampası yoklaması (motor serbest kaymaya başladığı andaki tork ≈ τ_p + sürtünme) ve refYol ile çalışan, τ̂_p'yi çevrim içi kullanan bir makas tablosu kipi gerekiyor (B2'deki `b2_disli_ofset` yalnız sabit hedefte, `p.ofset` ile). Ayrı bir alt iş.

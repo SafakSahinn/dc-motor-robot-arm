@@ -1,0 +1,18 @@
+B3 r izleme, senaryo 180, 18 koşu (b3_r_izleme.m, b3_ozet.m)
+Ölçüt (tohum x tutma 45°/120° x çevrim): her tutmanın son 1 s ortalama hatası e.
+  ç1 |e|      : aşınmasız ilk çevrim ortalaması (taban)
+  son |e|     : son iki çevrim (aşınmanın %75-100'ü) ortalama |e|, en büyük |e|
+  H7 son      : son iki çevrimde |e ort| <= 0,5° ve |e| en büyük <= 1° olan tutma sayısı / toplam
+  r^ - r      : kabul edilen ölçümlerin ortalama ve std sapması [°]; ilk ölçüm (aşınmasız) ayrı
+  rN - r son  : benzetim sonunda kestiricinin bildiği r ile gerçek r farkı (tohum ortalaması)
+  ölç/kab/gün/ipt : ölçüm, tutarlı (|yolA-yolB| <= 0,75°), akla yatkın (yenilik <= 0,3 rN; rN'ye yazılabilir), iptal sayıları (toplam); kol: yoklamada kolun en büyük hareketi ort [°]
+
+== ölçüm 180 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.164 | son |e| ort 0.420 max 0.616 | H7 son  6/12 | r^-r ilk -0.232, sonra -0.179 ± 0.014 | rN-r son -0.498 | ölç/kab/gün/ipt 7/5/5/14 | kol 0.99
+  fark   | ç1 |e| 0.164 | son |e| ort 0.549 max 0.801 | H7 son  5/12 | r^-r ilk -0.232, sonra -0.170 ± 0.007 | rN-r son -0.681 | ölç/kab/gün/ipt 7/5/5/14 | kol 0.96
+== ölçüm 180 | A 0.50 | motor sürt. 1 | FcL 0.010
+  mutlak | ç1 |e| 0.090 | son |e| ort 0.232 max 0.403 | H7 son 12/12 | r^-r ilk -0.078, sonra -0.081 ± 0.008 | rN-r son -0.301 | ölç/kab/gün/ipt 26/26/26/0 | kol 0.55
+  fark   | ç1 |e| 0.103 | son |e| ort 0.144 max 0.334 | H7 son 12/12 | r^-r ilk -0.078, sonra -0.086 ± 0.007 | rN-r son -0.199 | ölç/kab/gün/ipt 25/25/25/0 | kol 0.57
+== ölçüm 180 | A 0.50 | motor sürt. 0 | FcL 0.004
+  mutlak | ç1 |e| 0.019 | son |e| ort 0.375 max 0.409 | H7 son 12/12 | r^-r ilk -0.194, sonra -0.140 ± 0.015 | rN-r son -0.442 | ölç/kab/gün/ipt 15/10/10/6 | kol 0.77
+  fark   | ç1 |e| 0.019 | son |e| ort 0.371 max 0.473 | H7 son 12/12 | r^-r ilk -0.194, sonra -0.147 ± 0.022 | rN-r son -0.438 | ölç/kab/gün/ipt 16/10/10/6 | kol 0.84

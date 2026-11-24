@@ -1,0 +1,30 @@
+B3 r izleme, senaryo duy, 42 koşu (b3_r_izleme.m, b3_ozet.m)
+Ölçüt (tohum x tutma 45°/120° x çevrim): her tutmanın son 1 s ortalama hatası e.
+  ç1 |e|      : aşınmasız ilk çevrim ortalaması (taban)
+  son |e|     : son iki çevrim (aşınmanın %75-100'ü) ortalama |e|, en büyük |e|
+  H7 son      : son iki çevrimde |e ort| <= 0,5° ve |e| en büyük <= 1° olan tutma sayısı / toplam
+  r^ - r      : kabul edilen ölçümlerin ortalama ve std sapması [°]; ilk ölçüm (aşınmasız) ayrı
+  rN - r son  : benzetim sonunda kestiricinin bildiği r ile gerçek r farkı (tohum ortalaması)
+  ölç/kab/gün/ipt : ölçüm, tutarlı (|yolA-yolB| <= 0,75°), akla yatkın (yenilik <= 0,3 rN; rN'ye yazılabilir), iptal sayıları (toplam); kol: yoklamada kolun en büyük hareketi ort [°]
+
+== KsN x0,5 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 1.056 | son |e| ort 0.776 max 0.977 | H7 son  1/12 | r^-r ilk -0.239, sonra -0.160 ± 0.043 | rN-r son -0.557 | ölç/kab/gün/ipt 18/16/15/0 | kol 0.52
+  fark   | ç1 |e| 1.218 | son |e| ort 1.026 max 1.203 | H7 son  0/12 | r^-r ilk -0.239, sonra -0.278 ± 0.352 | rN-r son -0.295 | ölç/kab/gün/ipt 19/17/16/0 | kol 0.59
+== KsN x2 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.518 | son |e| ort 0.708 max 0.910 | H7 son  0/12 | r^-r ilk -0.129, sonra -0.090 ± 0.075 | rN-r son -0.413 | ölç/kab/gün/ipt 18/18/18/0 | kol 0.56
+  fark   | ç1 |e| 0.406 | son |e| ort 0.664 max 1.028 | H7 son  3/12 | r^-r ilk -0.129, sonra -0.196 ± 0.336 | rN-r son -0.373 | ölç/kab/gün/ipt 18/18/16/0 | kol 0.58
+== FcN x1,25 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.163 | son |e| ort 0.440 max 0.551 | H7 son  6/12 | r^-r ilk NaN, sonra NaN ± NaN | rN-r son -0.750 | ölç/kab/gün/ipt 0/0/0/15 | kol NaN
+  fark   | ç1 |e| 0.163 | son |e| ort 0.440 max 0.551 | H7 son  6/12 | r^-r ilk NaN, sonra NaN ± NaN | rN-r son -0.750 | ölç/kab/gün/ipt 0/0/0/15 | kol NaN
+== nicemleme x4 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.168 | son |e| ort 0.459 max 0.681 | H7 son  8/12 | r^-r ilk -1.044, sonra -0.813 ± 0.860 | rN-r son -0.766 | ölç/kab/gün/ipt 17/8/3/1 | kol 0.29
+  fark   | ç1 |e| 0.168 | son |e| ort 0.411 max 0.547 | H7 son  8/12 | r^-r ilk -1.044, sonra -0.816 ± 0.854 | rN-r son -0.716 | ölç/kab/gün/ipt 20/8/3/0 | kol 0.29
+== INA228 gürültü 0,005 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.068 | son |e| ort 0.370 max 0.661 | H7 son 10/12 | r^-r ilk -0.167, sonra -0.118 ± 0.086 | rN-r son -0.649 | ölç/kab/gün/ipt 16/15/13/1 | kol 0.53
+  fark   | ç1 |e| 0.163 | son |e| ort 0.103 max 0.410 | H7 son 12/12 | r^-r ilk -0.167, sonra -0.228 ± 0.365 | rN-r son -0.346 | ölç/kab/gün/ipt 17/16/14/0 | kol 0.55
+== AS5600 gürültü x3 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.169 | son |e| ort 0.436 max 0.548 | H7 son  6/12 | r^-r ilk -1.493, sonra -1.801 ± 0.204 | rN-r son -0.750 | ölç/kab/gün/ipt 16/13/0/0 | kol 0.15
+  fark   | ç1 |e| 0.169 | son |e| ort 0.436 max 0.548 | H7 son  6/12 | r^-r ilk -1.493, sonra -1.801 ± 0.204 | rN-r son -0.750 | ölç/kab/gün/ipt 16/13/0/0 | kol 0.15
+== FcN x0,75 | A 0.50 | motor sürt. 1 | FcL 0.004
+  mutlak | ç1 |e| 0.164 | son |e| ort 0.441 max 0.551 | H7 son  6/12 | r^-r ilk -1.584, sonra -1.875 ± 0.222 | rN-r son -0.750 | ölç/kab/gün/ipt 15/15/0/0 | kol 0.13
+  fark   | ç1 |e| 0.164 | son |e| ort 0.441 max 0.551 | H7 son  6/12 | r^-r ilk -1.584, sonra -1.875 ± 0.222 | rN-r son -0.750 | ölç/kab/gün/ipt 15/15/0/0 | kol 0.13

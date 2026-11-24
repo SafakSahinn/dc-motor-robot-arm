@@ -1,0 +1,69 @@
+B3 r izleme, senaryo ana, 144 koşu (b3_r_izleme.m, b3_ozet.m)
+Ölçüt (tohum x tutma 45°/120° x çevrim): her tutmanın son 1 s ortalama hatası e.
+  ç1 |e|      : aşınmasız ilk çevrim ortalaması (taban)
+  son |e|     : son iki çevrim (aşınmanın %75-100'ü) ortalama |e|, en büyük |e|
+  H7 son      : son iki çevrimde |e ort| <= 0,5° ve |e| en büyük <= 1° olan tutma sayısı / toplam
+  r^ - r      : kabul edilen ölçümlerin ortalama ve std sapması [°]; ilk ölçüm (aşınmasız) ayrı
+  rN - r son  : benzetim sonunda kestiricinin bildiği r ile gerçek r farkı (tohum ortalaması)
+  ölç/kab/gün/ipt : ölçüm, tutarlı (|yolA-yolB| <= 0,75°), akla yatkın (yenilik <= 0,3 rN; rN'ye yazılabilir), iptal sayıları (toplam); kol: yoklamada kolun en büyük hareketi ort [°]
+
+== ana | A 0.25 | motor sürt. 1 | FcL 0.000
+  sabit  | ç1 |e| 0.176 | son |e| ort 0.126 max 0.174 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.249 ± 0.035 | rN-r son -0.375 | ölç/kab/gün/ipt 15/15/9/0 | kol 0.88
+  mutlak | ç1 |e| 0.364 | son |e| ort 0.273 max 0.302 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.240 ± 0.048 | rN-r son +0.052 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.92
+  fark   | ç1 |e| 0.176 | son |e| ort 0.079 max 0.169 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.240 ± 0.046 | rN-r son -0.301 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.88
+  kahin  | ç1 |e| 0.176 | son |e| ort 0.170 max 0.189 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.083 ± 0.542 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/14/0 | kol 0.84
+== ana | A 0.25 | motor sürt. 1 | FcL 0.004
+  sabit  | ç1 |e| 0.139 | son |e| ort 0.138 max 0.187 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.189 ± 0.337 | rN-r son -0.375 | ölç/kab/gün/ipt 18/18/17/0 | kol 0.58
+  mutlak | ç1 |e| 0.067 | son |e| ort 0.067 max 0.113 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.119 ± 0.069 | rN-r son -0.255 | ölç/kab/gün/ipt 17/17/17/0 | kol 0.57
+  fark   | ç1 |e| 0.135 | son |e| ort 0.102 max 0.115 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.194 ± 0.336 | rN-r son -0.089 | ölç/kab/gün/ipt 18/18/17/0 | kol 0.60
+  kahin  | ç1 |e| 0.139 | son |e| ort 0.158 max 0.180 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.206 ± 0.336 | rN-r son -0.000 | ölç/kab/gün/ipt 18/18/17/0 | kol 0.60
+== ana | A 0.25 | motor sürt. 1 | FcL 0.010
+  sabit  | ç1 |e| 0.090 | son |e| ort 0.170 max 0.224 | H7 son 12/12 | r^-r ilk -0.067, sonra -0.006 ± 0.035 | rN-r son -0.375 | ölç/kab/gün/ipt 18/17/17/0 | kol 0.30
+  mutlak | ç1 |e| 0.094 | son |e| ort 0.015 max 0.029 | H7 son 12/12 | r^-r ilk -0.067, sonra -0.000 ± 0.030 | rN-r son -0.152 | ölç/kab/gün/ipt 17/16/16/0 | kol 0.28
+  fark   | ç1 |e| 0.089 | son |e| ort 0.058 max 0.097 | H7 son 12/12 | r^-r ilk -0.067, sonra -0.008 ± 0.035 | rN-r son -0.118 | ölç/kab/gün/ipt 18/16/16/0 | kol 0.30
+  kahin  | ç1 |e| 0.090 | son |e| ort 0.126 max 0.152 | H7 son 12/12 | r^-r ilk -0.067, sonra -0.007 ± 0.032 | rN-r son -0.000 | ölç/kab/gün/ipt 18/18/18/0 | kol 0.31
+== ana | A 0.25 | motor sürt. 0 | FcL 0.000
+  sabit  | ç1 |e| 0.001 | son |e| ort 0.303 max 0.369 | H7 son 12/12 | r^-r ilk +0.328, sonra +0.238 ± 0.066 | rN-r son -0.375 | ölç/kab/gün/ipt 15/15/12/0 | kol 0.81
+  mutlak | ç1 |e| 0.165 | son |e| ort 0.101 max 0.137 | H7 son 12/12 | r^-r ilk +0.328, sonra +0.253 ± 0.056 | rN-r son +0.058 | ölç/kab/gün/ipt 15/15/15/0 | kol 1.15
+  fark   | ç1 |e| 0.001 | son |e| ort 0.229 max 0.292 | H7 son 12/12 | r^-r ilk +0.328, sonra +0.238 ± 0.065 | rN-r son -0.280 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.82
+  kahin  | ç1 |e| 0.001 | son |e| ort 0.001 max 0.001 | H7 son 12/12 | r^-r ilk +0.328, sonra +0.249 ± 0.053 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 1.00
+== ana | A 0.25 | motor sürt. 0 | FcL 0.004
+  sabit  | ç1 |e| 0.020 | son |e| ort 0.281 max 0.351 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.051 ± 0.013 | rN-r son -0.375 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.28
+  mutlak | ç1 |e| 0.007 | son |e| ort 0.147 max 0.173 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.045 ± 0.007 | rN-r son -0.197 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.26
+  fark   | ç1 |e| 0.020 | son |e| ort 0.130 max 0.155 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.053 ± 0.020 | rN-r son -0.180 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.28
+  kahin  | ç1 |e| 0.020 | son |e| ort 0.019 max 0.022 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.057 ± 0.010 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.30
+== ana | A 0.25 | motor sürt. 0 | FcL 0.010
+  sabit  | ç1 |e| 0.037 | son |e| ort 0.262 max 0.319 | H7 son 12/12 | r^-r ilk -0.057, sonra +0.007 ± 0.006 | rN-r son -0.375 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.19
+  mutlak | ç1 |e| 0.010 | son |e| ort 0.081 max 0.093 | H7 son 12/12 | r^-r ilk -0.057, sonra +0.006 ± 0.006 | rN-r son -0.150 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.20
+  fark   | ç1 |e| 0.037 | son |e| ort 0.027 max 0.041 | H7 son 12/12 | r^-r ilk -0.057, sonra +0.006 ± 0.007 | rN-r son -0.096 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.20
+  kahin  | ç1 |e| 0.037 | son |e| ort 0.036 max 0.045 | H7 son 12/12 | r^-r ilk -0.057, sonra +0.003 ± 0.008 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.20
+== ana | A 0.50 | motor sürt. 1 | FcL 0.000
+  sabit  | ç1 |e| 0.176 | son |e| ort 0.431 max 0.545 | H7 son  6/12 | r^-r ilk +0.376, sonra +0.165 ± 0.114 | rN-r son -0.750 | ölç/kab/gün/ipt 15/15/6/0 | kol 0.87
+  mutlak | ç1 |e| 0.364 | son |e| ort 0.067 max 0.123 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.168 ± 0.096 | rN-r son -0.200 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.84
+  fark   | ç1 |e| 0.176 | son |e| ort 0.298 max 0.404 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.165 ± 0.107 | rN-r son -0.567 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.87
+  kahin  | ç1 |e| 0.176 | son |e| ort 0.163 max 0.180 | H7 son 12/12 | r^-r ilk +0.376, sonra +0.163 ± 0.093 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.84
+== ana | A 0.50 | motor sürt. 1 | FcL 0.004
+  sabit  | ç1 |e| 0.139 | son |e| ort 0.448 max 0.551 | H7 son  6/12 | r^-r ilk -0.166, sonra -0.192 ± 0.350 | rN-r son -0.750 | ölç/kab/gün/ipt 19/17/13/0 | kol 0.55
+  mutlak | ç1 |e| 0.067 | son |e| ort 0.172 max 0.191 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.100 ± 0.033 | rN-r son -0.393 | ölç/kab/gün/ipt 17/17/17/0 | kol 0.55
+  fark   | ç1 |e| 0.135 | son |e| ort 0.061 max 0.335 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.199 ± 0.348 | rN-r son -0.300 | ölç/kab/gün/ipt 19/17/16/0 | kol 0.59
+  kahin  | ç1 |e| 0.139 | son |e| ort 0.152 max 0.173 | H7 son 12/12 | r^-r ilk -0.166, sonra -0.193 ± 0.336 | rN-r son -0.000 | ölç/kab/gün/ipt 18/18/17/0 | kol 0.59
+== ana | A 0.50 | motor sürt. 1 | FcL 0.010
+  sabit  | ç1 |e| 0.090 | son |e| ort 0.471 max 0.577 | H7 son  6/12 | r^-r ilk -0.067, sonra -0.006 ± 0.033 | rN-r son -0.750 | ölç/kab/gün/ipt 18/18/15/0 | kol 0.29
+  mutlak | ç1 |e| 0.094 | son |e| ort 0.109 max 0.126 | H7 son 12/12 | r^-r ilk -0.067, sonra -0.001 ± 0.028 | rN-r son -0.303 | ölç/kab/gün/ipt 17/17/17/0 | kol 0.28
+  fark   | ç1 |e| 0.089 | son |e| ort 0.279 max 0.582 | H7 son 10/12 | r^-r ilk -0.067, sonra -0.012 ± 0.037 | rN-r son -0.529 | ölç/kab/gün/ipt 18/14/11/0 | kol 0.29
+  kahin  | ç1 |e| 0.090 | son |e| ort 0.121 max 0.146 | H7 son 12/12 | r^-r ilk -0.067, sonra -0.013 ± 0.034 | rN-r son -0.000 | ölç/kab/gün/ipt 18/15/15/0 | kol 0.31
+== ana | A 0.50 | motor sürt. 0 | FcL 0.000
+  sabit  | ç1 |e| 0.001 | son |e| ort 0.607 max 0.740 | H7 son  3/12 | r^-r ilk +0.328, sonra +0.163 ± 0.107 | rN-r son -0.750 | ölç/kab/gün/ipt 15/15/9/0 | kol 0.76
+  mutlak | ç1 |e| 0.165 | son |e| ort 0.115 max 0.194 | H7 son 12/12 | r^-r ilk +0.328, sonra +0.169 ± 0.103 | rN-r son -0.206 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.99
+  fark   | ç1 |e| 0.001 | son |e| ort 0.434 max 0.522 | H7 son  9/12 | r^-r ilk +0.328, sonra +0.163 ± 0.106 | rN-r son -0.529 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.72
+  kahin  | ç1 |e| 0.001 | son |e| ort 0.001 max 0.001 | H7 son 12/12 | r^-r ilk +0.328, sonra +0.177 ± 0.106 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 1.00
+== ana | A 0.50 | motor sürt. 0 | FcL 0.004
+  sabit  | ç1 |e| 0.020 | son |e| ort 0.582 max 0.718 | H7 son  3/12 | r^-r ilk -0.026, sonra -0.050 ± 0.007 | rN-r son -0.750 | ölç/kab/gün/ipt 15/15/12/0 | kol 0.26
+  mutlak | ç1 |e| 0.007 | son |e| ort 0.275 max 0.327 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.052 ± 0.011 | rN-r son -0.361 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.28
+  fark   | ç1 |e| 0.020 | son |e| ort 0.249 max 0.311 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.049 ± 0.014 | rN-r son -0.334 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.27
+  kahin  | ç1 |e| 0.020 | son |e| ort 0.018 max 0.022 | H7 son 12/12 | r^-r ilk -0.026, sonra -0.060 ± 0.014 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.31
+== ana | A 0.50 | motor sürt. 0 | FcL 0.010
+  sabit  | ç1 |e| 0.037 | son |e| ort 0.560 max 0.684 | H7 son  6/12 | r^-r ilk -0.057, sonra +0.002 ± 0.006 | rN-r son -0.750 | ölç/kab/gün/ipt 15/15/12/0 | kol 0.20
+  mutlak | ç1 |e| 0.010 | son |e| ort 0.205 max 0.240 | H7 son 12/12 | r^-r ilk -0.057, sonra +0.003 ± 0.003 | rN-r son -0.309 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.20
+  fark   | ç1 |e| 0.037 | son |e| ort 0.150 max 0.185 | H7 son 12/12 | r^-r ilk -0.057, sonra +0.004 ± 0.005 | rN-r son -0.253 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.20
+  kahin  | ç1 |e| 0.037 | son |e| ort 0.035 max 0.044 | H7 son 12/12 | r^-r ilk -0.057, sonra -0.001 ± 0.006 | rN-r son -0.000 | ölç/kab/gün/ipt 15/15/15/0 | kol 0.20
